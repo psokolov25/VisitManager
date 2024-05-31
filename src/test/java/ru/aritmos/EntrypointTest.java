@@ -33,11 +33,11 @@ class EntrypointTest {
         String name = branch.getName();
 
 
-        branchService.add(branch,key);
+        branchService.add(key,branch);
 
         Branch br2 = branchService.getBranch(key);
         br2.setName("tst344");
-        branchService.add(br2,key);
+        branchService.add(key,br2);
         String name3 = branchService.getBranch(key).getName();
         Assertions.assertNotEquals(name3, name);
 
@@ -46,9 +46,7 @@ class EntrypointTest {
     @Test
     void  getNotExistBranch()
     {
-        Exception exception = assertThrows(BusinessException.class, () -> {
-            branchService.getBranch("not exist");
-        });
+        Exception exception = assertThrows(BusinessException.class, () -> branchService.getBranch("not exist"));
         Assertions.assertEquals(exception.getMessage(),"Branch not found!!");
 
     }
