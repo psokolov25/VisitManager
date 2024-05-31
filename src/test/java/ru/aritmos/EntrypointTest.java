@@ -1,0 +1,57 @@
+package ru.aritmos;
+
+import io.micronaut.runtime.EmbeddedApplication;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+
+import jakarta.inject.Inject;
+import ru.aritmos.exceptions.BusinessException;
+import ru.aritmos.model.Branch;
+import ru.aritmos.service.BranchService;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@MicronautTest
+class EntrypointTest {
+
+    @Inject
+    BranchService branchService;
+    @Inject
+    EmbeddedApplication<?> application;
+
+    @Test
+    void testItWorks() {
+        Assertions.assertTrue(application.isRunning());
+    }
+
+    @Test
+    void testUpdateBranchInCache() {
+
+        String key = "f094b52f-b316-4441-a6b4-bf9902c8231d";
+        Branch branch = new Branch(key, "tst");
+        String name = branch.getName();
+
+
+        branchService.add(branch,key);
+
+        Branch br2 = branchService.getBranch(key);
+        br2.setName("tst344");
+        branchService.add(br2,key);
+        String name3 = branchService.getBranch(key).getName();
+        Assertions.assertNotEquals(name3, name);
+
+
+    }
+    @Test
+    void  getNotExistBranch()
+    {
+        Exception exception = assertThrows(BusinessException.class, () -> {
+            branchService.getBranch("not exist");
+        });
+        Assertions.assertEquals(exception.getMessage(),"Branch not found!!");
+
+    }
+
+
+}
