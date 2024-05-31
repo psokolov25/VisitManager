@@ -2,13 +2,12 @@ package ru.aritmos.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.micronaut.serde.annotation.Serdeable;
-import lombok.*;
-import lombok.extern.jackson.Jacksonized;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.security.Provider;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -20,9 +19,6 @@ import java.util.UUID;
 
 
 public  class Branch extends BranchEntity {
-    public Branch(String name) {
-        super(name);
-    }
 
     public Branch(String key, String name) {
         super(key, name);
