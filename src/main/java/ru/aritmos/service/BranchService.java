@@ -21,7 +21,7 @@ public class BranchService {
 
     @Cacheable(parameters = {"key"})
 
-    public Branch getBranch(String key) {
+    public Branch getBranch(String key)  {
         Branch result = branches.get(key);
         if (result == null) {
             throw new BusinessException("Branch not found!!");

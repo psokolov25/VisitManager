@@ -1,26 +1,26 @@
 package ru.aritmos.events.services;
 
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import ru.aritmos.events.clients.DataBusClient;
 import ru.aritmos.events.model.Event;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Slf4j
+@Singleton
 public class EventService {
     @Inject
     DataBusClient dataBusClient;
-    String getDateString(Date date) throws ParseException {
+    String getDateString(Date date) {
 
         SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
-        String d = format.format(date);
-        return d;
+        return format.format(date);
     }
-    public void send(String destinationServices,Boolean sendToOtherBus,Event event) throws ParseException {
+    public void send(String destinationServices,Boolean sendToOtherBus,Event event)  {
 
         Flux.from(dataBusClient.send(destinationServices
                 ,sendToOtherBus

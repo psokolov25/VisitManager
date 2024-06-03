@@ -3,6 +3,7 @@ package ru.aritmos.service;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
@@ -11,14 +12,15 @@ import ru.aritmos.model.Visit;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
-
+@Singleton
 public class VisitService {
     @Inject
     BranchService branchService;
 
     @ExecuteOn(TaskExecutors.IO)
-    public Visit createVisit(String branchId, ArrayList<Service> services) {
+    public Visit createVisit(String branchId, List<Service> services)  {
         Branch currentBranch = branchService.getBranch(branchId);
 
         if (!services.isEmpty()) {
