@@ -29,7 +29,8 @@ public class EventHandlerContext {
     @PostConstruct
     void AddHandlers() {
         BusinesErrorHandler businesErrorHandler = new BusinesErrorHandler();
+        VisitCallHandler visitCallHandler=new VisitCallHandler();
         KaffkaListener.addAllEventHandler("BUSINESS_ERROR", businesErrorHandler);
-        KaffkaListener.addServiceEventHandler("VISIT_CALLED", businesErrorHandler);
+        KaffkaListener.addServiceEventHandler("VISIT_CALLED", visitCallHandler);
     }
 }
