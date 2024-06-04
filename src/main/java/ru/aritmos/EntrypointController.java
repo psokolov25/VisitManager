@@ -1,9 +1,9 @@
 package ru.aritmos;
 
 import io.micronaut.context.annotation.Value;
-import io.micronaut.http.HttpResponse;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
-import io.micronaut.http.client.exceptions.HttpClientResponseException;
+import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.inject.Inject;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -40,7 +40,8 @@ public class EntrypointController {
         try {
             branch = branchService.getBranch(id);
         } catch (Exception ex) {
-            throw new HttpClientResponseException("Branch not found!", HttpResponse.notFound());
+            throw new HttpStatusException(HttpStatus.NOT_FOUND,"Branch not found!");
+
         }
         if (new HashSet<>(branch.getServices().stream().map(BranchEntity::getId).toList()).containsAll(services)) {
 
@@ -53,7 +54,7 @@ public class EntrypointController {
                     .build());
             return visit;
         } else {
-            throw new HttpClientResponseException("Services not found!", HttpResponse.notFound());
+            throw new HttpStatusException(HttpStatus.NOT_FOUND,"Services not found!");
         }
 
     }
@@ -66,9 +67,9 @@ public class EntrypointController {
 
         } catch (BusinessException ex) {
             if (ex.getMessage().contains("not found")) {
-                throw new HttpClientResponseException(ex.getMessage(), HttpResponse.notFound());
+                throw new HttpStatusException(HttpStatus.NOT_FOUND,ex.getMessage());
             } else {
-                throw new HttpClientResponseException(ex.getMessage(), HttpResponse.serverError());
+                throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR,ex.getMessage());
             }
         }
     }

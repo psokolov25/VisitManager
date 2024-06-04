@@ -1,9 +1,11 @@
 package ru.aritmos.service;
 
+import io.micronaut.context.annotation.Value;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
@@ -14,19 +16,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 @Singleton
 public class VisitService {
     @Inject
     BranchService branchService;
-
+    @Inject
+    EventService eventService;
+    @Value("${micronaut.application.name}")
+    String applicationName;
     @ExecuteOn(TaskExecutors.IO)
-    public Visit createVisit(String branchId, List<Service> services)  {
+
+    public Visit createVisit(String branchId, List<Service> services) {
         Branch currentBranch = branchService.getBranch(branchId);
 
         if (!services.isEmpty()) {
 
             Queue serviceQueue = currentBranch.getServices().get(0).linkedQueue;
-            Integer ticketCounter=serviceQueue.getTicketCounter();
+            Integer ticketCounter = serviceQueue.getTicketCounter();
             serviceQueue.setTicketCounter(++ticketCounter);
             Visit result = Visit.builder()
                     .id(UUID.randomUUID().toString())
@@ -41,14 +48,14 @@ public class VisitService {
 
             if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
                 currentBranch.getQueues().get(serviceQueue.getId()).getVisits().add(result);
-                branchService.add(currentBranch.getId(),currentBranch);
+                branchService.add(currentBranch.getId(), currentBranch);
                 return result;
             } else {
-                throw new BusinessException("Queue not found in branch configuration!");
+                throw new BusinessException("Queue not found in branch configuration!",eventService,applicationName);
             }
 
         } else {
-            throw new BusinessException("Services can not be empty!");
+            throw new BusinessException("Services can not be empty!",eventService,applicationName);
         }
     }
 }

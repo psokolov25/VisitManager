@@ -1,16 +1,15 @@
 package ru.aritmos.model;
 
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
-import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
-
+@Introspected
 public class Queue extends BranchEntity {
 Integer ticketCounter=0;
 

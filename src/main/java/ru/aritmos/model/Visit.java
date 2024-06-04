@@ -1,11 +1,9 @@
 package ru.aritmos.model;
 
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
-
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.jackson.Jacksonized;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +12,7 @@ import java.util.List;
 @Data
 @Serdeable
 @Builder
-
+@Introspected
 public class Visit {
     String id;
     String ticket;

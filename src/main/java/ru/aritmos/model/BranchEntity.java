@@ -1,14 +1,16 @@
 package ru.aritmos.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.micronaut.serde.annotation.Serdeable;
-import lombok.*;
+import io.micronaut.core.annotation.Introspected;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.UUID;
 
 @Builder
 @Data
+@Introspected
 @Jacksonized
 @NoArgsConstructor
 public class BranchEntity {

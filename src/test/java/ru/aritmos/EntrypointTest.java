@@ -3,6 +3,7 @@ package ru.aritmos;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.exceptions.BusinessException;
@@ -10,7 +11,7 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.service.BranchService;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
+@Slf4j
 @MicronautTest
 class EntrypointTest {
 
@@ -19,7 +20,7 @@ class EntrypointTest {
     @Inject
     EmbeddedApplication<?> application;
 
-    @Test
+   @Test
     void testItWorks() {
         Assertions.assertTrue(application.isRunning());
     }
@@ -32,8 +33,8 @@ class EntrypointTest {
         String name = branch.getName();
 
 
-        branchService.add(key,branch);
-
+        Branch result=branchService.add(key,branch);
+        log.info("Branch added {}",result);
         Branch br2 = branchService.getBranch(key);
         br2.setName("tst344");
         branchService.add(key,br2);

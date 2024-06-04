@@ -1,8 +1,18 @@
+kafka:
+  consumers:
+    default:
+      allow.auto.create.topics: true
+  producers:
+    default:
+      allow.auto.create.topics: true
+  bootstrap:
+    servers: localhost:9092
+
 micronaut:
 
   application:
     name: entrypoint
-    dataBusUrl: http://localhost:8080
+    dataBusUrl: http://localhost:8082
     configurationURL: http://localhost:8081
   router:
     static-resources:
