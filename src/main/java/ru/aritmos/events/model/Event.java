@@ -11,6 +11,9 @@ import java.util.Date;
 @Builder
 @Serdeable
 @Introspected
+/*
+Класс события
+ */
 public class Event {
     String senderService;
     Date eventDate;

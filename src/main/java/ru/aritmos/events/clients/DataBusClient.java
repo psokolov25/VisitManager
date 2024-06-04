@@ -7,6 +7,7 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.client.annotation.Client;
 
+import io.micronaut.retry.annotation.Retryable;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 
 @Client(value = "${micronaut.application.dataBusUrl}")
 public interface DataBusClient {
-    //@Retryable(delay = "30s")
+    @Retryable(delay = "${micronaut.application.dataBusUrlRetryPeriod:30s}",maxDelay = "${micronaut.application.dataBusUrlRetryMaxPeriod:45m}",attempts = "${micronaut.application.dataBusUrlRetryRepeat:30}")
     @SingleResult
     @Post(uri = "/databus/events/types/{type}", produces = "application/json", consumes = "application/json")
     @ExecuteOn(TaskExecutors.IO)

@@ -13,6 +13,9 @@ micronaut:
   application:
     name: entrypoint
     dataBusUrl: http://localhost:8082
+    dataBusUrlRetryPeriod: '1s'
+    dataBusUrlRetryMaxPeriod: '45m'
+    dataBusUrlRetryRepeat: 30
     configurationURL: http://localhost:8081
   router:
     static-resources:

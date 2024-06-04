@@ -29,6 +29,12 @@ public class KaffkaListener {
     @Inject
     ObjectMapper objectMapper;
 
+    /**
+     * Получает сообщения от шины дынных адресованные данной службе
+     * @param key
+     * @param event
+     * @throws IOException
+     */
     @Topic("event_${micronaut.application.name}")
     public void recieve(@KafkaKey String key, String event) throws IOException {
 
@@ -41,6 +47,12 @@ public class KaffkaListener {
 
     }
 
+    /**
+     * Получает сообщения от шины дынных адресованные для всех служб
+     * @param key Ключ сообщения кафка
+     * @param event  Тело события класса Event
+     * @throws IOException
+     */
     @Topic("events")
     public void recieveAll(@KafkaKey String key, String event) throws IOException {
         log.info("Recieve key {} value {}", key, event);
