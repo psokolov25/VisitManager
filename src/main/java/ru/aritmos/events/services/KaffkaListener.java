@@ -31,9 +31,9 @@ public class KaffkaListener {
 
     /**
      * Получает сообщения от шины дынных адресованные данной службе
-     * @param key
-     * @param event
-     * @throws IOException
+     * @param key Ключ сообщения кафка
+     * @param event Тело события класса Event
+     * @throws IOException Обрабатываемые исключения
      */
     @Topic("event_${micronaut.application.name}")
     public void recieve(@KafkaKey String key, String event) throws IOException {
@@ -51,7 +51,7 @@ public class KaffkaListener {
      * Получает сообщения от шины дынных адресованные для всех служб
      * @param key Ключ сообщения кафка
      * @param event  Тело события класса Event
-     * @throws IOException
+     * @throws IOException Обрабатываемые исключения
      */
     @Topic("events")
     public void recieveAll(@KafkaKey String key, String event) throws IOException {
