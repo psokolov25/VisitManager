@@ -16,8 +16,8 @@ import java.util.HashMap;
 @Slf4j
 @KafkaListener(offsetReset = OffsetReset.EARLIEST)
 public class KaffkaListener {
-    private static  HashMap<String, EventHandler> allHandlers = new HashMap<>();
-    private static  HashMap<String, EventHandler> serviceHandlers = new HashMap<>();
+    private final static  HashMap<String, EventHandler> allHandlers = new HashMap<>();
+    private final static  HashMap<String, EventHandler> serviceHandlers = new HashMap<>();
     public static void addAllEventHandler(String eventType,EventHandler handler)
     {
         allHandlers.put(eventType,handler);
