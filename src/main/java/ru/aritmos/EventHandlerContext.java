@@ -1,6 +1,8 @@
 package ru.aritmos;
 
 import io.micronaut.context.annotation.Context;
+import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +16,7 @@ public class EventHandlerContext {
     static class BusinesErrorHandler implements EventHandler {
 
         @Override
+        @ExecuteOn(TaskExecutors.IO)
         public void Handle(Event event) {
             log.info("Event {} of Business error handled!",event);
         }
@@ -21,6 +24,7 @@ public class EventHandlerContext {
     static class VisitCallHandler implements EventHandler {
 
         @Override
+        @ExecuteOn(TaskExecutors.IO)
         public void Handle(Event event) {
             log.info("Event {} of call of visit handled!",event);
         }
