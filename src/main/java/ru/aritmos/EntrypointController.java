@@ -94,7 +94,7 @@ public class EntrypointController {
                 .eventType("VISIT_TRANSFERRED")
                 .senderService(applicationName)
                 .build());
-        return visit;
+        return result;
 
 
     }
