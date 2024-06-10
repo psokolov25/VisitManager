@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Serdeable
 @Introspected
+
 public class Queue extends BranchEntity {
 Integer ticketCounter=0;
 

@@ -24,6 +24,7 @@ public  class Branch extends BranchEntity {
     public Branch(String key, String name) {
         super(key, name);
     }
+    ArrayList<EntryPoint> entryPoints=new ArrayList<>();
     ArrayList<Service> services = new ArrayList<>();
     HashMap<String,Queue> queues = new HashMap<>();
 
