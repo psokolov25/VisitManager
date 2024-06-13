@@ -14,5 +14,5 @@ public interface PrinterClient {
     @Retryable(delay = "${micronaut.application.dataBusUrlRetryPeriod:30s}",maxDelay = "${micronaut.application.dataBusUrlRetryMaxPeriod:45m}",attempts = "${micronaut.application.dataBusUrlRetryRepeat:30}")
     @Post(uri = "/printer/{id}", produces = "application/json", consumes = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public void print(@PathVariable String id,@Body Visit visit);
+    void print(@PathVariable String id,@Body Visit visit);
 }

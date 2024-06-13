@@ -20,7 +20,7 @@ import java.util.HashMap;
 @Named("Branch_cache")
 @CacheConfig("branches")
 public class BranchService {
-    HashMap<String, Branch> branches = new HashMap<>();
+    final HashMap<String, Branch> branches = new HashMap<>();
     @Inject
     EventService eventService;
     @Value("${micronaut.application.name}")
