@@ -13,14 +13,8 @@ import java.util.UUID;
 
 @Introspected
 public class EntryPoint extends BranchEntity{
-    public EntryPoint(String name) {
-        this.id = UUID.randomUUID().toString();
-        this.name = name;
-    }
-    public EntryPoint(String id,String name) {
-        this.id = id;
-        this.name = name;
-    }
+
     String printerId;
+
 
 }

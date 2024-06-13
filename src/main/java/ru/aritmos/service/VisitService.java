@@ -32,10 +32,10 @@ public class VisitService {
         if (!services.isEmpty()) {
             EntryPoint entryPoint;
 
-            if (currentBranch.getEntryPoints().stream().noneMatch(f -> f.getId().equals(entryPointId))) {
+            if (currentBranch.getEntryPoints().containsKey(entryPointId)) {
                 throw new BusinessException("EntryPoint not found in branch configuration!", eventService, applicationName);
             } else {
-                entryPoint = currentBranch.getEntryPoints().stream().filter(f -> f.getId().equals(entryPointId)).findFirst().get();
+                entryPoint = currentBranch.getEntryPoints().get(entryPointId);
             }
             Queue serviceQueue = currentBranch.getServices().get(0).linkedQueue;
             Integer ticketCounter = serviceQueue.getTicketCounter();
@@ -48,6 +48,7 @@ public class VisitService {
                     .currentService(services.get(0))
                     .queue(serviceQueue)
                     .createData(new Date())
+                    .updateData(new Date())
                     .ticket(serviceQueue.getTicketPrefix() + serviceQueue.getTicketCounter().toString())
                     .servedServices(new ArrayList<>())
                     .unservedServices(services.size() > 1 ? services.subList(1, services.size() - 1) : new ArrayList<>())
@@ -71,13 +72,30 @@ public class VisitService {
 
     public Visit visitTransfer(Visit visit, Queue queue) {
         visit.setQueue(queue);
+        visit.setUpdateData(new Date());
+        visit.setVersion(visit.getVersion() + 1);
+
 
         return visit;
     }
 
-    public Visit visitCall(Visit visit) {
+    public Visit visitCall(String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(visit.getBranchId());
+
         Optional<Queue> queue;
+        visit.setUpdateData(new Date());
+        visit.setVersion(visit.getVersion() + 1);
+
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            visit.setServicePoint(servicePoint);
+            servicePoint.setVisit(visit);
+
+        } else {
+            if (!servicePointId.isEmpty() && !currentBranch.getServicePoints().containsKey(servicePointId)) {
+                throw new BusinessException("ServicePoint not found in branch configuration!", eventService, applicationName);
+            }
+        }
 
         queue = currentBranch.getQueues().values().stream().filter(f -> f.getId().equals(visit.getQueue().getId())).findFirst();
         if ((queue.isPresent())) {

@@ -50,15 +50,16 @@ public class EntrypointController {
                     .senderService(applicationName)
                     .build());
             return visit;
+
         } else {
             throw new HttpStatusException(HttpStatus.NOT_FOUND, "Services not found!");
         }
 
     }
 
-    @Post(uri = "/branches/visits/call", consumes = "application/json", produces = "application/json")
-    public Visit callVisit(@Body Visit visit) {
-        Visit result = visitService.visitCall(visit);
+    @Post(uri = "/branches/visits/serrvicepoint/{id}call", consumes = "application/json", produces = "application/json")
+    public Visit callVisit(@PathVariable String servicePointId,@Body Visit visit) {
+        Visit result = visitService.visitCall(servicePointId,visit);
 
         eventService.send("*", true, Event.builder()
                 .body(result)

@@ -20,6 +20,9 @@ public class Visit {
     String ticket;
     String branchId;
     Date createData;
+    Date updateData;
+    Integer version=0;
+    ServicePoint servicePoint;
     List<Service> unservedServices;
     List<Service> servedServices;
     Integer waitingTime;

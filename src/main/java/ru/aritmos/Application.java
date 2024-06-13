@@ -22,6 +22,7 @@ public class Application {
         public void configure(@NonNull ApplicationContextBuilder builder) {
             builder.defaultEnvironments("dev");
         }
+
     }
 
     public static void main(String[] args) {
