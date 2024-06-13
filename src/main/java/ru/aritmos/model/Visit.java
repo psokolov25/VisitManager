@@ -17,10 +17,10 @@ import java.util.List;
 @Introspected
 public class Visit {
     String id;
-    String ticket;
+    String ticketId;
     String branchId;
-    Date createData;
-    Date updateData;
+    Date createDate;
+    Date updateDate;
     Integer version;
     ServicePoint servicePoint;
     List<Service> unservedServices;

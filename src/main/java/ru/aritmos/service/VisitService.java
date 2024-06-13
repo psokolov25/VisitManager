@@ -48,10 +48,10 @@ public class VisitService {
                     .branchId(branchId)
                     .currentService(services.get(0))
                     .queue(serviceQueue)
-                    .createData(new Date())
-                    .updateData(new Date())
+                    .createDate(new Date())
+                    .updateDate(new Date())
                     .servicePoint(null)
-                    .ticket(serviceQueue.getTicketPrefix() + serviceQueue.getTicketCounter().toString())
+                    .ticketId(serviceQueue.getTicketPrefix() + serviceQueue.getTicketCounter().toString())
                     .servedServices(new ArrayList<>())
                     .unservedServices(services.size() > 1 ? services.subList(1, services.size() - 1) : new ArrayList<>())
                     .build();
@@ -94,7 +94,7 @@ public class VisitService {
 
         visit.setQueue(queue);
         visit.setServicePoint(null);
-        visit.setUpdateData(new Date());
+        visit.setUpdateDate(new Date());
         visit.setVersion(visit.getVersion() + 1);
 
 
@@ -105,7 +105,7 @@ public class VisitService {
         Branch currentBranch = branchService.getBranch(visit.getBranchId());
 
         Optional<Queue> queue;
-        visit.setUpdateData(new Date());
+        visit.setUpdateDate(new Date());
         visit.setVersion(visit.getVersion() + 1);
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
