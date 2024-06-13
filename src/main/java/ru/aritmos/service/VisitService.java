@@ -5,6 +5,7 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Queue;
@@ -49,6 +50,7 @@ public class VisitService {
                     .queue(serviceQueue)
                     .createData(new Date())
                     .updateData(new Date())
+                    .servicePoint(null)
                     .ticket(serviceQueue.getTicketPrefix() + serviceQueue.getTicketCounter().toString())
                     .servedServices(new ArrayList<>())
                     .unservedServices(services.size() > 1 ? services.subList(1, services.size() - 1) : new ArrayList<>())
@@ -105,7 +107,12 @@ public class VisitService {
         }
 
         visit.setQueue(null);
-
+        eventService.send("*", true, Event.builder()
+                .body(visit)
+                .eventDate(new Date())
+                .eventType("VISIT_CALLED")
+                .senderService(applicationName)
+                .build());
         return visit;
     }
 
