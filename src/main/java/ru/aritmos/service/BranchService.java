@@ -30,7 +30,7 @@ public class BranchService {
     public Branch getBranch(String key) throws BusinessException {
         Branch result = branches.get(key);
         if (result == null) {
-            throw new BusinessException("Branch not found!!", eventService,applicationName);
+            throw new BusinessException("Branch not found!!", eventService);
         }
         log.info("Getting branchInfo {}", result);
         return result;

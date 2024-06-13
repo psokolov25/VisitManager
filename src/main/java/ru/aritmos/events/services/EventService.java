@@ -1,7 +1,9 @@
 package ru.aritmos.events.services;
 
+import io.micronaut.context.annotation.Value;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import ru.aritmos.events.clients.DataBusClient;
@@ -16,13 +18,15 @@ import java.util.Locale;
 public class EventService {
     @Inject
     DataBusClient dataBusClient;
+    @Value("${micronaut.application.name}")
+    String applicationName;
     String getDateString(Date date) {
 
         SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
         return format.format(date);
     }
     public void send(String destinationServices,Boolean sendToOtherBus,Event event)  {
-
+        event.setSenderService(applicationName);
         Mono.from(
                 dataBusClient.send(destinationServices
                 ,sendToOtherBus

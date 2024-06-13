@@ -21,9 +21,9 @@ public class VisitService {
     EventService eventService;
     @Inject
     PrinterService printerService;
-
     @Value("${micronaut.application.name}")
     String applicationName;
+
 
     @ExecuteOn(TaskExecutors.IO)
 
@@ -34,7 +34,7 @@ public class VisitService {
             EntryPoint entryPoint;
 
             if (currentBranch.getEntryPoints().containsKey(entryPointId)) {
-                throw new BusinessException("EntryPoint not found in branch configuration!", eventService, applicationName);
+                throw new BusinessException("EntryPoint not found in branch configuration!", eventService);
             } else {
                 entryPoint = currentBranch.getEntryPoints().get(entryPointId);
             }
@@ -64,16 +64,36 @@ public class VisitService {
                 }
                 return result;
             } else {
-                throw new BusinessException("Queue not found in branch configuration!", eventService, applicationName);
+                throw new BusinessException("Queue not found in branch configuration!", eventService);
             }
 
         } else {
-            throw new BusinessException("Services can not be empty!", eventService, applicationName);
+            throw new BusinessException("Services can not be empty!", eventService);
         }
     }
 
-    public Visit visitTransfer(Visit visit, Queue queue) {
+    public Visit visitTransfer(String servicePointId, String queueID, Visit visit) {
+        Branch currentBranch = branchService.getBranch(visit.getBranchId());
+        Queue queue=null;
+        if(currentBranch.getQueues().containsKey(queueID))
+        {
+            queue=currentBranch.getQueues().get(queueID);
+        }
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            visit.setServicePoint(servicePoint);
+            servicePoint.setVisit(null);
+
+        } else {
+            if (!servicePointId.isEmpty() && !currentBranch.getServicePoints().containsKey(servicePointId)) {
+                throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
+            }
+        }
+        currentBranch.getServicePoints().get(servicePointId);
+        visit.setServicePoint(null);
+
         visit.setQueue(queue);
+        visit.setServicePoint(null);
         visit.setUpdateData(new Date());
         visit.setVersion(visit.getVersion() + 1);
 
@@ -95,7 +115,7 @@ public class VisitService {
 
         } else {
             if (!servicePointId.isEmpty() && !currentBranch.getServicePoints().containsKey(servicePointId)) {
-                throw new BusinessException("ServicePoint not found in branch configuration!", eventService, applicationName);
+                throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
             }
         }
 
@@ -103,7 +123,7 @@ public class VisitService {
         if ((queue.isPresent())) {
             queue.get().getVisits().remove(visit);
         } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService, applicationName);
+            throw new BusinessException("Queue not found in branch configuration!", eventService);
         }
 
         visit.setQueue(null);

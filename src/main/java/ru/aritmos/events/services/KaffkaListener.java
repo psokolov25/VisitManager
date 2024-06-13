@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
+import ru.aritmos.exceptions.SystemException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class KaffkaListener {
      */
     @Topic("event_${micronaut.application.name}")
     @ExecuteOn(TaskExecutors.IO)
-    public void recieve(@KafkaKey String key, String event) throws IOException {
+    public void recieve(@KafkaKey String key, String event) throws IOException, SystemException {
 
         log.info("Recieve key {} value {}", key, event);
         Event event1 = objectMapper.readValue(event, Event.class);
@@ -58,7 +59,7 @@ public class KaffkaListener {
      */
     @Topic("events")
     @ExecuteOn(TaskExecutors.IO)
-    public void recieveAll(@KafkaKey String key, String event) throws IOException {
+    public void recieveAll(@KafkaKey String key, String event) throws IOException, SystemException {
         log.info("Recieve broadcast message key {} value {}", key, event);
         Event event1 = objectMapper.readValue(event, Event.class);
         if(allHandlers.containsKey(event1.getEventType()))

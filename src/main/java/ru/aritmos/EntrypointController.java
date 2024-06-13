@@ -56,45 +56,6 @@ public class EntrypointController {
         }
 
     }
-
-    @Post(uri = "/branches/visits/serrvicepoint/{servicePointId}/call", consumes = "application/json", produces = "application/json")
-    public Visit callVisit(@PathVariable String servicePointId,@Body Visit visit) {
-
-
-        return visitService.visitCall(servicePointId,visit);
-
-
-    }
-
-    @Put(uri = "/branches/{id}/queue/{queueId}", consumes = "application/json", produces = "application/json")
-    public Visit transferVisit(@PathVariable String id, @PathVariable String queueId, @Body Visit visit) {
-        Branch branch;
-        Queue queue;
-        try {
-            branch = branchService.getBranch(id);
-        } catch (Exception ex) {
-            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
-
-        }
-        if (!branch.getQueues().containsKey(queueId)) {
-            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
-        }
-        queue = branch.getQueues().get(queueId);
-
-
-        Visit result = visitService.visitTransfer(visit, queue);
-        eventService.send("*", true, Event.builder()
-                .body(visit)
-                .eventDate(new Date())
-                .eventType("VISIT_TRANSFERRED")
-                .senderService(applicationName)
-                .build());
-        return result;
-
-
-    }
-
-
     @Get(uri = "/branches/{id}/services", produces = "application/json")
     public List<Service> GetAllServices(@PathVariable String id) {
         try {
@@ -108,5 +69,45 @@ public class EntrypointController {
             }
         }
     }
+
+    @Post(uri = "/visits/servicepoints/{id}/call", consumes = "application/json", produces = "application/json")
+    public Visit callVisit(@PathVariable String id,@Body Visit visit) {
+
+
+        return visitService.visitCall(id,visit);
+
+
+    }
+
+    @Put(uri = "/visits/serrvicepoints/{servicePointid}/transfer/queue/{queueId}", consumes = "application/json", produces = "application/json")
+    public Visit transferVisit( @PathVariable String servicePointid,@PathVariable String queueId, @Body Visit visit) {
+        Branch branch;
+
+        try {
+            branch = branchService.getBranch(visit.getBranchId());
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        if (!branch.getQueues().containsKey(queueId)) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+        }
+
+
+
+        Visit result = visitService.visitTransfer(servicePointid,queueId,visit);
+        eventService.send("*", true, Event.builder()
+                .body(visit)
+                .eventDate(new Date())
+                .eventType("VISIT_TRANSFERRED")
+                .senderService(applicationName)
+                .build());
+        return result;
+
+
+    }
+
+
+
 
 }

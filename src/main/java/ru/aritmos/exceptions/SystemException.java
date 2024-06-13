@@ -11,19 +11,21 @@ import java.util.Date;
 @Slf4j
 
 
-public class BusinessException extends RuntimeException {
+public class SystemException extends Exception {
 
     final EventService eventService;
 
+    String errorMessage;
 
-    public BusinessException(String errorMessage, EventService eventService) {
+    public SystemException(String errorMessage, EventService eventService) {
         super(errorMessage);
+        this.errorMessage = errorMessage;
         BusinessError businessError = new BusinessError();
         businessError.setMessage(errorMessage);
         this.eventService = eventService;
         eventService.send("*", false, Event.builder()
                 .eventDate(new Date())
-                .eventType("BUSINESS_ERROR")
+                .eventType("SYSTEM_ERROR")
                 .body(businessError)
                 .build());
         log.error(errorMessage);
