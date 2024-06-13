@@ -42,7 +42,7 @@ public class KaffkaListener {
     @ExecuteOn(TaskExecutors.IO)
     public void recieve(@KafkaKey String key, String event) throws IOException, SystemException {
 
-        log.info("Recieve key {} value {}", key, event);
+        log.debug("Recieve key {} value {}", key, event);
         Event event1 = objectMapper.readValue(event, Event.class);
         if(serviceHandlers.containsKey(event1.getEventType()))
         {
@@ -60,7 +60,7 @@ public class KaffkaListener {
     @Topic("events")
     @ExecuteOn(TaskExecutors.IO)
     public void recieveAll(@KafkaKey String key, String event) throws IOException, SystemException {
-        log.info("Recieve broadcast message key {} value {}", key, event);
+        log.debug("Recieve broadcast message key {} value {}", key, event);
         Event event1 = objectMapper.readValue(event, Event.class);
         if(allHandlers.containsKey(event1.getEventType()))
         {

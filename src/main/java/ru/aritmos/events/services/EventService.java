@@ -34,7 +34,7 @@ public class EventService {
                 ,event.getSenderService()
                 ,event.getEventType()
                 ,event.getBody())
-                ).subscribe(s->log.info("{}",s));
+                ).subscribe(s->log.debug("Event {} sent!",s));
 
     }
 }
