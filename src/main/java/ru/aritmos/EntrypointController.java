@@ -57,7 +57,7 @@ public class EntrypointController {
 
     }
 
-    @Post(uri = "/branches/visits/serrvicepoint/{id}call", consumes = "application/json", produces = "application/json")
+    @Post(uri = "/branches/visits/serrvicepoint/{servicePointId}/call", consumes = "application/json", produces = "application/json")
     public Visit callVisit(@PathVariable String servicePointId,@Body Visit visit) {
         Visit result = visitService.visitCall(servicePointId,visit);
 
