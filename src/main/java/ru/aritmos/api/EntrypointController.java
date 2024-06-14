@@ -1,4 +1,4 @@
-package ru.aritmos;
+package ru.aritmos.api;
 
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
@@ -56,6 +56,7 @@ public class EntrypointController {
         }
 
     }
+
     @Get(uri = "/branches/{id}/services", produces = "application/json")
     public List<Service> GetAllServices(@PathVariable String id) {
         try {
@@ -70,21 +71,45 @@ public class EntrypointController {
         }
     }
 
-    @Post(uri = "/visits/servicepoints/{id}/call", consumes = "application/json", produces = "application/json")
-    public Visit callVisit(@PathVariable String id,@Body Visit visit) {
+    @Get(uri = "/branches/{id}/queue/{queueId}", produces = "application/json")
+    public List<Visit> GetAllVisits(@PathVariable String id, String queueId) {
+        try {
+            return visitService.getVisits(id, queueId);
+
+        } catch (BusinessException ex) {
+            if (ex.getMessage().contains("not found")) {
+                throw new HttpStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+            } else {
+                throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+            }
+        }
+    }
+
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{id}/call", consumes = "application/json", produces = "application/json")
+    public Visit callVisit(@PathVariable String branchId, @PathVariable String id, @Body Visit visit) {
 
 
-        return visitService.visitCall(id,visit);
+        return visitService.visitCall(branchId, id,visit);
 
 
     }
 
-    @Put(uri = "/visits/serrvicepoints/{servicePointid}/transfer/queue/{queueId}", consumes = "application/json", produces = "application/json")
-    public Visit transferVisit( @PathVariable String servicePointid,@PathVariable String queueId, @Body Visit visit) {
+    @Delete(uri = "/branches/{branchId}/visits/servicepoints/{servicepointId}", consumes = "application/json", produces = "application/json")
+    public void deleteVisit(@PathVariable String branchId, @PathVariable String servicepointId, @Body Visit visit) {
+
+
+        visitService.deleteVisit(branchId, servicepointId, visit);
+
+
+    }
+
+
+    @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointid}/queue/{queueId}", consumes = "application/json", produces = "application/json")
+    public Visit transferVisit(@PathVariable String branchId, @PathVariable String servicePointid, @PathVariable String queueId, @Body Visit visit) {
         Branch branch;
 
         try {
-            branch = branchService.getBranch(visit.getBranchId());
+            branch = branchService.getBranch(branchId);
         } catch (Exception ex) {
             throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
 
@@ -94,8 +119,7 @@ public class EntrypointController {
         }
 
 
-
-        Visit result = visitService.visitTransfer(servicePointid,queueId,visit);
+        Visit result = visitService.visitTransfer(branchId,servicePointid, queueId, visit);
         eventService.send("*", true, Event.builder()
                 .body(visit)
                 .eventDate(new Date())
@@ -106,8 +130,6 @@ public class EntrypointController {
 
 
     }
-
-
 
 
 }

@@ -26,7 +26,22 @@ public class VisitService {
 
 
     @ExecuteOn(TaskExecutors.IO)
+    public List<Visit> getVisits(String branchId,String queueId)
+    {
+        Branch currentBranch = branchService.getBranch(branchId);
+        Queue queue ;
+        if (currentBranch.getQueues().containsKey(queueId)) {
+            queue = currentBranch.getQueues().get(queueId);
+        }
+        else
+        {
+            throw new BusinessException("Queue not found in branch configuration!", eventService);
+        }
+        List<Visit> visits;
+        visits=queue.getVisits();
+        return visits;
 
+    }
     public Visit createVisit(String branchId, String entryPointId, List<Service> services, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
 
@@ -43,6 +58,7 @@ public class VisitService {
             serviceQueue.setTicketCounter(++ticketCounter);
             Visit result = Visit.builder()
                     .id(UUID.randomUUID().toString())
+                    .status("CREATED")
                     .entryPoint(entryPoint)
                     .printTicket(printTicket)
                     .branchId(branchId)
@@ -72,12 +88,11 @@ public class VisitService {
         }
     }
 
-    public Visit visitTransfer(String servicePointId, String queueID, Visit visit) {
-        Branch currentBranch = branchService.getBranch(visit.getBranchId());
-        Queue queue=null;
-        if(currentBranch.getQueues().containsKey(queueID))
-        {
-            queue=currentBranch.getQueues().get(queueID);
+    public Visit visitTransfer(String branchId,String servicePointId, String queueID, Visit visit) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        Queue queue = null;
+        if (currentBranch.getQueues().containsKey(queueID)) {
+            queue = currentBranch.getQueues().get(queueID);
         }
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
@@ -96,17 +111,18 @@ public class VisitService {
         visit.setServicePoint(null);
         visit.setUpdateDate(new Date());
         visit.setVersion(visit.getVersion() + 1);
-
+        visit.setStatus("TRANSFERRED");
 
         return visit;
     }
 
-    public Visit visitCall(String servicePointId, Visit visit) {
-        Branch currentBranch = branchService.getBranch(visit.getBranchId());
+    public Visit visitCall(String branchId,String servicePointId, Visit visit) {
+        Branch currentBranch = branchService.getBranch(branchId);
 
         Optional<Queue> queue;
         visit.setUpdateDate(new Date());
         visit.setVersion(visit.getVersion() + 1);
+        visit.setStatus("CALLED");
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
@@ -136,5 +152,37 @@ public class VisitService {
         return visit;
     }
 
+    public void deleteVisit(String branchId, String servicePointId, Visit visit) {
+        Branch currentBranch = branchService.getBranch(branchId);
+
+        Optional<Queue> queue;
+        visit.setUpdateDate(new Date());
+        visit.setVersion(visit.getVersion() + 1);
+        visit.setStatus("CALLED");
+
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            visit.setServicePoint(servicePoint);
+            servicePoint.setVisit(visit);
+
+        } else {
+            if (!servicePointId.isEmpty() && !currentBranch.getServicePoints().containsKey(servicePointId)) {
+                throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
+            }
+        }
+
+        queue = currentBranch.getQueues().values().stream().filter(f -> f.getId().equals(visit.getQueue().getId())).findFirst();
+        if ((queue.isPresent())) {
+            queue.get().getVisits().remove(visit);
+        } else {
+            throw new BusinessException("Queue not found in branch configuration!", eventService);
+        }
+        eventService.send("*", true, Event.builder()
+                .body(visit)
+                .eventDate(new Date())
+                .eventType("VISIT_DELETED")
+                .senderService(applicationName)
+                .build());
+    }
 
 }

@@ -17,6 +17,7 @@ import java.util.List;
 @Introspected
 public class Visit {
     String id;
+    String status;
     String ticketId;
     String branchId;
     Date createDate;
