@@ -41,7 +41,7 @@ public class BranchService {
 
         Branch oldBranch;
 
-        branches.put(key, branch);
+
 
         if(this.branches.containsKey(key))
         {
@@ -49,6 +49,11 @@ public class BranchService {
             eventService.sendChangedEvent("*",true,"BRANCH_CHANGED",oldBranch, branch,new HashMap<>());
 
         }
+        else
+        {
+            eventService.sendChangedEvent("*",true,"BRANCH_CHANGED",null, branch,new HashMap<>());
+        }
+        branches.put(key, branch);
         log.info("Putting branchInfo {}", branch);
         return branch;
     }
@@ -56,6 +61,17 @@ public class BranchService {
     @CacheInvalidate(parameters = {"key"})
 
     public void delete(String key) {
+        Branch oldBranch;
+        if(this.branches.containsKey(key))
+        {
+            oldBranch=this.branches.get(key);
+            eventService.sendChangedEvent("*",true,"BRANCH_DELETED",oldBranch, null,new HashMap<>());
+
+        }
+        else
+        {
+            throw new BusinessException("Branch not found!!", eventService);
+        }
         log.info("Deleting branchInfo {}", key);
         branches.remove(key);
     }
