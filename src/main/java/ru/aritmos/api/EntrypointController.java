@@ -31,6 +31,18 @@ public class EntrypointController {
     @Value("${micronaut.application.name}")
     String applicationName;
 
+    @Get(uri = "/branches/{id}")
+    public Branch getBranch(String id)
+    {
+        Branch branch;
+        try {
+            branch = branchService.getBranch(id);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        return branch;
+    }
     @Post(uri = "/branches/{id}/entrypoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
     public Visit creeateVisit(@PathVariable String id, @PathVariable String entryPointId, @Body ArrayList<String> services, Boolean printTicket) {
         Branch branch;
