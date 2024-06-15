@@ -13,8 +13,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @Serdeable
-@Builder
+@Builder(toBuilder = true)
 @Introspected
+
 public class Visit {
     String id;
     String status;

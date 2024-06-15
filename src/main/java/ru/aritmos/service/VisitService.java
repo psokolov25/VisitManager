@@ -25,6 +25,10 @@ public class VisitService {
     String applicationName;
 
 
+    private void changedVisitEventSend(String visitState,Visit oldVisit,Visit newVisit,HashMap<String,String> params)
+    {
+        eventService.sendChangedEvent("*",false,visitState,oldVisit,newVisit,params);
+    }
     @ExecuteOn(TaskExecutors.IO)
     public List<Visit> getVisits(String branchId,String queueId)
     {
@@ -78,6 +82,7 @@ public class VisitService {
                 if (printTicket && entryPoint.getPrinterId() != null) {
                     printerService.print(entryPoint.getPrinterId(), result);
                 }
+                changedVisitEventSend("VISIT_CREATED",null,result,new HashMap<>());
                 return result;
             } else {
                 throw new BusinessException("Queue not found in branch configuration!", eventService);
@@ -90,6 +95,7 @@ public class VisitService {
 
     public Visit visitTransfer(String branchId,String servicePointId, String queueID, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
+        Visit oldVisit=visit.toBuilder().build();
         Queue queue = null;
         if (currentBranch.getQueues().containsKey(queueID)) {
             queue = currentBranch.getQueues().get(queueID);
@@ -112,13 +118,13 @@ public class VisitService {
         visit.setUpdateDate(new Date());
         visit.setVersion(visit.getVersion() + 1);
         visit.setStatus("TRANSFERRED");
-
+        changedVisitEventSend("VISIT_CHANGED",oldVisit,visit,new HashMap<>());
         return visit;
     }
 
     public Visit visitCall(String branchId,String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
-
+        Visit oldVisit=visit.toBuilder().build();
         Optional<Queue> queue;
         visit.setUpdateDate(new Date());
         visit.setVersion(visit.getVersion() + 1);
@@ -149,7 +155,9 @@ public class VisitService {
                 .eventType("VISIT_CALLED")
                 .senderService(applicationName)
                 .build());
+        changedVisitEventSend("VISIT_CHANGED",oldVisit,visit,new HashMap<>());
         return visit;
+
     }
 
     public void deleteVisit(String branchId, String servicePointId, Visit visit) {
@@ -183,6 +191,7 @@ public class VisitService {
                 .eventType("VISIT_DELETED")
                 .senderService(applicationName)
                 .build());
+        changedVisitEventSend("VISIT_DELETED",visit,null,new HashMap<>());
     }
 
 }

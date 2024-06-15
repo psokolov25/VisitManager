@@ -39,7 +39,16 @@ public class BranchService {
     @CachePut(parameters = {"key"})
     public Branch add(String key, Branch branch) {
 
+        Branch oldBranch;
+
         branches.put(key, branch);
+
+        if(this.branches.containsKey(key))
+        {
+            oldBranch=this.branches.get(key);
+            eventService.sendChangedEvent("*",true,"BRANCH_CHANGED",oldBranch, branch,new HashMap<>());
+
+        }
         log.info("Putting branchInfo {}", branch);
         return branch;
     }
