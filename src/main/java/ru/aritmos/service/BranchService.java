@@ -51,7 +51,7 @@ public class BranchService {
         }
         else
         {
-            eventService.sendChangedEvent("*",true,"BRANCH_CHANGED",null, branch,new HashMap<>());
+            eventService.sendChangedEvent("*",true,"BRANCH_CREATED",null, branch,new HashMap<>());
         }
         branches.put(key, branch);
         log.info("Putting branchInfo {}", branch);
