@@ -27,7 +27,7 @@ public class VisitService {
 
     private void changedVisitEventSend(String visitState,Visit oldVisit,Visit newVisit,HashMap<String,String> params)
     {
-        eventService.sendChangedEvent("*",false,visitState,oldVisit,newVisit,params);
+        eventService.sendChangedEvent("*",false,oldVisit,newVisit,params,visitState);
     }
     @ExecuteOn(TaskExecutors.IO)
     public List<Visit> getVisits(String branchId,String queueId)
@@ -82,7 +82,7 @@ public class VisitService {
                 if (printTicket && entryPoint.getPrinterId() != null) {
                     printerService.print(entryPoint.getPrinterId(), result);
                 }
-                changedVisitEventSend("VISIT_CREATED",null,result,new HashMap<>());
+                changedVisitEventSend("CREATED",null,result,new HashMap<>());
                 return result;
             } else {
                 throw new BusinessException("Queue not found in branch configuration!", eventService);
@@ -118,7 +118,7 @@ public class VisitService {
         visit.setUpdateDate(new Date());
         visit.setVersion(visit.getVersion() + 1);
         visit.setStatus("TRANSFERRED");
-        changedVisitEventSend("VISIT_CHANGED",oldVisit,visit,new HashMap<>());
+        changedVisitEventSend("CHANGED",oldVisit,visit,new HashMap<>());
         return visit;
     }
 
@@ -155,7 +155,7 @@ public class VisitService {
                 .eventType("VISIT_CALLED")
                 .senderService(applicationName)
                 .build());
-        changedVisitEventSend("VISIT_CHANGED",oldVisit,visit,new HashMap<>());
+        changedVisitEventSend("CHANGED",oldVisit,visit,new HashMap<>());
         return visit;
 
     }
@@ -191,7 +191,7 @@ public class VisitService {
                 .eventType("VISIT_DELETED")
                 .senderService(applicationName)
                 .build());
-        changedVisitEventSend("VISIT_DELETED",visit,null,new HashMap<>());
+        changedVisitEventSend("DELETED",visit,null,new HashMap<>());
     }
 
 }

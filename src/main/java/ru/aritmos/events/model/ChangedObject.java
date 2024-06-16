@@ -10,4 +10,6 @@ import lombok.Data;
 public class ChangedObject {
     Object oldValue;
     Object newValue;
+    String className;
+    String action;
 }

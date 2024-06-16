@@ -42,14 +42,17 @@ public class EventService {
 
     }
 
-    public void sendChangedEvent(String destinationServices, Boolean sendToOtherBus, String eventType, Object oldValue, Object newValue, HashMap<String, String> params) {
+    public void sendChangedEvent(String destinationServices, Boolean sendToOtherBus,  Object oldValue, Object newValue, HashMap<String, String> params ,String action) {
+        String className=oldValue!=null?oldValue.getClass().getName():newValue.getClass().getName();
         Event event = Event.builder()
                 .eventDate(new Date())
-                .eventType(eventType)
+                .eventType("ENTITY_CHANGED")
 
                 .senderService(applicationName)
                 .params(params)
                 .body(ChangedObject.builder()
+                        .className(className)
+                        .action(action)
                         .newValue(newValue)
                         .oldValue(oldValue).build())
                 .build();
