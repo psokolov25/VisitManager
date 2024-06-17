@@ -1,4 +1,4 @@
-package ru.aritmos.events.clients;
+package ru.aritmos.clients;
 
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.PathVariable;
