@@ -78,7 +78,7 @@ public class EventHandlerContext {
 
         }
     }
-    class EntityChangedHandler implements EventHandler {
+    static class EntityChangedHandler implements EventHandler {
 
 
         @Override

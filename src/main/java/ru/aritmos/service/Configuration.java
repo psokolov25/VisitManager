@@ -1,7 +1,6 @@
 package ru.aritmos.service;
 
 import io.micronaut.context.annotation.Context;
-import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
@@ -26,7 +25,7 @@ public class Configuration {
         servicePointMap.put(servicePointFC.getId(),servicePointFC);
         servicePointMap.put(servicePointFSC.getId(),servicePointFSC);
         servicePointMap.put(servicePointC.getId(),servicePointC);
-        HashMap<String, Queue> queueMap=new HashMap();
+        HashMap<String, Queue> queueMap=new HashMap<>();
         queueMap.put(queueFC.getId(),queueFC);
         queueMap.put(queueFSC.getId(),queueFSC);
         queueMap.put(queueC.getId(),queueFC);
