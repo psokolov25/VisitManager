@@ -7,6 +7,7 @@ import io.micronaut.context.annotation.ContextConfigurer;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
+import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -24,7 +25,10 @@ public class Application {
         }
 
     }
+@PostConstruct
+public void getConfiguration() {
 
+}
     public static void main(String[] args) {
         Micronaut.run(Application.class, args);
     }

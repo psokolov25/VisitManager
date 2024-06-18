@@ -6,7 +6,7 @@ kafka:
     default:
       allow.auto.create.topics: true
   bootstrap:
-    servers: localhost:9092
+    servers: localhost:29092
 
 micronaut:
 

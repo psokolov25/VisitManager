@@ -14,12 +14,14 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.events.services.KaffkaListener;
 import ru.aritmos.exceptions.SystemException;
 import ru.aritmos.model.Visit;
+import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
 
 @Slf4j
 @Context
 public class EventHandlerContext {
-
+@Inject
+    Configuration configuration;
     static class BusinesErrorHandler implements EventHandler {
 
         @Override
@@ -76,6 +78,17 @@ public class EventHandlerContext {
 
         }
     }
+    class EntityChangedHandler implements EventHandler {
+
+
+        @Override
+        @ExecuteOn(TaskExecutors.IO)
+        public void Handle(Event event) {
+            log.info("Event {} of  entity changed!", event);
+
+
+        }
+    }
 
     @Singleton
     class VisitTransferHandler implements EventHandler {
@@ -97,15 +110,19 @@ public class EventHandlerContext {
 
     @PostConstruct
     void AddHandlers() {
+
         BusinesErrorHandler businesErrorHandler = new BusinesErrorHandler();
         SystemErrorHandler systemErrorHandler = new SystemErrorHandler();
         VisitCallHandler visitCallHandler = new VisitCallHandler();
         VisitTransferHandler visitTransferHandler = new VisitTransferHandler();
         VisitDeleteHandler visitDeleteHandler = new VisitDeleteHandler();
+        EntityChangedHandler entityChangedHandler = new EntityChangedHandler();
         KaffkaListener.addAllEventHandler("BUSINESS_ERROR", businesErrorHandler);
         KaffkaListener.addAllEventHandler("SYSTEM_ERROR", systemErrorHandler);
         KaffkaListener.addServiceEventHandler("VISIT_CALLED", visitCallHandler);
         KaffkaListener.addServiceEventHandler("VISIT_DELETED", visitDeleteHandler);
         KaffkaListener.addServiceEventHandler("VISIT_TRANSFER", visitTransferHandler);
+        KaffkaListener.addAllEventHandler("ENTITY_CHANGED", entityChangedHandler);
+        configuration.getConfiguration();
     }
 }
