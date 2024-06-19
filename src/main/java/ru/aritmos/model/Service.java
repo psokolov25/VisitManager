@@ -11,8 +11,10 @@ import lombok.EqualsAndHashCode;
 @Introspected
 
 public class Service extends BranchEntity{
-    public Service(String name, Integer standardWaitingTime, String linkedQueueId) {
-        super(name);
+
+    public Service(String key,String name, Integer standardWaitingTime, String linkedQueueId) {
+
+        super(key,name);
         this.standardWaitingTime = standardWaitingTime;
         this.linkedQueueId = linkedQueueId;
         this.isAvailable=true;
