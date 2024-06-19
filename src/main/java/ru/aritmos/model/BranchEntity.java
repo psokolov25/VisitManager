@@ -8,11 +8,13 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.util.UUID;
 
-@Builder
+
 @Data
 @Introspected
 @Jacksonized
+@Builder
 @NoArgsConstructor
+
 public class BranchEntity {
      String id;
      String name;

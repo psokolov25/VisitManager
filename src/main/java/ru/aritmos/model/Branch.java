@@ -3,9 +3,7 @@ package ru.aritmos.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +14,7 @@ import java.util.HashMap;
 @Introspected
 
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 
@@ -24,12 +23,11 @@ public  class Branch extends BranchEntity {
     public Branch(String key, String name) {
         super(key, name);
     }
-    public Branch(String name) {
-        super( name);
-    }
+
     HashMap<String,EntryPoint> entryPoints=new HashMap<>();
-    ArrayList<Service> services = new ArrayList<>();
     HashMap<String,Queue> queues = new HashMap<>();
+    ArrayList<Service> services = new ArrayList<>();
+
     HashMap<String,ServicePoint> servicePoints = new HashMap<>();
 
 }

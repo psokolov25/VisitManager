@@ -5,6 +5,7 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -15,7 +16,7 @@ public class Queue extends BranchEntity {
 Integer ticketCounter=0;
 
 final String ticketPrefix;
-List<Visit> visits;
+List<Visit> visits=new ArrayList<>();
     public Queue(String name, String ticketPrefix) {
         super(name);
         this.ticketPrefix = ticketPrefix;

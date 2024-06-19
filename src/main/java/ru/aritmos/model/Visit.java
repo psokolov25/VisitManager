@@ -15,7 +15,6 @@ import java.util.List;
 @Serdeable
 @Builder(toBuilder = true)
 @Introspected
-
 public class Visit {
     String id;
     String status;
@@ -32,7 +31,7 @@ public class Visit {
     HashMap<String,Object> parameterMap;
     Boolean printTicket;
     EntryPoint entryPoint;
-    Queue queue;
+    String queueId;
 
 
 }

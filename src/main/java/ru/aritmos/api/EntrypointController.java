@@ -13,10 +13,7 @@ import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Controller("/entrypoint")
 public class EntrypointController {
@@ -44,7 +41,7 @@ public class EntrypointController {
         return branch;
     }
     @Post(uri = "/branches/{id}/entrypoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
-    public Visit creeateVisit(@PathVariable String id, @PathVariable String entryPointId, @Body ArrayList<String> services, Boolean printTicket) {
+    public Visit creeateVisit(@PathVariable String id, @PathVariable String entryPointId, @Body ArrayList<String> services, @QueryValue Boolean printTicket) {
         Branch branch;
         try {
             branch = branchService.getBranch(id);

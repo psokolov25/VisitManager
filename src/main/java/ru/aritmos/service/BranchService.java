@@ -8,6 +8,7 @@ import io.micronaut.context.annotation.Value;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
@@ -20,13 +21,14 @@ import java.util.HashMap;
 @Named("Branch_cache")
 @CacheConfig("branches")
 public class BranchService {
-    final HashMap<String, Branch> branches = new HashMap<>();
+    @Getter
+    HashMap<String, Branch> branches = new HashMap<>();
     @Inject
     EventService eventService;
     @Value("${micronaut.application.name}")
     String applicationName;
-    @Cacheable(parameters = {"key"})
 
+    @Cacheable(parameters = {"key"})
     public Branch getBranch(String key) throws BusinessException {
         Branch result = branches.get(key);
         if (result == null) {
@@ -36,22 +38,19 @@ public class BranchService {
         return result;
     }
 
+
     @CachePut(parameters = {"key"})
     public Branch add(String key, Branch branch) {
 
         Branch oldBranch;
 
 
+        if (this.branches.containsKey(key)) {
+            oldBranch = this.branches.get(key);
+            eventService.sendChangedEvent("*", true, oldBranch, branch, new HashMap<>(), "CHANGED");
 
-        if(this.branches.containsKey(key))
-        {
-            oldBranch=this.branches.get(key);
-            eventService.sendChangedEvent("*",true,oldBranch, branch,new HashMap<>(),"CHANGED");
-
-        }
-        else
-        {
-            eventService.sendChangedEvent("*",true,null, branch,new HashMap<>(),"CREATED");
+        } else {
+            eventService.sendChangedEvent("*", true, null, branch, new HashMap<>(), "CREATED");
         }
         branches.put(key, branch);
         log.info("Putting branchInfo {}", branch);
@@ -62,14 +61,11 @@ public class BranchService {
 
     public void delete(String key) {
         Branch oldBranch;
-        if(this.branches.containsKey(key))
-        {
-            oldBranch=this.branches.get(key);
-            eventService.sendChangedEvent("*",true,oldBranch, null,new HashMap<>(),"DELETED");
+        if (this.branches.containsKey(key)) {
+            oldBranch = this.branches.get(key);
+            eventService.sendChangedEvent("*", true, oldBranch, null, new HashMap<>(), "DELETED");
 
-        }
-        else
-        {
+        } else {
             throw new BusinessException("Branch not found!!", eventService);
         }
         log.info("Deleting branchInfo {}", key);
