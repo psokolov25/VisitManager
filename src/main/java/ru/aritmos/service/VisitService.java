@@ -44,11 +44,23 @@ public class VisitService {
 
     }
 
+    public Visit createVisit(String branchId, String entryPointId, ArrayList<String> servicesIds, Boolean printTicket) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServices().stream().anyMatch(f -> servicesIds.contains(f.getId()))) {
+            List<Service> services = currentBranch.getServices().stream().filter(f -> servicesIds.contains(f.getId())).toList();
+            return createVisit(branchId, entryPointId, services, printTicket);
+
+
+        } else {
+            throw new BusinessException("Services not found!", eventService);
+        }
+    }
+
     public Visit createVisit(String branchId, String entryPointId, List<Service> services, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
 
         if (!services.isEmpty()) {
-            Service currentService = currentBranch.getServices().stream().filter(f->f.getId().equals(services.get(0).getId())).findFirst().orElseThrow(()->new RuntimeException("Service not found in branch configuration!"));
+            Service currentService = currentBranch.getServices().stream().filter(f -> f.getId().equals(services.get(0).getId())).findFirst().orElseThrow(() -> new RuntimeException("Service not found in branch configuration!"));
             EntryPoint entryPoint;
 
             if (currentBranch.getEntryPoints().containsKey(entryPointId)) {
