@@ -30,6 +30,21 @@ public class SystemException extends Exception {
                 .build());
         log.error(errorMessage);
     }
+//    public SystemException(String errorMessage, EventService eventService, HttpStatus status) {
+//        super(errorMessage);
+//        this.errorMessage = errorMessage;
+//        BusinessError businessError = new BusinessError();
+//        businessError.setMessage(errorMessage);
+//        this.eventService = eventService;
+//        eventService.send("*", false, Event.builder()
+//                .eventDate(ZonedDateTime.now())
+//                .eventType("SYSTEM_ERROR")
+//                .body(businessError)
+//                .build());
+//        log.error(errorMessage);
+//        throw new HttpStatusException(status, errorMessage);
+//    }
+
 
     @Data
     @Serdeable

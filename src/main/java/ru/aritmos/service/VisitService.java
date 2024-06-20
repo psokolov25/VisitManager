@@ -85,6 +85,7 @@ public class VisitService {
                     .queueId(serviceQueue.getId())
                     .createDate(ZonedDateTime.now())
                     .updateDate(ZonedDateTime.now())
+                    .transferDate(ZonedDateTime.now())
                     .servicePoint(null)
                     .ticketId(serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter()))
                     .servedServices(new ArrayList<>())
@@ -119,6 +120,7 @@ public class VisitService {
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             visit.setServicePoint(servicePoint);
+            visit.setTransferDate(ZonedDateTime.now());
             servicePoint.setVisit(null);
 
         } else {

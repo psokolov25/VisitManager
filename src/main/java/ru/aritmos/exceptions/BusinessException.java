@@ -1,5 +1,7 @@
 package ru.aritmos.exceptions;
 
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,19 @@ public class BusinessException extends RuntimeException {
                 .body(businessError)
                 .build());
         log.error(errorMessage);
+    }
+    public BusinessException(String errorMessage, EventService eventService, HttpStatus status) {
+        super(errorMessage);
+        BusinessError businessError = new BusinessError();
+        businessError.setMessage(errorMessage);
+        this.eventService = eventService;
+        eventService.send("*", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("BUSINESS_ERROR")
+                .body(businessError)
+                .build());
+        log.error(errorMessage);
+        throw new HttpStatusException(status, errorMessage);
     }
 
     @Data

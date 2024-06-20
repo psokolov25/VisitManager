@@ -30,8 +30,7 @@ public class EntrypointController {
     String applicationName;
 
     @Get(uri = "/branches/{id}")
-    public Branch getBranch(String id)
-    {
+    public Branch getBranch(String id) {
         Branch branch;
         try {
             branch = branchService.getBranch(id);
@@ -41,13 +40,64 @@ public class EntrypointController {
         }
         return branch;
     }
+
+    @Get(uri = "/branches/{id}/queues/{queueId}/visits", consumes = "application/json", produces = "application/json")
+    public List<ru.aritmos.model.tiny.Visit> getVisits(@PathVariable String id, @PathVariable String queueId) {
+        Branch branch;
+        try {
+            branch = branchService.getBranch(id);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        if (branch.getQueues().containsKey(queueId)) {
+            List<ru.aritmos.model.tiny.Visit> result = new ArrayList<>();
+
+            branch.getQueues().get(queueId).getVisits().forEach(f -> {
+                ru.aritmos.model.tiny.Visit visit =
+                        ru.aritmos.model.tiny.Visit.builder()
+                                .id(f.getId())
+                                .ticketId(f.getTicketId())
+                                .currentService(f.getCurrentService())
+                                .transferDate(f.getTransferDate()).build();
+                result.add(visit);
+            });
+            return result;
+        } else {
+            throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Get(uri = "/branches/{id}/entrypoints/{entryPointId}/queues/{queueId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
+    public Visit getVisits(@PathVariable String id, @PathVariable String entryPointId, @PathVariable String queueId, @PathVariable String visitId) {
+        Branch branch;
+        try {
+            branch = branchService.getBranch(id);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        if (branch.getQueues().containsKey(queueId)) {
+
+            return branch
+                    .getQueues()
+                    .get(queueId)
+                    .getVisits()
+                    .stream()
+                    .filter(f -> f.getId().equals(visitId)).findFirst().orElseThrow(() -> new HttpStatusException(HttpStatus.NOT_FOUND, "Visit not found!"));
+        } else {
+            throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @Post(uri = "/branches/{id}/entrypoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
     public Visit creeateVisit(@PathVariable String id, @PathVariable String entryPointId, @Body ArrayList<String> services, @QueryValue Boolean printTicket) {
         Branch branch;
         try {
             branch = branchService.getBranch(id);
         } catch (Exception ex) {
-            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+            throw new BusinessException( "Branch not found!", eventService, HttpStatus.NOT_FOUND);
+
 
         }
         if (new HashSet<>(branch.getServices().stream().map(BranchEntity::getId).toList()).containsAll(services)) {
@@ -62,7 +112,8 @@ public class EntrypointController {
             return visit;
 
         } else {
-            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Services not found!");
+            throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
+
         }
 
     }
@@ -99,7 +150,7 @@ public class EntrypointController {
     public Visit callVisit(@PathVariable String branchId, @PathVariable String id, @Body Visit visit) {
 
 
-        return visitService.visitCall(branchId, id,visit);
+        return visitService.visitCall(branchId, id, visit);
 
 
     }
@@ -129,7 +180,7 @@ public class EntrypointController {
         }
 
 
-        Visit result = visitService.visitTransfer(branchId,servicePointid, queueId, visit);
+        Visit result = visitService.visitTransfer(branchId, servicePointid, queueId, visit);
         eventService.send("*", true, Event.builder()
                 .body(visit)
                 .eventDate(ZonedDateTime.now())

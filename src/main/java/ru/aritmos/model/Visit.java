@@ -1,5 +1,6 @@
 package ru.aritmos.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,13 +24,24 @@ public class Visit {
     String branchId;
     ZonedDateTime createDate;
     ZonedDateTime updateDate;
+    ZonedDateTime transferDate;
     Integer version;
     ServicePoint servicePoint;
     List<Service> unservedServices;
     List<Service> servedServices;
-    Integer waitingTime;
+
+
+    @JsonGetter
+    public Long getWaitingTime() {
+        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+        waitingTime = unit.between(transferDate, ZonedDateTime.now());
+        return waitingTime;
+    }
+
+    Long waitingTime;
+
     Service currentService;
-    HashMap<String,Object> parameterMap;
+    HashMap<String, Object> parameterMap;
     Boolean printTicket;
     EntryPoint entryPoint;
     String queueId;
