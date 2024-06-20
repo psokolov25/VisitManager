@@ -105,6 +105,22 @@ class EntrypointTest {
         Integer visitafter = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
         Assertions.assertEquals(1, visitafter - visitsbefore);
     }
+    /*
+    Проверка наличия созданного визита в очереди
+     */
+    @Test
+    void checkVisitInQueue() {
+        Service service;
+        service = branchService.getBranch(branchId).getServices().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
+        String visitId=visitService.createVisit(branchId, "1", serviceIds, false).getId();
+        Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
+        Assertions.assertTrue(queue.getVisits().stream().map(Visit::getId).toList().contains(visitId));
+
+
+    }
 
     @AfterEach
     void deleteBranch() {
@@ -122,10 +138,10 @@ class EntrypointTest {
 
 
         Branch br2 = branchService.getBranch(branchId);
-        br2.setName("tst344");
+        br2.setName("Отделение на Ямской");
         branchService.add(branchId, br2);
-        String name3 = branchService.getBranch(branchId).getName();
-        Assertions.assertNotEquals(name3, name);
+        String name2 = branchService.getBranch(branchId).getName();
+        Assertions.assertNotEquals(name2, name);
 
 
     }
