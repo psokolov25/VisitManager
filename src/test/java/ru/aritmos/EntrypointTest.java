@@ -5,12 +5,15 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.VisitService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @Nested
@@ -68,9 +71,11 @@ class EntrypointTest {
         }
     }
 
-
+/*
+Проверка правильности формаирования номера талона
+ */
     @Test
-    void createVisit() {
+    void checkTicetNumberlogic() {
 
         Service service;
         service = branchService.getBranch(branchId).getServices().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
@@ -85,7 +90,9 @@ class EntrypointTest {
         Assertions.assertEquals(visit.getTicketId(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
 
     }
-
+    /*
+   Проверка правильности работы счетчика визитов
+     */
     @Test
     void checkVisitcounter() {
         Service service;
@@ -96,38 +103,41 @@ class EntrypointTest {
         Integer visitsbefore = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
         visitService.createVisit(branchId, "1", serviceIds, false);
         Integer visitafter = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
-        Assertions.assertEquals(1,visitafter - visitsbefore);
+        Assertions.assertEquals(1, visitafter - visitsbefore);
     }
 
     @AfterEach
     void deleteBranch() {
         branchService.delete(branchId);
     }
-//@Test
-//    void testUpdateBranchInCache() {
-//
-//        String key = "f094b52f-b316-4441-a6b4-bf9902c8231d";
-//        Branch branch = new Branch(key, "tst");
-//        String name = branch.getName();
-//
-//
-//        Branch result=branchService.add(key,branch);
-//        log.info("Branch added {}",result);
-//        Branch br2 = branchService.getBranch(key);
-//        br2.setName("tst344");
-//        branchService.add(key,br2);
-//        String name3 = branchService.getBranch(key).getName();
-//        Assertions.assertNotEquals(name3, name);
-//
-//
-//    }
-//    @Test
-//    void  getNotExistBranch()
-//    {
-//        Exception exception = assertThrows(BusinessException.class, () -> branchService.getBranch("not exist"));
-//        Assertions.assertEquals(exception.getMessage(),"Branch not found!!");
-//
-//    }
+/*
+Проверка сохранения изменения состояния отделения в кэше редис
+ */
+    @Test()
+    void testUpdateBranchInCache() {
+
+
+        Branch branch = branchService.getBranch(branchId);
+        String name = branch.getName();
+
+
+        Branch br2 = branchService.getBranch(branchId);
+        br2.setName("tst344");
+        branchService.add(branchId, br2);
+        String name3 = branchService.getBranch(branchId).getName();
+        Assertions.assertNotEquals(name3, name);
+
+
+    }
+/*
+Проверка правильности отработки ошибки вызова не существующего отделения
+ */
+    @Test
+    void getNotExistBranch() {
+        Exception exception = assertThrows(BusinessException.class, () -> branchService.getBranch("not exist"));
+        Assertions.assertEquals(exception.getMessage(), "Branch not found!!");
+
+    }
 
 
 }
