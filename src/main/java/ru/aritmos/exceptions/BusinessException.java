@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 @Slf4j
 
@@ -22,7 +22,7 @@ public class BusinessException extends RuntimeException {
         businessError.setMessage(errorMessage);
         this.eventService = eventService;
         eventService.send("*", false, Event.builder()
-                .eventDate(new Date())
+                .eventDate(ZonedDateTime.now())
                 .eventType("BUSINESS_ERROR")
                 .body(businessError)
                 .build());

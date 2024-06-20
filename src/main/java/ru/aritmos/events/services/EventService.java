@@ -10,8 +10,8 @@ import ru.aritmos.events.clients.DataBusClient;
 import ru.aritmos.events.model.ChangedObject;
 import ru.aritmos.events.model.Event;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -23,18 +23,19 @@ public class EventService {
     @Value("${micronaut.application.name}")
     String applicationName;
 
-    String getDateString(Date date) {
+    String getDateString(ZonedDateTime date) {
 
-        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+        DateTimeFormatter format =  DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
         return format.format(date);
     }
+
 
     public void send(String destinationServices, Boolean sendToOtherBus, Event event) {
         event.setSenderService(applicationName);
         Mono.from(
                 dataBusClient.send(destinationServices
                         , sendToOtherBus
-                        , getDateString(event.getEventDate())
+                        , getDateString(ZonedDateTime.now())
                         , event.getSenderService()
                         , event.getEventType()
                         , event.getBody())
@@ -45,7 +46,7 @@ public class EventService {
     public void sendChangedEvent(String destinationServices, Boolean sendToOtherBus,  Object oldValue, Object newValue, HashMap<String, String> params ,String action) {
         String className=oldValue!=null?oldValue.getClass().getName():newValue.getClass().getName();
         Event event = Event.builder()
-                .eventDate(new Date())
+                .eventDate(ZonedDateTime.now())
                 .eventType("ENTITY_CHANGED")
 
                 .senderService(applicationName)

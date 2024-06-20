@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,8 +20,8 @@ public class Visit {
     String status;
     String ticketId;
     String branchId;
-    Date createDate;
-    Date updateDate;
+    ZonedDateTime createDate;
+    ZonedDateTime updateDate;
     Integer version;
     ServicePoint servicePoint;
     List<Service> unservedServices;

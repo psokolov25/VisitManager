@@ -11,6 +11,7 @@ import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.*;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Singleton
@@ -30,6 +31,7 @@ public class VisitService {
     }
 
     @ExecuteOn(TaskExecutors.IO)
+
     public List<Visit> getVisits(String branchId, String queueId) {
         Branch currentBranch = branchService.getBranch(branchId);
         Queue queue;
@@ -81,8 +83,8 @@ public class VisitService {
                     .branchId(branchId)
                     .currentService(currentService)
                     .queueId(serviceQueue.getId())
-                    .createDate(new Date())
-                    .updateDate(new Date())
+                    .createDate(ZonedDateTime.now())
+                    .updateDate(ZonedDateTime.now())
                     .servicePoint(null)
                     .ticketId(serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter()))
                     .servedServices(new ArrayList<>())
@@ -130,7 +132,7 @@ public class VisitService {
         assert queue != null;
         visit.setQueueId(queue.getId());
         visit.setServicePoint(null);
-        visit.setUpdateDate(new Date());
+        visit.setUpdateDate(ZonedDateTime.now());
         visit.setVersion(visit.getVersion() + 1);
         visit.setStatus("TRANSFERRED");
         changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
@@ -141,7 +143,7 @@ public class VisitService {
         Branch currentBranch = branchService.getBranch(branchId);
         Visit oldVisit = visit.toBuilder().build();
         Optional<Queue> queue;
-        visit.setUpdateDate(new Date());
+        visit.setUpdateDate(ZonedDateTime.now());
         visit.setVersion(visit.getVersion() + 1);
         visit.setStatus("CALLED");
 
@@ -166,7 +168,7 @@ public class VisitService {
         visit.setQueueId(null);
         eventService.send("*", true, Event.builder()
                 .body(visit)
-                .eventDate(new Date())
+                .eventDate(ZonedDateTime.now())
                 .eventType("VISIT_CALLED")
                 .senderService(applicationName)
                 .build());
@@ -179,7 +181,7 @@ public class VisitService {
         Branch currentBranch = branchService.getBranch(branchId);
 
         Optional<Queue> queue;
-        visit.setUpdateDate(new Date());
+        visit.setUpdateDate(ZonedDateTime.now());
         visit.setVersion(visit.getVersion() + 1);
         visit.setStatus("CALLED");
 
@@ -202,7 +204,7 @@ public class VisitService {
         }
         eventService.send("*", true, Event.builder()
                 .body(visit)
-                .eventDate(new Date())
+                .eventDate(ZonedDateTime.now())
                 .eventType("VISIT_DELETED")
                 .senderService(applicationName)
                 .build());

@@ -5,7 +5,7 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 
 @Data
@@ -17,7 +17,7 @@ import java.util.HashMap;
  */
 public class Event {
     String senderService;
-    Date eventDate;
+    ZonedDateTime eventDate;
     String eventType;
     HashMap<String,String> params;
     Object body;

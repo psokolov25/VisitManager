@@ -13,6 +13,7 @@ import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Controller("/entrypoint")
@@ -54,7 +55,7 @@ public class EntrypointController {
             Visit visit = visitService.createVisit(id, entryPointId, branchService.getBranch(id).getServices().stream().filter(f -> services.contains(f.getId())).toList(), printTicket);
             eventService.send("*", true, Event.builder()
                     .body(visit)
-                    .eventDate(new Date())
+                    .eventDate(ZonedDateTime.now())
                     .eventType("VISIT_CREATED")
                     .senderService(applicationName)
                     .build());
@@ -131,7 +132,7 @@ public class EntrypointController {
         Visit result = visitService.visitTransfer(branchId,servicePointid, queueId, visit);
         eventService.send("*", true, Event.builder()
                 .body(visit)
-                .eventDate(new Date())
+                .eventDate(ZonedDateTime.now())
                 .eventType("VISIT_TRANSFERRED")
                 .senderService(applicationName)
                 .build());

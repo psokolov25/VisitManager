@@ -37,6 +37,9 @@ class EntrypointTest {
 
     Branch branch;
 
+    /**
+     * Создание отделения для проведения юнит теста
+     */
     @BeforeEach
     void CreateBranch() {
         if (!branchService.getBranches().containsKey("37493d1c-8282-4417-a729-dceac1f3e2b1")) {
@@ -71,9 +74,11 @@ class EntrypointTest {
         }
     }
 
-/*
-Проверка правильности формаирования номера талона
- */
+    /**
+     * Проверка правильности формаирования номера талона
+     */
+
+
     @Test
     void checkTicetNumberlogic() {
 
@@ -90,8 +95,8 @@ class EntrypointTest {
         Assertions.assertEquals(visit.getTicketId(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
 
     }
-    /*
-   Проверка правильности работы счетчика визитов
+    /**     *
+     * Проверка правильности работы счетчика визитов
      */
     @Test
     void checkVisitcounter() {
@@ -105,8 +110,8 @@ class EntrypointTest {
         Integer visitafter = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
         Assertions.assertEquals(1, visitafter - visitsbefore);
     }
-    /*
-    Проверка наличия созданного визита в очереди
+    /**
+     *  Проверка наличия созданного визита в очереди
      */
     @Test
     void checkVisitInQueue() {
@@ -126,8 +131,8 @@ class EntrypointTest {
     void deleteBranch() {
         branchService.delete(branchId);
     }
-/*
-Проверка сохранения изменения состояния отделения в кэше редис
+/**
+ * Проверка сохранения изменения состояния отделения в кэше редис
  */
     @Test()
     void testUpdateBranchInCache() {
@@ -145,8 +150,8 @@ class EntrypointTest {
 
 
     }
-/*
-Проверка правильности отработки ошибки вызова не существующего отделения
+/**
+ * Проверка правильности отработки ошибки вызова не существующего отделения
  */
     @Test
     void getNotExistBranch() {
