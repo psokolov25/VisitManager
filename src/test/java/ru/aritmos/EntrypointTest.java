@@ -24,6 +24,8 @@ class EntrypointTest {
     EmbeddedApplication<?> application;
     @Inject
     VisitService visitService;
+    String branchId = "37493d1c-8282-4417-a729-dceac1f3e2b1";
+    String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
 
     @Test
     void testItWorks() {
@@ -67,23 +69,41 @@ class EntrypointTest {
     }
 
 
-@Test
-void createVisit() {
-    String branchId = "37493d1c-8282-4417-a729-dceac1f3e2b1";
-    String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
-    Service service;
-    service = branchService.getBranch(branchId).getServices().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
-    ArrayList<String> serviceIds = new ArrayList<>();
-    serviceIds.add(serviceId);
-    assert service != null;
+    @Test
+    void createVisit() {
 
-    Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
-    Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
-    Assertions.assertTrue(visit.getTicketId().contains(String.format("%03d", queue.getTicketCounter())));
-    Assertions.assertTrue(visit.getTicketId().contains(queue.getTicketPrefix()));
-    Assertions.assertEquals(visit.getTicketId(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
+        Service service;
+        service = branchService.getBranch(branchId).getServices().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
 
-}
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+
+        Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
+        Assertions.assertTrue(visit.getTicketId().contains(String.format("%03d", queue.getTicketCounter())));
+        Assertions.assertTrue(visit.getTicketId().contains(queue.getTicketPrefix()));
+        Assertions.assertEquals(visit.getTicketId(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
+
+    }
+
+    @Test
+    void checkVisitcounter() {
+        Service service;
+        service = branchService.getBranch(branchId).getServices().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
+        Integer visitsbefore = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
+        visitService.createVisit(branchId, "1", serviceIds, false);
+        Integer visitafter = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
+        Assertions.assertEquals(visitafter - visitsbefore, 1);
+    }
+
+    @AfterEach
+    void deleteBranch() {
+        branchService.delete(branchId);
+    }
 //@Test
 //    void testUpdateBranchInCache() {
 //
