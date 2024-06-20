@@ -35,7 +35,7 @@ class EntrypointTest {
     Branch branch;
 
     @BeforeEach
-    void CreateBranchh() {
+    void CreateBranch() {
         if (!branchService.getBranches().containsKey("37493d1c-8282-4417-a729-dceac1f3e2b1")) {
             branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b1", "Отделение на Тверской");
 
@@ -81,8 +81,7 @@ class EntrypointTest {
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
-        Assertions.assertTrue(visit.getTicketId().contains(String.format("%03d", queue.getTicketCounter())));
-        Assertions.assertTrue(visit.getTicketId().contains(queue.getTicketPrefix()));
+
         Assertions.assertEquals(visit.getTicketId(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
 
     }
@@ -97,7 +96,7 @@ class EntrypointTest {
         Integer visitsbefore = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
         visitService.createVisit(branchId, "1", serviceIds, false);
         Integer visitafter = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
-        Assertions.assertEquals(visitafter - visitsbefore, 1);
+        Assertions.assertEquals(1,visitafter - visitsbefore);
     }
 
     @AfterEach
