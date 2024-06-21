@@ -65,7 +65,7 @@ public class VisitService {
             Service currentService = currentBranch.getServices().stream().filter(f -> f.getId().equals(services.get(0).getId())).findFirst().orElseThrow(() -> new RuntimeException("Service not found in branch configuration!"));
             EntryPoint entryPoint;
 
-            if (currentBranch.getEntryPoints().containsKey(entryPointId)) {
+            if (!currentBranch.getEntryPoints().containsKey(entryPointId)) {
                 throw new BusinessException("EntryPoint not found in branch configuration!", eventService);
             } else {
                 entryPoint = currentBranch.getEntryPoints().get(entryPointId);
@@ -96,6 +96,7 @@ public class VisitService {
 
 
                 branchService.add(currentBranch.getId(), currentBranch);
+
                 if (printTicket && entryPoint.getPrinterId() != null) {
                     printerService.print(entryPoint.getPrinterId(), result);
                 }
