@@ -6,6 +6,7 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,6 +18,7 @@ import java.util.List;
 @Serdeable
 @Builder(toBuilder = true)
 @Introspected
+@ToString
 public class Visit {
     String id;
     String status;
