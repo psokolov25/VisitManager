@@ -68,8 +68,8 @@ public class EntrypointController {
         }
     }
 
-    @Get(uri = "/branches/{id}/entrypoints/{entryPointId}/queues/{queueId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
-    public Visit getVisits(@PathVariable String id, @PathVariable String entryPointId, @PathVariable String queueId, @PathVariable String visitId) {
+    @Get(uri = "/branches/{id}/queues/{queueId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
+    public Visit getVisit(@PathVariable String id, @PathVariable String queueId, @PathVariable String visitId) {
         Branch branch;
         try {
             branch = branchService.getBranch(id);
