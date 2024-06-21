@@ -34,11 +34,22 @@ public class Visit {
     @JsonGetter
     public Long getWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+
         waitingTime = unit.between(transferDate, ZonedDateTime.now());
         return waitingTime;
     }
 
     Long waitingTime;
+
+    @JsonGetter
+    public Long getTotalWaitingTime() {
+        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+
+        waitingTime = unit.between(createDate, ZonedDateTime.now());
+        return waitingTime;
+    }
+
+    Long totalWaitingTime;
 
     Service currentService;
     HashMap<String, Object> parameterMap;
