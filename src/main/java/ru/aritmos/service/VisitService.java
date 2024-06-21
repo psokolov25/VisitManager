@@ -86,7 +86,7 @@ public class VisitService {
                     .createDate(ZonedDateTime.now())
                     .updateDate(ZonedDateTime.now())
                     .transferDate(ZonedDateTime.now())
-                    .servicePoint(null)
+                    .servicePointId(null)
                     .ticketId(serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter()))
                     .servedServices(new ArrayList<>())
                     .unservedServices(services.size() > 1 ? services.subList(1, services.size() - 1) : new ArrayList<>())
@@ -119,7 +119,7 @@ public class VisitService {
         }
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-            visit.setServicePoint(servicePoint);
+            visit.setServicePointId(servicePoint.getId());
             visit.setTransferDate(ZonedDateTime.now());
             servicePoint.setVisit(null);
 
@@ -129,11 +129,11 @@ public class VisitService {
             }
         }
         currentBranch.getServicePoints().get(servicePointId);
-        visit.setServicePoint(null);
+        visit.setServicePointId(null);
 
         assert queue != null;
         visit.setQueueId(queue.getId());
-        visit.setServicePoint(null);
+        visit.setServicePointId(null);
         visit.setUpdateDate(ZonedDateTime.now());
         visit.setVersion(visit.getVersion() + 1);
         visit.setStatus("TRANSFERRED");
@@ -151,7 +151,7 @@ public class VisitService {
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-            visit.setServicePoint(servicePoint);
+            visit.setServicePointId(servicePointId);
             servicePoint.setVisit(visit);
 
         } else {
@@ -179,6 +179,56 @@ public class VisitService {
 
     }
 
+    public Optional<Visit> visitCall(String branchId, String servicePointId, String queueID) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        Queue currentQueue;
+        if (currentBranch.getQueues().containsKey(queueID)) {
+            currentQueue = currentBranch.getQueues().get(queueID);
+        }
+        else
+        {
+            throw new BusinessException("Queue not found in branch configuration!", eventService);
+        }
+        Optional<Visit> visit= currentQueue.getVisits().stream().min(Comparator.comparing(Visit::getWaitingTime));
+        if(visit.isPresent()) {
+            Visit oldVisit = visit.get().toBuilder().build();
+
+            Optional<Queue> queue;
+            visit.get().setUpdateDate(ZonedDateTime.now());
+            visit.get().setVersion(visit.get().getVersion() + 1);
+            visit.get().setStatus("CALLED");
+
+            if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+                ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+                visit.get().setServicePointId(servicePointId);
+                servicePoint.setVisit(visit.get());
+
+            } else {
+                if (!servicePointId.isEmpty() && !currentBranch.getServicePoints().containsKey(servicePointId)) {
+                    throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
+                }
+            }
+
+            queue = currentBranch.getQueues().values().stream().filter(f -> f.getId().equals(visit.get().getQueueId())).findFirst();
+            if ((queue.isPresent())) {
+                queue.get().getVisits().remove(visit.get());
+            } else {
+                throw new BusinessException("Queue not found in branch configuration!", eventService);
+            }
+
+            visit.get().setQueueId(null);
+            eventService.send("*", true, Event.builder()
+                    .body(visit)
+                    .eventDate(ZonedDateTime.now())
+                    .eventType("VISIT_CALLED")
+                    .senderService(applicationName)
+                    .build());
+            changedVisitEventSend("CHANGED", oldVisit, visit.get(), new HashMap<>());
+            return visit;
+        }
+        return Optional.empty();
+    }
+
     public void deleteVisit(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
 
@@ -189,7 +239,7 @@ public class VisitService {
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-            visit.setServicePoint(servicePoint);
+            visit.setServicePointId(servicePointId);
             servicePoint.setVisit(visit);
 
         } else {

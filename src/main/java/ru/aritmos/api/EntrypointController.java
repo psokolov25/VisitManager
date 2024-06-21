@@ -120,6 +120,14 @@ public class EntrypointController {
 
 
     }
+    @Get(uri = "/branches/{branchId}/queues/{queueId}/servicepoints/{id}/call", consumes = "application/json", produces = "application/json")
+    public Optional<Visit> callVisit(@PathVariable String branchId, @PathVariable String id,@PathVariable String queueId) {
+
+
+        return visitService.visitCall(branchId, id,queueId);
+
+
+    }
 
     @Delete(uri = "/branches/{branchId}/visits/servicepoints/{servicepointId}", consumes = "application/json", produces = "application/json")
     public void deleteVisit(@PathVariable String branchId, @PathVariable String servicepointId, @Body Visit visit) {
