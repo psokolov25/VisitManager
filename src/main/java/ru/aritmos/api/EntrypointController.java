@@ -43,51 +43,30 @@ public class EntrypointController {
 
     @Get(uri = "/branches/{id}/queues/{queueId}/visits", consumes = "application/json", produces = "application/json")
     public List<ru.aritmos.model.tiny.Visit> getVisits(@PathVariable String id, @PathVariable String queueId) {
-        Branch branch;
-        try {
-            branch = branchService.getBranch(id);
-        } catch (Exception ex) {
-            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
 
-        }
-        if (branch.getQueues().containsKey(queueId)) {
-            List<ru.aritmos.model.tiny.Visit> result = new ArrayList<>();
+        List<ru.aritmos.model.tiny.Visit> result = new ArrayList<>();
 
-            branch.getQueues().get(queueId).getVisits().forEach(f -> {
-                ru.aritmos.model.tiny.Visit visit =
-                        ru.aritmos.model.tiny.Visit.builder()
-                                .id(f.getId())
-                                .ticketId(f.getTicketId())
-                                .currentService(f.getCurrentService())
-                                .transferDate(f.getTransferDate()).build();
-                result.add(visit);
-            });
-            return result;
-        } else {
-            throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
-        }
+        visitService.getVisits(id, queueId).forEach(f -> {
+            ru.aritmos.model.tiny.Visit visit =
+                    ru.aritmos.model.tiny.Visit.builder()
+                            .id(f.getId())
+                            .ticketId(f.getTicketId())
+                            .currentService(f.getCurrentService())
+                            .transferDate(f.getTransferDate()).build();
+            result.add(visit);
+        });
+        return result;
+
     }
 
     @Get(uri = "/branches/{id}/queues/{queueId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
     public Visit getVisit(@PathVariable String id, @PathVariable String queueId, @PathVariable String visitId) {
-        Branch branch;
-        try {
-            branch = branchService.getBranch(id);
-        } catch (Exception ex) {
-            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
 
-        }
-        if (branch.getQueues().containsKey(queueId)) {
 
-            return branch
-                    .getQueues()
-                    .get(queueId)
-                    .getVisits()
-                    .stream()
-                    .filter(f -> f.getId().equals(visitId)).findFirst().orElseThrow(() -> new HttpStatusException(HttpStatus.NOT_FOUND, "Visit not found!"));
-        } else {
-            throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
-        }
+        return visitService.getVisits(id, queueId).stream()
+                .filter(f -> f.getId()
+                        .equals(visitId)).findFirst().orElseThrow(() -> new HttpStatusException(HttpStatus.NOT_FOUND, "Visit not found!"));
+
     }
 
     @Post(uri = "/branches/{id}/entrypoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
@@ -96,7 +75,7 @@ public class EntrypointController {
         try {
             branch = branchService.getBranch(id);
         } catch (Exception ex) {
-            throw new BusinessException( "Branch not found!", eventService, HttpStatus.NOT_FOUND);
+            throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
 
 
         }
@@ -132,19 +111,6 @@ public class EntrypointController {
         }
     }
 
-    @Get(uri = "/branches/{id}/queue/{queueId}", produces = "application/json")
-    public List<Visit> GetAllVisits(@PathVariable String id, String queueId) {
-        try {
-            return visitService.getVisits(id, queueId);
-
-        } catch (BusinessException ex) {
-            if (ex.getMessage().contains("not found")) {
-                throw new HttpStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-            } else {
-                throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-            }
-        }
-    }
 
     @Post(uri = "/branches/{branchId}/visits/servicepoints/{id}/call", consumes = "application/json", produces = "application/json")
     public Visit callVisit(@PathVariable String branchId, @PathVariable String id, @Body Visit visit) {
