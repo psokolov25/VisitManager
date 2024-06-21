@@ -189,7 +189,7 @@ public class VisitService {
         {
             throw new BusinessException("Queue not found in branch configuration!", eventService);
         }
-        Optional<Visit> visit= currentQueue.getVisits().stream().min(Comparator.comparing(Visit::getWaitingTime));
+        Optional<Visit> visit= currentQueue.getVisits().stream().max(Comparator.comparing(Visit::getWaitingTime));
         if(visit.isPresent()) {
             Visit oldVisit = visit.get().toBuilder().build();
 
