@@ -19,18 +19,13 @@
         </http>
         <format>
             <label>
-                <pattern>app=simple-msg-receiver,host=${HOSTNAME}</pattern>
+                <pattern>app=my-app,host=${HOSTNAME}</pattern>
             </label>
-            <message class="com.github.loki4j.logback.JsonLayout">
-                <loggerName>
-                    <fieldName>class</fieldName>
-                    <targetLength>20</targetLength>
-                </loggerName>
+            <message>
+                <pattern>%-5level [%.5(${HOSTNAME})] %.10thread %logger{20} | %msg %ex</pattern>
             </message>
-            <sortByTime>true</sortByTime>
         </format>
     </appender>
-
     <!--    <logger name="io.micronaut.http" level="TRACE" />-->
     <root level="info">
         <appender-ref ref="STDOUT"/>
