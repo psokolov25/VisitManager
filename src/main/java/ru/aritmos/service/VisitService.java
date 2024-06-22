@@ -43,8 +43,11 @@ public class VisitService {
         }
         List<Visit> visits;
         visits = queue.getVisits();
-        return visits;
+        return visits.stream().sorted((f1,f2)->Long.compare(f2.getWaitingTime(),f1.getWaitingTime())).toList();
 
+    }
+    public  List<Visit> getVisits(String branchId, String queueId, Long limit) {
+        return getVisits(branchId,queueId).stream().limit(limit).toList();
     }
 
     public Visit createVisit(String branchId, String entryPointId, ArrayList<String> servicesIds, Boolean printTicket) {

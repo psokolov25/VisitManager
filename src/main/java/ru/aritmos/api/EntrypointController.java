@@ -82,6 +82,30 @@ public class EntrypointController {
         return result;
 
     }
+    /**
+     * Возвращает список визитов из очереди
+     * @param branchId идентификатор отделения
+     * @param queueId идентификатор очереди
+     * @param limit количество последних возвращаемых талонов
+     * @return список визитов
+     */
+    @Get(uri = "/branches/{branchId}/queues/{queueId}/visits/limit/{limit}", consumes = "application/json", produces = "application/json")
+    public List<ru.aritmos.model.tiny.Visit> getVisits(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,@PathVariable Long limit) {
+
+        List<ru.aritmos.model.tiny.Visit> result = new ArrayList<>();
+
+        visitService.getVisits(branchId, queueId,limit).forEach(f -> {
+            ru.aritmos.model.tiny.Visit visit =
+                    ru.aritmos.model.tiny.Visit.builder()
+                            .id(f.getId())
+                            .ticketId(f.getTicketId())
+                            .currentService(f.getCurrentService())
+                            .transferDate(f.getTransferDate()).build();
+            result.add(visit);
+        });
+        return result;
+
+    }
 
     /**
      * Получает данные о визите
