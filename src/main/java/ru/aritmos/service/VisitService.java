@@ -5,6 +5,7 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
@@ -13,7 +14,7 @@ import ru.aritmos.model.*;
 
 import java.time.ZonedDateTime;
 import java.util.*;
-
+@Slf4j
 @Singleton
 public class VisitService {
     @Inject
@@ -75,7 +76,7 @@ public class VisitService {
             serviceQueue.setTicketCounter(++ticketCounter);
 
 
-            Visit result = Visit.builder()
+            Visit visit = Visit.builder()
                     .id(UUID.randomUUID().toString())
                     .status("CREATED")
                     .entryPoint(entryPoint)
@@ -93,16 +94,17 @@ public class VisitService {
                     .unservedServices(services.size() > 1 ? services.subList(1, services.size() - 1) : new ArrayList<>())
                     .build();
             if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
-                serviceQueue.getVisits().add(result);
+                serviceQueue.getVisits().add(visit);
 
 
                 branchService.add(currentBranch.getId(), currentBranch);
 
                 if (printTicket && entryPoint.getPrinterId() != null) {
-                    printerService.print(entryPoint.getPrinterId(), result);
+                    printerService.print(entryPoint.getPrinterId(), visit);
                 }
-                changedVisitEventSend("CREATED", null, result, new HashMap<>());
-                return result;
+                changedVisitEventSend("CREATED", null, visit, new HashMap<>());
+                log.info("Visit {} created!",visit);
+                return visit;
             } else {
                 throw new BusinessException("Queue not found in branch configuration!", eventService);
             }
@@ -189,6 +191,7 @@ public class VisitService {
                 .eventType("VISIT_CALLED")
                 .senderService(applicationName)
                 .build());
+        log.info("Visit {} called!",visit);
         changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         return visit;
 
@@ -236,6 +239,7 @@ public class VisitService {
                     .eventType("VISIT_CALLED")
                     .senderService(applicationName)
                     .build());
+            log.info("Visit {} called!",visit);
             changedVisitEventSend("CHANGED", oldVisit, visit.get(), new HashMap<>());
             return visit;
         }
@@ -275,6 +279,7 @@ public class VisitService {
                 .eventType("VISIT_DELETED")
                 .senderService(applicationName)
                 .build());
+        log.info("Visit {} deleted!",visit);
         changedVisitEventSend("DELETED", visit, null, new HashMap<>());
     }
 
