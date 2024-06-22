@@ -44,7 +44,12 @@ class EntrypointTest {
     void CreateBranch() {
         if (!branchService.getBranches().containsKey("37493d1c-8282-4417-a729-dceac1f3e2b1")) {
             branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b1", "Отделение на Тверской");
-
+            EntryPoint entryPoint = new EntryPoint();
+            entryPoint.setPrinterId("2");
+            entryPoint.setId("1");
+            HashMap<String, EntryPoint> entryPoints = new HashMap<>();
+            entryPoints.put(entryPoint.getId(), entryPoint);
+            branch.setEntryPoints(entryPoints);
             Queue queueCredit = new Queue("Кредиты", "F");
             Service creditService = new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8c", "Кредит", 9000, queueCredit.getId());
             Queue queueeBigCredit = new Queue("Очень большие кредиты", "S");

@@ -13,8 +13,27 @@
             </pattern>
         </encoder>
     </appender>
-<!--    <logger name="io.micronaut.http" level="TRACE" />-->
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>http://localhost:3100/loki/api/v1/push</url>
+        </http>
+        <format>
+            <label>
+                <pattern>app=simple-msg-receiver,host=${HOSTNAME}</pattern>
+            </label>
+            <message class="com.github.loki4j.logback.JsonLayout">
+                <loggerName>
+                    <fieldName>class</fieldName>
+                    <targetLength>20</targetLength>
+                </loggerName>
+            </message>
+            <sortByTime>true</sortByTime>
+        </format>
+    </appender>
+
+    <!--    <logger name="io.micronaut.http" level="TRACE" />-->
     <root level="info">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="LOKI"/>
     </root>
 </configuration>
