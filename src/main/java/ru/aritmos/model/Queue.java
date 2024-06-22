@@ -21,5 +21,9 @@ List<Visit> visits=new ArrayList<>();
         super(name);
         this.ticketPrefix = ticketPrefix;
     }
+    public Queue(String id,String name, String ticketPrefix) {
+        super(id,name);
+        this.ticketPrefix = ticketPrefix;
+    }
 
 }

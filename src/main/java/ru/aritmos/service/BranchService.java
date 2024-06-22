@@ -8,11 +8,11 @@ import io.micronaut.context.annotation.Value;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.BranchEntity;
 
 import java.util.HashMap;
 
@@ -22,7 +22,7 @@ import java.util.HashMap;
 @Named("Branch_cache")
 @CacheConfig("branches")
 public class BranchService {
-    @Getter
+
     HashMap<String, Branch> branches = new HashMap<>();
     @Inject
     EventService eventService;
@@ -39,6 +39,15 @@ public class BranchService {
         return result;
     }
 
+
+    public HashMap<String, BranchEntity> getBranches() {
+        HashMap<String, BranchEntity> result = new HashMap<>();
+        branches.values().forEach(f -> {
+            BranchEntity branch = new BranchEntity(f.getId(), f.getName());
+            result.put(branch.getId(), branch);
+        });
+        return result;
+    }
 
     @CachePut(parameters = {"key"})
     public Branch add(String key, Branch branch) {

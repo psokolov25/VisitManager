@@ -30,7 +30,7 @@ public class EntrypointController {
     String applicationName;
 
     @Get(uri = "/branches/{id}")
-    public Branch getBranch(String id) {
+    public BranchEntity getBranch(String id) {
         Branch branch;
         try {
             branch = branchService.getBranch(id);
@@ -40,6 +40,11 @@ public class EntrypointController {
         }
         return branch;
     }
+    @Get(uri = "/branches")
+    public HashMap<String,BranchEntity> getBranches() {
+       return branchService.getBranches();
+    }
+
 
     @Get(uri = "/branches/{id}/queues/{queueId}/visits", consumes = "application/json", produces = "application/json")
     public List<ru.aritmos.model.tiny.Visit> getVisits(@PathVariable String id, @PathVariable String queueId) {

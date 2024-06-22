@@ -51,6 +51,7 @@ public class VisitService {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServices().stream().anyMatch(f -> servicesIds.contains(f.getId()))) {
             List<Service> services = currentBranch.getServices().stream().filter(f -> servicesIds.contains(f.getId())).toList();
+
             return createVisit(branchId, entryPointId, services, printTicket);
 
 
@@ -150,6 +151,7 @@ public class VisitService {
         currentBranch.getQueues().put(queue.getId(),queue);
         branchService.add(currentBranch.getId(),currentBranch);
         changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
+        log.info("Visit {} transfered!",visit);
         return visit;
     }
 

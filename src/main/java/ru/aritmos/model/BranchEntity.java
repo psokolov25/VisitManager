@@ -1,6 +1,7 @@
 package ru.aritmos.model;
 
 import io.micronaut.core.annotation.Introspected;
+import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Jacksonized
 @Builder
 @NoArgsConstructor
-
+@Serdeable
 public class BranchEntity {
      String id;
      String name;
