@@ -18,6 +18,9 @@ micronaut:
     dataBusUrlRetryRepeat: 30
     configurationURL: http://localhost:8081
     printerServiceURL: http://localhost:8084
+    printerRetryPeriod: '1s'
+    printerRetryMaxPeriod: '45m'
+    printerRetryRepeat: 30
   router:
     static-resources:
       swagger:
