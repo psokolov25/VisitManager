@@ -14,6 +14,7 @@ import ru.aritmos.model.*;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+
 @Slf4j
 @Singleton
 public class VisitService {
@@ -43,11 +44,12 @@ public class VisitService {
         }
         List<Visit> visits;
         visits = queue.getVisits();
-        return visits.stream().sorted((f1,f2)->Long.compare(f2.getWaitingTime(),f1.getWaitingTime())).toList();
+        return visits.stream().sorted((f1, f2) -> Long.compare(f2.getWaitingTime(), f1.getWaitingTime())).toList();
 
     }
-    public  List<Visit> getVisits(String branchId, String queueId, Long limit) {
-        return getVisits(branchId,queueId).stream().limit(limit).toList();
+
+    public List<Visit> getVisits(String branchId, String queueId, Long limit) {
+        return getVisits(branchId, queueId).stream().limit(limit).toList();
     }
 
     public Visit createVisit(String branchId, String entryPointId, ArrayList<String> servicesIds, Boolean printTicket) {
@@ -107,7 +109,7 @@ public class VisitService {
                     printerService.print(entryPoint.getPrinterId(), visit);
                 }
                 changedVisitEventSend("CREATED", null, visit, new HashMap<>());
-                log.info("Visit {} created!",visit);
+                log.info("Visit {} created!", visit);
                 return visit;
             } else {
                 throw new BusinessException("Queue not found in branch configuration!", eventService);
@@ -133,7 +135,7 @@ public class VisitService {
             visit.setServicePointId(servicePoint.getId());
             visit.setTransferDate(ZonedDateTime.now());
             servicePoint.setVisit(null);
-            currentBranch.getServicePoints().put(servicePoint.getId(),servicePoint);
+            currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
 
 
         } else {
@@ -151,10 +153,10 @@ public class VisitService {
         visit.setVersion(visit.getVersion() + 1);
         visit.setStatus("TRANSFERRED");
         queue.getVisits().add(visit);
-        currentBranch.getQueues().put(queue.getId(),queue);
-        branchService.add(currentBranch.getId(),currentBranch);
+        currentBranch.getQueues().put(queue.getId(), queue);
+        branchService.add(currentBranch.getId(), currentBranch);
         changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
-        log.info("Visit {} transfered!",visit);
+        log.info("Visit {} transfered!", visit);
         return visit;
     }
 
@@ -169,6 +171,7 @@ public class VisitService {
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             visit.setServicePointId(servicePointId);
+            visit.setUserName(servicePoint.getUser() != null ? servicePoint.getUser().getName() : null);
             servicePoint.setVisit(visit);
 
         } else {
@@ -196,60 +199,42 @@ public class VisitService {
                 .eventType("VISIT_CALLED")
                 .senderService(applicationName)
                 .build());
-        log.info("Visit {} called!",visit);
+        log.info("Visit {} called!", visit);
         changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         return visit;
 
     }
 
-    public Optional<Visit> visitCall(String branchId, String servicePointId, String queueID) {
+    public Optional<Visit> visitCall(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
-        Queue currentQueue;
-        if (currentBranch.getQueues().containsKey(queueID)) {
-            currentQueue = currentBranch.getQueues().get(queueID);
+
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getUser() != null) {
+                String workprofileId = servicePoint.getUser().getCurrentWorkProfileId();
+                List<String> queueIds = currentBranch.getWorkProfiles().get(workprofileId).getQueueIds();
+                List<Queue> avaibleQueues = currentBranch
+                        .getQueues().
+                        entrySet().
+                        stream().
+                        filter(f -> queueIds.contains(f.getKey())).
+                        map(Map.Entry::getValue).toList();
+                Optional<Visit> visit = avaibleQueues.stream().map(Queue::getVisits).flatMap(List::stream).toList().stream().max(Comparator.comparing(Visit::getWaitingTime));
+                return visit.map(value -> this.visitCall(branchId, servicePointId, value));
+
+            } else {
+                throw new BusinessException("User not logged in in service point!", eventService);
+
+            }
+
+
         } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService);
+            throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
+
         }
-        Optional<Visit> visit = currentQueue.getVisits().stream().max(Comparator.comparing(Visit::getWaitingTime));
-        if (visit.isPresent()) {
-            Visit oldVisit = visit.get().toBuilder().build();
 
-            Optional<Queue> queue;
-            visit.get().setUpdateDate(ZonedDateTime.now());
-            visit.get().setVersion(visit.get().getVersion() + 1);
-            visit.get().setStatus("CALLED");
-
-            if (currentBranch.getServicePoints().containsKey(servicePointId)) {
-                ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-                visit.get().setServicePointId(servicePointId);
-                servicePoint.setVisit(visit.get());
-
-            } else {
-                if (!servicePointId.isEmpty() && !currentBranch.getServicePoints().containsKey(servicePointId)) {
-                    throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
-                }
-            }
-
-            queue = currentBranch.getQueues().values().stream().filter(f -> f.getId().equals(visit.get().getQueueId())).findFirst();
-            if ((queue.isPresent())) {
-                queue.get().getVisits().remove(visit.get());
-            } else {
-                throw new BusinessException("Queue not found in branch configuration!", eventService);
-            }
-
-            visit.get().setQueueId(null);
-            eventService.send("*", true, Event.builder()
-                    .body(visit)
-                    .eventDate(ZonedDateTime.now())
-                    .eventType("VISIT_CALLED")
-                    .senderService(applicationName)
-                    .build());
-            log.info("Visit {} called!",visit);
-            changedVisitEventSend("CHANGED", oldVisit, visit.get(), new HashMap<>());
-            return visit;
-        }
-        return Optional.empty();
     }
+
 
     public void deleteVisit(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
@@ -272,9 +257,9 @@ public class VisitService {
 
         queue = currentBranch.getQueues().values().stream().filter(f -> f.getId().equals(visit.getQueueId())).findFirst();
         if ((queue.isPresent())) {
-            queue.get().getVisits().removeIf(f->f.getId().equals(visit.getId()));
-            currentBranch.getQueues().put(queue.get().getId(),queue.get());
-            branchService.add(currentBranch.getId(),currentBranch);
+            queue.get().getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+            currentBranch.getQueues().put(queue.get().getId(), queue.get());
+            branchService.add(currentBranch.getId(), currentBranch);
         } else {
             throw new BusinessException("Queue not found in branch configuration!", eventService);
         }
@@ -284,7 +269,7 @@ public class VisitService {
                 .eventType("VISIT_DELETED")
                 .senderService(applicationName)
                 .build());
-        log.info("Visit {} deleted!",visit);
+        log.info("Visit {} deleted!", visit);
         changedVisitEventSend("DELETED", visit, null, new HashMap<>());
     }
 

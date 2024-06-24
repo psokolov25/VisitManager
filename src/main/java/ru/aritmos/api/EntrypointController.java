@@ -201,11 +201,11 @@ public class EntrypointController {
      *
      * @return вызванный визит
      */
-    @Get(uri = "/branches/{branchId}/queues/{queueId}/servicepoints/{servicePointId}/call", consumes = "application/json", produces = "application/json")
-    public Optional<Visit> callVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "099c43c1-40b5-4b80-928a-1d4b363152a8") String servicePointId,@PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId) {
+    @Get(uri = "/branches/{branchId}/servicepoints/{servicePointId}/call", consumes = "application/json", produces = "application/json")
+    public Optional<Visit> callVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "099c43c1-40b5-4b80-928a-1d4b363152a8") String servicePointId) {
 
 
-        return visitService.visitCall(branchId, servicePointId,queueId);
+        return visitService.visitCall(branchId, servicePointId);
 
 
     }

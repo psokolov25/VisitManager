@@ -5,19 +5,17 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
+
 @Introspected
-public class ServicePoint extends BranchEntity {
-    public  ServicePoint(String id,String name)
-    {
-        super(id,name);
-    }
-    public  ServicePoint(String name)
-    {
+public class WorkProfile extends BranchEntity{
+    public WorkProfile(String name){
         super(name);
     }
-    Visit visit;
-    User user;
+    List<String> queueIds=new ArrayList<>();
 }

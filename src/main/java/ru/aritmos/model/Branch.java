@@ -27,7 +27,7 @@ public  class Branch extends BranchEntity {
     HashMap<String,EntryPoint> entryPoints=new HashMap<>();
     HashMap<String,Queue> queues = new HashMap<>();
     ArrayList<Service> services = new ArrayList<>();
-
+    HashMap<String,WorkProfile> workProfiles = new HashMap<>();
     HashMap<String,ServicePoint> servicePoints = new HashMap<>();
 
 }

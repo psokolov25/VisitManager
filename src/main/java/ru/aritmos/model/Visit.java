@@ -29,6 +29,7 @@ public class Visit {
     ZonedDateTime transferDate;
     Integer version;
     String servicePointId;
+    String userName;
     List<Service> unservedServices;
     List<Service> servedServices;
 
