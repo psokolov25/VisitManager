@@ -13,17 +13,22 @@
             </pattern>
         </encoder>
     </appender>
+
     <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
         <http>
-            <url>http://localhost:3100/loki/api/v1/push</url>
+            <url>http://192.168.3.13:3100/loki/api/v1/push</url>
         </http>
         <format>
             <label>
-                <pattern>app=my-app,host=${HOSTNAME}</pattern>
+                <pattern>app=entry-point,host=${HOSTNAME}</pattern>
             </label>
-            <message>
-                <pattern>%-5level [%.5(${HOSTNAME})] %.10thread %logger{20} | %msg %ex</pattern>
+            <message class="com.github.loki4j.logback.JsonLayout">
+                <loggerName>
+                    <fieldName>class</fieldName>
+                    <targetLength>20</targetLength>
+                </loggerName>
             </message>
+            <sortByTime>true</sortByTime>
         </format>
     </appender>
     <!--    <logger name="io.micronaut.http" level="TRACE" />-->
