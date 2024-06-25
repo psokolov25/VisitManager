@@ -52,8 +52,8 @@ class EntrypointTest {
             branch.setEntryPoints(entryPoints);
             Queue queueCredit = new Queue("Кредиты", "F");
             Service creditService = new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8c", "Кредит", 9000, queueCredit.getId());
-            Queue queueeBigCredit = new Queue("Очень большие кредиты", "S");
-            Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd4", "Очень большой кредит", 9000, queueeBigCredit.getId());
+            Queue queueBigCredit = new Queue("Очень большие кредиты", "S");
+            Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd4", "Очень большой кредит", 9000, queueBigCredit.getId());
             Queue queueC = new Queue("В кассу", "C");
             Service kassaService = new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67", "Касса", 9000, queueC.getId());
             ServicePoint servicePointFC = new ServicePoint("Финансовый консультант");
@@ -61,6 +61,7 @@ class EntrypointTest {
             serviceList.add(kassaService);
             serviceList.add(creditService);
             serviceList.add(bigCreditService);
+
             branch.setServices(serviceList);
             ServicePoint servicePointFSC = new ServicePoint("Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("Касса");
@@ -68,9 +69,21 @@ class EntrypointTest {
             servicePointMap.put(servicePointFC.getId(), servicePointFC);
             servicePointMap.put(servicePointFSC.getId(), servicePointFSC);
             servicePointMap.put(servicePointC.getId(), servicePointC);
+            WorkProfile workProfileC = new WorkProfile("Кассир");
+            workProfileC.getQueueIds().add(queueC.getId());
+            WorkProfile workProfileFC = new WorkProfile("Финансовый консультант");
+            workProfileFC.getQueueIds().add(queueCredit.getId());
+            WorkProfile workProfileFSC = new WorkProfile("Старший финансовый консультант");
+            workProfileFSC.getQueueIds().add(queueBigCredit.getId());
+            User psokolovUser = new User("psokolov");
+
+            psokolovUser.getWorkProfileIds().add(workProfileFC.getId());
+            psokolovUser.getWorkProfileIds().add(workProfileFSC.getId());
+            psokolovUser.setCurrentWorkProfileId(workProfileFSC.getId());
+            servicePointFSC.setUser(psokolovUser);
             HashMap<String, Queue> queueMap = new HashMap<>();
             queueMap.put(queueCredit.getId(), queueCredit);
-            queueMap.put(queueeBigCredit.getId(), queueeBigCredit);
+            queueMap.put(queueBigCredit.getId(), queueBigCredit);
             queueMap.put(queueC.getId(), queueC);
 
             branch.setQueues(queueMap);

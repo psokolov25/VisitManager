@@ -220,7 +220,9 @@ public class VisitService {
                         filter(f -> queueIds.contains(f.getKey())).
                         map(Map.Entry::getValue).toList();
                 Optional<Visit> visit = avaibleQueues.stream().map(Queue::getVisits).flatMap(List::stream).toList().stream().max(Comparator.comparing(Visit::getWaitingTime));
-                return visit.map(value -> this.visitCall(branchId, servicePointId, value));
+                if (visit.isPresent()) {
+                    return visit.map(value -> this.visitCall(branchId, servicePointId, value));
+                }
 
             } else {
                 throw new BusinessException("User not logged in in service point!", eventService);
@@ -232,7 +234,7 @@ public class VisitService {
             throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
 
         }
-
+        return Optional.empty();
     }
 
 
