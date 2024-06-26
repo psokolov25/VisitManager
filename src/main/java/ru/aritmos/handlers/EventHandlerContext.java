@@ -124,5 +124,6 @@ public class EventHandlerContext {
         KaffkaListener.addServiceEventHandler("VISIT_TRANSFER", visitTransferHandler);
         KaffkaListener.addAllEventHandler("ENTITY_CHANGED", entityChangedHandler);
         configuration.getConfiguration();
+
     }
 }

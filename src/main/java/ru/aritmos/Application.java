@@ -17,19 +17,29 @@ import jakarta.annotation.PostConstruct;
 )
 public class Application {
 
+
     @ContextConfigurer
     public static class Configurer implements ApplicationContextConfigurer {
         @Override
         public void configure(@NonNull ApplicationContextBuilder builder) {
+
+
             builder.defaultEnvironments("dev");
         }
 
     }
-@PostConstruct
-public void getConfiguration() {
 
-}
+    @PostConstruct
+    public void getConfiguration() {
+
+    }
+
     public static void main(String[] args) {
+
+
+
         Micronaut.run(Application.class, args);
+
+
     }
 }
