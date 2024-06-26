@@ -19,10 +19,21 @@ import java.time.temporal.ChronoUnit;
 @Introspected
 @ToString
 public class TinyVisit {
+    /**
+     * Идентификатор визита
+     */
     String id;
-
+    /**
+     * Талон
+     */
     String ticketId;
+    /**
+     * Текущая услуга
+     */
     Service currentService;
+    /**
+     * Дата перевода
+     */
     ZonedDateTime transferDate;
     @JsonGetter
     public Long getWaitingTime() {
@@ -30,7 +41,9 @@ public class TinyVisit {
         waitingTime = unit.between( transferDate,ZonedDateTime.now());
         return waitingTime;
     }
-
+    /**
+     * Время ожидания в последней очереди в секундах
+     */
     Long waitingTime;
 
 
