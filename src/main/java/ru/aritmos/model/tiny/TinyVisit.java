@@ -18,7 +18,7 @@ import java.time.temporal.ChronoUnit;
 @Builder(toBuilder = true)
 @Introspected
 @ToString
-public class Visit {
+public class TinyVisit {
     String id;
 
     String ticketId;
