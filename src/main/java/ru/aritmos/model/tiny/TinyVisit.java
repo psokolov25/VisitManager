@@ -12,6 +12,9 @@ import ru.aritmos.model.Service;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * Сокращенный визит
+ */
 @Data
 @EqualsAndHashCode
 @Serdeable

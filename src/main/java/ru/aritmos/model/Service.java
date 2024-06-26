@@ -5,6 +5,9 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * Услуга
+ */
 @Serdeable
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -15,12 +18,22 @@ public class Service extends BranchEntity{
     public Service(String key,String name, Integer standardWaitingTime, String linkedQueueId) {
 
         super(key,name);
-        this.standardWaitingTime = standardWaitingTime;
+        this.standardServiceTime = standardWaitingTime;
         this.linkedQueueId = linkedQueueId;
         this.isAvailable=true;
     }
-    Integer standardWaitingTime;
+
+    /**
+     * Стандартное время обслуживания
+     */
+    Integer standardServiceTime;
+    /**
+     * Связанная очередь
+     */
     String linkedQueueId;
+    /**
+     * Флаг доступности
+     */
     Boolean isAvailable ;
 
 

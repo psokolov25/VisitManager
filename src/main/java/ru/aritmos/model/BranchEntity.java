@@ -9,7 +9,9 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.util.UUID;
 
-
+/**
+ * Сущность отделения
+ */
 @Data
 @Introspected
 @Jacksonized
@@ -17,14 +19,21 @@ import java.util.UUID;
 @NoArgsConstructor
 @Serdeable
 public class BranchEntity {
-     String id;
-     String name;
+    /**
+     * Идентификатор
+     */
+    String id;
+    /**
+     * Название
+     */
+    String name;
 
     public BranchEntity(String name) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
     }
-    public BranchEntity(String id,String name) {
+
+    public BranchEntity(String id, String name) {
         this.id = id;
         this.name = name;
     }

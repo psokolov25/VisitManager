@@ -5,6 +5,9 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * Точка обслуживания
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
@@ -18,6 +21,13 @@ public class ServicePoint extends BranchEntity {
     {
         super(name);
     }
+
+    /**
+     * Визит
+     */
     Visit visit;
+    /**
+     * Обслуживающий пользователь
+     */
     User user;
 }

@@ -7,22 +7,35 @@ import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * Очередь
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
 @Introspected
 
-public class Queue extends BranchEntity {
-Integer ticketCounter=0;
+public final class Queue extends BranchEntity {
+    /**
+     * Счетчик талонов
+     */
+    Integer ticketCounter = 0;
+    /**
+     * Буква талона
+     */
+    final String ticketPrefix;
+    /**
+     * Визиты
+     */
+    List<Visit> visits = new ArrayList<>();
 
-final String ticketPrefix;
-List<Visit> visits=new ArrayList<>();
     public Queue(String name, String ticketPrefix) {
         super(name);
         this.ticketPrefix = ticketPrefix;
     }
-    public Queue(String id,String name, String ticketPrefix) {
-        super(id,name);
+
+    public Queue(String id, String name, String ticketPrefix) {
+        super(id, name);
         this.ticketPrefix = ticketPrefix;
     }
 

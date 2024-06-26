@@ -9,6 +9,9 @@ import lombok.EqualsAndHashCode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Пользователь
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
@@ -21,9 +24,25 @@ public class User extends BranchEntity{
     public User(String name){
         super(name);
     }
+
+    /**
+     * Имя
+     */
     String firstName;
+    /**
+     * Фамилия
+     */
     String lastName;
+    /**
+     * Электронная почта
+     */
     String email;
+    /**
+     * Идентификатор текущего рабочего профиля
+     */
     String currentWorkProfileId;
+    /**
+     * Идентификаторы рабочих профилей сотрудника
+     */
     List<String> workProfileIds=new ArrayList<>();
 }
