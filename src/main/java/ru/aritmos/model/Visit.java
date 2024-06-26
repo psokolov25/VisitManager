@@ -1,6 +1,7 @@
 package ru.aritmos.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
@@ -30,7 +31,9 @@ public class Visit {
     Integer version;
     String servicePointId;
     String userName;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Service> unservedServices;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Service> servedServices;
 
 

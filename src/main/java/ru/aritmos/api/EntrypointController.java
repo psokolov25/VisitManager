@@ -142,9 +142,11 @@ public class EntrypointController {
 
 
         }
-        if (new HashSet<>(branch.getServices().stream().map(BranchEntity::getId).toList()).containsAll(serviceIds)) {
+        if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList()).containsAll(serviceIds)) {
 
-            Visit visit = visitService.createVisit(branchId, entryPointId, branchService.getBranch(branchId).getServices().stream().filter(f -> serviceIds.contains(f.getId())).toList(), printTicket);
+            ArrayList<String> services=new ArrayList<>();
+            branchService.getBranch(branchId).getServices().values().stream().map(BranchEntity::getId).filter(serviceIds::contains).forEach(services::add);
+            Visit visit = visitService.createVisit(branchId, entryPointId, services, printTicket);
             eventService.send("*", true, Event.builder()
                     .body(visit)
                     .eventDate(ZonedDateTime.now())
@@ -226,14 +228,14 @@ public class EntrypointController {
     }
 
     /**
-     *
+     * Перевод визита в очередь
      * @param branchId идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      * @param queueId идентификатор очереди
      * @param visit визит
      * @return визит после перевода
      */
-    @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/queue/{queueId}", consumes = "application/json", produces = "application/json")
+    @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/queue/{queueId}/visit/transfer", consumes = "application/json", produces = "application/json")
     public Visit transferVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "099c43c1-40b5-4b80-928a-1d4b363152a8") String servicePointId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @Body Visit visit) {
         Branch branch;
 
@@ -259,6 +261,29 @@ public class EntrypointController {
 
 
     }
+    /**
+     * Завершение визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return визит после перевода
+     */
+    @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/visit/end", consumes = "application/json", produces = "application/json")
+    public Visit endVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "099c43c1-40b5-4b80-928a-1d4b363152a8") String servicePointId) {
 
+
+
+
+
+        Visit visit = visitService.visitEnd(branchId, servicePointId);
+        eventService.send("*", true, Event.builder()
+                .body(visit)
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_ENDED")
+                .senderService(applicationName)
+                .build());
+        return visit;
+
+
+    }
 
 }

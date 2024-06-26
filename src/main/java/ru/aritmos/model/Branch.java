@@ -5,7 +5,6 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 @Data
@@ -26,7 +25,7 @@ public  class Branch extends BranchEntity {
 
     HashMap<String,EntryPoint> entryPoints=new HashMap<>();
     HashMap<String,Queue> queues = new HashMap<>();
-    ArrayList<Service> services = new ArrayList<>();
+    HashMap<String,Service> services = new HashMap<>();
     HashMap<String,WorkProfile> workProfiles = new HashMap<>();
     HashMap<String,ServicePoint> servicePoints = new HashMap<>();
 

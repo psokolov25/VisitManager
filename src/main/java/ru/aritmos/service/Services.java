@@ -13,6 +13,7 @@ public class Services {
     public List<Service> getAllAvilableServies(String branchId)  {
         return branchService.getBranch(branchId)
                 .getServices()
+                .values()
                 .stream()
                 .filter(Service::getIsAvailable).toList();
     }

@@ -57,10 +57,10 @@ class EntrypointTest {
             Queue queueC = new Queue("В кассу", "C");
             Service kassaService = new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67", "Касса", 9000, queueC.getId());
             ServicePoint servicePointFC = new ServicePoint("Финансовый консультант");
-            ArrayList<Service> serviceList = new ArrayList<>();
-            serviceList.add(kassaService);
-            serviceList.add(creditService);
-            serviceList.add(bigCreditService);
+            HashMap<String,Service> serviceList = new HashMap<>();
+            serviceList.put(kassaService.getId(),kassaService);
+            serviceList.put(creditService.getId(),creditService);
+            serviceList.put(bigCreditService.getId(),bigCreditService);
 
             branch.setServices(serviceList);
             ServicePoint servicePointFSC = new ServicePoint("Старший финансовый консультант");
@@ -79,7 +79,7 @@ class EntrypointTest {
 
             psokolovUser.getWorkProfileIds().add(workProfileFC.getId());
             psokolovUser.getWorkProfileIds().add(workProfileFSC.getId());
-            psokolovUser.setCurrentWorkProfileId(workProfileFSC.getId());
+            psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
             servicePointFSC.setUser(psokolovUser);
             HashMap<String, Queue> queueMap = new HashMap<>();
             queueMap.put(queueCredit.getId(), queueCredit);
@@ -101,7 +101,7 @@ class EntrypointTest {
     void checkTicetNumberlogic() {
 
         Service service;
-        service = branchService.getBranch(branchId).getServices().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
@@ -119,7 +119,7 @@ class EntrypointTest {
     @Test
     void checkVisitcounter() {
         Service service;
-        service = branchService.getBranch(branchId).getServices().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
@@ -134,7 +134,7 @@ class EntrypointTest {
     @Test
     void checkVisitInQueue() {
         Service service;
-        service = branchService.getBranch(branchId).getServices().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
