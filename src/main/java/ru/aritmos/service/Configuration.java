@@ -42,14 +42,18 @@ public class Configuration {
             workProfileFC.getQueueIds().add(queueCredit.getId());
             WorkProfile workProfileFSC = new WorkProfile("Старший финансовый консультант");
             workProfileFSC.getQueueIds().add(queueBigCredit.getId());
+            workProfileFSC.getQueueIds().add(queueCredit.getId());
 
             User psokolovUser = new User("psokolov");
+            User sidorovUser = new User("isidorov");
 
             psokolovUser.getWorkProfileIds().add(workProfileFC.getId());
             psokolovUser.getWorkProfileIds().add(workProfileFSC.getId());
             psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
+            sidorovUser.getWorkProfileIds().add(workProfileC.getId());
+            sidorovUser.setCurrentWorkProfileId(workProfileC.getId());
             servicePointFC.setUser(psokolovUser);
-
+            servicePointC.setUser(sidorovUser);
             HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
             servicePointMap.put(servicePointFC.getId(), servicePointFC);
             servicePointMap.put(servicePointFSC.getId(), servicePointFSC);

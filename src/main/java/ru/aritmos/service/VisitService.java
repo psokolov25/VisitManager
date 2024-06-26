@@ -199,6 +199,7 @@ public class VisitService {
                     Queue queue = currentBranch.getQueues().get(queueIdToReturn);
                     queue.getVisits().add(visit);
                     currentBranch.getQueues().put(queue.getId(), queue);
+                    visit.setStatus("WAITING");
 
                 } else {
                     visit.getServedServices().add(visit.getCurrentService());
@@ -206,13 +207,13 @@ public class VisitService {
 
 
                     visit.setQueueId(null);
-
+                    visit.setStatus("ENDED");
 
                 }
                 visit.setServicePointId(null);
                 visit.setUpdateDate(ZonedDateTime.now());
                 visit.setVersion(visit.getVersion() + 1);
-                visit.setStatus("ENDED");
+
 
 
                 branchService.add(currentBranch.getId(), currentBranch);
@@ -243,13 +244,17 @@ public class VisitService {
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if(servicePoint.getVisit()!=null)
+            {
+                throw new BusinessException("Visit alredey called in the ServicePoint! ", eventService, HttpStatus.CONFLICT);
+            }
             visit.setServicePointId(servicePointId);
             visit.setUserName(servicePoint.getUser() != null ? servicePoint.getUser().getName() : null);
             servicePoint.setVisit(visit);
 
         } else {
             if (!servicePointId.isEmpty() && !currentBranch.getServicePoints().containsKey(servicePointId)) {
-                throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
+                throw new BusinessException("ServicePoint not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
             }
         }
 
@@ -260,7 +265,7 @@ public class VisitService {
             queue.get().setVisits(visits);
             currentBranch.getQueues().put(queue.get().getId(), queue.get());
         } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService);
+            throw new BusinessException("Queue not found in branch configuration or not available for current workprofile!", eventService,HttpStatus.NOT_FOUND);
         }
 
         visit.setQueueId(null);
@@ -298,13 +303,13 @@ public class VisitService {
                 }
 
             } else {
-                throw new BusinessException("User not logged in in service point!", eventService);
+                throw new BusinessException("User not logged in in service point!", eventService,HttpStatus.FORBIDDEN);
 
             }
 
 
         } else {
-            throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
+            throw new BusinessException("ServicePoint not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
 
         }
         return Optional.empty();
@@ -326,7 +331,7 @@ public class VisitService {
 
         } else {
             if (!servicePointId.isEmpty() && !currentBranch.getServicePoints().containsKey(servicePointId)) {
-                throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
+                throw new BusinessException("ServicePoint not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
             }
         }
 
@@ -336,7 +341,7 @@ public class VisitService {
             currentBranch.getQueues().put(queue.get().getId(), queue.get());
             branchService.add(currentBranch.getId(), currentBranch);
         } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService);
+            throw new BusinessException("Queue not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
         }
         eventService.send("*", true, Event.builder()
                 .body(visit)
