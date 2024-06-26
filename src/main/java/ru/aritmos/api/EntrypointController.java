@@ -129,7 +129,9 @@ public class EntrypointController {
      *Создание визита
      * @param branchId идентификатор отделения
      * @param entryPointId идентификатор точки создания визита
-     * @param serviceIds массив идентификаторов услуг
+     * @param serviceIds массив идентификаторов услуг (на пример [
+     *   "c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
+     * ]
      * @param printTicket флаг печати талона
      * @return созданный визит
      */
