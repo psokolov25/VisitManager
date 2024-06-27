@@ -67,7 +67,34 @@ public class VisitService {
             throw new BusinessException("Services not found!", eventService);
         }
     }
+    public Optional<List<Queue>> getQueues(String branchId,String servicePointId) {
+        Branch currentBranch = branchService.getBranch(branchId);
 
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getUser() != null) {
+                String workprofileId = servicePoint.getUser().getCurrentWorkProfileId();
+                List<String> queueIds = currentBranch.getWorkProfiles().get(workprofileId).getQueueIds();
+                List<Queue> avaibleQueues = currentBranch
+                        .getQueues().
+                        entrySet().
+                        stream().
+                        filter(f -> queueIds.contains(f.getKey())).
+                        map(Map.Entry::getValue).toList();
+               return Optional.of(avaibleQueues);
+
+            } else {
+                throw new BusinessException("User not logged in in service point!", eventService,HttpStatus.FORBIDDEN);
+
+            }
+
+
+        } else {
+            throw new BusinessException("ServicePoint not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
+
+        }
+
+    }
     public Visit createVisit2(String branchId, String entryPointId, ArrayList<Service> services, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
 

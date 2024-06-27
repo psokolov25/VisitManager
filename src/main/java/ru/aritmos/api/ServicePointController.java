@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.Queue;
 import ru.aritmos.model.Visit;
 import ru.aritmos.model.tiny.TinyVisit;
 import ru.aritmos.service.BranchService;
@@ -128,6 +129,22 @@ public class ServicePointController {
 
 
         return visitService.visitCall(branchId, servicePointId);
+
+
+    }
+    /**
+     * Возвращает список доступных точке обслуживания очередей (в зависимости от профиля залогиненного сотрудника)
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     *
+     * @return доступные очереди
+     */
+    @Tag(name = "Зона обслуживания")
+    @Get(uri = "/branches/{branchId}/servicepoints/{servicePointId}/queues", consumes = "application/json", produces = "application/json")
+    public Optional<List<Queue>> getQueues(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+
+
+        return visitService.getQueues(branchId, servicePointId);
 
 
     }
