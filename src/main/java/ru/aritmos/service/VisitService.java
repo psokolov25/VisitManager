@@ -337,6 +337,10 @@ public class VisitService {
 
         queue = currentBranch.getQueues().values().stream().filter(f -> f.getId().equals(visit.getQueueId())).findFirst();
         if ((queue.isPresent())) {
+            if(!queue.get().getVisits().stream().map(Visit::getId).toList().contains(visit.getId()))
+            {
+                throw new BusinessException("Visit not found or already deleted!", eventService,HttpStatus.NOT_FOUND);
+            }
             queue.get().getVisits().removeIf(f -> f.getId().equals(visit.getId()));
             currentBranch.getQueues().put(queue.get().getId(), queue.get());
             branchService.add(currentBranch.getId(), currentBranch);
