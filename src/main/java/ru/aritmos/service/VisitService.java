@@ -190,6 +190,7 @@ public class VisitService {
                 visit.setServicePointId(null);
 
 
+
                 if (visit.getUnservedServices() != null && !visit.getUnservedServices().isEmpty()) {
                     visit.getServedServices().add(visit.toBuilder().build().getCurrentService());
                     visit.setCurrentService(visit.toBuilder().build().getUnservedServices().get(0));
@@ -200,12 +201,13 @@ public class VisitService {
                     queue.getVisits().add(visit);
                     currentBranch.getQueues().put(queue.getId(), queue);
                     visit.setStatus("WAITING");
+                    visit.setServedDate(ZonedDateTime.now());
 
                 } else {
                     visit.getServedServices().add(visit.getCurrentService());
                     visit.setCurrentService(null);
 
-
+                    visit.setServedDate(ZonedDateTime.now());
                     visit.setQueueId(null);
                     visit.setStatus("ENDED");
 
@@ -241,6 +243,7 @@ public class VisitService {
         visit.setUpdateDate(ZonedDateTime.now());
         visit.setVersion(visit.getVersion() + 1);
         visit.setStatus("CALLED");
+        visit.setCallDate(ZonedDateTime.now());
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
@@ -299,6 +302,7 @@ public class VisitService {
                         map(Map.Entry::getValue).toList();
                 Optional<Visit> visit = avaibleQueues.stream().map(Queue::getVisits).flatMap(List::stream).toList().stream().max(Comparator.comparing(Visit::getWaitingTime));
                 if (visit.isPresent()) {
+
                     return visit.map(value -> this.visitCall(branchId, servicePointId, value));
                 }
 

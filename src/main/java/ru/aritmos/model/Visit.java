@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Визит
@@ -52,6 +53,14 @@ public class Visit {
      * Дата перевода
      */
     ZonedDateTime transferDate;
+    /**
+     * Дата вызова
+     */
+    ZonedDateTime callDate;
+    /**
+     * Дата завершения обслуживания
+     */
+    ZonedDateTime servedDate;
     /**
      * Версия визита
      */
@@ -98,12 +107,27 @@ public class Visit {
         return waitingTime;
     }
     /**
-     * Общее время с создания визита
+     * Общее время с создания визита в секундах
      */
     Long totalWaitingTime;
     /**
+     * Время обслуживания в секундах
+     */
+    Long servingTime;
+    @JsonGetter
+    public Long getServingTime() {
+        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+        if(callDate!=null)
+        {
+            servingTime = unit.between(callDate, Objects.requireNonNullElseGet(servedDate, ZonedDateTime::now));
+            return servingTime;
+        }
+        return 0L;
+    }
+    /**
      * Текущая услуга
      */
+
     Service currentService;
     /**
      * Дополнительные параметры визита
