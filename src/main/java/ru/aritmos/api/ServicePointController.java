@@ -12,7 +12,7 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
-import ru.aritmos.model.Visit;
+import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.tiny.TinyVisit;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;

@@ -9,7 +9,7 @@ import io.micronaut.retry.annotation.Retryable;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import org.reactivestreams.Publisher;
-import ru.aritmos.model.Visit;
+import ru.aritmos.model.visit.Visit;
 
 @Client(value = "${micronaut.application.printerServiceURL}")
 public interface PrinterClient {

@@ -7,7 +7,6 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Service;
-import ru.aritmos.model.Visit;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;

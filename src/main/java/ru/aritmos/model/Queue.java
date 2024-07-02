@@ -4,6 +4,7 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import ru.aritmos.model.visit.Visit;
 
 import java.util.ArrayList;
 import java.util.List;

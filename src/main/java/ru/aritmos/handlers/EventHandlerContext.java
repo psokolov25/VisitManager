@@ -13,7 +13,7 @@ import ru.aritmos.events.model.EventHandler;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.events.services.KaffkaListener;
 import ru.aritmos.exceptions.SystemException;
-import ru.aritmos.model.Visit;
+import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
 

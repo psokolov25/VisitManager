@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
+import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.VisitService;
 
@@ -147,6 +148,7 @@ class EntrypointTest {
 
     @AfterEach
     void deleteBranch() {
+
         branchService.delete(branchId);
     }
 /**

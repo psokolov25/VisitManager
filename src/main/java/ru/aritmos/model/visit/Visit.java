@@ -1,4 +1,4 @@
-package ru.aritmos.model;
+package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,8 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
-import ru.aritmos.model.visit.Transaction;
-import ru.aritmos.model.visit.VisitEvent;
+import ru.aritmos.model.EntryPoint;
+import ru.aritmos.model.Service;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -118,7 +118,7 @@ public class Visit {
         this.status = event.getState().name();
         eventService.send("*", false, Event.builder()
                 .eventDate(ZonedDateTime.now())
-                .eventType(event.name())
+                .eventType("TRANSACTION_"+event.name())
                 .body(this)
                 .build());
 

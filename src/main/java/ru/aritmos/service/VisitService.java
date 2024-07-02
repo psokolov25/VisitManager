@@ -11,6 +11,7 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.*;
+import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
 
 import java.time.ZonedDateTime;
