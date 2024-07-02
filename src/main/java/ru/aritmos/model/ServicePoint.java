@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Serdeable
 @Introspected
+
 public class ServicePoint extends BranchEntity {
     public  ServicePoint(String id,String name)
     {

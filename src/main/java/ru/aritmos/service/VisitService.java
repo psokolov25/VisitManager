@@ -7,11 +7,11 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.*;
+import ru.aritmos.model.visit.VisitEvent;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -124,17 +124,22 @@ public class VisitService {
                         .branchId(branchId)
                         .currentService(currentService)
                         .unservedServices(unServedServices)
-                        .queueId(serviceQueue.getId())
                         .createDate(ZonedDateTime.now())
                         .updateDate(ZonedDateTime.now())
                         .transferDate(ZonedDateTime.now())
+                        .endDate(ZonedDateTime.now())
                         .servicePointId(null)
                         .version(1)
                         .ticketId(serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter()))
                         .servedServices(new ArrayList<>())
-
+                        .transactions(new ArrayList<>())
                         .build();
+                VisitEvent event=VisitEvent.CREATED;
+                visit.setTransaction(event,eventService);
                 if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
+                    VisitEvent queueEvent=VisitEvent.PLACED_IN_QUEUE;
+                    visit.setQueueId(serviceQueue.getId());
+                    visit.setTransaction(queueEvent,eventService);
                     serviceQueue.getVisits().add(visit);
 
 
@@ -143,8 +148,12 @@ public class VisitService {
                     if (printTicket && entryPoint.getPrinterId() != null) {
                         printerService.print(entryPoint.getPrinterId(), visit);
                     }
+
+
+
                     changedVisitEventSend("CREATED", null, visit, new HashMap<>());
                     log.info("Visit {} created!", visit);
+
                     return visit;
                 } else {
                     throw new BusinessException("Queue not found in branch configuration!", eventService);
@@ -190,9 +199,11 @@ public class VisitService {
         visit.setServicePointId(null);
         visit.setUpdateDate(ZonedDateTime.now());
         visit.setVersion(visit.getVersion() + 1);
-        visit.setStatus("TRANSFERRED");
+
         queue.getVisits().add(visit);
         currentBranch.getQueues().put(queue.getId(), queue);
+        VisitEvent event=VisitEvent.BACK_TO_QUEUE;
+        visit.setTransaction(event,eventService);
         branchService.add(currentBranch.getId(), currentBranch);
         changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
@@ -216,7 +227,7 @@ public class VisitService {
                 currentBranch.getServicePoints().get(servicePointId);
                 visit.setServicePointId(null);
 
-
+                VisitEvent event;
 
                 if (visit.getUnservedServices() != null && !visit.getUnservedServices().isEmpty()) {
                     visit.getServedServices().add(visit.toBuilder().build().getCurrentService());
@@ -227,7 +238,8 @@ public class VisitService {
                     Queue queue = currentBranch.getQueues().get(queueIdToReturn);
                     queue.getVisits().add(visit);
                     currentBranch.getQueues().put(queue.getId(), queue);
-                    visit.setStatus("WAITING");
+
+                    event=VisitEvent.BACK_TO_QUEUE;
                     visit.setServedDate(ZonedDateTime.now());
 
                 } else {
@@ -236,12 +248,13 @@ public class VisitService {
 
                     visit.setServedDate(ZonedDateTime.now());
                     visit.setQueueId(null);
-                    visit.setStatus("ENDED");
+                    event=VisitEvent.END;
 
                 }
                 visit.setServicePointId(null);
                 visit.setUpdateDate(ZonedDateTime.now());
                 visit.setVersion(visit.getVersion() + 1);
+                visit.setTransaction(event,eventService);
 
 
 
@@ -299,14 +312,13 @@ public class VisitService {
         }
 
         visit.setQueueId(null);
-
+        VisitEvent event=VisitEvent.CALLED;
+        visit.setTransaction(event,eventService);
+        VisitEvent servingEvent=VisitEvent.START_SERVING;
+        visit.setStartServingDate(ZonedDateTime.now());
+        visit.setTransaction(servingEvent,eventService);
         branchService.add(currentBranch.getId(), currentBranch);
-        eventService.send("*", true, Event.builder()
-                .body(visit)
-                .eventDate(ZonedDateTime.now())
-                .eventType("VISIT_CALLED")
-                .senderService(applicationName)
-                .build());
+
         log.info("Visit {} called!", visit);
         changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         return visit;
@@ -378,12 +390,8 @@ public class VisitService {
         } else {
             throw new BusinessException("Queue not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
         }
-        eventService.send("*", true, Event.builder()
-                .body(visit)
-                .eventDate(ZonedDateTime.now())
-                .eventType("VISIT_DELETED")
-                .senderService(applicationName)
-                .build());
+        VisitEvent event=VisitEvent.NO_SHOW;
+        visit.setTransaction(event,eventService);
         log.info("Visit {} deleted!", visit);
         changedVisitEventSend("DELETED", visit, null, new HashMap<>());
     }

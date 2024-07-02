@@ -2,15 +2,19 @@ package ru.aritmos.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import ru.aritmos.events.model.Event;
+import ru.aritmos.events.services.EventService;
+import ru.aritmos.model.visit.Transaction;
+import ru.aritmos.model.visit.VisitEvent;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +26,7 @@ import java.util.Objects;
 @EqualsAndHashCode
 @Serdeable
 @Builder(toBuilder = true)
-@Introspected
+
 @ToString
 public class Visit {
     /**
@@ -58,9 +62,18 @@ public class Visit {
      */
     ZonedDateTime callDate;
     /**
+     * Дата начала обслуживания
+     */
+    ZonedDateTime startServingDate;
+    /**
      * Дата завершения обслуживания
      */
     ZonedDateTime servedDate;
+    /**
+     * Дата завершения визита
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    ZonedDateTime endDate;
     /**
      * Версия визита
      */
@@ -84,6 +97,34 @@ public class Visit {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Service> servedServices;
 
+    Transaction currentTransaction;
+
+    public void setTransaction(VisitEvent event, EventService eventService) {
+        ArrayList<VisitEvent> events=new ArrayList<>();
+        if (this.currentTransaction != null) {
+            if(currentTransaction.getEvents()!=null)
+            {
+                events = new ArrayList<>(currentTransaction.getEvents());
+            }
+            this.transactions.add(currentTransaction);
+
+
+        }
+
+        this.currentTransaction=(new Transaction(ZonedDateTime.now(),this));
+        this.currentTransaction.getEvents().addAll(events);
+        this.currentTransaction.addEvent(event,eventService);
+
+        this.status = event.getState().name();
+        eventService.send("*", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType(event.name())
+                .body(this)
+                .build());
+
+    }
+
+    List<Transaction> transactions;
 
     @JsonGetter
 
@@ -93,6 +134,7 @@ public class Visit {
         waitingTime = unit.between(transferDate, ZonedDateTime.now());
         return waitingTime;
     }
+
     /**
      * Время ожидания в последней очереди в секундах
      */
@@ -106,6 +148,7 @@ public class Visit {
         waitingTime = unit.between(createDate, ZonedDateTime.now());
         return waitingTime;
     }
+
     /**
      * Общее время с создания визита в секундах
      */
@@ -114,16 +157,17 @@ public class Visit {
      * Время обслуживания в секундах
      */
     Long servingTime;
+
     @JsonGetter
     public Long getServingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        if(callDate!=null)
-        {
+        if (callDate != null) {
             servingTime = unit.between(callDate, Objects.requireNonNullElseGet(servedDate, ZonedDateTime::now));
             return servingTime;
         }
         return 0L;
     }
+
     /**
      * Текущая услуга
      */
