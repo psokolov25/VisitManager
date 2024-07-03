@@ -162,7 +162,7 @@ public class Visit {
     public Long getServingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
         if (callDate != null) {
-            servingTime = unit.between(callDate, Objects.requireNonNullElseGet(servedDate, ZonedDateTime::now));
+            servingTime = unit.between(startServingDate, Objects.requireNonNullElseGet(servedDate, ZonedDateTime::now));
             return servingTime;
         }
         return 0L;
