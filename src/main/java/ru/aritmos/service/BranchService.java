@@ -57,10 +57,10 @@ public class BranchService {
 
         if (this.branches.containsKey(key)) {
             oldBranch = this.branches.get(key);
-            eventService.sendChangedEvent("*", true, oldBranch, branch, new HashMap<>(), "CHANGED");
+            eventService.sendChangedEvent("*", true, oldBranch, branch, new HashMap<>(), "BRANCH_CHANGED");
 
         } else {
-            eventService.sendChangedEvent("*", true, null, branch, new HashMap<>(), "CREATED");
+            eventService.sendChangedEvent("*", true, null, branch, new HashMap<>(), "BRANCH_CREATED");
         }
         branches.put(key, branch);
         log.info("Putting branchInfo {}", branch);
@@ -73,7 +73,7 @@ public class BranchService {
         Branch oldBranch;
         if (this.branches.containsKey(key)) {
             oldBranch = this.branches.get(key);
-            eventService.sendChangedEvent("*", true, oldBranch, null, new HashMap<>(), "DELETED");
+            eventService.sendChangedEvent("*", true, oldBranch, null, new HashMap<>(), "BRANCH_DELETED");
 
         } else {
             throw new BusinessException("Branch not found!!", eventService);
