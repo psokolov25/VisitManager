@@ -25,19 +25,7 @@ import java.util.*;
  * @author Pavel Sokolov
  * REST API управления зоной ожидания
  */
-@OpenAPIDefinition(
-        info = @Info(
-                title = "VisitManagement",
-                version = "0.1"
-        ),
-        tags = {
-                @Tag(name = "Зона обслуживания", description = "Рест АПИ отвечающие вызов и обслуживание визита"),
-                @Tag(name = "Информация об отделении", description = "Рест АПИ отвечающие за отображение состояния отделения"),
-                @Tag(name = "Зона ожидания", description = "Рест АПИ отвечающие за создание визита")
 
-
-        }
-)
 @Controller("/servicepoint")
 public class ServicePointController {
     @Inject
@@ -118,13 +106,13 @@ public class ServicePointController {
     }
 
     /**
-     * Вызов наиболее ожидающего визита  c ожиданием подтверждения
+     * Вызов наиболее ожидающего визита c ожиданием подтверждения
      * @param branchId идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
-    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
+    @Get(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
     public Optional<Visit> visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
 
@@ -146,6 +134,22 @@ public class ServicePointController {
 
 
         return visitService.visitCallForConfirm(branchId, servicePointId, visit);
+
+
+    }
+    /**
+     * Вызов визита c ожиданием подтверждения
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/recall", consumes = "application/json", produces = "application/json")
+    public Visit visitReCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+
+
+        return visitService.visitReCallForConfirm(branchId, servicePointId, visit);
 
 
     }

@@ -24,19 +24,8 @@ import java.util.*;
  * @author Pavel Sokolov
  * REST API управления зоной ожидания
  */
-@OpenAPIDefinition(
-        info = @Info(
-                title = "VisitManagement",
-                version = "0.1"
-        ),
-        tags = {
-                @Tag(name = "Зона обслуживания", description = "Рест АПИ отвечающие вызов и обслуживание визита"),
-                @Tag(name = "Информация об отделении", description = "Рест АПИ отвечающие за отображение состояния отделения"),
-                @Tag(name = "Зона ожидания", description = "Рест АПИ отвечающие за создание визита")
 
-
-        }
-)
+@Tag(name = "Зона ожидания")
 @Controller("/entrypoint")
 public class EntrypointController {
     @Inject
@@ -62,6 +51,7 @@ public class EntrypointController {
      * @param printTicket  флаг печати талона
      * @return созданный визит
      */
+
     @Tag(name = "Зона ожидания")
     @Post(uri = "/branches/{branchId}/entrypoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
     public Visit createVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "2") String entryPointId, @Body ArrayList<String> serviceIds, @QueryValue Boolean printTicket) {
@@ -99,6 +89,7 @@ public class EntrypointController {
      * @param branchId идентификатор отделения
      * @return список услуг
      */
+
     @Tag(name = "Зона ожидания")
     @Get(uri = "/branches/{branchId}/services", produces = "application/json")
     public List<Service> GetAllServices(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {

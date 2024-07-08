@@ -348,6 +348,28 @@ public class VisitService {
         return visit;
 
     }
+    public Visit visitReCallForConfirm(String branchId,String servicePointId, Visit visit) {
+
+        Visit oldVisit = visit.toBuilder().build();
+        visit.setUpdateDate(ZonedDateTime.now());
+        visit.setVersion(visit.getVersion() + 1);
+        visit.setStatus("RECALLED");
+        visit.setCallDate(ZonedDateTime.now());
+
+
+
+        VisitEvent event=VisitEvent.RECALLED;
+        event.getParameters().put("ServicePointId", servicePointId);
+        event.getParameters().put("branchID", branchId);
+        visit.setTransaction(event,eventService);
+        branchService.updateVisit(visit);
+
+
+        log.info("Visit {} called!", visit);
+        changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
+        return visit;
+
+    }
     public Visit visitCallConfirm(String branchId, String servicePointId, Visit visit) {
 
         Visit oldVisit = visit.toBuilder().build();

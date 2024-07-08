@@ -20,19 +20,7 @@ import java.util.*;
  * @author Pavel Sokolov
  * REST API управления зоной ожидания
  */
-@OpenAPIDefinition(
-        info = @Info(
-                title = "VisitManagement",
-                version = "0.1"
-        ),
-        tags = {
-                @Tag(name = "Зона обслуживания", description = "Рест АПИ отвечающие вызов и обслуживание визита"),
-                @Tag(name = "Информация об отделении", description = "Рест АПИ отвечающие за отображение состояния отделения"),
-                @Tag(name = "Зона ожидания", description = "Рест АПИ отвечающие за создание визита")
 
-
-        }
-)
 @Controller("/managementinformation")
 public class ManagementController {
     @Inject

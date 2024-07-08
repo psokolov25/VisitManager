@@ -13,15 +13,12 @@ import jakarta.annotation.PostConstruct;
 @OpenAPIDefinition(
         info = @Info(
                 title = "VisitManagement",
-                version = "0.1"
-        ),
-        tags = {
-        @Tag(name = "Зона обслуживания", description = "Рест АПИ отвечающие вызов и обслуживание визита"),
-        @Tag(name = "Информация об отделении", description = "Рест АПИ отвечающие за отображение состояния отделения"),
-        @Tag(name = "Зона ожидания", description = "Рест АПИ отвечающие за создание визита")
+                version = "0.2"
+        )
 
 
-}
+
+
 )
 public class Application {
 
