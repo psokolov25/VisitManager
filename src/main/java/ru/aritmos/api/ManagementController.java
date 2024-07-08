@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
-import ru.aritmos.model.BranchEntity;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
@@ -54,7 +53,7 @@ public class ManagementController {
      */
     @Tag(name = "Информация об отделении")
     @Get(uri = "/branches/{id}")
-    public BranchEntity getBranch(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4")  String id) {
+    public Branch getBranch(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4")  String id) {
         Branch branch;
         try {
             branch = branchService.getBranch(id);
@@ -71,7 +70,7 @@ public class ManagementController {
      */
     @Tag(name = "Информация об отделении")
     @Get(uri = "/branches")
-    public HashMap<String,BranchEntity> getBranches() {
+    public HashMap<String,Branch> getBranches() {
        return branchService.getBranches();
     }
 

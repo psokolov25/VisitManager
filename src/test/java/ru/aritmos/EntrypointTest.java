@@ -5,6 +5,9 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import ru.aritmos.api.EntrypointController;
+import ru.aritmos.api.ManagementController;
+import ru.aritmos.api.ServicePointController;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
@@ -29,6 +32,12 @@ class EntrypointTest {
     EmbeddedApplication<?> application;
     @Inject
     VisitService visitService;
+    @Inject
+    EntrypointController entrypointController;
+    @Inject
+    ServicePointController servicePointController;
+    @Inject
+    ManagementController managementController;
     String branchId = "37493d1c-8282-4417-a729-dceac1f3e2b1";
     String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
 
@@ -102,11 +111,11 @@ class EntrypointTest {
     @Test
     void checkUpdateVisit() {
         Service service;
-        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Queue queue2 = branchService.getBranch(branchId).getQueues().values().stream().filter(f -> f.getName().contains("кассу")).toList().get(0);
@@ -120,19 +129,19 @@ class EntrypointTest {
     }
 
     @Test
-    void checkConfirmVisit() throws InterruptedException {
+    void checkConfirmVisit() {
         Service service;
-        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
-        Long servtime=visitService.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit ).getServingTime();
+        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
+        Long servtime=servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit ).getServingTime();
         Assertions.assertEquals(servtime,0);
 
-        visitService.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
-        Thread.sleep(10000);
-        Visit visit2=visitService.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+        servicePointController.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+
+        Visit visit2=servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
 
         Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
 
@@ -143,14 +152,14 @@ class EntrypointTest {
     void checkTicetNumberlogic() {
 
         Service service;
-        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
 
-        Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
+        Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
 
 
         Assertions.assertEquals(visit.getTicketId(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
@@ -164,13 +173,13 @@ class EntrypointTest {
     @Test
     void checkVisitcounter() {
         Service service;
-        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Integer visitsbefore = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
+        Integer visitsbefore = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
         visitService.createVisit(branchId, "1", serviceIds, false);
-        Integer visitafter = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
+        Integer visitafter = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
         Assertions.assertEquals(1, visitafter - visitsbefore);
     }
 
@@ -180,12 +189,12 @@ class EntrypointTest {
     @Test
     void checkVisitInQueue() {
         Service service;
-        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
         String visitId = visitService.createVisit(branchId, "1", serviceIds, false).getId();
-        Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
+        Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Assertions.assertTrue(queue.getVisits().stream().map(Visit::getId).toList().contains(visitId));
 
 

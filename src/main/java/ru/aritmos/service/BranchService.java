@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
-import ru.aritmos.model.BranchEntity;
 import ru.aritmos.model.visit.Visit;
 
 import java.util.HashMap;
@@ -41,10 +40,10 @@ public class BranchService {
     }
 
 
-    public HashMap<String, BranchEntity> getBranches() {
-        HashMap<String, BranchEntity> result = new HashMap<>();
+    public HashMap<String, Branch> getBranches() {
+        HashMap<String, Branch> result = new HashMap<>();
         branches.values().forEach(f -> {
-            BranchEntity branch = new BranchEntity(f.getId(), f.getName());
+            Branch branch = new Branch(f.getId(), f.getName());
             result.put(branch.getId(), branch);
         });
         return result;

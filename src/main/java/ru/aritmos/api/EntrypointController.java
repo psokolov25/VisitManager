@@ -64,7 +64,7 @@ public class EntrypointController {
      */
     @Tag(name = "Зона ожидания")
     @Post(uri = "/branches/{branchId}/entrypoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
-    public Visit creeateVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "2") String entryPointId, @Body ArrayList<String> serviceIds, @QueryValue Boolean printTicket) {
+    public Visit createVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "2") String entryPointId, @Body ArrayList<String> serviceIds, @QueryValue Boolean printTicket) {
         Branch branch;
         try {
             branch = branchService.getBranch(branchId);
