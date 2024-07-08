@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @Builder
@@ -19,6 +19,6 @@ public class Event {
     String senderService;
     ZonedDateTime eventDate;
     String eventType;
-    HashMap<String,String> params;
+    Map<String,String> params;
     Object body;
 }

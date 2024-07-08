@@ -33,6 +33,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.micronaut.security</groupId>
+            <artifactId>micronaut-security-jwt</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>context-propagation</artifactId>
             <scope>compile</scope>

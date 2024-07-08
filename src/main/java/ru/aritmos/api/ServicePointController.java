@@ -116,6 +116,57 @@ public class ServicePointController {
 
 
     }
+
+    /**
+     * Вызов наиболее ожидающего визита  c ожиданием подтверждения
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
+    public Optional<Visit> callVisitForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+
+
+        return visitService.visitCallForConfirm(branchId, servicePointId);
+
+
+    }
+
+    /**
+     * Вызов визита c ожиданием подтверждения
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
+    public Visit callVisitForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+
+
+        return visitService.visitCallForConfirm(branchId, servicePointId, visit);
+
+
+    }
+
+    /**
+     * Подтверждение прихода клиента
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/confirm", consumes = "application/json", produces = "application/json")
+    public Visit ConfirmVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+
+
+        return visitService.visitCallConfirm(branchId, servicePointId, visit);
+
+
+    }
+
     /**
      * Вызов визита с наибольшим временем ожидания
      * @param branchId идентификатор отделения

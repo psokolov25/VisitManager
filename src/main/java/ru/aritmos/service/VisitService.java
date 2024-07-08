@@ -236,17 +236,18 @@ public class VisitService {
                     visit.getUnservedServices().remove(0);
                     String queueIdToReturn = visit.getCurrentService().getLinkedQueueId();
                     visit.setQueueId(queueIdToReturn);
-                    Queue queue = currentBranch.getQueues().get(queueIdToReturn);
-                    queue.getVisits().add(visit);
-                    currentBranch.getQueues().put(queue.getId(), queue);
 
+
+                    visit.setServedDate(ZonedDateTime.now());
                     event=VisitEvent.BACK_TO_QUEUE;
                     visit.setServedDate(ZonedDateTime.now());
+                    //Queue queue = currentBranch.getQueues().get(queueIdToReturn);
+                    //queue.getVisits().add(visit);
+                    //currentBranch.getQueues().put(queue.getId(), queue);
 
                 } else {
                     visit.getServedServices().add(visit.getCurrentService());
                     visit.setCurrentService(null);
-
                     visit.setServedDate(ZonedDateTime.now());
                     visit.setQueueId(null);
                     event=VisitEvent.END;
@@ -259,7 +260,7 @@ public class VisitService {
 
 
 
-                branchService.add(currentBranch.getId(), currentBranch);
+                branchService.updateVisit(visit);
                 changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
                 log.info("Visit {} ended", visit);
                 return visit;
@@ -325,6 +326,87 @@ public class VisitService {
         return visit;
 
     }
+    public Visit visitCallForConfirm(String branchId,String servicePointId, Visit visit) {
+
+        Visit oldVisit = visit.toBuilder().build();
+        visit.setUpdateDate(ZonedDateTime.now());
+        visit.setVersion(visit.getVersion() + 1);
+        visit.setStatus("CALLED");
+        visit.setCallDate(ZonedDateTime.now());
+
+
+
+        VisitEvent event=VisitEvent.CALLED;
+        event.getParameters().put("ServicePointId", servicePointId);
+        event.getParameters().put("branchID", branchId);
+        visit.setTransaction(event,eventService);
+        branchService.updateVisit(visit);
+
+
+        log.info("Visit {} called!", visit);
+        changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
+        return visit;
+
+    }
+    public Visit visitCallConfirm(String branchId, String servicePointId, Visit visit) {
+
+        Visit oldVisit = visit.toBuilder().build();
+
+        visit.setUpdateDate(ZonedDateTime.now());
+        visit.setVersion(visit.getVersion() + 1);
+        visit.setStatus("START_SERVING");
+        visit.setStartServingDate(ZonedDateTime.now());
+        visit.setQueueId(null);
+        visit.setServicePointId(servicePointId);
+
+
+        VisitEvent event=VisitEvent.START_SERVING;
+        event.getParameters().put("ServicePointId", servicePointId);
+        event.getParameters().put("branchID", branchId);
+        visit.setTransaction(event,eventService);
+        branchService.updateVisit(visit);
+
+
+        log.info("Visit {} statted serving!", visit);
+        changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
+        return visit;
+
+    }
+
+    public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getUser() != null) {
+                String workprofileId = servicePoint.getUser().getCurrentWorkProfileId();
+                List<String> queueIds = currentBranch.getWorkProfiles().get(workprofileId).getQueueIds();
+                List<Queue> avaibleQueues = currentBranch
+                        .getQueues().
+                        entrySet().
+                        stream().
+                        filter(f -> queueIds.contains(f.getKey())).
+                        map(Map.Entry::getValue).toList();
+                Optional<Visit> visit = avaibleQueues.stream().map(Queue::getVisits).flatMap(List::stream).toList().stream().max(Comparator.comparing(Visit::getWaitingTime));
+                if (visit.isPresent()) {
+
+                    return Optional.of(visitCallForConfirm(branchId,servicePointId,visit.get()));
+                }
+
+            } else {
+                throw new BusinessException("User not logged in in service point!", eventService,HttpStatus.FORBIDDEN);
+
+            }
+
+
+        } else {
+            throw new BusinessException("ServicePoint not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
+
+        }
+        return Optional.empty();
+
+    }
+
 
     public Optional<Visit> visitCall(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);

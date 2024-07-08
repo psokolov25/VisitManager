@@ -12,8 +12,9 @@ import ru.aritmos.events.model.Event;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+
 import java.util.Locale;
+import java.util.Map;
 
 @Slf4j
 @Singleton
@@ -43,7 +44,7 @@ public class EventService {
 
     }
 
-    public void sendChangedEvent(String destinationServices, Boolean sendToOtherBus,  Object oldValue, Object newValue, HashMap<String, String> params ,String action) {
+    public void sendChangedEvent(String destinationServices, Boolean sendToOtherBus, Object oldValue, Object newValue, Map<String, String> params , String action) {
         String className=oldValue!=null?oldValue.getClass().getName():newValue.getClass().getName();
         Event event = Event.builder()
                 .eventDate(ZonedDateTime.now())

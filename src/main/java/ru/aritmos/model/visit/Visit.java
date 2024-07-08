@@ -161,8 +161,8 @@ public class Visit {
     @JsonGetter
     public Long getServingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        if (callDate != null) {
-            servingTime = unit.between(startServingDate, Objects.requireNonNullElseGet(servedDate, ZonedDateTime::now));
+        if (this.startServingDate != null) {
+            servingTime = unit.between(this.startServingDate, Objects.requireNonNullElseGet(this.servedDate, ZonedDateTime::now));
             return servingTime;
         }
         return 0L;

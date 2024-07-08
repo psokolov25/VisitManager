@@ -13,6 +13,7 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.BranchEntity;
+import ru.aritmos.model.visit.Visit;
 
 import java.util.HashMap;
 
@@ -84,6 +85,16 @@ public class BranchService {
         log.info("Deleting branchInfo {}", key);
         branches.remove(key);
     }
+    public void updateVisit(Visit visit)
+    {
+
+        Branch branch=this.getBranch(visit.getBranchId());
+        branch.updateVisit(visit,eventService);
+        this.add(branch.getId(),branch);
+
+
+    }
+
 
 
 }

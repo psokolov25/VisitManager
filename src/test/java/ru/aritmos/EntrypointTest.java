@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.VisitService;
 
@@ -58,13 +59,13 @@ class EntrypointTest {
             Queue queueC = new Queue("В кассу", "C");
             Service kassaService = new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67", "Касса", 9000, queueC.getId());
             ServicePoint servicePointFC = new ServicePoint("Финансовый консультант");
-            HashMap<String,Service> serviceList = new HashMap<>();
-            serviceList.put(kassaService.getId(),kassaService);
-            serviceList.put(creditService.getId(),creditService);
-            serviceList.put(bigCreditService.getId(),bigCreditService);
+            HashMap<String, Service> serviceList = new HashMap<>();
+            serviceList.put(kassaService.getId(), kassaService);
+            serviceList.put(creditService.getId(), creditService);
+            serviceList.put(bigCreditService.getId(), bigCreditService);
 
             branch.setServices(serviceList);
-            ServicePoint servicePointFSC = new ServicePoint("Старший финансовый консультант");
+            ServicePoint servicePointFSC = new ServicePoint("be675d63-c5a1-41a9-a345-c82102ac42cc","Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("Касса");
             HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
             servicePointMap.put(servicePointFC.getId(), servicePointFC);
@@ -99,6 +100,46 @@ class EntrypointTest {
 
 
     @Test
+    void checkUpdateVisit() {
+        Service service;
+        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+
+        Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
+        Queue queue2 = branchService.getBranch(branchId).getQueues().values().stream().filter(f -> f.getName().contains("кассу")).toList().get(0);
+        visit.setQueueId(queue2.getId());
+        Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue.getId()).getVisits().size(), 1);
+        Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue2.getId()).getVisits().size(), 0);
+
+        branchService.updateVisit(visit);
+        Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue.getId()).getVisits().size(), 0);
+        Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue2.getId()).getVisits().size(), 1);
+    }
+
+    @Test
+    void checkConfirmVisit() throws InterruptedException {
+        Service service;
+        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Long servtime=visitService.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit ).getServingTime();
+        Assertions.assertEquals(servtime,0);
+
+        visitService.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+        Thread.sleep(10000);
+        Visit visit2=visitService.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+
+        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+
+
+    }
+
+    @Test
     void checkTicetNumberlogic() {
 
         Service service;
@@ -111,10 +152,13 @@ class EntrypointTest {
 
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
 
+
         Assertions.assertEquals(visit.getTicketId(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
 
+
     }
-    /**     *
+
+    /**
      * Проверка правильности работы счетчика визитов
      */
     @Test
@@ -129,8 +173,9 @@ class EntrypointTest {
         Integer visitafter = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
         Assertions.assertEquals(1, visitafter - visitsbefore);
     }
+
     /**
-     *  Проверка наличия созданного визита в очереди
+     * Проверка наличия созданного визита в очереди
      */
     @Test
     void checkVisitInQueue() {
@@ -139,7 +184,7 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        String visitId=visitService.createVisit(branchId, "1", serviceIds, false).getId();
+        String visitId = visitService.createVisit(branchId, "1", serviceIds, false).getId();
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Assertions.assertTrue(queue.getVisits().stream().map(Visit::getId).toList().contains(visitId));
 
@@ -151,9 +196,10 @@ class EntrypointTest {
 
         branchService.delete(branchId);
     }
-/**
- * Проверка сохранения изменения состояния отделения в кэше редис
- */
+
+    /**
+     * Проверка сохранения изменения состояния отделения в кэше редис
+     */
     @Test()
     void testUpdateBranchInCache() {
 
@@ -170,9 +216,10 @@ class EntrypointTest {
 
 
     }
-/**
- * Проверка правильности отработки ошибки вызова не существующего отделения
- */
+
+    /**
+     * Проверка правильности отработки ошибки вызова не существующего отделения
+     */
     @Test
     void getNotExistBranch() {
         Exception exception = assertThrows(BusinessException.class, () -> branchService.getBranch("not exist"));

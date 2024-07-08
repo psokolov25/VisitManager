@@ -14,7 +14,8 @@ kafka:
     servers: 192.168.8.45:29092
 
 micronaut:
-
+  server:
+    port: 8081
   application:
     name: entrypoint
     dataBusUrl: http://localhost:8082
