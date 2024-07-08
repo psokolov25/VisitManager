@@ -394,7 +394,30 @@ public class VisitService {
         return visit;
 
     }
+    public Visit visitCallNoShow(String branchId, String servicePointId, Visit visit) {
 
+        Visit oldVisit = visit.toBuilder().build();
+
+        visit.setUpdateDate(ZonedDateTime.now());
+        visit.setVersion(visit.getVersion() + 1);
+        visit.setStatus("NO_SHOW");
+        visit.setStartServingDate(ZonedDateTime.now());
+        visit.setQueueId(null);
+        visit.setServicePointId(null);
+
+
+        VisitEvent event=VisitEvent.NO_SHOW;
+        event.getParameters().put("ServicePointId", servicePointId);
+        event.getParameters().put("branchID", branchId);
+        visit.setTransaction(event,eventService);
+        branchService.updateVisit(visit);
+
+
+        log.info("Visit {} statted serving!", visit);
+        changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
+        return visit;
+
+    }
     public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
 

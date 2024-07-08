@@ -129,7 +129,7 @@ class EntrypointTest {
     }
 
     @Test
-    void checkConfirmVisit() {
+    void checkConfirmVisit() throws InterruptedException {
         Service service;
         service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
@@ -138,8 +138,12 @@ class EntrypointTest {
         Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
         Long servtime=servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit ).getServingTime();
         Assertions.assertEquals(servtime,0);
-
+        Thread.sleep(2000);
+        servicePointController.visitReCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+        Thread.sleep(2000);
         servicePointController.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+
+        Thread.sleep(2000);
 
         Visit visit2=servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
 
@@ -147,7 +151,29 @@ class EntrypointTest {
 
 
     }
+    @Test
+    void checkNoShowVisit() throws InterruptedException {
+        Service service;
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
+        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
+        Long servtime=servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit ).getServingTime();
+        Assertions.assertEquals(servtime,0);
+        Thread.sleep(2000);
+        servicePointController.visitReCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+        Thread.sleep(2000);
+        servicePointController.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
 
+        Thread.sleep(2000);
+
+        Visit visit2=servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+
+        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+
+
+    }
     @Test
     void checkTicetNumberlogic() {
 

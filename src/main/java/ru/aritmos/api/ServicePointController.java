@@ -136,6 +136,22 @@ public class ServicePointController {
 
     }
     /**
+     * Отмена вызова из за того, что сотрудник не пришел
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/noshow", consumes = "application/json", produces = "application/json")
+    public Visit visitCallNoShow(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+
+
+        return visitService.visitCallNoShow(branchId, servicePointId, visit);
+
+
+    }
+    /**
      * Вызов визита c ожиданием подтверждения
      * @param branchId идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
