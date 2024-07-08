@@ -7,7 +7,6 @@ import io.micronaut.context.annotation.ContextConfigurer;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(

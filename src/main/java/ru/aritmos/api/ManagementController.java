@@ -4,8 +4,6 @@ import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import ru.aritmos.events.services.EventService;
