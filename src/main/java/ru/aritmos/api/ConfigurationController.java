@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class ConfigurationController {
     BranchService branchService;
     @Tag(name = "Конфигурация отделений")
-    @Post(uri = "/")
+    @Post(uri = "/branches")
     public HashMap<String, Branch> update(@Body HashMap<String, Branch> branchHashMap) {
 
 
@@ -27,11 +27,7 @@ public class ConfigurationController {
             }
 
         });
-        branchHashMap.forEach((key, value) -> {
-            branchService.add(key, value);
-
-
-        });
+        branchHashMap.forEach((key, value) -> branchService.add(key, value));
         return branchService.getBranches();
     }
 }
