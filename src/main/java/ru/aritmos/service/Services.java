@@ -1,16 +1,13 @@
 package ru.aritmos.service;
 
-import graphql.language.SelectionSet;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import ru.aritmos.model.Branch;
-import ru.aritmos.model.Queue;
 import ru.aritmos.model.Service;
 import ru.aritmos.model.WorkProfile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Singleton
 public class Services {
@@ -35,13 +32,7 @@ public class Services {
         List<Service> services = new ArrayList<>();
                 currentBranch.getServices().values().forEach(
                         f->{
-                            if(queueIds.contains(f.getLinkedQueueId())){
-                                f.setIsAvailable(true);
-                            }
-                            else
-                            {
-                                f.setIsAvailable(false);
-                            }
+                            f.setIsAvailable(queueIds.contains(f.getLinkedQueueId()));
                             services.add(f);
                         }
 
