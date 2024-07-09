@@ -23,7 +23,7 @@ import java.util.*;
  * REST API управления зоной ожидания
  */
 
-@Tag(name = "Зона ожидания")
+
 @Controller("/entrypoint")
 public class EntrypointController {
     @Inject
