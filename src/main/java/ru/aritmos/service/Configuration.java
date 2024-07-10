@@ -1,27 +1,21 @@
 package ru.aritmos.service;
 
-import io.micronaut.cache.CacheManager;
-import io.micronaut.cache.SyncCache;
 import io.micronaut.context.annotation.Context;
-import io.micronaut.core.util.SupplierUtil;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.Disposable;
-import reactor.core.publisher.Flux;
 import ru.aritmos.model.*;
 
 import java.util.HashMap;
-import java.util.Objects;
+
 @Slf4j
 @Context
 public class Configuration {
     @Inject
     BranchService branchService;
-    @Inject
-    CacheManager cacheManager;
+
 
     public void getConfiguration() {
-        cacheManager.getCache("branches");
+
 
 //        if(branchService.getBranches().size()==0){
         if (branchService.getBranches().isEmpty()) {
