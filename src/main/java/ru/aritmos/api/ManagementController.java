@@ -56,7 +56,7 @@ public class ManagementController {
      */
     @Tag(name = "Информация об отделении")
     @Get(uri = "/branches")
-    public HashMap<String,Branch> getBranches() {
+    public Map<String,Branch> getBranches() {
        return branchService.getBranches();
     }
 

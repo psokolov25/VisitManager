@@ -17,6 +17,9 @@ micronaut:
   server:
     port: 8080
   application:
+    rules:
+      callVisit: simple  #custom|simple
+      callRuleApiUrl: http://localhost:8085/customcallrule
     name: entrypoint
     dataBusUrl: http://localhost:8082
     dataBusUrlRetryPeriod: '1s'

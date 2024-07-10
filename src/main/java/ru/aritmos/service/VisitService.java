@@ -11,6 +11,7 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.*;
+import ru.aritmos.service.rules.CallRule;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
 
@@ -26,6 +27,8 @@ public class VisitService {
     EventService eventService;
     @Inject
     PrinterService printerService;
+    @Inject
+    CallRule callRule;
     @Value("${micronaut.application.name}")
     String applicationName;
 
@@ -423,16 +426,8 @@ public class VisitService {
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-            if (servicePoint.getUser() != null) {
-                String workprofileId = servicePoint.getUser().getCurrentWorkProfileId();
-                List<String> queueIds = currentBranch.getWorkProfiles().get(workprofileId).getQueueIds();
-                List<Queue> avaibleQueues = currentBranch
-                        .getQueues().
-                        entrySet().
-                        stream().
-                        filter(f -> queueIds.contains(f.getKey())).
-                        map(Map.Entry::getValue).toList();
-                Optional<Visit> visit = avaibleQueues.stream().map(Queue::getVisits).flatMap(List::stream).toList().stream().max(Comparator.comparing(Visit::getWaitingTime));
+
+            Optional<Visit> visit = callRule.call(currentBranch,servicePoint);
                 if (visit.isPresent()) {
 
                     return Optional.of(visitCallForConfirm(branchId,servicePointId,visit.get()));
@@ -444,10 +439,7 @@ public class VisitService {
             }
 
 
-        } else {
-            throw new BusinessException("ServicePoint not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
 
-        }
         return Optional.empty();
 
     }
@@ -459,15 +451,8 @@ public class VisitService {
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             if (servicePoint.getUser() != null) {
-                String workprofileId = servicePoint.getUser().getCurrentWorkProfileId();
-                List<String> queueIds = currentBranch.getWorkProfiles().get(workprofileId).getQueueIds();
-                List<Queue> avaibleQueues = currentBranch
-                        .getQueues().
-                        entrySet().
-                        stream().
-                        filter(f -> queueIds.contains(f.getKey())).
-                        map(Map.Entry::getValue).toList();
-                Optional<Visit> visit = avaibleQueues.stream().map(Queue::getVisits).flatMap(List::stream).toList().stream().max(Comparator.comparing(Visit::getWaitingTime));
+
+                Optional<Visit> visit = callRule.call(currentBranch,servicePoint);
                 if (visit.isPresent()) {
 
                     return visit.map(value -> this.visitCall(branchId, servicePointId, value));

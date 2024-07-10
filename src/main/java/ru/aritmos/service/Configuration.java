@@ -1,18 +1,30 @@
 package ru.aritmos.service;
 
+import io.micronaut.cache.CacheManager;
+import io.micronaut.cache.SyncCache;
 import io.micronaut.context.annotation.Context;
+import io.micronaut.core.util.SupplierUtil;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.Disposable;
+import reactor.core.publisher.Flux;
 import ru.aritmos.model.*;
 
 import java.util.HashMap;
-
+import java.util.Objects;
+@Slf4j
 @Context
 public class Configuration {
     @Inject
     BranchService branchService;
+    @Inject
+    CacheManager cacheManager;
 
     public void getConfiguration() {
-        if (!branchService.getBranches().containsKey("37493d1c-8282-4417-a729-dceac1f3e2b4")) {
+        cacheManager.getCache("branches");
+
+//        if(branchService.getBranches().size()==0){
+        if (branchService.getBranches().isEmpty()) {
 
 
             Branch branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b4", "Отделение на Тверской");
@@ -29,10 +41,10 @@ public class Configuration {
             Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C");
             Service kassaService = new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
             ServicePoint servicePointFC = new ServicePoint("a66ff6f4-4f4a-4009-8602-0dc278024cf2", "Финансовый консультант");
-            HashMap<String,Service> serviceList = new HashMap<>();
-            serviceList.put(kassaService.getId(),kassaService);
-            serviceList.put(creditService.getId(),creditService);
-            serviceList.put(bigCreditService.getId(),bigCreditService);
+            HashMap<String, Service> serviceList = new HashMap<>();
+            serviceList.put(kassaService.getId(), kassaService);
+            serviceList.put(creditService.getId(), creditService);
+            serviceList.put(bigCreditService.getId(), bigCreditService);
             branch.setServices(serviceList);
             ServicePoint servicePointFSC = new ServicePoint("099c43c1-40b5-4b80-928a-1d4b363152a8", "Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");

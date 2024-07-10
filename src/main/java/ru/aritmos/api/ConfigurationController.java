@@ -8,6 +8,8 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.service.BranchService;
 
 import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Pavel Sokolov
  * REST API управления конфигурацией отделений
@@ -18,7 +20,7 @@ public class ConfigurationController {
     BranchService branchService;
     @Tag(name = "Конфигурация отделений")
     @Post(uri = "/branches")
-    public HashMap<String, Branch> update(@Body HashMap<String, Branch> branchHashMap) {
+    public Map<String, Branch> update(@Body Map<String, Branch> branchHashMap) {
 
 
         branchService.getBranches().forEach((key, value) -> {

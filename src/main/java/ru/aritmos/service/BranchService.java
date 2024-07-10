@@ -4,7 +4,9 @@ import io.micronaut.cache.annotation.CacheConfig;
 import io.micronaut.cache.annotation.CacheInvalidate;
 import io.micronaut.cache.annotation.CachePut;
 import io.micronaut.cache.annotation.Cacheable;
+import io.micronaut.cache.interceptor.ParametersKey;
 import io.micronaut.context.annotation.Value;
+import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 @Singleton
 @Named("Branch_cache")
 @CacheConfig("branches")
+@SerdeImport(ParametersKey.class)
 public class BranchService {
 
     HashMap<String, Branch> branches = new HashMap<>();
@@ -29,7 +32,7 @@ public class BranchService {
     @Value("${micronaut.application.name}")
     String applicationName;
 
-    @Cacheable(parameters = {"key"})
+    @Cacheable(parameters = {"key"},value = {"branches"})
     public Branch getBranch(String key) throws BusinessException {
         Branch result = branches.get(key);
         if (result == null) {
@@ -38,9 +41,8 @@ public class BranchService {
         log.info("Getting branchInfo {}", result);
         return result;
     }
-
-
-    public HashMap<String, Branch> getBranches() {
+    @Cacheable(parameters = {"key"})
+    protected HashMap<String, Branch> getBranches(String key) {
         HashMap<String, Branch> result = new HashMap<>();
         branches.values().forEach(f -> {
             Branch branch = new Branch(f.getId(), f.getName());
@@ -48,6 +50,11 @@ public class BranchService {
         });
         return result;
     }
+    public HashMap<String,Branch>  getBranches() {
+        return this.getBranches("0");
+    }
+
+
 
     @CachePut(parameters = {"key"})
     public Branch add(String key, Branch branch) {
@@ -84,16 +91,15 @@ public class BranchService {
         log.info("Deleting branchInfo {}", key);
         branches.remove(key);
     }
-    public void updateVisit(Visit visit)
-    {
 
-        Branch branch=this.getBranch(visit.getBranchId());
-        branch.updateVisit(visit,eventService);
-        this.add(branch.getId(),branch);
+    public void updateVisit(Visit visit) {
+
+        Branch branch = this.getBranch(visit.getBranchId());
+        branch.updateVisit(visit, eventService);
+        this.add(branch.getId(), branch);
 
 
     }
-
 
 
 }

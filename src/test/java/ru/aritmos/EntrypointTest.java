@@ -151,6 +151,32 @@ class EntrypointTest {
 
 
     }
+
+    @Test
+    void checkConfirmVisitWithCallRule() throws InterruptedException {
+
+        Service service;
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
+        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
+        if(servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc" ).isPresent()){
+        Long servtime=servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc" ).get().getServingTime();
+        Assertions.assertEquals(servtime,0);
+        Thread.sleep(2000);
+        servicePointController.visitReCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+        Thread.sleep(2000);
+        servicePointController.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+
+        Thread.sleep(2000);
+
+        Visit visit2=servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+
+        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+}
+
+    }
     @Test
     void checkNoShowVisit() throws InterruptedException {
         Service service;
