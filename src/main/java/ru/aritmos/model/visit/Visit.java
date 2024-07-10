@@ -45,6 +45,11 @@ public class Visit {
      * Идентификатор отделения
      */
     String branchId;
+
+    /**
+     * Название отделения
+     */
+    String branchName;
     /**
      * Дата создания визита
      */

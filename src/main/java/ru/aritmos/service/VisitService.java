@@ -126,6 +126,7 @@ public class VisitService {
                         .entryPoint(entryPoint)
                         .printTicket(printTicket)
                         .branchId(branchId)
+                        .branchName(currentBranch.getName())
                         .currentService(currentService)
                         .unservedServices(unServedServices)
                         .createDate(ZonedDateTime.now())
