@@ -21,7 +21,7 @@ micronaut:
       callVisit: simple  #custom|simple
       callRuleApiUrl: http://localhost:8085/customcallrule
     name: entrypoint
-    dataBusUrl: http:///192.168.3.33:8082
+    dataBusUrl: http://192.168.8.45:8082
     dataBusUrlRetryPeriod: '1s'
     dataBusUrlRetryMaxPeriod: '45m'
     dataBusUrlRetryRepeat: 30
