@@ -257,12 +257,37 @@ public class ServicePointController {
         }
 
 
-        Visit result = visitService.visitTransfer(branchId, servicePointId, queueId);
+        return visitService.visitTransfer(branchId, servicePointId, queueId);
+
+
+    }
+    /**
+     * Возвращение визита в очередь
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания     *
+     * @return визит после перевода
+     */
+    @Tag(name = "Зона обслуживания")
+    @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/visit/return", consumes = "application/json", produces = "application/json")
+    public Visit returnVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+        Branch branch;
+
+        try {
+            branch = branchService.getBranch(branchId);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+
+
+
+        Visit result = visitService.returnVisit(branchId, servicePointId);
 
         return result;
 
 
     }
+
 
     /**
      * Перевод визита из очереди в очередь

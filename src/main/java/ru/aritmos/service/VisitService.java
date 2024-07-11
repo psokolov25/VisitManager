@@ -175,7 +175,7 @@ public class VisitService {
 
     }
 
-    public Visit visitReturn(String branchId, String servicePointId) {
+    public Visit returnVisit(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
