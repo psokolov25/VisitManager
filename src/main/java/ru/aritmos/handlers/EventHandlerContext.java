@@ -12,8 +12,6 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.events.services.KaffkaListener;
-import ru.aritmos.exceptions.SystemException;
-import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
 
@@ -45,7 +43,6 @@ public class EventHandlerContext {
     @Inject
     EventService eventService;
 
-    @Singleton
 
     static class EntityChangedHandler implements EventHandler {
 
@@ -67,11 +64,9 @@ public class EventHandlerContext {
 
         BusinesErrorHandler businesErrorHandler = new BusinesErrorHandler();
         SystemErrorHandler systemErrorHandler = new SystemErrorHandler();
-
-
-
         EntityChangedHandler entityChangedHandler = new EntityChangedHandler();
-
+        KaffkaListener.addAllEventHandler("BUSINESS_ERROR", businesErrorHandler);
+        KaffkaListener.addAllEventHandler("SYSTEM_ERROR", systemErrorHandler);
         KaffkaListener.addAllEventHandler("ENTITY_CHANGED", entityChangedHandler);
         configuration.getConfiguration();
 
