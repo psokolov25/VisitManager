@@ -235,16 +235,15 @@ public class ServicePointController {
     }
 
     /**
-     * Перевод визита в очередь
+     * Перевод визита в очередь из точки обслуживания
      * @param branchId идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param queueId идентификатор очереди
-     * @param visit визит
+     * @param queueId идентификатор очереди     *
      * @return визит после перевода
      */
     @Tag(name = "Зона обслуживания")
-    @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/queue/{queueId}/visit/transfer", consumes = "application/json", produces = "application/json")
-    public Visit transferVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @Body Visit visit) {
+    @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint", consumes = "application/json", produces = "application/json")
+    public Visit transferVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId) {
         Branch branch;
 
         try {
@@ -258,13 +257,39 @@ public class ServicePointController {
         }
 
 
-        Visit result = visitService.visitTransfer(branchId, servicePointId, queueId, visit);
-        eventService.send("*", true, Event.builder()
-                .body(visit)
-                .eventDate(ZonedDateTime.now())
-                .eventType("VISIT_TRANSFERRED")
-                .senderService(applicationName)
-                .build());
+        Visit result = visitService.visitTransfer(branchId, servicePointId, queueId);
+
+        return result;
+
+
+    }
+
+    /**
+     * Перевод визита из очереди в очередь
+     * @param branchId
+     * @param servicePointId
+     * @param queueId
+     * @param visit
+     * @return
+     */
+    @Tag(name = "Зона обслуживания")
+    @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/queue/{queueId}/visit/transferFromQueue", consumes = "application/json", produces = "application/json")
+    public Visit visitTransferFromQueue(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @Body Visit visit) {
+        Branch branch;
+
+        try {
+            branch = branchService.getBranch(branchId);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        if (!branch.getQueues().containsKey(queueId)) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+        }
+
+
+        Visit result = visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit);
+
         return result;
 
 

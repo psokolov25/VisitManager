@@ -11,7 +11,7 @@ kafka:
     default:
       allow.auto.create.topics: true
   bootstrap:
-    servers: 192.168.8.45:29092
+    servers: 192.168.8.45:9092
 
 micronaut:
   server:
@@ -21,7 +21,7 @@ micronaut:
       callVisit: simple  #custom|simple
       callRuleApiUrl: http://localhost:8085/customcallrule
     name: entrypoint
-    dataBusUrl: http://localhost:8082
+    dataBusUrl: http:///192.168.3.33:8082
     dataBusUrlRetryPeriod: '1s'
     dataBusUrlRetryMaxPeriod: '45m'
     dataBusUrlRetryRepeat: 30

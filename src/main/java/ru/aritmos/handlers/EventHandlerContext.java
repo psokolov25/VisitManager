@@ -46,38 +46,7 @@ public class EventHandlerContext {
     EventService eventService;
 
     @Singleton
-    class VisitCallHandler implements EventHandler {
 
-
-        @Override
-        @ExecuteOn(TaskExecutors.IO)
-        public void Handle(Event event) throws SystemException {
-            log.info("Event {} of call of visit handled!", event);
-            try {
-                Visit visit = (Visit) event.getBody();
-                visitService.visitCall(event.getParams().get("branchId"),event.getParams().get("servicePointId"), visit);
-            } catch (Exception ex) {
-                throw new SystemException(ex.getMessage(), eventService);
-            }
-
-        }
-    }
-    class VisitDeleteHandler implements EventHandler {
-
-
-        @Override
-        @ExecuteOn(TaskExecutors.IO)
-        public void Handle(Event event) throws SystemException {
-            log.info("Event {} of delete of visit handled!", event);
-            try {
-                Visit visit = (Visit) event.getBody();
-                visitService.deleteVisit(event.getParams().get("branchId"),event.getParams().get("servicePointId"), visit);
-            } catch (Exception ex) {
-                throw new SystemException(ex.getMessage(), eventService);
-            }
-
-        }
-    }
     static class EntityChangedHandler implements EventHandler {
 
 
@@ -91,37 +60,18 @@ public class EventHandlerContext {
     }
 
     @Singleton
-    class VisitTransferHandler implements EventHandler {
 
-
-        @Override
-        @ExecuteOn(TaskExecutors.IO)
-        public void Handle(Event event) throws SystemException {
-            log.info("Event {} of transfer of visit handled!", event);
-            try {
-                Visit visit = (Visit) event.getBody();
-                visitService.visitTransfer(event.getParams().get("branchId"),event.getParams().get("servicePointId"), event.getParams().get("queueId"), visit);
-            } catch (Exception ex) {
-                throw new SystemException(ex.getMessage(), eventService);
-            }
-
-        }
-    }
 
     @PostConstruct
     void AddHandlers() {
 
         BusinesErrorHandler businesErrorHandler = new BusinesErrorHandler();
         SystemErrorHandler systemErrorHandler = new SystemErrorHandler();
-        VisitCallHandler visitCallHandler = new VisitCallHandler();
-        VisitTransferHandler visitTransferHandler = new VisitTransferHandler();
-        VisitDeleteHandler visitDeleteHandler = new VisitDeleteHandler();
+
+
+
         EntityChangedHandler entityChangedHandler = new EntityChangedHandler();
-        KaffkaListener.addAllEventHandler("BUSINESS_ERROR", businesErrorHandler);
-        KaffkaListener.addAllEventHandler("SYSTEM_ERROR", systemErrorHandler);
-        KaffkaListener.addServiceEventHandler("VISIT_CALLED", visitCallHandler);
-        KaffkaListener.addServiceEventHandler("VISIT_DELETED", visitDeleteHandler);
-        KaffkaListener.addServiceEventHandler("VISIT_TRANSFER", visitTransferHandler);
+
         KaffkaListener.addAllEventHandler("ENTITY_CHANGED", entityChangedHandler);
         configuration.getConfiguration();
 
