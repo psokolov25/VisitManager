@@ -305,9 +305,7 @@ public class ServicePointController {
         }
 
 
-        Visit result = visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit);
-
-        return result;
+        return visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit);
 
 
     }
