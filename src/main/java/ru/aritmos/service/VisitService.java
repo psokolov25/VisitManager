@@ -219,7 +219,7 @@ public class VisitService {
                 visit.setServicePointId(null);
                 visit.setUpdateDate(ZonedDateTime.now());
                 visit.setVersion(visit.getVersion() + 1);
-
+                visit.setTransferDate(ZonedDateTime.now());
                 queue.getVisits().add(visit);
                 currentBranch.getQueues().put(queue.getId(), queue);
                 VisitEvent event = VisitEvent.BACK_TO_QUEUE;
@@ -299,6 +299,7 @@ public class VisitService {
                     visit.setServedDate(ZonedDateTime.now());
                     event = VisitEvent.BACK_TO_QUEUE;
                     visit.setServedDate(ZonedDateTime.now());
+
                     //Queue queue = currentBranch.getQueues().get(queueIdToReturn);
                     //queue.getVisits().add(visit);
                     //currentBranch.getQueues().put(queue.getId(), queue);

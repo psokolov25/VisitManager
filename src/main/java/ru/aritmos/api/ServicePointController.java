@@ -57,6 +57,7 @@ public class ServicePointController {
                             .id(f.getId())
                             .ticketId(f.getTicketId())
                             .currentService(f.getCurrentService())
+                            .createDate(f.getCreateDate())
                             .transferDate(f.getTransferDate()).build();
             result.add(visit);
         });

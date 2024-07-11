@@ -178,9 +178,11 @@ public class Visit {
      */
 
     Service currentService;
+
     /**
      * Дополнительные параметры визита
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     HashMap<String, Object> parameterMap;
     /**
      * Признак печати талона

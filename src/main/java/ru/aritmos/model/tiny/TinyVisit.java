@@ -23,6 +23,10 @@ import java.time.temporal.ChronoUnit;
 @ToString
 public class TinyVisit {
     /**
+     * Дата создания визита
+     */
+    ZonedDateTime createDate;
+    /**
      * Идентификатор визита
      */
     String id;
@@ -45,9 +49,17 @@ public class TinyVisit {
         return waitingTime;
     }
     /**
-     * Время ожидания в последней очереди в секундах
+     * Полное Время ожидания в секундах
      */
     Long waitingTime;
+
+    @JsonGetter
+    public Long getTotalWaitingTime() {
+        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+        totalWaitingTime = unit.between( getCreateDate(),ZonedDateTime.now());
+        return totalWaitingTime;
+    }
+    Long totalWaitingTime;
 
 
 }
