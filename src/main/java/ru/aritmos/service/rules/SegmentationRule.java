@@ -4,6 +4,8 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.visit.Visit;
 
+import java.util.Optional;
+
 public interface SegmentationRule  extends Rule {
-    Queue getQueue(Visit visit, Branch branch);
+    Optional<Queue> getQueue(Visit visit, Branch branch);
 }

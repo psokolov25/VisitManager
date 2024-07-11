@@ -64,6 +64,35 @@ public class ServicePointController {
         return result;
 
     }
+    /**
+     * Возвращает полный список визитов в отделении
+     * @param branchId идентификатор отделения
+     * @return список визитов
+     */
+    @Tag(name = "Зона обслуживания")
+    @Get(uri = "/branches/{branchId}/visits/all", consumes = "application/json", produces = "application/json")
+    public HashMap<String,Visit> getAllVisits(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+
+
+
+        return visitService.getAllVisits(branchId);
+
+    }
+    /**
+     * Возвращает  список визитов в отделении с фильтрацией по статусу
+     * @param branchId идентификатор отделения
+     * @param statuses массив статусов визита
+     * @return список визитов
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/statuses", consumes = "application/json", produces = "application/json")
+    public HashMap<String,Visit> getVisitsByStatuses(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,@Body List<String> statuses) {
+
+
+
+        return visitService.getVisitsByStatuses(branchId,statuses);
+
+    }
 
     /**
      * Получает данные о визите

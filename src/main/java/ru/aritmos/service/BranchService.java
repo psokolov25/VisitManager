@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.Queue;
 import ru.aritmos.model.visit.Visit;
 
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class BranchService {
     @Value("${micronaut.application.name}")
     String applicationName;
 
-    @Cacheable(parameters = {"key"},value = {"branches"})
+    @Cacheable(parameters = {"key"}, value = {"branches"})
     public Branch getBranch(String key) throws BusinessException {
         Branch result = branches.get(key);
         if (result == null) {
@@ -41,6 +42,7 @@ public class BranchService {
         log.info("Getting branchInfo {}", result);
         return result;
     }
+
     @Cacheable(parameters = {"key"})
     protected HashMap<String, Branch> getBranches(String key) {
         log.info("Getting branchInfo {}", key);
@@ -51,10 +53,10 @@ public class BranchService {
         });
         return result;
     }
-    public HashMap<String,Branch>  getBranches() {
+
+    public HashMap<String, Branch> getBranches() {
         return this.getBranches("0");
     }
-
 
 
     @CachePut(parameters = {"key"})
@@ -101,6 +103,16 @@ public class BranchService {
 
 
     }
+
+    public Integer IncrementTicetCounter(String branchId, Queue queue) {
+
+        Branch branch = this.getBranch(branchId);
+        Integer result = branch.incrementTicketCounter(queue);
+        this.add(branch.getId(), branch);
+        return result;
+
+    }
+
 
 
 }

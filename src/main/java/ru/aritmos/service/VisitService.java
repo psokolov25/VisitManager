@@ -14,6 +14,7 @@ import ru.aritmos.model.*;
 import ru.aritmos.service.rules.CallRule;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
+import ru.aritmos.service.rules.SegmentationRule;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -29,6 +30,8 @@ public class VisitService {
     PrinterService printerService;
     @Inject
     CallRule callRule;
+    @Inject
+    SegmentationRule segmentationRule;
     @Value("${micronaut.application.name}")
     String applicationName;
 
@@ -100,6 +103,14 @@ public class VisitService {
         }
 
     }
+    public HashMap<String,Visit> getAllVisits(String brainchId)
+    {
+        return branchService.getBranch(brainchId).getAllVisits();
+    }
+    public HashMap<String,Visit> getVisitsByStatuses(String brainchId,List<String> statuses)
+    {
+        return branchService.getBranch(brainchId).getVisitsByStatus(statuses);
+    }
 
     public Visit createVisit2(String branchId, String entryPointId, ArrayList<Service> services, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
@@ -117,9 +128,6 @@ public class VisitService {
                 } else {
                     entryPoint = currentBranch.getEntryPoints().get(entryPointId);
                 }
-                Queue serviceQueue = currentBranch.getQueues().get(currentService.getLinkedQueueId());
-                Integer ticketCounter = serviceQueue.getTicketCounter();
-                serviceQueue.setTicketCounter(++ticketCounter);
 
 
                 Visit visit = Visit.builder()
@@ -137,42 +145,53 @@ public class VisitService {
                         .endDate(ZonedDateTime.now())
                         .servicePointId(null)
                         .version(1)
-                        .ticketId(serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter()))
                         .servedServices(new ArrayList<>())
                         .transactions(new ArrayList<>())
                         .parameterMap(new HashMap<>())
                         .build();
-                VisitEvent event = VisitEvent.CREATED;
-                visit.setTransaction(event, eventService);
-                if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
-                    VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
+                Queue serviceQueue;
+                if (segmentationRule.getQueue(visit, currentBranch).isPresent()) {
+                    serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
+
+                    serviceQueue.setTicketCounter(branchService.IncrementTicetCounter(branchId,serviceQueue));
                     visit.setQueueId(serviceQueue.getId());
-                    visit.setTransaction(queueEvent, eventService);
-                    serviceQueue.getVisits().add(visit);
+                    visit.setTicketId((serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter())));
+                    VisitEvent event = VisitEvent.CREATED;
+                    visit.setTransaction(event, eventService);
+                    branchService.updateVisit(visit);
+                    if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
+                        VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
+                        visit.setQueueId(serviceQueue.getId());
+                        visit.setTransaction(queueEvent, eventService);
 
 
-                    branchService.add(currentBranch.getId(), currentBranch);
 
-                    if (printTicket && entryPoint.getPrinterId() != null) {
-                        printerService.print(entryPoint.getPrinterId(), visit);
+
+
+                        if (printTicket && entryPoint.getPrinterId() != null) {
+                            printerService.print(entryPoint.getPrinterId(), visit);
+                        }
+
+
+                        changedVisitEventSend("CREATED", null, visit, new HashMap<>());
+                        branchService.updateVisit(visit);
+                        log.info("Visit {} created!", visit);
+
+                        return visit;
+                    } else {
+                        throw new BusinessException("Queue not found in branch configuration!", eventService);
                     }
 
-
-                    changedVisitEventSend("CREATED", null, visit, new HashMap<>());
-                    log.info("Visit {} created!", visit);
-
-                    return visit;
                 } else {
-                    throw new BusinessException("Queue not found in branch configuration!", eventService);
+                    throw new BusinessException("Services can not be empty!", eventService);
                 }
-
             } else {
-                throw new BusinessException("Services can not be empty!", eventService);
+                throw new BusinessException("Service  not found in branch configuration!", eventService);
             }
-        } else {
-            throw new BusinessException("Service  not found in branch configuration!", eventService);
+
         }
 
+        throw new BusinessException("Queue  not found in branch configuration!", eventService);
     }
 
     public Visit returnVisit(String branchId, String servicePointId) {
@@ -247,7 +266,7 @@ public class VisitService {
             queue = currentBranch.getQueues().get(queueID);
         } else {
 
-            throw new BusinessException("Queue not found in branch configuration!", eventService);
+            throw new BusinessException("Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
 
         currentBranch.getServicePoints().get(servicePointId);
@@ -329,7 +348,7 @@ public class VisitService {
 
         } else {
 
-            throw new BusinessException("ServicePoint not found in branch configuration!", eventService);
+            throw new BusinessException("ServicePoint not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
 
         }
 
