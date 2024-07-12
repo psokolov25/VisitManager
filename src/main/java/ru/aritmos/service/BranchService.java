@@ -18,6 +18,8 @@ import ru.aritmos.model.visit.Visit;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Slf4j
@@ -27,7 +29,7 @@ import java.util.List;
 @SerdeImport(ParametersKey.class)
 public class BranchService {
 
-    HashMap<String, Branch> branches = new HashMap<>();
+    Map<String, Branch> branches = new ConcurrentHashMap<>();
     @Inject
     EventService eventService;
     @Value("${micronaut.application.name}")

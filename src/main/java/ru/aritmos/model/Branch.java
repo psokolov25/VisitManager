@@ -156,7 +156,15 @@ public class Branch extends BranchEntity {
                                         if (v2.getCurrentService() != null && v2.getCurrentService().getId().equals(k)) {
                                             v2.setCurrentService(v);
                                         }
-
+                                        if (v2.getCurrentTransaction().getService() != null && v2.getCurrentTransaction().getService().getId().equals(k)) {
+                                            v2.getCurrentTransaction().setService(v);
+                                        }
+                                        v2.getTransactions().forEach(t -> {
+                                                    if (t.getService() != null && t.getService().getId().equals(k)) {
+                                                        t.setService(v);
+                                                    }
+                                                }
+                                        );
                                         List<Service> unservedServices = v2.getUnservedServices().stream().map(m -> m.getId().equals(k) ? v : m).toList();
                                         v2.setUnservedServices(unservedServices);
 
@@ -169,14 +177,13 @@ public class Branch extends BranchEntity {
                                     }
 
                             );
-                        }
-                        else {
+                        } else {
                             this.getAllVisits().forEach((k2, v2) ->
                             {
                                 if (v2.getServedServices().stream().anyMatch(am -> am.getId().equals(k)) ||
                                         v2.getUnservedServices().stream().anyMatch(am -> am.getId().equals(k)) ||
                                         v2.getCurrentService().getId().equals(k)) {
-                                    throw new BusinessException("Delete service " + k + " is in use now!", eventService, HttpStatus.CONFLICT);
+                                    throw new BusinessException("Updated service " + k + " is in use now!", eventService, HttpStatus.CONFLICT);
                                 }
 
 

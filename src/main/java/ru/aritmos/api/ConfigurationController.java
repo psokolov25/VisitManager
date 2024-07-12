@@ -2,6 +2,7 @@ package ru.aritmos.api;
 
 import io.micronaut.http.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.Service;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @Controller("/configuration")
 public class ConfigurationController {
+    @Inject
     BranchService branchService;
 
     /**
