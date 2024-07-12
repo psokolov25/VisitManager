@@ -42,6 +42,15 @@ public class User extends BranchEntity{
      */
     String currentWorkProfileId;
     /**
+     * Идентификатор точки обслуживания
+     */
+    String servicePoinrtId;
+    /**
+     * Идентификатор текущего отделения
+     */
+    String branchId;
+
+    /**
      * Идентификаторы рабочих профилей сотрудника
      */
     List<String> workProfileIds=new ArrayList<>();

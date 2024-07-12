@@ -52,14 +52,15 @@ public class Configuration {
 
             User psokolovUser = new User("psokolov");
             User sidorovUser = new User("isidorov");
-
+            psokolovUser.setBranchId(branch.getId());
+            sidorovUser.setBranchId(branch.getId());
             psokolovUser.getWorkProfileIds().add(workProfileFC.getId());
             psokolovUser.getWorkProfileIds().add(workProfileFSC.getId());
             psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
             sidorovUser.getWorkProfileIds().add(workProfileC.getId());
             sidorovUser.setCurrentWorkProfileId(workProfileC.getId());
-            servicePointFC.setUser(psokolovUser);
-            servicePointC.setUser(sidorovUser);
+            branchService.loginUser(psokolovUser);
+            branchService.loginUser(sidorovUser);
             HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
             servicePointMap.put(servicePointFC.getId(), servicePointFC);
             servicePointMap.put(servicePointFSC.getId(), servicePointFSC);

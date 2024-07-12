@@ -15,6 +15,7 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
+import ru.aritmos.model.User;
 import ru.aritmos.model.visit.Visit;
 
 import java.util.HashMap;
@@ -100,6 +101,22 @@ public class BranchService {
 
         Branch branch = this.getBranch(visit.getBranchId());
         branch.updateVisit(visit, eventService);
+        this.add(branch.getId(), branch);
+
+
+    }
+    public void loginUser(User user) {
+
+        Branch branch = this.getBranch(user.getBranchId());
+        branch.userLogin(user,eventService);
+        this.add(branch.getId(), branch);
+
+
+    }
+    public void logoutUser(User user) {
+
+        Branch branch = this.getBranch(user.getBranchId());
+        branch.userLogout(user,eventService);
         this.add(branch.getId(), branch);
 
 

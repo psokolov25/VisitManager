@@ -7,6 +7,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Queue;
@@ -35,7 +36,20 @@ public class VisitService {
     @Value("${micronaut.application.name}")
     String applicationName;
 
+    public @NotNull HashMap<String, ServicePoint> getStringServicePointHashMap(String branchId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        HashMap<String, ServicePoint> freeServicePoints = new HashMap<>();
+        currentBranch.getServicePoints().entrySet().stream().filter(f -> f.getValue().getUser() == null).forEach(fe -> {
+            freeServicePoints.put(fe.getKey(), fe.getValue());
+        });
+        return freeServicePoints;
+    }
+    public @NotNull void loginUser(String branchId,String servicePointId,String username)
+    {
 
+
+
+    }
     private void changedVisitEventSend(String visitState, Visit oldVisit, Visit newVisit, HashMap<String, String> params) {
         eventService.sendChangedEvent("*", false, oldVisit, newVisit, params, visitState);
     }

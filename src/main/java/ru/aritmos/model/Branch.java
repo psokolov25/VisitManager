@@ -68,7 +68,7 @@ public class Branch extends BranchEntity {
             }
         });
         this.getQueues().forEach((k, v) -> {
-            if(v.getVisits()!=null) {
+            if (v.getVisits() != null) {
                 v.getVisits().forEach(f -> visits.put(f.getId(), f));
             }
         });
@@ -86,6 +86,39 @@ public class Branch extends BranchEntity {
                                 visits.put(f.getId(), f)
                 );
         return visits;
+    }
+
+    public void userLogin(User user, EventService eventService) {
+        if (user.servicePoinrtId != null) {
+            if (this.getServicePoints().containsKey(user.servicePoinrtId)) {
+                ServicePoint servicePoint = this.getServicePoints().get(user.getServicePoinrtId());
+                if (servicePoint.getUser() == null) {
+                    servicePoint.setUser(user);
+                } else {
+                    throw new BusinessException(String.format("In servicePoint %s already %s logged in %s ", user.servicePoinrtId, servicePoint.getUser().getName()),eventService, HttpStatus.CONFLICT);
+                }
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePoinrtId, this.getName()), eventService, HttpStatus.CONFLICT);
+            }
+        }
+
+    }
+
+    public void userLogout(User user, EventService eventService) {
+        if (user.servicePoinrtId != null) {
+            if (this.getServicePoints().containsKey(user.servicePoinrtId)) {
+                ServicePoint servicePoint = this.getServicePoints().get(user.getServicePoinrtId());
+                if (servicePoint.getUser() != null && servicePoint.getUser().getId().equals(user.getId())) {
+                    servicePoint.setUser(null);
+                    user.setServicePoinrtId(null);
+                    user.setCurrentWorkProfileId(null);
+                }
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePoinrtId, this.getName()), eventService, HttpStatus.CONFLICT);
+            }
+        }
+
     }
 
     public void updateVisit(Visit visit, EventService eventService) {

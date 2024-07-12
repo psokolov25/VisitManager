@@ -6,10 +6,14 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
+import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
+import ru.aritmos.model.ServicePoint;
+import ru.aritmos.model.User;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.tiny.TinyVisit;
 import ru.aritmos.service.BranchService;
@@ -37,12 +41,58 @@ public class ServicePointController {
     @Value("${micronaut.application.name}")
     String applicationName;
 
+    /**
+     * Возвращает все не занятые точки обслуживания
+     * @param branchId идентификатор отделения
+     * @return свободные точки обслуживания
+     */
+    @Tag(name = "Зона обслуживания")
+    @Get("/branches/{branchId}/servicePoints/getFree")
+    public HashMap<String, ServicePoint> getFreeServicePoints(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4")  String branchId) {
+        return visitService.getStringServicePointHashMap(branchId);
+    }
+
+    /**
+     * Посадка сотрудника
+     * @param user сотрудник
+     * @return сотрудник
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post("/branches/user/login")
+    public User loginUser(@Body User user) {
+
+
+            branchService.loginUser(user);
+            return user;
+
+    }
+
+    /**
+     * Выход сотрудника
+     * @param user
+     * @return сотрудник
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post("/branches/user/logout")
+    public User logoutUser(@Body User user) {
+        if(user.getServicePoinrtId()!=null) {
+
+            branchService.logoutUser(user);
+            return user;
+        }
+        else
+        {
+            throw new BusinessException(String.format("User %s already logged out",user.getName()),eventService,HttpStatus.CONFLICT);
+        }
+    }
+
 
     /**
      * Возвращает список визитов из очереди
+     *
      * @param branchId идентификатор отделения
-     * @param queueId идентификатор очереди
-     * @param limit количество последних возвращаемых талонов
+     * @param queueId  идентификатор очереди
+     * @param limit    количество последних возвращаемых талонов
      * @return список визитов
      */
     @Tag(name = "Зона обслуживания")
@@ -51,7 +101,7 @@ public class ServicePointController {
 
         List<TinyVisit> result = new ArrayList<>();
 
-        visitService.getVisits(branchId, queueId,limit).forEach(f -> {
+        visitService.getVisits(branchId, queueId, limit).forEach(f -> {
             TinyVisit visit =
                     TinyVisit.builder()
                             .id(f.getId())
@@ -64,41 +114,44 @@ public class ServicePointController {
         return result;
 
     }
+
     /**
      * Возвращает полный список визитов в отделении
+     *
      * @param branchId идентификатор отделения
      * @return список визитов
      */
     @Tag(name = "Зона обслуживания")
     @Get(uri = "/branches/{branchId}/visits/all", consumes = "application/json", produces = "application/json")
-    public HashMap<String,Visit> getAllVisits(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
-
+    public HashMap<String, Visit> getAllVisits(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
 
 
         return visitService.getAllVisits(branchId);
 
     }
+
     /**
      * Возвращает  список визитов в отделении с фильтрацией по статусу
+     *
      * @param branchId идентификатор отделения
      * @param statuses массив статусов визита
      * @return список визитов
      */
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/statuses", consumes = "application/json", produces = "application/json")
-    public HashMap<String,Visit> getVisitsByStatuses(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,@Body List<String> statuses) {
+    public HashMap<String, Visit> getVisitsByStatuses(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> statuses) {
 
 
-
-        return visitService.getVisitsByStatuses(branchId,statuses);
+        return visitService.getVisitsByStatuses(branchId, statuses);
 
     }
 
     /**
      * Получает данные о визите
+     *
      * @param branchId идентификатор отделения
-     * @param queueId идентификатор очереди
-     * @param visitId идентификатор визита
+     * @param queueId  идентификатор очереди
+     * @param visitId  идентификатор визита
      * @return данные о визите
      */
     @Tag(name = "Зона обслуживания")
@@ -113,14 +166,12 @@ public class ServicePointController {
     }
 
 
-
-
-
     /**
      * Вызов визита
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visit визит
+     * @param visit          визит
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -135,7 +186,8 @@ public class ServicePointController {
 
     /**
      * Вызов наиболее ожидающего визита c ожиданием подтверждения
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      * @return вызванный визит
      */
@@ -151,9 +203,10 @@ public class ServicePointController {
 
     /**
      * Вызов визита c ожиданием подтверждения
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visit визит
+     * @param visit          визит
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -165,11 +218,13 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Отмена вызова из за того, что сотрудник не пришел
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visit визит
+     * @param visit          визит
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -181,11 +236,13 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Вызов визита c ожиданием подтверждения
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visit визит
+     * @param visit          визит
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -200,9 +257,10 @@ public class ServicePointController {
 
     /**
      * Подтверждение прихода клиента
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visit визит
+     * @param visit          визит
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -217,9 +275,9 @@ public class ServicePointController {
 
     /**
      * Вызов визита с наибольшим временем ожидания
-     * @param branchId идентификатор отделения
-     * @param servicePointId идентификатор точки обслуживания
      *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -231,11 +289,12 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Возвращает список доступных точке обслуживания очередей (в зависимости от профиля залогиненного сотрудника)
-     * @param branchId идентификатор отделения
-     * @param servicePointId идентификатор точки обслуживания
      *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
      * @return доступные очереди
      */
     @Tag(name = "Зона обслуживания")
@@ -250,9 +309,10 @@ public class ServicePointController {
 
     /**
      * Удаление визита из очереди
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visit визит
+     * @param visit          визит
      */
     @Tag(name = "Зона обслуживания")
     @Delete(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}", consumes = "application/json", produces = "application/json")
@@ -266,9 +326,10 @@ public class ServicePointController {
 
     /**
      * Перевод визита в очередь из точки обслуживания
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param queueId идентификатор очереди     *
+     * @param queueId        идентификатор очереди     *
      * @return визит после перевода
      */
     @Tag(name = "Зона обслуживания")
@@ -291,9 +352,11 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Возвращение визита в очередь
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания     *
      * @return визит после перевода
      */
@@ -305,18 +368,16 @@ public class ServicePointController {
         return visitService.returnVisit(branchId, servicePointId);
 
 
-
-
-
     }
 
 
     /**
      * Перевод визита из очереди в очередь
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания     *
-     * @param queueId идентификатор очереди
-     * @param visit переводимый визит
+     * @param queueId        идентификатор очереди
+     * @param visit          переводимый визит
      * @return итоговый визит
      */
     @Tag(name = "Зона обслуживания")
@@ -339,18 +400,17 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Завершение визита
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      * @return визит после перевода
      */
     @Tag(name = "Зона обслуживания")
     @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/visit/end", consumes = "application/json", produces = "application/json")
     public Visit visitEnd(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
-
-
-
 
 
         Visit visit = visitService.visitEnd(branchId, servicePointId);
