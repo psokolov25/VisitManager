@@ -95,7 +95,7 @@ public class Branch extends BranchEntity {
                 if (servicePoint.getUser() == null) {
                     servicePoint.setUser(user);
                 } else {
-                    throw new BusinessException(String.format("In servicePoint %s already %s logged in %s ", user.servicePoinrtId, servicePoint.getUser().getName(),servicePoint.getUser().getName()),eventService, HttpStatus.CONFLICT);
+                    throw new BusinessException(String.format("In servicePoint %s already %s logged in %s ", user.servicePoinrtId, servicePoint.getUser().getName(), servicePoint.getUser().getName()), eventService, HttpStatus.CONFLICT);
                 }
             } else {
                 throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePoinrtId, this.getName()), eventService, HttpStatus.CONFLICT);
@@ -144,56 +144,95 @@ public class Branch extends BranchEntity {
         });
         eventService.sendChangedEvent("*", false, oldVisit, visit, new HashMap<>(), "CHANGE");
     }
-    public void addUpdateService(HashMap<String,Service> serviceHashMap)
-    {
-        serviceHashMap.forEach((k, v) -> this.getServices().put(k,v));
+
+    public void addUpdateService(HashMap<String, Service> serviceHashMap, EventService eventService) {
+        serviceHashMap.forEach((k, v) ->
+                {
+                    if (this.getServices().containsKey(k)) {
+                        eventService.sendChangedEvent("config", false, this.getServices().get(k), v, new HashMap<>(), "Update service");
+                    } else {
+                        eventService.sendChangedEvent("config", false, null, v, new HashMap<>(), "Add service");
+                    }
+                    this.getServices().put(k, v);
+                }
+        );
     }
-    public void deleteServices(List<String> serviceIds)
-    {
-        serviceIds.forEach(f-> this.getServices().remove(f));
+
+    public void deleteServices(List<String> serviceIds, EventService eventService) {
+        serviceIds.forEach(f -> {
+            if (this.getServices().containsKey(f)) {
+                eventService.sendChangedEvent("config", false, null, this.getServices().get(f), new HashMap<>(), "Delete service");
+                this.getServices().remove(f);
+            }
+        });
     }
-    public void addUpdateServicePoint(HashMap<String,ServicePoint> servicePointHashMap,Boolean restoreVisit,Boolean restoreUser)
-    {
+
+    public void addUpdateServicePoint(HashMap<String, ServicePoint> servicePointHashMap, Boolean restoreVisit, Boolean restoreUser, EventService eventService) {
         servicePointHashMap.forEach((k, v) -> {
 
-                if (this.getServicePoints().containsKey(k) && restoreVisit && this.getServicePoints().get(k).getVisit() != null) {
+            if (this.getServicePoints().containsKey(k) && restoreVisit && this.getServicePoints().get(k).getVisit() != null) {
 
-                    v.setVisit(this.getServicePoints().get(k).getVisit());
+                v.setVisit(this.getServicePoints().get(k).getVisit());
 
-                }
+            }
 
-                if (this.getServicePoints().containsKey(k) && restoreUser && this.getServicePoints().get(k).getUser() != null) {
-                    v.setUser(this.getServicePoints().get(k).getUser());
+            if (this.getServicePoints().containsKey(k) && restoreUser && this.getServicePoints().get(k).getUser() != null) {
+                v.setUser(this.getServicePoints().get(k).getUser());
 
-                }
-                this.getServicePoints().put(k, v);
+            }
+            if (this.getServicePoints().containsKey(k)) {
+                eventService.sendChangedEvent("config", false, this.getServicePoints().get(k), v, new HashMap<>(), "Update service point");
+            } else {
+                eventService.sendChangedEvent("config", false, null, v, new HashMap<>(), "Add service point");
+            }
+            this.getServicePoints().put(k, v);
 
         });
 
     }
-    public void deleteServicePoints(List<String> servicePointIds)
-    {
-        servicePointIds.forEach(f-> this.getServicePoints().remove(f));
+
+    public void deleteServicePoints(List<String> servicePointIds,EventService eventService) {
+        servicePointIds.forEach(f -> {
+                    if (this.getServicePoints().containsKey(f)) {
+                        eventService.sendChangedEvent("config", false, null, this.getServicePoints().get(f), new HashMap<>(), "Delete service point");
+                        this.getServicePoints().remove(f);
+                    }
+                }
+        );
     }
-    public void addUpdateQueues(HashMap<String, Queue> queueHashMap, Boolean restoreVisits)
-    {
+
+    public void addUpdateQueues(HashMap<String, Queue> queueHashMap, Boolean restoreVisits, EventService eventService) {
         queueHashMap.forEach((k, v) -> {
+
 
             if (this.getQueues().containsKey(k) && restoreVisits && !this.getQueues().get(k).getVisits().isEmpty()) {
 
                 v.getVisits().addAll(this.getQueues().get(k).getVisits());
 
             }
-
+            if (this.getServicePoints().containsKey(k)) {
+                eventService.sendChangedEvent("config", false, this.getQueues().get(k), v, new HashMap<>(), "Update queue");
+            } else {
+                eventService.sendChangedEvent("config", false, null, v, new HashMap<>(), "Add queue");
+            }
+            if (this.getServicePoints().containsKey(k)) {
+                eventService.sendChangedEvent("config", false, this.getServicePoints().get(k), v, new HashMap<>(), "Update service");
+            } else {
+                eventService.sendChangedEvent("config", false, null, v, new HashMap<>(), "Add service");
+            }
+            this.getQueues().put(k, v);
 
         });
 
     }
-    public void deleteQueues(List<String> sueueIds)
-    {
-        sueueIds.forEach(f-> this.getQueues().remove(f));
-    }
 
+    public void deleteQueues(List<String> sueueIds,EventService eventService) {
+
+        sueueIds.forEach(f -> {
+            eventService.sendChangedEvent("config", false, null, this.getQueues().get(f), new HashMap<>(), "Delete queue");
+            this.getQueues().remove(f);
+        });
+    }
 
 
 }

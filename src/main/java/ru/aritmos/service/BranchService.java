@@ -134,36 +134,36 @@ public class BranchService {
 
     public void addUpdateService(String branchId, HashMap<String, Service> serviceHashMap) {
         Branch branch = this.getBranch(branchId);
-        branch.addUpdateService(serviceHashMap);
+        branch.addUpdateService(serviceHashMap,eventService);
         this.add(branch.getId(), branch);
     }
 
     public void deleteServices(String branchId, List<String> serviceIds) {
         Branch branch = this.getBranch(branchId);
-        branch.deleteServices(serviceIds);
+        branch.deleteServices(serviceIds,eventService);
     }
 
     public void addUpdateServicePoint(String branchId, HashMap<String, ServicePoint> servicePointHashMap, Boolean restoreVisit, Boolean restoreUser) {
         Branch branch = this.getBranch(branchId);
-        branch.addUpdateServicePoint(servicePointHashMap, restoreVisit, restoreUser);
+        branch.addUpdateServicePoint(servicePointHashMap, restoreVisit, restoreUser,eventService);
         this.add(branch.getId(), branch);
     }
 
     public void deleteServicePoints(String branchId,List<String> servicePointIds) {
         Branch branch = this.getBranch(branchId);
-        branch.deleteServicePoints(servicePointIds);
+        branch.deleteServicePoints(servicePointIds,eventService);
         this.add(branch.getId(), branch);
     }
 
     public void addUpdateQueues(String branchId,HashMap<String, Queue> queueHashMap, Boolean restoreVisits) {
         Branch branch = this.getBranch(branchId);
-        branch.addUpdateQueues(queueHashMap,restoreVisits);
+        branch.addUpdateQueues(queueHashMap,restoreVisits,eventService);
         this.add(branch.getId(), branch);
     }
 
     public void deleteQueues(String branchId,List<String> queueIds) {
         Branch branch=this.getBranch(branchId);
-        branch.deleteQueues(queueIds);
+        branch.deleteQueues(queueIds,eventService);
         this.add(branch.getId(), branch);
     }
 
