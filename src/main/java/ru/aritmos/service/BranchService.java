@@ -132,15 +132,15 @@ public class BranchService {
 
     }
 
-    public void addUpdateService(String branchId, HashMap<String, Service> serviceHashMap) {
+    public void addUpdateService(String branchId, HashMap<String, Service> serviceHashMap,Boolean checkVisits) {
         Branch branch = this.getBranch(branchId);
-        branch.addUpdateService(serviceHashMap,eventService);
+        branch.addUpdateService(serviceHashMap,eventService,checkVisits);
         this.add(branch.getId(), branch);
     }
 
-    public void deleteServices(String branchId, List<String> serviceIds) {
+    public void deleteServices(String branchId, List<String> serviceIds,Boolean checkVisits) {
         Branch branch = this.getBranch(branchId);
-        branch.deleteServices(serviceIds,eventService);
+        branch.deleteServices(serviceIds,eventService,checkVisits);
     }
 
     public void addUpdateServicePoint(String branchId, HashMap<String, ServicePoint> servicePointHashMap, Boolean restoreVisit, Boolean restoreUser) {

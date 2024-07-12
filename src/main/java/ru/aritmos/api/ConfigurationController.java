@@ -45,21 +45,23 @@ public class ConfigurationController {
      * Добавление или обновление услуг
      * @param branchId идентификатор подразделения
      * @param serviceHashMap список услуг
+     * @param checkVisits флаг учитывания визитов при обновлении услуг (при наличии услуги в кааком нибудь визите - она обновляется)
      */
     @Tag(name = "Конфигурация отделений")
     @Put(uri = "/branches/{branchId}/services")
-    public void addUpdateService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body HashMap<String, Service> serviceHashMap) {
-        branchService.addUpdateService(branchId, serviceHashMap);
+    public void addUpdateService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body HashMap<String, Service> serviceHashMap,@QueryValue Boolean checkVisits) {
+        branchService.addUpdateService(branchId, serviceHashMap,checkVisits);
     }
     /**
      * Удаление услуг
      * @param branchId идентификатор подразделения
      * @param serviceIds список идентификаторов услуг
+     * @param checkVisits флаг учитывания визитов при обновлении услуг (при наличии услуги в кааком нибудь визите - она удаляется)
      */
     @Tag(name = "Конфигурация отделений")
     @Delete(uri = "/branches/{branchId}/services")
-    public void deleteServices(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> serviceIds) {
-        branchService.deleteServices(branchId, serviceIds);
+    public void deleteServices(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> serviceIds,@QueryValue Boolean checkVisits) {
+        branchService.deleteServices(branchId, serviceIds,checkVisits);
     }
 
     /**

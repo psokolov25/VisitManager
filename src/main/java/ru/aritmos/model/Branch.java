@@ -145,10 +145,43 @@ public class Branch extends BranchEntity {
         eventService.sendChangedEvent("*", false, oldVisit, visit, new HashMap<>(), "CHANGE");
     }
 
-    public void addUpdateService(HashMap<String, Service> serviceHashMap, EventService eventService) {
+    public void addUpdateService(HashMap<String, Service> serviceHashMap, EventService eventService, Boolean checkVisits) {
         serviceHashMap.forEach((k, v) ->
                 {
+
                     if (this.getServices().containsKey(k)) {
+                        if (checkVisits) {
+                            this.getAllVisits().forEach((k2, v2) ->
+                                    {
+                                        if (v2.getCurrentService() != null && v2.getCurrentService().getId().equals(k)) {
+                                            v2.setCurrentService(v);
+                                        }
+
+                                        List<Service> unservedServices = v2.getUnservedServices().stream().map(m -> m.getId().equals(k) ? v : m).toList();
+                                        v2.setUnservedServices(unservedServices);
+
+
+                                        List<Service> servedServices = v2.getServedServices().stream().map(m -> m.getId().equals(k) ? v : m).toList();
+                                        v2.setServedServices(servedServices);
+
+
+                                        this.updateVisit(v2, eventService);
+                                    }
+
+                            );
+                        }
+                        else {
+                            this.getAllVisits().forEach((k2, v2) ->
+                            {
+                                if (v2.getServedServices().stream().anyMatch(am -> am.getId().equals(k)) ||
+                                        v2.getUnservedServices().stream().anyMatch(am -> am.getId().equals(k)) ||
+                                        v2.getCurrentService().getId().equals(k)) {
+                                    throw new BusinessException("Delete service " + k + " is in use now!", eventService, HttpStatus.CONFLICT);
+                                }
+
+
+                            });
+                        }
                         eventService.sendChangedEvent("config", false, this.getServices().get(k), v, new HashMap<>(), "Update service");
                     } else {
                         eventService.sendChangedEvent("config", false, null, v, new HashMap<>(), "Add service");
@@ -158,12 +191,48 @@ public class Branch extends BranchEntity {
         );
     }
 
-    public void deleteServices(List<String> serviceIds, EventService eventService) {
-        serviceIds.forEach(f -> {
-            if (this.getServices().containsKey(f)) {
-                eventService.sendChangedEvent("config", false, null, this.getServices().get(f), new HashMap<>(), "Delete service");
-                this.getServices().remove(f);
+    public void deleteServices(List<String> serviceIds, EventService eventService, Boolean checkVisits) {
+        serviceIds.forEach(id -> {
+            if (this.getServices().containsKey(id)) {
+                if (checkVisits) {
+
+                    this.getAllVisits().forEach((k2, v2) ->
+                            {
+                                if (v2.getCurrentService() != null && v2.getCurrentService().getId().equals(id)) {
+                                    v2.setCurrentService(null);
+                                }
+
+                                List<Service> unservedServices = v2.getUnservedServices().stream().filter(f -> !f.getId().equals(id)).toList();
+                                v2.setUnservedServices(unservedServices);
+
+
+                                List<Service> servedServices = v2.getServedServices().stream().filter(f -> !f.getId().equals(id)).toList();
+                                v2.setServedServices(servedServices);
+
+
+                                this.updateVisit(v2, eventService);
+                            }
+                    );
+                } else {
+                    this.getAllVisits().forEach((k2, v2) ->
+                    {
+                        if (v2.getServedServices().stream().anyMatch(am -> am.getId().equals(id)) ||
+                                v2.getUnservedServices().stream().anyMatch(am -> am.getId().equals(id)) ||
+                                v2.getCurrentService().getId().equals(id)) {
+                            throw new BusinessException("Delete service " + id + " is in use now!", eventService, HttpStatus.CONFLICT);
+                        }
+
+
+                    });
+                }
+
+
             }
+            ;
+            eventService.sendChangedEvent("config", false, null, this.getServices().get(id), new HashMap<>(), "Delete service");
+            this.getServices().remove(id);
+
+
         });
     }
 
@@ -191,7 +260,7 @@ public class Branch extends BranchEntity {
 
     }
 
-    public void deleteServicePoints(List<String> servicePointIds,EventService eventService) {
+    public void deleteServicePoints(List<String> servicePointIds, EventService eventService) {
         servicePointIds.forEach(f -> {
                     if (this.getServicePoints().containsKey(f)) {
                         eventService.sendChangedEvent("config", false, null, this.getServicePoints().get(f), new HashMap<>(), "Delete service point");
@@ -226,7 +295,7 @@ public class Branch extends BranchEntity {
 
     }
 
-    public void deleteQueues(List<String> sueueIds,EventService eventService) {
+    public void deleteQueues(List<String> sueueIds, EventService eventService) {
 
         sueueIds.forEach(f -> {
             eventService.sendChangedEvent("config", false, null, this.getQueues().get(f), new HashMap<>(), "Delete queue");
