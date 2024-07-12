@@ -228,7 +228,7 @@ public class Branch extends BranchEntity {
 
 
             }
-            ;
+            
             eventService.sendChangedEvent("config", false, null, this.getServices().get(id), new HashMap<>(), "Delete service");
             this.getServices().remove(id);
 
