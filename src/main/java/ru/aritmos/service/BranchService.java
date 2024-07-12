@@ -13,12 +13,11 @@ import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
-import ru.aritmos.model.Branch;
-import ru.aritmos.model.Queue;
-import ru.aritmos.model.User;
+import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 @Slf4j
@@ -105,24 +104,26 @@ public class BranchService {
 
 
     }
+
     public void loginUser(User user) {
 
         Branch branch = this.getBranch(user.getBranchId());
-        branch.userLogin(user,eventService);
+        branch.userLogin(user, eventService);
         this.add(branch.getId(), branch);
 
 
     }
+
     public void logoutUser(User user) {
 
         Branch branch = this.getBranch(user.getBranchId());
-        branch.userLogout(user,eventService);
+        branch.userLogout(user, eventService);
         this.add(branch.getId(), branch);
 
 
     }
 
-    public Integer IncrementTicetCounter(String branchId, Queue queue) {
+    public Integer incrementTicetCounter(String branchId, Queue queue) {
 
         Branch branch = this.getBranch(branchId);
         Integer result = branch.incrementTicketCounter(queue);
@@ -131,6 +132,40 @@ public class BranchService {
 
     }
 
+    public void addUpdateService(String branchId, HashMap<String, Service> serviceHashMap) {
+        Branch branch = this.getBranch(branchId);
+        branch.addUpdateService(serviceHashMap);
+        this.add(branch.getId(), branch);
+    }
+
+    public void deleteServices(String branchId, List<String> serviceIds) {
+        Branch branch = this.getBranch(branchId);
+        branch.deleteServices(serviceIds);
+    }
+
+    public void addUpdateServicePoint(String branchId, HashMap<String, ServicePoint> servicePointHashMap, Boolean restoreVisit, Boolean restoreUser) {
+        Branch branch = this.getBranch(branchId);
+        branch.addUpdateServicePoint(servicePointHashMap, restoreVisit, restoreUser);
+        this.add(branch.getId(), branch);
+    }
+
+    public void deleteServicePoints(String branchId,List<String> servicePointIds) {
+        Branch branch = this.getBranch(branchId);
+        branch.deleteServicePoints(servicePointIds);
+        this.add(branch.getId(), branch);
+    }
+
+    public void addUpdateQueues(String branchId,HashMap<String, Queue> queueHashMap, Boolean restoreVisits) {
+        Branch branch = this.getBranch(branchId);
+        branch.addUpdateQueues(queueHashMap,restoreVisits);
+        this.add(branch.getId(), branch);
+    }
+
+    public void deleteQueues(String branchId,List<String> queueIds) {
+        Branch branch=this.getBranch(branchId);
+        branch.deleteQueues(queueIds);
+        this.add(branch.getId(), branch);
+    }
 
 
 }

@@ -160,7 +160,7 @@ public class VisitService {
                 if (segmentationRule.getQueue(visit, currentBranch).isPresent()) {
                     serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
 
-                    serviceQueue.setTicketCounter(branchService.IncrementTicetCounter(branchId,serviceQueue));
+                    serviceQueue.setTicketCounter(branchService.incrementTicetCounter(branchId,serviceQueue));
                     visit.setQueueId(serviceQueue.getId());
                     visit.setTicketId((serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter())));
                     VisitEvent event = VisitEvent.CREATED;

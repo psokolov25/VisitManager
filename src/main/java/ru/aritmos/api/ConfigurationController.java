@@ -1,12 +1,15 @@
 package ru.aritmos.api;
 
-import io.micronaut.http.annotation.Body;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.Queue;
+import ru.aritmos.model.Service;
+import ru.aritmos.model.ServicePoint;
 import ru.aritmos.service.BranchService;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +20,12 @@ import java.util.Map;
 @Controller("/configuration")
 public class ConfigurationController {
     BranchService branchService;
+
+    /**
+     * Обновление конфигурации отделения
+     * @param branchHashMap список отделений
+     * @return список отделений
+     */
     @Tag(name = "Конфигурация отделений")
     @Post(uri = "/branches")
     public Map<String, Branch> update(@Body Map<String, Branch> branchHashMap) {
@@ -31,4 +40,70 @@ public class ConfigurationController {
         branchHashMap.forEach((key, value) -> branchService.add(key, value));
         return branchService.getBranches();
     }
+
+    /**
+     * Добавление или обновление услуг
+     * @param branchId идентификатор подразделения
+     * @param serviceHashMap список услуг
+     */
+    @Tag(name = "Конфигурация отделений")
+    @Put(uri = "/branches/{branchId}/services")
+    public void addUpdateService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body HashMap<String, Service> serviceHashMap) {
+        branchService.addUpdateService(branchId, serviceHashMap);
+    }
+    /**
+     * Удаление услуг
+     * @param branchId идентификатор подразделения
+     * @param serviceIds список идентификаторов услуг
+     */
+    @Tag(name = "Конфигурация отделений")
+    @Delete(uri = "/branches/{branchId}/services")
+    public void deleteServices(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> serviceIds) {
+        branchService.deleteServices(branchId, serviceIds);
+    }
+
+    /**
+     * Добавление или обновление точек обслуживания
+     * @param branchId идентификатор подразделения
+     * @param servicePointHashMap список услуг
+     * @param restoreUser флаг восстановления сотрудника после обновления
+     * @param restoreVisit флаг восстановления визита после обновления
+     */
+    @Tag(name = "Конфигурация отделений")
+    @Put(uri = "/branches/{branchId}/servicePoints")
+    public void addUpdateServicePoint(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body HashMap<String, ServicePoint> servicePointHashMap, @QueryValue Boolean restoreVisit, @QueryValue Boolean restoreUser) {
+        branchService.addUpdateServicePoint(branchId, servicePointHashMap, restoreVisit, restoreUser);
+    }
+    /**
+     * Удаление точек обслуживания
+     * @param branchId идентификатор подразделения
+     * @param servicePointIds список идентификаторов точек обслуживания
+     */
+    @Tag(name = "Конфигурация отделений")
+    @Delete(uri = "/branches/{branchId}/servicePoints")
+    public void deleteServicePoints(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> servicePointIds) {
+        branchService.deleteServicePoints(branchId, servicePointIds);
+    }
+    /**
+     * Добавление или обновление очередей
+     * @param branchId идентификатор подразделения
+     * @param queueHashMap список услуг     *
+     * @param restoreVisits флаг восстановления визита после обновления
+     */
+    @Tag(name = "Конфигурация отделений")
+    @Put(uri = "/branches/{branchId}/queues")
+    public void addUpdateQueues(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body HashMap<String, Queue> queueHashMap, @QueryValue Boolean restoreVisits) {
+        branchService.addUpdateQueues(branchId, queueHashMap, restoreVisits);
+    }
+    /**
+     * Удаление очередей
+     * @param branchId идентификатор подразделения
+     * @param queueIds список идентификаторов очередей
+     */
+    @Tag(name = "Конфигурация отделений")
+    @Delete(uri = "/branches/{branchId}/queues")
+    public void deleteQueues(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> queueIds) {
+        branchService.deleteQueues(branchId, queueIds);
+    }
+
 }

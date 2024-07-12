@@ -144,5 +144,64 @@ public class Branch extends BranchEntity {
         });
         eventService.sendChangedEvent("*", false, oldVisit, visit, new HashMap<>(), "CHANGE");
     }
+    public void addUpdateService(HashMap<String,Service> serviceHashMap)
+    {
+        serviceHashMap.forEach((k, v) -> {
+            this.getServices().put(k,v);
+        });
+    }
+    public void deleteServices(List<String> serviceIds)
+    {
+        serviceIds.forEach(f-> {
+            this.getServices().remove(f);
+        });
+    }
+    public void addUpdateServicePoint(HashMap<String,ServicePoint> servicePointHashMap,Boolean restoreVisit,Boolean restoreUser)
+    {
+        servicePointHashMap.forEach((k, v) -> {
+
+                if (this.getServicePoints().containsKey(k) && restoreVisit && this.getServicePoints().get(k).getVisit() != null) {
+
+                    v.setVisit(this.getServicePoints().get(k).getVisit());
+
+                }
+
+                if (this.getServicePoints().containsKey(k) && restoreUser && this.getServicePoints().get(k).getUser() != null) {
+                    v.setUser(this.getServicePoints().get(k).getUser());
+
+                }
+                this.getServicePoints().put(k, v);
+
+        });
+
+    }
+    public void deleteServicePoints(List<String> servicePointIds)
+    {
+        servicePointIds.forEach(f-> {
+            this.getServicePoints().remove(f);
+        });
+    }
+    public void addUpdateQueues(HashMap<String, Queue> queueHashMap, Boolean restoreVisits)
+    {
+        queueHashMap.forEach((k, v) -> {
+
+            if (this.getQueues().containsKey(k) && restoreVisits && !this.getQueues().get(k).getVisits().isEmpty()) {
+
+                v.getVisits().addAll(this.getQueues().get(k).getVisits());
+
+            }
+
+
+        });
+
+    }
+    public void deleteQueues(List<String> sueueIds)
+    {
+        sueueIds.forEach(f-> {
+            this.getQueues().remove(f);
+        });
+    }
+
+
 
 }
