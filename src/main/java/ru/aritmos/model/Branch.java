@@ -11,7 +11,6 @@ import ru.aritmos.model.visit.Visit;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Отделение
@@ -70,9 +69,7 @@ public class Branch extends BranchEntity {
         });
         this.getQueues().forEach((k, v) -> {
             if(v.getVisits()!=null) {
-                v.getVisits().forEach(f -> {
-                    visits.put(f.getId(), f);
-                });
+                v.getVisits().forEach(f -> visits.put(f.getId(), f));
             }
         });
         return visits;
@@ -86,9 +83,7 @@ public class Branch extends BranchEntity {
                 .filter(f -> statuses.contains(f.getStatus()))
                 .forEach(
                         f ->
-                        {
-                            visits.put(f.getId(), f);
-                        }
+                                visits.put(f.getId(), f)
                 );
         return visits;
     }

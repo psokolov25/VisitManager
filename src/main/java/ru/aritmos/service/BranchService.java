@@ -45,6 +45,7 @@ public class BranchService {
 
     @Cacheable(parameters = {"key"})
     protected HashMap<String, Branch> getBranches(String key) {
+
         log.info("Getting branchInfo {}", key);
         HashMap<String, Branch> result = new HashMap<>();
         branches.values().forEach(f -> {

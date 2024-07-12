@@ -1,6 +1,5 @@
 package ru.aritmos.service.rules;
 
-import graphql.validation.AbstractRule;
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import ru.aritmos.model.Branch;
