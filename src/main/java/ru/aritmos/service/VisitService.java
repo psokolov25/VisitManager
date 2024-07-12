@@ -39,17 +39,10 @@ public class VisitService {
     public @NotNull HashMap<String, ServicePoint> getStringServicePointHashMap(String branchId) {
         Branch currentBranch = branchService.getBranch(branchId);
         HashMap<String, ServicePoint> freeServicePoints = new HashMap<>();
-        currentBranch.getServicePoints().entrySet().stream().filter(f -> f.getValue().getUser() == null).forEach(fe -> {
-            freeServicePoints.put(fe.getKey(), fe.getValue());
-        });
+        currentBranch.getServicePoints().entrySet().stream().filter(f -> f.getValue().getUser() == null).forEach(fe -> freeServicePoints.put(fe.getKey(), fe.getValue()));
         return freeServicePoints;
     }
-    public @NotNull void loginUser(String branchId,String servicePointId,String username)
-    {
 
-
-
-    }
     private void changedVisitEventSend(String visitState, Visit oldVisit, Visit newVisit, HashMap<String, String> params) {
         eventService.sendChangedEvent("*", false, oldVisit, newVisit, params, visitState);
     }

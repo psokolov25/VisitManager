@@ -95,7 +95,7 @@ public class Branch extends BranchEntity {
                 if (servicePoint.getUser() == null) {
                     servicePoint.setUser(user);
                 } else {
-                    throw new BusinessException(String.format("In servicePoint %s already %s logged in %s ", user.servicePoinrtId, servicePoint.getUser().getName()),eventService, HttpStatus.CONFLICT);
+                    throw new BusinessException(String.format("In servicePoint %s already %s logged in %s ", user.servicePoinrtId, servicePoint.getUser().getName(),servicePoint.getUser().getName()),eventService, HttpStatus.CONFLICT);
                 }
             } else {
                 throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePoinrtId, this.getName()), eventService, HttpStatus.CONFLICT);

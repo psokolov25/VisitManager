@@ -6,7 +6,6 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
@@ -69,7 +68,7 @@ public class ServicePointController {
 
     /**
      * Выход сотрудника
-     * @param user
+     * @param user сотрудник
      * @return сотрудник
      */
     @Tag(name = "Зона обслуживания")
