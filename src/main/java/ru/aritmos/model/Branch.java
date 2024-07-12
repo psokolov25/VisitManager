@@ -146,15 +146,11 @@ public class Branch extends BranchEntity {
     }
     public void addUpdateService(HashMap<String,Service> serviceHashMap)
     {
-        serviceHashMap.forEach((k, v) -> {
-            this.getServices().put(k,v);
-        });
+        serviceHashMap.forEach((k, v) -> this.getServices().put(k,v));
     }
     public void deleteServices(List<String> serviceIds)
     {
-        serviceIds.forEach(f-> {
-            this.getServices().remove(f);
-        });
+        serviceIds.forEach(f-> this.getServices().remove(f));
     }
     public void addUpdateServicePoint(HashMap<String,ServicePoint> servicePointHashMap,Boolean restoreVisit,Boolean restoreUser)
     {
@@ -177,9 +173,7 @@ public class Branch extends BranchEntity {
     }
     public void deleteServicePoints(List<String> servicePointIds)
     {
-        servicePointIds.forEach(f-> {
-            this.getServicePoints().remove(f);
-        });
+        servicePointIds.forEach(f-> this.getServicePoints().remove(f));
     }
     public void addUpdateQueues(HashMap<String, Queue> queueHashMap, Boolean restoreVisits)
     {
@@ -197,9 +191,7 @@ public class Branch extends BranchEntity {
     }
     public void deleteQueues(List<String> sueueIds)
     {
-        sueueIds.forEach(f-> {
-            this.getQueues().remove(f);
-        });
+        sueueIds.forEach(f-> this.getQueues().remove(f));
     }
 
 
