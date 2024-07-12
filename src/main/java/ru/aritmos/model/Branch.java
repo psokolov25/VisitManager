@@ -31,6 +31,7 @@ public class Branch extends BranchEntity {
         super(key, name);
     }
 
+
     /**
      * Точки входа
      */
@@ -207,6 +208,17 @@ public class Branch extends BranchEntity {
                             {
                                 if (v2.getCurrentService() != null && v2.getCurrentService().getId().equals(id)) {
                                     v2.setCurrentService(null);
+                                    if(!v2.getUnservedServices().isEmpty())
+                                    {
+                                        v2.setCurrentService(v2.getUnservedServices().get(0));
+                                        v2.getUnservedServices().remove(0);
+                                    }
+                                    else
+                                    {
+                                        v2.setQueueId(null);
+                                        v2.setServicePointId(null);
+
+                                    }
                                 }
 
                                 List<Service> unservedServices = v2.getUnservedServices().stream().filter(f -> !f.getId().equals(id)).toList();
