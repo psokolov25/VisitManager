@@ -3,7 +3,6 @@ package ru.aritmos.model;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.*;
-import lombok.extern.jackson.Jacksonized;
 import ru.aritmos.model.visit.Visit;
 
 import java.util.ArrayList;

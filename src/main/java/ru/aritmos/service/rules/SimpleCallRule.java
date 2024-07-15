@@ -1,8 +1,6 @@
 package ru.aritmos.service.rules;
 
-import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -14,7 +12,6 @@ import ru.aritmos.model.Queue;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

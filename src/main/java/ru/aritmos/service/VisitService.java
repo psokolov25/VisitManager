@@ -1,6 +1,5 @@
 package ru.aritmos.service;
 
-import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.scheduling.TaskExecutors;

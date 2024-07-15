@@ -101,7 +101,7 @@ public class Visit {
     /**
      * Лимит ожидания после возвращения визита в очередь
      */
-    Long returnTimeDelay=0L;
+    Long returnTimeDelay;
     /**
      * Массив не обслуженных услуг
      */

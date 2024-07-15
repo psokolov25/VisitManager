@@ -2,7 +2,6 @@ package ru.aritmos.model;
 
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
