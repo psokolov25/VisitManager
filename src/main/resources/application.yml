@@ -21,6 +21,7 @@ micronaut:
       callVisit: simple  #custom|simple
       segmentation: simple  #custom|simple
       callRuleApiUrl: http://localhost:8085/customcallrule
+    returnTimeDelay: 8000
     name: entrypoint
     dataBusUrl: http://192.168.8.45:8082
     dataBusUrlRetryPeriod: '1s'

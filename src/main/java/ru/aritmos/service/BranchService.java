@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @SerdeImport(ParametersKey.class)
 public class BranchService {
 
-    Map<String, Branch> branches = new ConcurrentHashMap<>();
+    HashMap<String, Branch> branches = new HashMap<>();
     @Inject
     EventService eventService;
     @Value("${micronaut.application.name}")
@@ -45,7 +45,7 @@ public class BranchService {
         return result;
     }
 
-    @Cacheable(parameters = {"id"})
+    //@Cacheable(parameters = {"id"}, value = {"branches"})
     public HashMap<String, Branch> getBranches(String id) {
 
         log.info("Getting branchInfo {}", id);

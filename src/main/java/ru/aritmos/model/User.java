@@ -16,8 +16,8 @@ import java.util.List;
 @Data
 @Serdeable
 @Introspected
-@AllArgsConstructor
-public class User extends BranchEntity{
+
+public class User extends BranchEntityWithVisits{
     public User(String id,String name){
         super(id,name);
     }

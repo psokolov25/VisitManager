@@ -42,14 +42,14 @@ public class Transaction {
         this.events = new ArrayList<>();
         this.startTime = startTime;
         if(visit!=null) {
-            this.endTime = visit.getEndDate() != null ? visit.getEndDate() : null;
+            this.endTime = visit.getEndDateTime() != null ? visit.getEndDateTime() : null;
             this.queueId = visit.getQueueId();
             this.employeeId = visit.getUserName();
             this.service = visit.getCurrentService();
             this.servicePointId = visit.getServicePointId();
-            this.startServingTime = visit.getStartServingDate();
-            this.callTime = visit.getCallDate();
-            this.transferTime = visit.getTransferDate();
+            this.startServingTime = visit.getStartServingDateTime();
+            this.callTime = visit.getCallDateTime();
+            this.transferTime = visit.getTransferDateTime();
         }
 
     }

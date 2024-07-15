@@ -26,6 +26,7 @@ import java.util.List;
 
 
 public class Branch extends BranchEntity {
+    HashMap<String,Object> parameterMap=new HashMap<>();
 
     public Branch(String key, String name) {
         super(key, name);
@@ -296,6 +297,7 @@ public class Branch extends BranchEntity {
             if (this.getQueues().containsKey(k) && restoreVisits && !this.getQueues().get(k).getVisits().isEmpty()) {
 
                 v.getVisits().addAll(this.getQueues().get(k).getVisits());
+                v.setTicketCounter(this.getQueues().get(k).getTicketCounter());
 
             }
             if (this.getServicePoints().containsKey(k)) {

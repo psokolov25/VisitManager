@@ -53,32 +53,38 @@ public class Visit {
     /**
      * Дата создания визита
      */
-    ZonedDateTime createDate;
+    ZonedDateTime createDateTime;
     /**
      * Дата обновления
      */
-    ZonedDateTime updateDate;
+    ZonedDateTime updateDateTime;
     /**
      * Дата перевода
      */
-    ZonedDateTime transferDate;
+    ZonedDateTime transferDateTime;
+
+    /**
+     * Дата возвращения
+     */
+    ZonedDateTime returnDateTime;
+
     /**
      * Дата вызова
      */
-    ZonedDateTime callDate;
+    ZonedDateTime callDateTime;
     /**
      * Дата начала обслуживания
      */
-    ZonedDateTime startServingDate;
+    ZonedDateTime startServingDateTime;
     /**
      * Дата завершения обслуживания
      */
-    ZonedDateTime servedDate;
+    ZonedDateTime servedDateTime;
     /**
      * Дата завершения визита
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    ZonedDateTime endDate;
+    ZonedDateTime endDateTime;
     /**
      * Версия визита
      */
@@ -91,9 +97,15 @@ public class Visit {
      * Логин вызвавшего сотрудника
      */
     String userName;
+
+    /**
+     * Лимит ожидания после возвращения визита в очередь
+     */
+    Long returnTimeDelay=0L;
     /**
      * Массив не обслуженных услуг
      */
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Service> unservedServices;
     /**
@@ -136,8 +148,24 @@ public class Visit {
     public Long getWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
-        waitingTime = unit.between(transferDate, ZonedDateTime.now());
+        waitingTime = unit.between(transferDateTime, ZonedDateTime.now());
         return waitingTime;
+    }
+    /**
+     * Время прошедшее от возвращения в очередь
+     *
+     */
+    Long returningTime;
+    @JsonGetter
+    public Long getReturningTime() {
+        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+        if(this.returnDateTime!=null)
+        {
+            returningTime = unit.between(this.returnDateTime, ZonedDateTime.now());
+            return returningTime;
+        }
+        return 0L;
+
     }
 
     /**
@@ -150,7 +178,7 @@ public class Visit {
     public Long getTotalWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
-        waitingTime = unit.between(createDate, ZonedDateTime.now());
+        waitingTime = unit.between(createDateTime, ZonedDateTime.now());
         return waitingTime;
     }
 
@@ -163,11 +191,12 @@ public class Visit {
      */
     Long servingTime;
 
+
     @JsonGetter
     public Long getServingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        if (this.startServingDate != null) {
-            servingTime = unit.between(this.startServingDate, Objects.requireNonNullElseGet(this.servedDate, ZonedDateTime::now));
+        if (this.startServingDateTime != null) {
+            servingTime = unit.between(this.startServingDateTime, Objects.requireNonNullElseGet(this.servedDateTime, ZonedDateTime::now));
             return servingTime;
         }
         return 0L;

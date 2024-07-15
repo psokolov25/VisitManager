@@ -1,6 +1,8 @@
 package ru.aritmos.service.rules;
 
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -24,10 +26,15 @@ public class SimpleCallRule implements CallRule {
     @Inject
     EventService eventService;
 
+
+
     @Override
+
+
     public Optional<Visit> call(Branch branch, ServicePoint servicePoint) {
 
         if (servicePoint.getUser() != null) {
+
             String workprofileId = servicePoint.getUser().getCurrentWorkProfileId();
             if (branch.getWorkProfiles().containsKey(workprofileId)) {
                 List<String> queueIds = branch.getWorkProfiles().get(workprofileId).getQueueIds();
@@ -37,7 +44,21 @@ public class SimpleCallRule implements CallRule {
                         stream().
                         filter(f -> queueIds.contains(f.getKey())).
                         map(Map.Entry::getValue).toList();
-                return availableQueues.stream().map(Queue::getVisits).flatMap(List::stream).toList().stream().max(Comparator.comparing(Visit::getWaitingTime));
+                Optional<Visit> result = availableQueues.stream()
+                        .map(Queue::getVisits).flatMap(List::stream).toList().stream().filter(f -> f.getReturnDateTime() == null || f.getReturningTime() >  f.getReturnTimeDelay()).max((o1, o2) ->
+                                o1.getReturningTime().compareTo(o2.getReturningTime()) == 0 ?
+                                        o1.getWaitingTime().compareTo(o2.getWaitingTime()) :
+                                        o1.getReturningTime().compareTo(o2.getReturningTime()));
+
+
+                if (result.isPresent()) {
+                    result.get().setReturnDateTime(null);
+                    return result;
+                } else {
+                    return Optional.empty();
+                }
+
+
             }
 
 

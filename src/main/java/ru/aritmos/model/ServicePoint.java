@@ -14,7 +14,7 @@ import ru.aritmos.model.visit.Visit;
 @Serdeable
 @Introspected
 
-public class ServicePoint extends BranchEntity {
+public class ServicePoint extends BranchEntityWithVisits {
     public  ServicePoint(String id,String name)
     {
         super(id,name);
