@@ -1,7 +1,6 @@
 package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
@@ -59,7 +58,7 @@ public class Transaction {
 
         if (visit != null) {
             this.startTime = visit.getCreateDateTime();
-            this.endTime = visit.getEndDateTime() != null ? visit.getEndDateTime() : null;
+            this.endTime = visit.getEndDateTime();
             this.queueId = visit.getQueueId();
             this.employeeId = visit.getUserName();
             this.service = visit.getCurrentService();
