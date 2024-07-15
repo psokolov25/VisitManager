@@ -118,10 +118,9 @@ public class Visit {
 
     public void setTransaction(VisitEvent event, EventService eventService) {
         ArrayList<VisitEvent> events = new ArrayList<>();
+        events.add(event);
         if (this.currentTransaction != null) {
-            if (currentTransaction.getVisitEvents() != null) {
-                events = new ArrayList<>(currentTransaction.getVisitEvents());
-            }
+
             if (this.transactions == null) {
                 this.transactions = new ArrayList<>();
             }
@@ -132,7 +131,7 @@ public class Visit {
 
         this.currentTransaction = (new Transaction( this));
         this.currentTransaction.getVisitEvents().addAll(events);
-        this.currentTransaction.addEvent(event, eventService);
+        //this.currentTransaction.addEvent(event, eventService);
 
         this.status = event.getState().name();
         eventService.send("stat", false, Event.builder()
