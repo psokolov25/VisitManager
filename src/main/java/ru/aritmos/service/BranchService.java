@@ -6,7 +6,6 @@ import io.micronaut.cache.annotation.CachePut;
 import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.cache.interceptor.ParametersKey;
 import io.micronaut.context.annotation.Value;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -38,7 +37,7 @@ public class BranchService {
     public Branch getBranch(String key) throws BusinessException {
         Branch result = branches.get(key);
         if (result == null) {
-            throw new BusinessException("Branch not found!!", eventService, HttpStatus.NOT_FOUND);
+            throw new BusinessException("Branch not found!!", eventService);
         }
         log.info("Getting branchInfo {}", result);
         return result;
