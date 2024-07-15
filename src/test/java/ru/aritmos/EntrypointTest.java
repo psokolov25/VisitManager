@@ -145,7 +145,8 @@ class EntrypointTest {
 
         Thread.sleep(2000);
 
-        Visit visit2=servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+        Visit visit2;
+        visit2 = servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
 
         Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
 

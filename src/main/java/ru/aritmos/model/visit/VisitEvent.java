@@ -1,9 +1,13 @@
 package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micronaut.serde.annotation.Serdeable;
+import lombok.Data;
 import lombok.Getter;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +17,13 @@ import java.util.Map;
 public enum VisitEvent {
     CREATED, PLACED_IN_QUEUE, CALLED, RECALLED, START_SERVING, STOP_SERVING, NO_SHOW, END, TRANSFER_TO_USER_POOL, TRANSFER_TO_SERVICE_POOL, TRANSFER_TO_SERVICE_POINT_POOL, BACK_TO_QUEUE, TRANSFER_TO_QUEUE, ADD_SERVICE;
     VisitState visitState;
-
+    @Getter
+    @JsonFormat
+    public ZonedDateTime dateTime;
+    @JsonGetter
+    public ZonedDateTime getDateTime() {
+        return dateTime;
+    }
     @Getter
     final Map <String, String> parameters=new HashMap<>();
 

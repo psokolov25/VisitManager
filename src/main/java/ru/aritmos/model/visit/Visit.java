@@ -117,25 +117,43 @@ public class Visit {
     Transaction currentTransaction;
 
     public void setTransaction(VisitEvent event, EventService eventService) {
-        ArrayList<VisitEvent> events=new ArrayList<>();
+        ArrayList<VisitEvent> events = new ArrayList<>();
         if (this.currentTransaction != null) {
-            if(currentTransaction.getEvents()!=null)
-            {
-                events = new ArrayList<>(currentTransaction.getEvents());
+            if (currentTransaction.getVisitEvents() != null) {
+                events = new ArrayList<>(currentTransaction.getVisitEvents());
+            }
+            if (this.transactions == null) {
+                this.transactions = new ArrayList<>();
             }
             this.transactions.add(currentTransaction);
 
 
         }
 
-        this.currentTransaction=(new Transaction(ZonedDateTime.now(),this));
-        this.currentTransaction.getEvents().addAll(events);
-        this.currentTransaction.addEvent(event,eventService);
+        this.currentTransaction = (new Transaction( this));
+        this.currentTransaction.getVisitEvents().addAll(events);
+        this.currentTransaction.addEvent(event, eventService);
 
         this.status = event.getState().name();
-        eventService.send("*", false, Event.builder()
+        eventService.send("stat", false, Event.builder()
                 .eventDate(ZonedDateTime.now())
-                .eventType("TRANSACTION_"+event.name())
+                .eventType("TRANSACTION_" + event.name())
+                .body(this)
+                .build());
+
+    }
+
+    public void updateTransaction(VisitEvent event, EventService eventService) {
+        List<VisitEvent> events = this.getCurrentTransaction().getVisitEvents();
+
+        this.currentTransaction = (new Transaction(this));
+        this.currentTransaction.getVisitEvents().addAll(events);
+        this.currentTransaction.addEvent(event, eventService);
+
+        this.status = event.getState().name();
+        eventService.send("stat", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("TRANSACTION_" + event.name())
                 .body(this)
                 .build());
 
@@ -147,20 +165,23 @@ public class Visit {
 
     public Long getWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-
-        waitingTime = unit.between(transferDateTime, ZonedDateTime.now());
-        return waitingTime;
+        if (this.transferDateTime != null) {
+            waitingTime = unit.between(transferDateTime, ZonedDateTime.now());
+            return waitingTime;
+        } else {
+            return 0L;
+        }
     }
+
     /**
      * Время прошедшее от возвращения в очередь
-     *
      */
     Long returningTime;
+
     @JsonGetter
     public Long getReturningTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        if(this.returnDateTime!=null)
-        {
+        if (this.returnDateTime != null) {
             returningTime = unit.between(this.returnDateTime, ZonedDateTime.now());
             return returningTime;
         }

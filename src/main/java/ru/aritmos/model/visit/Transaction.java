@@ -1,5 +1,7 @@
 package ru.aritmos.model.visit;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
@@ -25,7 +27,6 @@ public class Transaction {
     ZonedDateTime startTime;
     ZonedDateTime callTime;
     ZonedDateTime startServingTime;
-    ZonedDateTime transferTime;
     ZonedDateTime endTime;
     String servicePointId;
     String employeeId;
@@ -33,15 +34,31 @@ public class Transaction {
     int servingSLA;
     TransactionCompletionStatus completionStatus;
 
-    List<VisitEvent> events;
+
+    List<VisitEvent> visitEvents;
+
+    @JsonGetter
+    public ArrayList<VisitEventDateTime> getEvents() {
+
+        ArrayList<VisitEventDateTime> result = new ArrayList<>();
+        this.visitEvents.forEach(f -> {
+            VisitEventDateTime visitEventDateTime = VisitEventDateTime.builder()
+                    .visitEvent(f)
+                    .eventDateTime(f.dateTime)
+                    .build();
+            result.add(visitEventDateTime);
+        });
+        return result;
+    }
 
 
-
-    public Transaction(ZonedDateTime startTime, Visit visit) {
+    public Transaction(Visit visit) {
         this.id = UUID.randomUUID().toString();
-        this.events = new ArrayList<>();
-        this.startTime = startTime;
-        if(visit!=null) {
+        this.visitEvents = new ArrayList<>();
+
+
+        if (visit != null) {
+            this.startTime = visit.getCreateDateTime();
             this.endTime = visit.getEndDateTime() != null ? visit.getEndDateTime() : null;
             this.queueId = visit.getQueueId();
             this.employeeId = visit.getUserName();
@@ -49,25 +66,27 @@ public class Transaction {
             this.servicePointId = visit.getServicePointId();
             this.startServingTime = visit.getStartServingDateTime();
             this.callTime = visit.getCallDateTime();
-            this.transferTime = visit.getTransferDateTime();
+            this.endTime = visit.getEndDateTime();
+
+
         }
 
     }
 
     public void addEvent(VisitEvent event, EventService eventService) {
-        if (events.isEmpty()) {
+        if (visitEvents.isEmpty()) {
             if (!event.equals(VisitEvent.CREATED))
                 throw new BusinessException("wasn't early created", eventService, HttpStatus.CONFLICT);
-            else events.add(event);
+            else visitEvents.add(event);
             eventService.send("*", true, Event.builder()
                     .eventDate(ZonedDateTime.now())
                     .eventType(event.name())
                     .body(this).build()
             );
         } else {
-            VisitEvent prevEvent = events.get(events.size() - 1);
+            VisitEvent prevEvent = visitEvents.get(visitEvents.size() - 1);
             if (prevEvent.canBeNext(event)) {
-                events.add(event);
+                visitEvents.add(event);
                 eventService.send("*", true, Event.builder()
                         .eventDate(ZonedDateTime.now())
                         .eventType(event.name())
