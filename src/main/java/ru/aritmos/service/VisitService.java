@@ -421,6 +421,15 @@ public class VisitService {
         return visit;
 
     }
+    public Visit visitCall(String branchId, String servicePointId, String visitId) {
+        if(this.getAllVisits(branchId).containsKey(visitId)) {
+            Visit visit = this.getAllVisits(branchId).get(visitId);
+            return this.visitCall(branchId, servicePointId, visit);
+        }
+        throw new BusinessException(String.format("Visit %s not found!",visitId), eventService, HttpStatus.NOT_FOUND);
+
+
+    }
 
     public Visit visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
 

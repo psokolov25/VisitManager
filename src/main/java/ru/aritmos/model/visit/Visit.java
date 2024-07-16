@@ -159,7 +159,7 @@ public class Visit {
     public Long getWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
-            waitingTime = unit.between(this.getReturnDateTime()!=null?this.getReturnDateTime():this.createDateTime, this.getStartServingDateTime()!=null?this.getStartServingDateTime():ZonedDateTime.now());
+            waitingTime = unit.between(this.getReturnDateTime()!=null?this.getReturnDateTime():this.getCreateDateTime()!=null?this.getCreateDateTime():ZonedDateTime.now(), this.getStartServingDateTime()!=null?this.getStartServingDateTime():ZonedDateTime.now());
             return waitingTime;
 
     }
@@ -190,8 +190,8 @@ public class Visit {
     public Long getTotalWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
-        waitingTime = unit.between(createDateTime, ZonedDateTime.now());
-        return waitingTime;
+        totalWaitingTime = unit.between(this.getCreateDateTime()!=null?this.getCreateDateTime():ZonedDateTime.now(), this.getEndDateTime()!=null?this.getEndDateTime():ZonedDateTime.now());
+        return totalWaitingTime;
     }
 
     /**

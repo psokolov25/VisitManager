@@ -71,7 +71,7 @@ public class ServicePointController {
     }
 
     /**
-     * Выход сотрудника
+     * Закрытие рабочей станции
      * @param user сотрудник
      * @return сотрудник
      */
@@ -179,16 +179,16 @@ public class ServicePointController {
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visit          визит
+     * @param visitId         идентификатор визита
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
-    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/call", consumes = "application/json", produces = "application/json")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/visits/{visitId}call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit callVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+    public Visit callVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @PathVariable String visitId) {
 
 
-        return visitService.visitCall(branchId, servicePointId, visit);
+        return visitService.visitCall(branchId, servicePointId, visitId);
 
 
     }
@@ -295,7 +295,7 @@ public class ServicePointController {
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
-    @Get(uri = "/branches/{branchId}/servicepoints/{servicePointId}/call", consumes = "application/json", produces = "application/json")
+    @Post(uri = "/branches/{branchId}/servicepoints/{servicePointId}/call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<Visit> visitCall(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
