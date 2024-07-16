@@ -164,7 +164,7 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Get(uri = "/branches/{branchId}/queues/{queueId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit getVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @PathVariable String visitId) {
+    public Visit getVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "55da9b66-c928-4d47-9811-dbbab20d3780") String queueId, @PathVariable String visitId) {
 
 
         return visitService.getVisits(branchId, queueId).stream()
@@ -194,7 +194,7 @@ public class ServicePointController {
     }
 
     /**
-     * Вызов наиболее ожидающего визита c ожиданием подтверждения
+     * Вызов наиболее ожидающего визита с ожиданием подтверждения
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
@@ -212,7 +212,7 @@ public class ServicePointController {
     }
 
     /**
-     * Вызов визита c ожиданием подтверждения
+     * Вызов визита с ожиданием подтверждения
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
@@ -231,7 +231,7 @@ public class ServicePointController {
     }
 
     /**
-     * Отмена вызова из за того, что клиент не пришел
+     * Отмена вызова из-за того, что клиент не пришел
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
