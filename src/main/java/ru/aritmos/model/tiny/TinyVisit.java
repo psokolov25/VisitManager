@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Сокращенный визит
+ * Сокращенное представление визита
  */
 @Data
 @EqualsAndHashCode
@@ -23,7 +23,7 @@ import java.time.temporal.ChronoUnit;
 @ToString
 public class TinyVisit {
     /**
-     * Дата создания визита
+     *Дата и время создания визита
      */
     ZonedDateTime createDate;
     /**
@@ -31,7 +31,7 @@ public class TinyVisit {
      */
     String id;
     /**
-     * Талон
+     * Номер талона
      */
     String ticketId;
     /**
@@ -39,7 +39,7 @@ public class TinyVisit {
      */
     Service currentService;
     /**
-     * Дата перевода
+     * Дата и время перевода
      */
     ZonedDateTime transferDate;
     @JsonGetter
@@ -49,7 +49,7 @@ public class TinyVisit {
         return waitingTime;
     }
     /**
-     * Полное Время ожидания в секундах
+     * Время ожидания в секундах
      */
     Long waitingTime;
 

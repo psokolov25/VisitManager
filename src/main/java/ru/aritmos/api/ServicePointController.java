@@ -250,7 +250,7 @@ public class ServicePointController {
     }
 
     /**
-     * Вызов визита c ожиданием подтверждения
+     * Повторный вызов визита c ожиданием подтверждения
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
@@ -422,7 +422,7 @@ public class ServicePointController {
     }
 
     /**
-     * Завершение визита
+     * Завершение обслуживания (нормальное)
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания

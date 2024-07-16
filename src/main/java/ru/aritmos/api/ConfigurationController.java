@@ -24,7 +24,7 @@ public class ConfigurationController {
     BranchService branchService;
 
     /**
-     * Обновление конфигурации отделения
+     * Обновление конфигурации отделений
      * @param branchHashMap список отделений
      * @return список отделений
      */

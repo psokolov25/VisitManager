@@ -105,7 +105,6 @@ public class Transaction {
 
         if (visit != null) {
             this.startDateTime = visit.getCreateDateTime();
-            this.endDateTime = visit.getEndDateTime();
             this.queueId = visit.getQueueId();
             this.employeeId = visit.getUserName();
             this.service = visit.getCurrentService();
