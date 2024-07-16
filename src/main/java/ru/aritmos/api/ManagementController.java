@@ -4,6 +4,8 @@ import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import ru.aritmos.events.services.EventService;
@@ -39,6 +41,7 @@ public class ManagementController {
      */
     @Tag(name = "Информация об отделении")
     @Get(uri = "/branches/{id}")
+    @ExecuteOn(TaskExecutors.IO)
     public Branch getBranch(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4")  String id) {
         Branch branch;
         try {
@@ -56,6 +59,7 @@ public class ManagementController {
      */
     @Tag(name = "Информация об отделении")
     @Get(uri = "/branches")
+    @ExecuteOn(TaskExecutors.IO)
     public Map<String,Branch> getBranches() {
        return branchService.getBranches("0");
     }

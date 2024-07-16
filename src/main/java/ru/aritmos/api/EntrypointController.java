@@ -4,6 +4,8 @@ import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import ru.aritmos.events.model.Event;
@@ -52,6 +54,7 @@ public class EntrypointController {
 
     @Tag(name = "Зона ожидания")
     @Post(uri = "/branches/{branchId}/entrypoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
     public Visit createVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "2") String entryPointId, @Body ArrayList<String> serviceIds, @QueryValue Boolean printTicket) {
         Branch branch;
         try {
@@ -90,6 +93,7 @@ public class EntrypointController {
 
     @Tag(name = "Зона ожидания")
     @Get(uri = "/branches/{branchId}/services", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
     public List<Service> GetAllServices(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
         try {
             return services.getAllAvilableServies(branchId);

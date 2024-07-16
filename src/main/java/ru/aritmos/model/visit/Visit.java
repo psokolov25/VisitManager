@@ -54,10 +54,7 @@ public class Visit {
      * Дата создания визита
      */
     ZonedDateTime createDateTime;
-    /**
-     * Дата обновления
-     */
-    ZonedDateTime updateDateTime;
+
     /**
      * Дата перевода
      */
@@ -85,10 +82,7 @@ public class Visit {
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     ZonedDateTime endDateTime;
-    /**
-     * Версия визита
-     */
-    Integer version;
+
     /**
      * Идентификатор точки обслуживания
      */
@@ -164,12 +158,10 @@ public class Visit {
 
     public Long getWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        if (this.transferDateTime != null) {
-            waitingTime = unit.between(transferDateTime, ZonedDateTime.now());
+
+            waitingTime = unit.between(this.getReturnDateTime()!=null?this.getReturnDateTime():this.createDateTime, this.getStartServingDateTime()!=null?this.getStartServingDateTime():ZonedDateTime.now());
             return waitingTime;
-        } else {
-            return 0L;
-        }
+
     }
 
     /**
@@ -215,11 +207,10 @@ public class Visit {
     @JsonGetter
     public Long getServingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        if (this.startServingDateTime != null) {
-            servingTime = unit.between(this.startServingDateTime, Objects.requireNonNullElseGet(this.servedDateTime, ZonedDateTime::now));
+
+            servingTime = unit.between(this.startServingDateTime!=null?this.getStartServingDateTime():ZonedDateTime.now(),this.getServedDateTime()!=null?this.getServedDateTime():ZonedDateTime.now());
             return servingTime;
-        }
-        return 0L;
+
     }
 
     /**

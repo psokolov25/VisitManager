@@ -162,15 +162,16 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
         Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
+        Thread.sleep(10000);
         if(servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc" ).isPresent()){
         Long servtime=servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc" ).get().getServingTime();
         Assertions.assertEquals(servtime,0);
-        Thread.sleep(2000);
+        Thread.sleep(8000);
         servicePointController.visitReCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
-        Thread.sleep(2000);
+        Thread.sleep(6000);
         servicePointController.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
 
-        Thread.sleep(2000);
+        Thread.sleep(9000);
 
         Visit visit2=servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
 

@@ -151,7 +151,7 @@ public class VisitService {
                         //.transferDateTime(ZonedDateTime.now())
                         // .endDateTime(ZonedDateTime.now())
                         .servicePointId(null)
-                        .version(1)
+
                         .servedServices(new ArrayList<>())
                         .transactions(new ArrayList<>())
                         .parameterMap(new HashMap<>())
@@ -245,8 +245,7 @@ public class VisitService {
                 assert queue != null;
                 visit.setQueueId(queue.getId());
                 visit.setServicePointId(null);
-                visit.setUpdateDateTime(ZonedDateTime.now());
-                visit.setVersion(visit.getVersion() + 1);
+
                 visit.setTransferDateTime(ZonedDateTime.now());
                 queue.getVisits().add(visit);
                 currentBranch.getQueues().put(queue.getId(), queue);
@@ -285,8 +284,7 @@ public class VisitService {
         assert queue != null;
         visit.setQueueId(queue.getId());
 
-        visit.setUpdateDateTime(ZonedDateTime.now());
-        visit.setVersion(visit.getVersion() + 1);
+
 
         queue.getVisits().add(visit);
         currentBranch.getQueues().put(queue.getId(), queue);
@@ -329,10 +327,15 @@ public class VisitService {
                     visit.setServedDateTime(ZonedDateTime.now());
                     event = VisitEvent.STOP_SERVING;
                     event.dateTime = ZonedDateTime.now();
-                    visit.setServedDateTime(ZonedDateTime.now());
+
                     visit.updateTransaction(event, eventService);
                     event = VisitEvent.BACK_TO_QUEUE;
                     event.dateTime = ZonedDateTime.now();
+                    visit.setReturnDateTime(ZonedDateTime.now());
+                    visit.setCallDateTime(null);
+
+                    visit.setStartServingDateTime(null);
+
                     visit.setTransaction(event, eventService);
                     visit.setServicePointId(null);
                     //Queue queue = currentBranch.getQueues().get(queueIdToReturn);
@@ -374,8 +377,7 @@ public class VisitService {
         Branch currentBranch = branchService.getBranch(branchId);
         Visit oldVisit = visit.toBuilder().build();
         Optional<Queue> queue;
-        visit.setUpdateDateTime(ZonedDateTime.now());
-        visit.setVersion(visit.getVersion() + 1);
+
         visit.setStatus("CALLED");
         visit.setCallDateTime(ZonedDateTime.now());
 
@@ -423,8 +425,7 @@ public class VisitService {
     public Visit visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
         Visit oldVisit = visit.toBuilder().build();
-        visit.setUpdateDateTime(ZonedDateTime.now());
-        visit.setVersion(visit.getVersion() + 1);
+
         visit.setStatus("CALLED");
         visit.setCallDateTime(ZonedDateTime.now());
 
@@ -446,8 +447,7 @@ public class VisitService {
     public Visit visitReCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
         Visit oldVisit = visit.toBuilder().build();
-        visit.setUpdateDateTime(ZonedDateTime.now());
-        visit.setVersion(visit.getVersion() + 1);
+
         visit.setStatus("RECALLED");
         visit.setCallDateTime(ZonedDateTime.now());
 
@@ -470,8 +470,7 @@ public class VisitService {
 
         Visit oldVisit = visit.toBuilder().build();
 
-        visit.setUpdateDateTime(ZonedDateTime.now());
-        visit.setVersion(visit.getVersion() + 1);
+
         visit.setStatus("START_SERVING");
         visit.setStartServingDateTime(ZonedDateTime.now());
         visit.getParameterMap().put("LastQueueId", visit.getQueueId());
@@ -497,8 +496,7 @@ public class VisitService {
 
         Visit oldVisit = visit.toBuilder().build();
 
-        visit.setUpdateDateTime(ZonedDateTime.now());
-        visit.setVersion(visit.getVersion() + 1);
+
         visit.setStatus("NO_SHOW");
         visit.setStartServingDateTime(ZonedDateTime.now());
         visit.setQueueId(null);
@@ -575,8 +573,7 @@ public class VisitService {
             throw new BusinessException("You cant delete just returned visit!", eventService, HttpStatus.NOT_FOUND);
         }
         Optional<Queue> queue;
-        visit.setUpdateDateTime(ZonedDateTime.now());
-        visit.setVersion(visit.getVersion() + 1);
+
         visit.setStatus("CALLED");
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {

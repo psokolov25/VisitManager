@@ -10,8 +10,10 @@ import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Service;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -23,10 +25,10 @@ public class Transaction {
 
     Service service;
     String queueId;
-    ZonedDateTime startTime;
-    ZonedDateTime callTime;
-    ZonedDateTime startServingTime;
-    ZonedDateTime endTime;
+    ZonedDateTime startDateTime;
+    ZonedDateTime callDateTime;
+    ZonedDateTime startServingDateTime;
+    ZonedDateTime endDateTime;
     String servicePointId;
     String employeeId;
     int waitingSLA;
@@ -50,22 +52,67 @@ public class Transaction {
         return result;
     }
 
+    Long waitingTime;
+    @JsonGetter
 
+    public Long getWaitingTime() {
+        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+
+        waitingTime = unit.between(this.getStartDateTime()!=null?this.getStartDateTime():ZonedDateTime.now(), this.getStartServingDateTime()!=null?this.getStartServingDateTime():ZonedDateTime.now());
+        return waitingTime;
+
+    }
+
+
+    /**
+     * Время c создания визита
+     */
+    Long visitLifeTime;
+
+    @JsonGetter
+
+    public Long getVisitLifeTime() {
+        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+        if(startDateTime!=null) {
+            visitLifeTime = unit.between(startDateTime, Objects.requireNonNullElseGet(this.endDateTime, ZonedDateTime::now));
+            return visitLifeTime;
+        }
+        else
+        {
+            return 0L;
+        }
+    }
+
+
+    /**
+     * Время обслуживания в секундах
+     */
+    Long servingTime;
+
+
+    @JsonGetter
+    public Long getServingTime() {
+        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+
+        servingTime = unit.between(this.startServingDateTime!=null?this.getStartServingDateTime():ZonedDateTime.now(),this.getEndDateTime()!=null?this.getEndDateTime():ZonedDateTime.now());
+        return servingTime;
+
+    }
     public Transaction(Visit visit) {
         this.id = UUID.randomUUID().toString();
         this.visitEvents = new ArrayList<>();
 
 
         if (visit != null) {
-            this.startTime = visit.getCreateDateTime();
-            this.endTime = visit.getEndDateTime();
+            this.startDateTime = visit.getCreateDateTime();
+            this.endDateTime = visit.getEndDateTime();
             this.queueId = visit.getQueueId();
             this.employeeId = visit.getUserName();
             this.service = visit.getCurrentService();
             this.servicePointId = visit.getServicePointId();
-            this.startServingTime = visit.getStartServingDateTime();
-            this.callTime = visit.getCallDateTime();
-            this.endTime = visit.getEndDateTime();
+            this.startServingDateTime = visit.getStartServingDateTime();
+            this.callDateTime = visit.getCallDateTime();
+            this.endDateTime = visit.getEndDateTime();
 
 
         }
