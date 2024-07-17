@@ -88,8 +88,7 @@ class EntrypointTest {
             workProfileFSC.getQueueIds().add(queueBigCredit.getId());
             User psokolovUser = new User("psokolov");
 
-            psokolovUser.getWorkProfileIds().add(workProfileFC.getId());
-            psokolovUser.getWorkProfileIds().add(workProfileFSC.getId());
+
             psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
             servicePointFSC.setUser(psokolovUser);
             HashMap<String, Queue> queueMap = new HashMap<>();

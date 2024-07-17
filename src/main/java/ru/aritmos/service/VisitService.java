@@ -507,7 +507,7 @@ public class VisitService {
 
 
         visit.setStatus("NO_SHOW");
-        visit.setStartServingDateTime(ZonedDateTime.now());
+        visit.setStartServingDateTime(null);
         visit.setQueueId(null);
         visit.setServicePointId(null);
 

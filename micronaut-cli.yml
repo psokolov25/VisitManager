@@ -3,4 +3,4 @@ defaultPackage: ru.aritmos
 testFramework: junit
 sourceLanguage: java
 buildTool: maven
-features: [ app-name, cache-caffeine, gitlab-workflow-ci, graphql, http-client, java, java-application, junit, kafka, logback, lombok, management, maven, maven-enforcer-plugin, micronaut-aot, micronaut-http-validation, mockito, netty-server, openapi, reactor, reactor-http-client, readme, redis-lettuce, security-annotations, security-oauth2, serialization-jackson, shade, static-resources, swagger-ui, test-resources, yaml, yaml-build ]
+features: [ app-name, cache-caffeine, gitlab-workflow-ci, graphql, http-client, java, java-application, junit, kafka, logback, lombok, management, maven, security-annotations, security-jwt, security-oauth2,maven-enforcer-plugin, micronaut-aot, micronaut-http-validation, mockito, netty-server, openapi, reactor, reactor-http-client, readme, redis-lettuce, security-annotations, security-oauth2, serialization-jackson, shade, static-resources, swagger-ui, test-resources, yaml, yaml-build ]

@@ -54,10 +54,9 @@ public class Configuration {
             User sidorovUser = new User("isidorov");
             psokolovUser.setBranchId(branch.getId());
             sidorovUser.setBranchId(branch.getId());
-            psokolovUser.getWorkProfileIds().add(workProfileFC.getId());
-            psokolovUser.getWorkProfileIds().add(workProfileFSC.getId());
+
             psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
-            sidorovUser.getWorkProfileIds().add(workProfileC.getId());
+
             sidorovUser.setCurrentWorkProfileId(workProfileC.getId());
             branchService.loginUser(psokolovUser);
             branchService.loginUser(sidorovUser);

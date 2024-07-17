@@ -22,7 +22,7 @@ public class WorkProfile extends BranchEntity{
     }
 
     /**
-     * Идентификаторы рабочих профилей
+     * Идентификаторы очередей
      */
     List<String> queueIds=new ArrayList<>();
 }

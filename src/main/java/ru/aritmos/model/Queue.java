@@ -23,7 +23,10 @@ public final class Queue extends BranchEntityWithVisits {
      * Буква талона
      */
     final String ticketPrefix;
-
+    /**
+     * Стандартное время ожидания
+     */
+    Integer waitingSL;
 
     public Queue(String name, String ticketPrefix) {
         super(name);

@@ -55,7 +55,7 @@ public class ServicePointController {
     }
 
     /**
-     * Посадка сотрудника
+     * Открытие рабочей станции сотрудником
      * @param user сотрудник
      * @return сотрудник
      */

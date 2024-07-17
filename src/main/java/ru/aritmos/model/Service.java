@@ -15,18 +15,18 @@ import lombok.EqualsAndHashCode;
 
 public class Service extends BranchEntity{
 
-    public Service(String key,String name, Integer standardWaitingTime, String linkedQueueId) {
+    public Service(String key,String name, Integer servingSL, String linkedQueueId) {
 
         super(key,name);
-        this.standardServiceTime = standardWaitingTime;
+        this.servingSL = servingSL;
         this.linkedQueueId = linkedQueueId;
         this.isAvailable=true;
     }
 
     /**
-     * Стандартное время обслуживания
+     * Нормативное время обслуживания
      */
-    Integer standardServiceTime;
+    Integer servingSL;
     /**
      * Связанная очередь
      */

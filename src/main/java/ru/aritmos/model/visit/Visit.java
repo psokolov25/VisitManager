@@ -152,7 +152,10 @@ public class Visit {
     }
 
     List<Transaction> transactions;
-
+    /**
+     * Время ожидания в последней очереди в секундах
+     */
+    Long waitingTime;
     @JsonGetter
 
     public Long getWaitingTime() {
@@ -179,24 +182,21 @@ public class Visit {
 
     }
 
-    /**
-     * Время ожидания в последней очереди в секундах
-     */
-    Long waitingTime;
 
+
+    /**
+     * Общее время с создания визита в секундах
+     */
+    Long visitLifeTime;
     @JsonGetter
 
     public Long getTotalWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
-        totalWaitingTime = unit.between(this.getCreateDateTime()!=null?this.getCreateDateTime():ZonedDateTime.now(), this.getEndDateTime()!=null?this.getEndDateTime():ZonedDateTime.now());
-        return totalWaitingTime;
+        visitLifeTime = unit.between(this.getCreateDateTime()!=null?this.getCreateDateTime():ZonedDateTime.now(), this.getEndDateTime()!=null?this.getEndDateTime():ZonedDateTime.now());
+        return visitLifeTime;
     }
 
-    /**
-     * Общее время с создания визита в секундах
-     */
-    Long totalWaitingTime;
     /**
      * Время обслуживания в секундах
      */

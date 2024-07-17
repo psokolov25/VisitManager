@@ -1,8 +1,40 @@
+#tag::port[]
+micronaut:
+  server:
+    port: 8081
+#end::port[]
+---
+#tag::oauth2[]
 micronaut:
   security:
+    intercept-url-map:
+      - pattern: /swagger-ui/*
+        access:
+          - isAuthenticated()
+      - pattern: /swagger-ui/**
+        access:
+          - isAuthenticated()
+      - pattern: /swagger/**
+        access:
+          - isAuthenticated()
+      - pattern: /**
+        access:
+          - isAuthenticated()
+    authentication: bearer # <1>
     oauth2:
       clients:
-        default:
-          client-id: ${OAUTH_CLIENT_ID:XXX}
-          client-secret: ${OAUTH_CLIENT_SECRET:YYY}
+        keycloak: # <2>
+          client-secret: '${OAUTH_CLIENT_SECRET:Amt4akSb6MSjx8BZ4UThimDhpuYRwR9g}' # <3>
+          client-id: '${OAUTH_CLIENT_ID:myclient}' # <4>
+          openid:
+            issuer: '${OIDC_ISSUER_DOMAIN:`http://localhost:8080`}/realms/${KEYCLOAK_REALM:aritmos}' # <5>
+    endpoints:
+      logout:
+        get-allowed: true # <6>
     enabled: false
+#end::oauth2[]
+
+graphql:
+  enabled: true
+  graphiql.enabled: true
+  graphql-ws.enabled: true

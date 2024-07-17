@@ -49,8 +49,5 @@ public class User extends BranchEntityWithVisits{
      */
     String branchId;
 
-    /**
-     * Идентификаторы рабочих профилей сотрудника
-     */
-    List<String> workProfileIds=new ArrayList<>();
+
 }

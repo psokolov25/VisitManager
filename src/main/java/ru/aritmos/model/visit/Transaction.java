@@ -31,8 +31,8 @@ public class Transaction {
     ZonedDateTime endDateTime;
     String servicePointId;
     String employeeId;
-    int waitingSLA;
-    int servingSLA;
+    int waitingSL;
+    int servingSL;
     TransactionCompletionStatus completionStatus;
 
 
