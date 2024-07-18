@@ -376,7 +376,7 @@ public class VisitService {
 
     public Visit visitCall(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
-        Visit oldVisit = visit.toBuilder().build();
+
         Optional<Queue> queue;
 
         visit.setStatus("CALLED");
@@ -436,7 +436,7 @@ public class VisitService {
 
     public Visit visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
-        Visit oldVisit = visit.toBuilder().build();
+
 
         visit.setStatus("CALLED");
         visit.setCallDateTime(ZonedDateTime.now());
@@ -458,7 +458,7 @@ public class VisitService {
 
     public Visit visitReCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
-        Visit oldVisit = visit.toBuilder().build();
+
 
         visit.setStatus("RECALLED");
         visit.setCallDateTime(ZonedDateTime.now());
@@ -480,7 +480,7 @@ public class VisitService {
 
     public Visit visitCallConfirm(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
-        Visit oldVisit = visit.toBuilder().build();
+
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
@@ -521,7 +521,7 @@ public class VisitService {
 
     public Visit visitCallNoShow(String branchId, String servicePointId, Visit visit) {
 
-        Visit oldVisit = visit.toBuilder().build();
+
 
 
         visit.setStatus("NO_SHOW");
@@ -595,7 +595,7 @@ public class VisitService {
 
 
     public void deleteVisit(String branchId, String servicePointId, Visit visit) {
-        Branch currentBranch = branchService.getBranch(branchId);
+
         if (visit.getReturningTime() > 0 && visit.getReturningTime() < visit.getReturnTimeDelay()) {
             throw new BusinessException("You cant delete just returned visit!", eventService, HttpStatus.NOT_FOUND);
         }

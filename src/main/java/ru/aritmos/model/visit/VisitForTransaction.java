@@ -19,7 +19,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.*;
 @Serdeable
 @AllArgsConstructor
 @Builder
-@JsonInclude(Include.ALWAYS)
+@JsonInclude()
 public class VisitForTransaction {
 
     VisitForTransaction.Transaction mapForVisitTransaction(Visit visit,ru.aritmos.model.visit.Transaction f,BranchService branchService)
@@ -86,13 +86,13 @@ public class VisitForTransaction {
     /**
      * Идентификатор Массив транзакций
      */
-    @JsonInclude(Include.ALWAYS)
+    @JsonInclude()
     List<VisitForTransaction.Transaction> transactions = new ArrayList<>();
 
     @Builder
     @Data
     @Serdeable
-    @JsonInclude(Include.ALWAYS)
+    @JsonInclude()
     private static class Transaction {
         String id;
 

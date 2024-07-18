@@ -156,7 +156,7 @@ public class Visit {
 
     }
 
-    ArrayList<Transaction> transactions=new ArrayList<>();
+    ArrayList<Transaction> transactions;
     /**
      * Время ожидания в последней очереди в секундах
      */
