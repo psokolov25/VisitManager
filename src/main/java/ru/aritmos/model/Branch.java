@@ -5,10 +5,12 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.*;
+import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.visit.Visit;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +28,7 @@ import java.util.List;
 
 
 public class Branch extends BranchEntity {
-    HashMap<String,Object> parameterMap=new HashMap<>();
+    HashMap<String, Object> parameterMap = new HashMap<>();
 
     public Branch(String key, String name) {
         super(key, name);
@@ -123,7 +125,7 @@ public class Branch extends BranchEntity {
 
     }
 
-    public void updateVisit(Visit visit, EventService eventService) {
+    public void updateVisit(Visit visit, EventService eventService, String action) {
         Visit oldVisit = visit.toBuilder().build();
 
         this.servicePoints.forEach((key, value) -> {
@@ -144,7 +146,11 @@ public class Branch extends BranchEntity {
             }
 
         });
-        eventService.sendChangedEvent("*", false, oldVisit, visit, new HashMap<>(), "CHANGE");
+        eventService.send("*", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_" + action)
+                .params(new HashMap<>())
+                .body(visit).build());
     }
 
     public void addUpdateService(HashMap<String, Service> serviceHashMap, EventService eventService, Boolean checkVisits) {
@@ -175,7 +181,7 @@ public class Branch extends BranchEntity {
                                         v2.setServedServices(servedServices);
 
 
-                                        this.updateVisit(v2, eventService);
+                                        this.updateVisit(v2, eventService, "UPDATE_SERVICE");
                                     }
 
                             );
@@ -209,13 +215,10 @@ public class Branch extends BranchEntity {
                             {
                                 if (v2.getCurrentService() != null && v2.getCurrentService().getId().equals(id)) {
                                     v2.setCurrentService(null);
-                                    if(!v2.getUnservedServices().isEmpty())
-                                    {
+                                    if (!v2.getUnservedServices().isEmpty()) {
                                         v2.setCurrentService(v2.getUnservedServices().get(0));
                                         v2.getUnservedServices().remove(0);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         v2.setQueueId(null);
                                         v2.setServicePointId(null);
 
@@ -230,7 +233,7 @@ public class Branch extends BranchEntity {
                                 v2.setServedServices(servedServices);
 
 
-                                this.updateVisit(v2, eventService);
+                                this.updateVisit(v2, eventService, "SERVICE_DELETED");
                             }
                     );
                 } else {

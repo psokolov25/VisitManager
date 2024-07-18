@@ -1,13 +1,16 @@
 package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
+import ru.aritmos.model.Branch;
 import ru.aritmos.model.Service;
+import ru.aritmos.service.BranchService;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -19,6 +22,7 @@ import java.util.UUID;
 
 @Serdeable
 @Data
+@Introspected
 public class Transaction {
     String id;
 
@@ -99,21 +103,32 @@ public class Transaction {
 
     }
     public Transaction(Visit visit) {
+        //Branch currentBranch=branchService.getBranch(visit.getBranchId());
+        String staffId="";
+
+//        if(currentBranch.getServicePoints().containsKey(visit.getServicePointId()))
+//        {
+//            if(currentBranch.getServicePoints().get(visit.getServicePointId()).getUser()!=null)
+//            {
+//                staffId=currentBranch.getServicePoints().get(visit.getServicePointId()).getUser().getId();
+//            }
+//        }
+
         this.id = UUID.randomUUID().toString();
         this.visitEvents = new ArrayList<>();
+
 
 
         if (visit != null) {
             this.startDateTime = visit.getCreateDateTime();
             this.queueId = visit.getQueueId();
-            this.employeeId = visit.getUserName();
+
             this.service = visit.getCurrentService();
             this.servicePointId = visit.getServicePointId();
             this.startServingDateTime = visit.getStartServingDateTime();
             this.callDateTime = visit.getCallDateTime();
             this.endDateTime = visit.getEndDateTime();
-
-
+            this.employeeId=visit.getUserId();
         }
 
     }
@@ -123,20 +138,12 @@ public class Transaction {
             if (!event.equals(VisitEvent.CREATED))
                 throw new BusinessException("wasn't early created", eventService, HttpStatus.CONFLICT);
             else visitEvents.add(event);
-            eventService.send("*", true, Event.builder()
-                    .eventDate(ZonedDateTime.now())
-                    .eventType(event.name())
-                    .body(this).build()
-            );
+
         } else {
             VisitEvent prevEvent = visitEvents.get(visitEvents.size() - 1);
             if (prevEvent.canBeNext(event)) {
                 visitEvents.add(event);
-                eventService.send("*", true, Event.builder()
-                        .eventDate(ZonedDateTime.now())
-                        .eventType(event.name())
-                        .body(this).build()
-                );
+
 
             } else throw new BusinessException("can't be next status", eventService, HttpStatus.CONFLICT);
 

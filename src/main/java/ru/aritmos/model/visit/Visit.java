@@ -11,6 +11,7 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Service;
+import ru.aritmos.service.BranchService;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -39,7 +40,7 @@ public class Visit {
     /**
      * Талон
      */
-    String ticketId;
+    String ticket;
     /**
      * Идентификатор отделения
      */
@@ -90,6 +91,10 @@ public class Visit {
      * Логин вызвавшего сотрудника
      */
     String userName;
+    /**
+     * Id вызвавшего сотрудника
+     */
+    String userId;
 
     /**
      * Лимит ожидания после возвращения визита в очередь
@@ -109,7 +114,7 @@ public class Visit {
 
     Transaction currentTransaction;
 
-    public void setTransaction(VisitEvent event, EventService eventService) {
+    public void setTransaction(VisitEvent event, EventService eventService, BranchService  branchService) {
         ArrayList<VisitEvent> events = new ArrayList<>();
         events.add(event);
         if (this.currentTransaction != null) {
@@ -130,12 +135,12 @@ public class Visit {
         eventService.send("stat", false, Event.builder()
                 .eventDate(ZonedDateTime.now())
                 .eventType("TRANSACTION_" + event.name())
-                .body(this)
+                .body(new VisitForTransaction(this,branchService))
                 .build());
 
     }
 
-    public void updateTransaction(VisitEvent event, EventService eventService) {
+    public void updateTransaction(VisitEvent event, EventService eventService, BranchService  branchService) {
         List<VisitEvent> events = this.getCurrentTransaction().getVisitEvents();
 
         this.currentTransaction = (new Transaction(this));
@@ -146,12 +151,12 @@ public class Visit {
         eventService.send("stat", false, Event.builder()
                 .eventDate(ZonedDateTime.now())
                 .eventType("TRANSACTION_" + event.name())
-                .body(this)
+                .body(new VisitForTransaction(this,branchService))
                 .build());
 
     }
 
-    List<Transaction> transactions;
+    List<Transaction> transactions=new ArrayList<>();
     /**
      * Время ожидания в последней очереди в секундах
      */

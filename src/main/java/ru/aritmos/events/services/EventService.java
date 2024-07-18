@@ -37,7 +37,7 @@ public class EventService {
                 dataBusClient.send(destinationServices
                         , sendToOtherBus
                         , getDateString(ZonedDateTime.now())
-                        , event.getSenderService()
+                        , applicationName
                         , event.getEventType()
                         , event.getBody())
         ).subscribe(s -> log.debug("Event {} sent!", s));

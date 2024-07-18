@@ -87,6 +87,7 @@ class EntrypointTest {
             WorkProfile workProfileFSC = new WorkProfile("Старший финансовый консультант");
             workProfileFSC.getQueueIds().add(queueBigCredit.getId());
             User psokolovUser = new User("psokolov");
+            psokolovUser.setBranchId(branch.getId());
 
 
             psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
@@ -122,7 +123,7 @@ class EntrypointTest {
         Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue.getId()).getVisits().size(), 1);
         Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue2.getId()).getVisits().size(), 0);
 
-        branchService.updateVisit(visit);
+        branchService.updateVisit(visit,"TESTED_VISIT_UPDATE_METHOD");
         Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue.getId()).getVisits().size(), 0);
         Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue2.getId()).getVisits().size(), 1);
     }
@@ -213,7 +214,7 @@ class EntrypointTest {
         Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
 
 
-        Assertions.assertEquals(visit.getTicketId(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
+        Assertions.assertEquals(visit.getTicket(), queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
 
 
     }

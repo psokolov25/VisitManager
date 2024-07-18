@@ -8,7 +8,6 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
-import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
@@ -21,7 +20,6 @@ import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
-import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -110,7 +108,7 @@ public class ServicePointController {
             TinyVisit visit =
                     TinyVisit.builder()
                             .id(f.getId())
-                            .ticketId(f.getTicketId())
+                            .ticketId(f.getTicket())
                             .currentService(f.getCurrentService())
                             .createDate(f.getCreateDateTime())
                             .transferDate(f.getTransferDateTime()).build();
@@ -434,14 +432,8 @@ public class ServicePointController {
     public Visit visitEnd(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
 
-        Visit visit = visitService.visitEnd(branchId, servicePointId);
-        eventService.send("*", true, Event.builder()
-                .body(visit)
-                .eventDate(ZonedDateTime.now())
-                .eventType("VISIT_ENDED")
-                .senderService(applicationName)
-                .build());
-        return visit;
+        return visitService.visitEnd(branchId, servicePointId);
+
 
 
     }

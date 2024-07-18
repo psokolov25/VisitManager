@@ -69,12 +69,7 @@ public class EntrypointController {
             ArrayList<String> services = new ArrayList<>();
             branchService.getBranch(branchId).getServices().values().stream().map(BranchEntity::getId).filter(serviceIds::contains).forEach(services::add);
             Visit visit = visitService.createVisit(branchId, entryPointId, services, printTicket);
-            eventService.send("*", true, Event.builder()
-                    .body(visit)
-                    .eventDate(ZonedDateTime.now())
-                    .eventType("VISIT_CREATED")
-                    .senderService(applicationName)
-                    .build());
+
             return visit;
 
         } else {
