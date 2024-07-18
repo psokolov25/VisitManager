@@ -594,7 +594,7 @@ public class VisitService {
     }
 
 
-    public void deleteVisit(String branchId, String servicePointId, Visit visit) {
+    public void deleteVisit( Visit visit) {
 
         if (visit.getReturningTime() > 0 && visit.getReturningTime() < visit.getReturnTimeDelay()) {
             throw new BusinessException("You cant delete just returned visit!", eventService, HttpStatus.NOT_FOUND);
