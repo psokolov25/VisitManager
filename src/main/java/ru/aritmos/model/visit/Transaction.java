@@ -5,12 +5,9 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
-import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
-import ru.aritmos.model.Branch;
 import ru.aritmos.model.Service;
-import ru.aritmos.service.BranchService;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -104,15 +101,7 @@ public class Transaction {
     }
     public Transaction(Visit visit) {
         //Branch currentBranch=branchService.getBranch(visit.getBranchId());
-        String staffId="";
 
-//        if(currentBranch.getServicePoints().containsKey(visit.getServicePointId()))
-//        {
-//            if(currentBranch.getServicePoints().get(visit.getServicePointId()).getUser()!=null)
-//            {
-//                staffId=currentBranch.getServicePoints().get(visit.getServicePointId()).getUser().getId();
-//            }
-//        }
 
         this.id = UUID.randomUUID().toString();
         this.visitEvents = new ArrayList<>();

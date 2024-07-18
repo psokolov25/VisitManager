@@ -126,7 +126,7 @@ public class Branch extends BranchEntity {
     }
 
     public void updateVisit(Visit visit, EventService eventService, String action) {
-        Visit oldVisit = visit.toBuilder().build();
+
 
         this.servicePoints.forEach((key, value) -> {
             if (value.getId().equals(visit.getServicePointId())) {

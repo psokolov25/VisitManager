@@ -8,7 +8,6 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
-import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
@@ -17,7 +16,6 @@ import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
-import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -68,9 +66,8 @@ public class EntrypointController {
 
             ArrayList<String> services = new ArrayList<>();
             branchService.getBranch(branchId).getServices().values().stream().map(BranchEntity::getId).filter(serviceIds::contains).forEach(services::add);
-            Visit visit = visitService.createVisit(branchId, entryPointId, services, printTicket);
 
-            return visit;
+            return visitService.createVisit(branchId, entryPointId, services, printTicket);
 
         } else {
             throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);

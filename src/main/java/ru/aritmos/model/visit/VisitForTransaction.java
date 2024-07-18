@@ -2,13 +2,10 @@ package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.serde.annotation.Serdeable;
-import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.apache.kafka.common.protocol.types.Field;
 import ru.aritmos.model.Branch;
-import ru.aritmos.model.Service;
 import ru.aritmos.service.BranchService;
 
 import java.time.ZonedDateTime;
@@ -61,15 +58,13 @@ public class VisitForTransaction {
 
         this.state = visit.getStatus();
         this.ticket = visit.getTicket();
-        ru.aritmos.model.visit.Transaction f=visit.currentTransaction;
+
         if(visit.getCurrentTransaction()!=null) {
             this.getTransactions().add(mapForVisitTransaction(visit, visit.getCurrentTransaction(), branchService));
         }
         if(visit.getTransactions()!=null) {
             visit.getTransactions().forEach(f2 ->
-                    {
-                        this.getTransactions().add(mapForVisitTransaction(visit, f2, branchService));
-                    }
+                    this.getTransactions().add(mapForVisitTransaction(visit, f2, branchService))
 
             );
         }
@@ -91,13 +86,13 @@ public class VisitForTransaction {
     /**
      * Идентификатор Массив транзакций
      */
-    @JsonInclude(JsonInclude.Include.ALWAYS)
+    @JsonInclude(value = JsonInclude.Include.ALWAYS)
     List<VisitForTransaction.Transaction> transactions = new ArrayList<>();
 
     @Builder
     @Data
     @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
+    @JsonInclude(value = JsonInclude.Include.ALWAYS)
     private static class Transaction {
         String id;
 

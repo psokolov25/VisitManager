@@ -43,14 +43,6 @@ public class VisitService {
         return freeServicePoints;
     }
 
-    private void changedVisitEventSend(String visitState, Visit oldVisit, Visit newVisit, HashMap<String, String> params) {
-        eventService.sendChangedEvent("*", false, oldVisit, newVisit, params, "VISIT_" + visitState);
-    }
-
-    private void changedVisitEventSend(String visitState, Visit oldVisit, Visit newVisit, HashMap<String, String> params, String destination) {
-        eventService.sendChangedEvent(destination, false, oldVisit, newVisit, params, "VISIT_" + visitState);
-    }
-
     @ExecuteOn(TaskExecutors.IO)
 
     public List<Visit> getVisits(String branchId, String queueId) {
@@ -234,7 +226,7 @@ public class VisitService {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             if (servicePoint.getVisit() != null) {
                 Visit visit = servicePoint.getVisit();
-                Visit oldVisit = visit.toBuilder().build();
+
                 Queue queue;
                 if (currentBranch.getQueues().containsKey(queueID)) {
                     queue = currentBranch.getQueues().get(queueID);
@@ -273,7 +265,7 @@ public class VisitService {
         if (visit.getQueueId().isBlank()) {
             throw new BusinessException("Visit not in a queue!", eventService);
         }
-        Visit oldVisit = visit.toBuilder().build();
+
         Queue queue;
         if (currentBranch.getQueues().containsKey(queueID)) {
             queue = currentBranch.getQueues().get(queueID);
@@ -309,7 +301,7 @@ public class VisitService {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             if (servicePoint.getVisit() != null) {
                 visit = servicePoint.getVisit();
-                Visit oldVisit = visit.toBuilder().build();
+
                 visit.setServicePointId(servicePoint.getId());
                 visit.setTransferDateTime(ZonedDateTime.now());
                 servicePoint.setVisit(null);
@@ -351,9 +343,14 @@ public class VisitService {
                     visit.setCurrentService(null);
                     visit.setServedDateTime(ZonedDateTime.now());
                     visit.setQueueId(null);
+                    visit.setServedDateTime(ZonedDateTime.now());
+                    event = VisitEvent.STOP_SERVING;
+                    event.dateTime = ZonedDateTime.now();
+
+                    visit.updateTransaction(event, eventService,branchService);
                     event = VisitEvent.END;
                     event.dateTime = ZonedDateTime.now();
-                    visit.updateTransaction(event, eventService,branchService);
+                    visit.setTransaction(event, eventService,branchService);
                     visit.setServicePointId(null);
                     branchService.updateVisit(visit, event.name());
                 }
