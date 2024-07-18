@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 @Serdeable
-
+@JsonFormat
 public enum VisitEvent {
     CREATED, PLACED_IN_QUEUE, CALLED, RECALLED, START_SERVING,
     STOP_SERVING, NO_SHOW, END, TRANSFER_TO_USER_POOL,  TRANSFER_TO_SERVICE_POINT_POOL,
     BACK_TO_QUEUE, TRANSFER_TO_QUEUE, ADD_SERVICE,ADDED_DELIVERED_SERVICE,
     ADDED_DELIVERED_SERVICE_RESULT,ADDED_SERVICE_RESULT,
-    DELETED_DELIVERED_SERVICE_RESULT,DELETED_SERVICE_RESULT;
+    DELETED_DELIVERED_SERVICE_RESULT,DELETED_SERVICE_RESULT,VISIT_END_TRANSACTION,VISIT_TRANSFER_FROM_QUEUE;
     VisitState visitState;
 
     @JsonFormat
@@ -29,21 +29,23 @@ public enum VisitEvent {
     @Getter
     final Map <String, String> parameters=new HashMap<>();
 
-    private static final Map<VisitEvent, List<VisitEvent>> nextEvents = Map.of(
-            CREATED, List.of(PLACED_IN_QUEUE,CALLED),
-            PLACED_IN_QUEUE, List.of(CALLED),
-            CALLED, List.of(RECALLED, START_SERVING, NO_SHOW, BACK_TO_QUEUE),
-            RECALLED, List.of(RECALLED, START_SERVING, NO_SHOW, BACK_TO_QUEUE),
-            START_SERVING, List.of(BACK_TO_QUEUE, STOP_SERVING, END, TRANSFER_TO_SERVICE_POINT_POOL, TRANSFER_TO_USER_POOL,  TRANSFER_TO_QUEUE, ADD_SERVICE),
-            STOP_SERVING, List.of(PLACED_IN_QUEUE),
-            NO_SHOW, List.of(),
-            END, List.of(),
-            TRANSFER_TO_USER_POOL, List.of(CALLED),
+    private static final Map<VisitEvent, List<VisitEvent>> nextEvents = Map.ofEntries(
+
+            Map.entry(CREATED, List.of(PLACED_IN_QUEUE,CALLED)),
+            Map.entry(PLACED_IN_QUEUE, List.of(CALLED)),
+            Map.entry(CALLED, List.of(RECALLED, START_SERVING, NO_SHOW, BACK_TO_QUEUE)),
+            Map.entry(RECALLED, List.of(RECALLED, START_SERVING, NO_SHOW, BACK_TO_QUEUE)),
+            Map.entry(START_SERVING, List.of(BACK_TO_QUEUE, STOP_SERVING, END, TRANSFER_TO_SERVICE_POINT_POOL, TRANSFER_TO_USER_POOL,  TRANSFER_TO_QUEUE, ADD_SERVICE)),
+            Map.entry(STOP_SERVING, List.of(PLACED_IN_QUEUE,END)),
+            Map.entry(NO_SHOW, List.of()),
+            Map.entry(END, List.of()),
+            Map.entry(TRANSFER_TO_USER_POOL, List.of(CALLED)),
+            Map.entry(VISIT_TRANSFER_FROM_QUEUE, List.of(CALLED)),
            // TRANSFER_TO_SERVICE_POOL, List.of(CALLED),
            // TRANSFER_TO_SERVICE_POINT_POOL, List.of(CALLED),
            // BACK_TO_QUEUE, List.of(CALLED),
           //  TRANSFER_TO_QUEUE, List.of(CALLED),
-            ADD_SERVICE, List.of(PLACED_IN_QUEUE, BACK_TO_QUEUE, STOP_SERVING, END, TRANSFER_TO_SERVICE_POINT_POOL, TRANSFER_TO_USER_POOL,  TRANSFER_TO_QUEUE, ADD_SERVICE)
+            Map.entry(ADD_SERVICE, List.of(PLACED_IN_QUEUE, BACK_TO_QUEUE, STOP_SERVING, END, TRANSFER_TO_SERVICE_POINT_POOL, TRANSFER_TO_USER_POOL,  TRANSFER_TO_QUEUE, ADD_SERVICE))
     );
 
     private static final Map<VisitEvent, VisitState> visitStateMap = Map.of(

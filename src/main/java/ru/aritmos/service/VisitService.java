@@ -324,13 +324,14 @@ public class VisitService {
                     event.dateTime = ZonedDateTime.now();
 
                     visit.updateTransaction(event, eventService,branchService);
-                    event = VisitEvent.BACK_TO_QUEUE;
+                    event = VisitEvent.VISIT_END_TRANSACTION;
                     event.dateTime = ZonedDateTime.now();
                     visit.setReturnDateTime(ZonedDateTime.now());
                     visit.setCallDateTime(null);
 
                     visit.setStartServingDateTime(null);
-
+                    visit.updateTransaction(event, eventService,branchService);
+                    event = VisitEvent.PLACED_IN_QUEUE;
                     visit.setTransaction(event, eventService,branchService);
                     visit.setServicePointId(null);
                     branchService.updateVisit(visit, event.name());
@@ -350,7 +351,7 @@ public class VisitService {
                     visit.updateTransaction(event, eventService,branchService);
                     event = VisitEvent.END;
                     event.dateTime = ZonedDateTime.now();
-                    visit.setTransaction(event, eventService,branchService);
+                    visit.updateTransaction(event, eventService,branchService);
                     visit.setServicePointId(null);
                     branchService.updateVisit(visit, event.name());
                 }
