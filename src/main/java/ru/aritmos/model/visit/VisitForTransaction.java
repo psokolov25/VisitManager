@@ -1,6 +1,7 @@
 package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +14,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+;
 
 
 @Data
 @Serdeable
 @AllArgsConstructor
 @Builder
-@JsonInclude()
-public class VisitForTransaction {
+
+public final class VisitForTransaction {
 
     VisitForTransaction.Transaction mapForVisitTransaction(Visit visit,ru.aritmos.model.visit.Transaction f,BranchService branchService)
     {
@@ -86,7 +88,7 @@ public class VisitForTransaction {
     /**
      * Идентификатор Массив транзакций
      */
-    @JsonInclude()
+
     List<VisitForTransaction.Transaction> transactions = new ArrayList<>();
 
     @Builder
@@ -118,7 +120,7 @@ public class VisitForTransaction {
         public static class VisitEvent {
             String type;
             ZonedDateTime eventTime;
-            HashMap<String, Object> parameters = new HashMap<>();
+            HashMap<String, Object> parameters;
         }
     }
 }
