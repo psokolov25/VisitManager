@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.*;
+
 @Data
 @Serdeable
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonInclude(Include.ALWAYS)
 public class VisitForTransaction {
 
     VisitForTransaction.Transaction mapForVisitTransaction(Visit visit,ru.aritmos.model.visit.Transaction f,BranchService branchService)
@@ -25,13 +27,11 @@ public class VisitForTransaction {
         Branch currentBranch = branchService.getBranch(visit.getBranchId());
         List<Transaction.VisitEvent> events = new ArrayList<>();
         f.getVisitEvents().forEach(fe ->
-        {
-            events.add(
-                    Transaction.VisitEvent.builder().type(fe.name())
-                            .eventTime(fe.dateTime)
-                            .parameters(new HashMap<>())
-                            .build());
-        });
+                events.add(
+                        Transaction.VisitEvent.builder().type(fe.name())
+                                .eventTime(fe.dateTime)
+                                .parameters(new HashMap<>())
+                                .build()));
 
         return VisitForTransaction.Transaction.builder()
                 .id(f.getId())
@@ -53,7 +53,7 @@ public class VisitForTransaction {
     }
 
     public VisitForTransaction(Visit visit, BranchService branchService) {
-        Branch currentBranch = branchService.getBranch(visit.getBranchId());
+
         this.id = visit.getId();
 
         this.state = visit.getStatus();
@@ -86,13 +86,13 @@ public class VisitForTransaction {
     /**
      * Идентификатор Массив транзакций
      */
-    @JsonInclude(value = JsonInclude.Include.ALWAYS)
+    @JsonInclude(Include.ALWAYS)
     List<VisitForTransaction.Transaction> transactions = new ArrayList<>();
 
     @Builder
     @Data
     @Serdeable
-    @JsonInclude(value = JsonInclude.Include.ALWAYS)
+    @JsonInclude(Include.ALWAYS)
     private static class Transaction {
         String id;
 
