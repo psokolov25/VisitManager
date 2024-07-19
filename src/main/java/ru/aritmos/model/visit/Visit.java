@@ -6,11 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import ru.aritmos.events.model.Event;
-import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Service;
-import ru.aritmos.service.BranchService;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;

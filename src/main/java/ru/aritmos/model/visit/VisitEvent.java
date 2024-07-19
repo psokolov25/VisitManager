@@ -99,7 +99,8 @@ public enum VisitEvent {
     }
 
     public VisitState getState() {
-        return visitState = visitStateMap.get(this);
+        visitState = visitStateMap.get(this);
+        return visitState;
     }
 
 }

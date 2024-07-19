@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @Data
