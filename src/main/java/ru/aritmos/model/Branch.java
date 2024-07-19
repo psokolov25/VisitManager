@@ -9,6 +9,8 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.model.visit.VisitEvent;
+import ru.aritmos.service.VisitService;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -150,7 +152,44 @@ public class Branch extends BranchEntity {
                 .eventDate(ZonedDateTime.now())
                 .eventType("VISIT_" + action)
                 .params(new HashMap<>())
-                .body(visit).build());
+                .body(visit.toBuilder().currentTransaction(null).transactions(null).build()).build());
+        eventService.send("stat", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_" + action)
+                .params(new HashMap<>())
+                .body(visit.toBuilder().currentTransaction(null).transactions(null).build()).build());
+    }
+    public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService) {
+        visitService.addEvent(visit,visitEvent,eventService);
+
+        this.servicePoints.forEach((key, value) -> {
+            if (value.getId().equals(visit.getServicePointId())) {
+                if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
+                    value.setVisit(visit);
+                } else {
+                    throw new BusinessException(String.format("In ServicePoint %s already exists visit %s", value.getId(), value.getVisit().getId()), eventService, HttpStatus.CONFLICT);
+                }
+            } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
+                value.setVisit(null);
+            }
+        });
+        this.queues.forEach((key, value) -> {
+            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+            if (value.getId().equals(visit.getQueueId())) {
+                value.getVisits().add(visit);
+            }
+
+        });
+        eventService.send("*", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_" + visitEvent.name())
+                .params(new HashMap<>())
+                .body(visit.toBuilder().currentTransaction(null).transactions(null).build()).build());
+        eventService.send("stat", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_" + visitEvent.name())
+                .params(new HashMap<>())
+                .body(visit.toBuilder().currentTransaction(null).transactions(null).build()).build());
     }
 
     public void addUpdateService(HashMap<String, Service> serviceHashMap, EventService eventService, Boolean checkVisits) {

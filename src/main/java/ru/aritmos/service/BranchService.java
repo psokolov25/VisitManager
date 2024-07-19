@@ -15,6 +15,7 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.model.visit.VisitEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +31,11 @@ public class BranchService {
     HashMap<String, Branch> branches = new HashMap<>();
     @Inject
     EventService eventService;
+
     @Value("${micronaut.application.name}")
     String applicationName;
 
-    @Cacheable(parameters = {"key"}, value = {"branches"})
+    @Cacheable(parameters = {"key"})
     public Branch getBranch(String key) throws BusinessException {
         Branch result = branches.get(key);
         if (result == null) {
@@ -44,9 +46,9 @@ public class BranchService {
     }
 
     //@Cacheable(parameters = {"id"}, value = {"branches"})
-    public HashMap<String, Branch> getBranches(String id) {
+    public HashMap<String, Branch> getBranches() {
 
-        log.info("Getting branchInfo {}", id);
+
         HashMap<String, Branch> result = new HashMap<>();
         branches.values().forEach(f -> {
             Branch branch = new Branch(f.getId(), f.getName());
@@ -55,9 +57,7 @@ public class BranchService {
         return result;
     }
 
-    public HashMap<String, Branch> getBranches() {
-        return this.getBranches("0");
-    }
+
 
 
     @CachePut(parameters = {"key"})
@@ -104,10 +104,26 @@ public class BranchService {
 
 
     }
+    public void updateVisit(Visit visit, VisitEvent visitEvent,VisitService visitService) {
+
+        Branch branch = this.getBranch(visit.getBranchId());
+        branch.updateVisit(visit, eventService,visitEvent,visitService);
+        this.add(branch.getId(), branch);
+
+
+    }
 
     public void loginUser(User user) {
 
         Branch branch = this.getBranch(user.getBranchId());
+        branch.userLogin(user, eventService);
+        this.add(branch.getId(), branch);
+
+
+    }
+    public void loginUser(User user,Branch branch) {
+
+
         branch.userLogin(user, eventService);
         this.add(branch.getId(), branch);
 

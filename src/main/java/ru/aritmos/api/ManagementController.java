@@ -61,7 +61,7 @@ public class ManagementController {
     @Get(uri = "/branches")
     @ExecuteOn(TaskExecutors.IO)
     public Map<String,Branch> getBranches() {
-       return branchService.getBranches("0");
+       return branchService.getBranches();
     }
 
 

@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 
 
-
-
 @Data
 @Serdeable
 @AllArgsConstructor
@@ -24,8 +22,7 @@ import java.util.List;
 
 public final class VisitForTransaction {
 
-    VisitForTransaction.Transaction mapForVisitTransaction(Visit visit,ru.aritmos.model.visit.Transaction f,BranchService branchService)
-    {
+    VisitForTransaction.Transaction mapForVisitTransaction(Visit visit, ru.aritmos.model.visit.Transaction f, BranchService branchService) {
         Branch currentBranch = branchService.getBranch(visit.getBranchId());
         List<Transaction.VisitEvent> events = new ArrayList<>();
         f.getVisitEvents().forEach(fe ->
@@ -38,8 +35,8 @@ public final class VisitForTransaction {
         return VisitForTransaction.Transaction.builder()
                 .id(f.getId())
 
-                .servingSL(visit.currentService != null && visit.currentService.getServingSL()!=null? visit.currentService.getServingSL() : 0)
-                .serviceId(visit.getCurrentService()!=null?visit.getCurrentService().getId():null)
+                .servingSL(visit.currentService != null && visit.currentService.getServingSL() != null ? visit.currentService.getServingSL() : 0)
+                .serviceId(visit.getCurrentService() != null ? visit.getCurrentService().getId() : null)
                 .waitingSL((currentBranch.getQueues().containsKey(visit.getQueueId()) && (currentBranch.getQueues().get(visit.getQueueId()).getWaitingSL() != null)) ? currentBranch.getQueues().get(visit.getQueueId()).getWaitingSL() : 0)
                 .callingTime(f.getCallDateTime())
                 .endTime(f.getEndDateTime())
@@ -60,11 +57,11 @@ public final class VisitForTransaction {
 
         this.state = visit.getStatus();
         this.ticket = visit.getTicket();
-
-        if(visit.getCurrentTransaction()!=null) {
+        this.branchId = visit.getBranchId();
+        if (visit.getCurrentTransaction() != null) {
             this.getTransactions().add(mapForVisitTransaction(visit, visit.getCurrentTransaction(), branchService));
         }
-        if(visit.getTransactions()!=null) {
+        if (visit.getTransactions() != null) {
             visit.getTransactions().forEach(f2 ->
                     this.getTransactions().add(mapForVisitTransaction(visit, f2, branchService))
 
@@ -86,7 +83,11 @@ public final class VisitForTransaction {
      */
     String ticket;
     /**
-     * Идентификатор Массив транзакций
+     * Идентификатор отделения
+     */
+    String branchId;
+    /**
+     * Массив транзакций
      */
 
     List<VisitForTransaction.Transaction> transactions = new ArrayList<>();

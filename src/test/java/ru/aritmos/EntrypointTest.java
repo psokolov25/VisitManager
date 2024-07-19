@@ -38,7 +38,7 @@ class EntrypointTest {
     ServicePointController servicePointController;
     @Inject
     ManagementController managementController;
-    String branchId = "37493d1c-8282-4417-a729-dceac1f3e2b1";
+    String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
     String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
 
     @Test
@@ -53,8 +53,8 @@ class EntrypointTest {
      */
     @BeforeEach
     void CreateBranch() {
-        if (!branchService.getBranches().containsKey("37493d1c-8282-4417-a729-dceac1f3e2b1")) {
-            branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b1", "Отделение на Тверской");
+        if (!branchService.getBranches().containsKey("bc08b7d2-c731-438d-9785-eba2078b2089")) {
+            branch = new Branch("bc08b7d2-c731-438d-9785-eba2078b2089", "Отделение на Тверской");
             EntryPoint entryPoint = new EntryPoint();
             entryPoint.setPrinterId("2");
             entryPoint.setId("1");
@@ -74,7 +74,7 @@ class EntrypointTest {
             serviceList.put(bigCreditService.getId(), bigCreditService);
 
             branch.setServices(serviceList);
-            ServicePoint servicePointFSC = new ServicePoint("be675d63-c5a1-41a9-a345-c82102ac42cc","Старший финансовый консультант");
+            ServicePoint servicePointFSC = new ServicePoint("be675d63-c5a1-41a9-a345-c82102ac42cc", "Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("Касса");
             HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
             servicePointMap.put(servicePointFC.getId(), servicePointFC);
@@ -115,7 +115,7 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Queue queue2 = branchService.getBranch(branchId).getQueues().values().stream().filter(f -> f.getName().contains("кассу")).toList().get(0);
@@ -123,7 +123,7 @@ class EntrypointTest {
         Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue.getId()).getVisits().size(), 1);
         Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue2.getId()).getVisits().size(), 0);
 
-        branchService.updateVisit(visit,"TESTED_VISIT_UPDATE_METHOD");
+        branchService.updateVisit(visit, "TESTED_VISIT_UPDATE_METHOD");
         Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue.getId()).getVisits().size(), 0);
         Assertions.assertEquals(branchService.getBranch(branchId).getQueues().get(queue2.getId()).getVisits().size(), 1);
     }
@@ -131,22 +131,22 @@ class EntrypointTest {
     @Test
     void checkConfirmVisit() throws InterruptedException {
         Service service;
-        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
-        Long servtime=servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit ).getServingTime();
-        Assertions.assertEquals(servtime,0);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
+        Assertions.assertEquals(servtime, 0);
         Thread.sleep(2000);
-        servicePointController.visitReCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+        visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         Thread.sleep(2000);
-        servicePointController.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+        visitService.visitCallConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
         Thread.sleep(2000);
 
         Visit visit2;
-        visit2 = servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+        visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
         Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
 
@@ -161,24 +161,56 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Thread.sleep(10000);
-        if(servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc" ).isPresent()){
-        Long servtime=servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc" ).get().getServingTime();
-        Assertions.assertEquals(servtime,0);
-        Thread.sleep(8000);
-        servicePointController.visitReCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
-        Thread.sleep(6000);
-        servicePointController.visitCallConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+        if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
+            Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+            Assertions.assertEquals(servtime, 0);
+            Thread.sleep(8000);
+            visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(6000);
+            visitService.visitCallConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
-        Thread.sleep(9000);
+            Thread.sleep(9000);
 
-        Visit visit2=servicePointController.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+            Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
-        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
-}
+            Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+        }
 
     }
+    @Test
+    void checkConfirmVisitWithCallRuleTwoServices() throws InterruptedException {
+
+        Service service;
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
+        Service service2;
+        service2 = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67")).findFirst().orElse(null);
+
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        //serviceIds.add(service2.getId());
+
+        assert service != null;
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Thread.sleep(10000);
+        if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
+            Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+            Assertions.assertEquals(servtime, 0);
+            Thread.sleep(8000);
+            visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(6000);
+            visitService.visitCallConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+
+            Thread.sleep(9000);
+
+            Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+
+            Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+        }
+
+    }
+
     @Test
     void checkNoShowVisit() throws InterruptedException {
         Service service;
@@ -186,20 +218,21 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
-        Long servtime=servicePointController.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit ).getServingTime();
-        Assertions.assertEquals(servtime,0);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
+        Assertions.assertEquals(servtime, 0);
         Thread.sleep(2000);
-        servicePointController.visitReCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit );
+        visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         Thread.sleep(2000);
 
 
-        Visit visit2=servicePointController.visitCallNoShow(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit);
+        Visit visit2 = visitService.visitCallNoShow(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
         Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
 
 
     }
+
     @Test
     void checkTicetNumberlogic() {
 
@@ -209,7 +242,7 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
 
-        Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
 

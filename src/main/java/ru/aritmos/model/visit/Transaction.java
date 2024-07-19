@@ -54,12 +54,13 @@ public class Transaction {
     }
 
     Long waitingTime;
+
     @JsonGetter
 
     public Long getWaitingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
-        waitingTime = unit.between(this.getStartDateTime()!=null?this.getStartDateTime():ZonedDateTime.now(), this.getStartServingDateTime()!=null?this.getStartServingDateTime():ZonedDateTime.now());
+        waitingTime = unit.between(this.getStartDateTime() != null ? this.getStartDateTime() : ZonedDateTime.now(), this.getStartServingDateTime() != null ? this.getStartServingDateTime() : ZonedDateTime.now());
         return waitingTime;
 
     }
@@ -74,12 +75,10 @@ public class Transaction {
 
     public Long getVisitLifeTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        if(startDateTime!=null) {
+        if (startDateTime != null) {
             visitLifeTime = unit.between(startDateTime, Objects.requireNonNullElseGet(this.endDateTime, ZonedDateTime::now));
             return visitLifeTime;
-        }
-        else
-        {
+        } else {
             return 0L;
         }
     }
@@ -95,10 +94,11 @@ public class Transaction {
     public Long getServingTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
-        servingTime = unit.between(this.startServingDateTime!=null?this.getStartServingDateTime():ZonedDateTime.now(),this.getEndDateTime()!=null?this.getEndDateTime():ZonedDateTime.now());
+        servingTime = unit.between(this.startServingDateTime != null ? this.getStartServingDateTime() : ZonedDateTime.now(), this.getEndDateTime() != null ? this.getEndDateTime() : ZonedDateTime.now());
         return servingTime;
 
     }
+
     public Transaction(Visit visit) {
         //Branch currentBranch=branchService.getBranch(visit.getBranchId());
 
@@ -107,17 +107,27 @@ public class Transaction {
         this.visitEvents = new ArrayList<>();
 
 
-
         if (visit != null) {
             this.startDateTime = visit.getCreateDateTime();
-            this.queueId = visit.getQueueId();
-
-            this.service = visit.getCurrentService();
-            this.servicePointId = visit.getServicePointId();
+            if (visit.getQueueId() != null) {
+                this.queueId = visit.getQueueId();
+            } else {
+                this.queueId = visit.getCurrentTransaction() != null ? visit.getCurrentTransaction().getQueueId() : null;
+            }
+            if (visit.currentService != null) {
+                this.service = visit.getCurrentService();
+            } else {
+                this.service = visit.getCurrentTransaction() != null ? visit.getCurrentTransaction().getService() : null;
+            }
+            if (visit.getServicePointId() != null) {
+                this.servicePointId = visit.getServicePointId();
+            } else {
+                this.servicePointId = visit.getCurrentTransaction() != null ? visit.getCurrentTransaction().getServicePointId() : null;
+            }
             this.startServingDateTime = visit.getStartServingDateTime();
             this.callDateTime = visit.getCallDateTime();
             this.endDateTime = visit.getEndDateTime();
-            this.employeeId=visit.getUserId();
+            this.employeeId = visit.getUserId();
         }
 
     }

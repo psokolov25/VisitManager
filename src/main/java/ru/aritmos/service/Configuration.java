@@ -17,8 +17,8 @@ public class Configuration {
     public void getConfiguration() {
 
 
-//        if(branchService.getBranches().size()==0){
-        if (branchService.getBranches().isEmpty()) {
+        if(branchService.getBranches().size()==0){
+//        if (branchService.getBranches().isEmpty()) {
 
 
             Branch branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b4", "Отделение на Тверской");
@@ -58,8 +58,8 @@ public class Configuration {
             psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
 
             sidorovUser.setCurrentWorkProfileId(workProfileC.getId());
-            branchService.loginUser(psokolovUser);
-            branchService.loginUser(sidorovUser);
+            branchService.loginUser(psokolovUser,branch);
+            branchService.loginUser(sidorovUser,branch);
             HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
             servicePointMap.put(servicePointFC.getId(), servicePointFC);
             servicePointMap.put(servicePointFSC.getId(), servicePointFSC);
