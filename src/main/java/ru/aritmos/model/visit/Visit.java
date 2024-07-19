@@ -288,6 +288,7 @@ public class Visit {
                     .visitEvent(f)
                     .eventDateTime(f.dateTime)
                     .parameters(f.getParameters())
+                    .transactionCompletionStatus(VisitEvent.isNewOfTransaction(f)?VisitEvent.getStatus(f):null)
                     .build();
             subresult.add(visitEventDateTime);
 

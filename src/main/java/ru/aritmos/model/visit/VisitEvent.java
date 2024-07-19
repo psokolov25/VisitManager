@@ -41,17 +41,31 @@ public enum VisitEvent {
     };
 
     public static Boolean isNewOfTransaction(VisitEvent visitEvent) {
-        return VisitEvent.newTransactionEvents.stream().anyMatch(am->am.equals(visitEvent));
+        return VisitEvent.newTransactionEvents.stream().anyMatch(am -> am.equals(visitEvent));
+    }
+
+
+    private static final Map<VisitEvent, TransactionCompletionStatus> transactionStatus = Map.ofEntries(
+            Map.entry(PLACED_IN_QUEUE, TransactionCompletionStatus.BACK_TO_QUEUE)
+
+    );
+
+    public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {
+        if (transactionStatus.containsKey(visitEvent))
+        {
+            return transactionStatus.get(visitEvent);
+        }
+        return null;
     }
 
     private static final Map<VisitEvent, List<VisitEvent>> nextEvents = Map.ofEntries(
 
-            Map.entry(CREATED, List.of(PLACED_IN_QUEUE, CALLED,RECALLED)),
+            Map.entry(CREATED, List.of(PLACED_IN_QUEUE, CALLED, RECALLED)),
             Map.entry(PLACED_IN_QUEUE, List.of(CALLED)),
             Map.entry(CALLED, List.of(RECALLED, START_SERVING, NO_SHOW, BACK_TO_QUEUE)),
             Map.entry(RECALLED, List.of(RECALLED, START_SERVING, NO_SHOW, BACK_TO_QUEUE)),
             Map.entry(START_SERVING, List.of(BACK_TO_QUEUE, STOP_SERVING, END, TRANSFER_TO_SERVICE_POINT_POOL, TRANSFER_TO_USER_POOL, TRANSFER_TO_QUEUE, ADD_SERVICE)),
-            Map.entry(STOP_SERVING, List.of(PLACED_IN_QUEUE, END,VISIT_END_TRANSACTION)),
+            Map.entry(STOP_SERVING, List.of(PLACED_IN_QUEUE, END, VISIT_END_TRANSACTION)),
             Map.entry(NO_SHOW, List.of()),
             Map.entry(END, List.of()),
             Map.entry(TRANSFER_TO_USER_POOL, List.of(CALLED)),
@@ -74,11 +88,11 @@ public enum VisitEvent {
             NO_SHOW, VisitState.END,
             END, VisitState.END,
             BACK_TO_QUEUE, VisitState.WAITING_IN_QUEUE);
-    //TRANSFER_TO_SERVICE_POINT_POOL, List.of(VisitState.WAITING_IN_SP_POOL),
-    //BACK_TO_QUEUE, List.of(VisitState.WAITING_IN_QUEUE)
-    // TRANSFER_TO_QUEUE, List.of(VisitState.WAITING_IN_QUEUE),
-    //  ADD_SERVICE, List.of()
-    //);
+//TRANSFER_TO_SERVICE_POINT_POOL, List.of(VisitState.WAITING_IN_SP_POOL),
+//BACK_TO_QUEUE, List.of(VisitState.WAITING_IN_QUEUE)
+// TRANSFER_TO_QUEUE, List.of(VisitState.WAITING_IN_QUEUE),
+//  ADD_SERVICE, List.of()
+//);
 
     public boolean canBeNext(VisitEvent next) {
         return nextEvents.get(this).stream().anyMatch(e -> e.equals(next));
