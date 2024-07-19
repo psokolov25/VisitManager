@@ -35,13 +35,27 @@ public enum VisitEvent {
         {
 
             add(BACK_TO_QUEUE);
-            add(PLACED_IN_QUEUE);
+
 
         }
     };
 
     public static Boolean isNewOfTransaction(VisitEvent visitEvent) {
-        return VisitEvent.newTransactionEvents.stream().anyMatch(am->am.equals(visitEvent));
+        return VisitEvent.newTransactionEvents.stream().anyMatch(am -> am.equals(visitEvent));
+    }
+
+
+    private static final Map<VisitEvent, TransactionCompletionStatus> transactionStatus = Map.ofEntries(
+            Map.entry(BACK_TO_QUEUE, TransactionCompletionStatus.BACK_TO_QUEUE)
+
+    );
+
+    public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {
+        if (transactionStatus.containsKey(visitEvent))
+        {
+            return transactionStatus.get(visitEvent);
+        }
+        return null;
     }
 
     private static final Map<VisitEvent, List<VisitEvent>> nextEvents = Map.ofEntries(

@@ -15,5 +15,6 @@ public class VisitEventDateTime {
     VisitEvent visitEvent;
     ZonedDateTime eventDateTime;
 
-    Map<String, String> parameters=new HashMap<>();
+    Map<String, String> parameters;
+    TransactionCompletionStatus transactionCompletionStatus;
 }

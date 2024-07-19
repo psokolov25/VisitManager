@@ -148,7 +148,7 @@ class EntrypointTest {
         Visit visit2;
         visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
-        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+        Assertions.assertEquals(visit2.getStatus(), VisitEvent.START_SERVING.name());
 
 
     }
@@ -228,7 +228,7 @@ class EntrypointTest {
 
         Visit visit2 = visitService.visitCallNoShow(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
-        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+        Assertions.assertEquals(visit2.getStatus(), VisitEvent.NO_SHOW.name());
 
 
     }

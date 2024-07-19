@@ -167,7 +167,7 @@ public class VisitService {
                         .servicePointId(null)
 
                         .servedServices(new ArrayList<>())
-                        .transactions(new ArrayList<>())
+
                         .parameterMap(new HashMap<>())
                         .build();
                 Queue serviceQueue;
@@ -179,14 +179,14 @@ public class VisitService {
                     visit.setTicket((serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter())));
                     VisitEvent event = VisitEvent.CREATED;
                     event.dateTime = ZonedDateTime.now();
-                    visit.setTransaction(event, eventService,branchService);
+
                     branchService.updateVisit(visit, event,this);
                     if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
                         VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
                         queueEvent.dateTime = ZonedDateTime.now();
                         queueEvent.getParameters().put("queueId",serviceQueue.getId());
                         visit.setQueueId(serviceQueue.getId());
-                        visit.updateTransaction(queueEvent, eventService,branchService);
+
 
 
                         if (printTicket && entryPoint.getPrinterId() != null) {
@@ -272,7 +272,7 @@ public class VisitService {
                 event.dateTime = ZonedDateTime.now();
                 event.getParameters().put("branchId",queueId);
                 event.getParameters().put("queueId",queueId);
-                visit.updateTransaction(event, eventService,branchService);
+
                 branchService.updateVisit(visit, event,this);
                 //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
                 log.info("Visit {} transfered!", visit);
@@ -315,7 +315,7 @@ public class VisitService {
         event.getParameters().put("newQueueID",queueId);
         event.getParameters().put("servicePointId",servicePointId);
         event.getParameters().put("branchID", branchId);
-        visit.setTransaction(event, eventService,branchService);
+
         branchService.updateVisit(visit,event,this);
         //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
@@ -355,7 +355,7 @@ public class VisitService {
                     event.dateTime = ZonedDateTime.now();
                     event.getParameters().put("servicePointId",servicePointId);
                     event.getParameters().put("branchID", branchId);
-                    visit.updateTransaction(event, eventService,branchService);
+
                     branchService.updateVisit(visit, event,this);
                     //event = VisitEvent.VISIT_END_TRANSACTION;
                     //event.dateTime = ZonedDateTime.now();
@@ -367,7 +367,7 @@ public class VisitService {
                     event = VisitEvent.PLACED_IN_QUEUE;
                     event.getParameters().put("branchID", branchId);
                     event.getParameters().put("queueId",queueIdToReturn);
-                    visit.setTransaction(event, eventService,branchService);
+
                     visit.setServicePointId(null);
                     branchService.updateVisit(visit, event,this);
                     //Queue queue = currentBranch.getQueues().get(queueIdToReturn);
@@ -383,11 +383,11 @@ public class VisitService {
                     event = VisitEvent.STOP_SERVING;
                     event.dateTime = ZonedDateTime.now();
                     event.getParameters().put("branchID", branchId);
-                    visit.updateTransaction(event, eventService,branchService);
+
                     branchService.updateVisit(visit, event,this);
                     event = VisitEvent.END;
                     event.dateTime = ZonedDateTime.now();
-                    visit.updateTransaction(event, eventService,branchService);
+
                     visit.setServicePointId(null);
                     branchService.updateVisit(visit, event,this);
                 }
@@ -452,11 +452,11 @@ public class VisitService {
         event.getParameters().put("branchID", branchId);
         event.dateTime = ZonedDateTime.now();
         branchService.updateVisit(visit,event,this);
-        visit.updateTransaction(event, eventService,branchService);
+
         VisitEvent servingEvent = VisitEvent.START_SERVING;
         servingEvent.dateTime = ZonedDateTime.now();
         visit.setStartServingDateTime(ZonedDateTime.now());
-        visit.updateTransaction(servingEvent, eventService,branchService);
+
         branchService.updateVisit(visit,servingEvent,this);
 
         log.info("Visit {} called!", visit);
@@ -488,7 +488,7 @@ public class VisitService {
         event.getParameters().put("servicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
         event.getParameters().put("queueId", visit.getQueueId());
-        visit.updateTransaction(event, eventService,branchService);
+
         branchService.updateVisit(visit, event,this);
 
 
@@ -511,7 +511,7 @@ public class VisitService {
         event.getParameters().put("ServicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
         event.getParameters().put("queueId", visit.getQueueId());
-        visit.updateTransaction(event, eventService,branchService);
+
         branchService.updateVisit(visit, event,this);
 
 
@@ -553,7 +553,7 @@ public class VisitService {
         event.getParameters().put("ServicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
         event.getParameters().put("Service", visit.getCurrentService().getId());
-        visit.updateTransaction(event, eventService,branchService);
+
         branchService.updateVisit(visit, event,this);
 
 
@@ -578,7 +578,7 @@ public class VisitService {
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("ServicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
-        visit.updateTransaction(event, eventService,branchService);
+
         branchService.updateVisit(visit, event,this);
 
 
@@ -647,7 +647,7 @@ public class VisitService {
         visit.setQueueId(null);
         VisitEvent event = VisitEvent.NO_SHOW;
         event.dateTime = ZonedDateTime.now();
-        visit.updateTransaction(event, eventService,branchService);
+
         branchService.updateVisit(visit,event,this);
 
 
