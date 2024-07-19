@@ -17,7 +17,7 @@ public class Configuration {
     public void getConfiguration() {
 
 
-        if(branchService.getBranches().size()==0){
+        if(branchService.getBranches().isEmpty()){
 //        if (branchService.getBranches().isEmpty()) {
 
 

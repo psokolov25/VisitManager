@@ -3,7 +3,6 @@ package ru.aritmos.model.visit;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;

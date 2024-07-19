@@ -1,7 +1,6 @@
 package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.*;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
-import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Service;
 import ru.aritmos.service.BranchService;
@@ -169,7 +167,7 @@ public class Visit {
             this.getCurrentTransaction().callDateTime = this.getCallDateTime();
             this.getCurrentTransaction().endDateTime = this.getEndDateTime();
             this.getCurrentTransaction().employeeId = this.getUserId();
-            List<VisitEvent> events = this.getCurrentTransaction().getVisitEvents();
+
             //this.currentTransaction.getVisitEvents().addAll(events);
             this.getCurrentTransaction().addEvent(event, eventService);
 
@@ -277,7 +275,7 @@ public class Visit {
     public ArrayList<ArrayList<VisitEventDateTime>> getEvents() {
 
         ArrayList<ArrayList<VisitEventDateTime>> result = new ArrayList<>();
-        ArrayList<VisitEventDateTime> subresult =new ArrayList();
+        ArrayList<VisitEventDateTime> subresult =new ArrayList<>();
         result.add(subresult);
         for (VisitEvent f:this.visitEvents) {
             if(VisitEvent.isNewOfTransaction(f)) {

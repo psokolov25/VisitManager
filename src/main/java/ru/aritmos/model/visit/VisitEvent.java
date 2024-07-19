@@ -31,7 +31,7 @@ public enum VisitEvent {
 
     @Getter
     final Map<String, String> parameters = new HashMap<>();
-    private static List<VisitEvent> newTransactionEvents = new ArrayList<>() {
+    private static final List<VisitEvent> newTransactionEvents = new ArrayList<>() {
         {
 
             add(BACK_TO_QUEUE);
