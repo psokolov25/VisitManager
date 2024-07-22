@@ -13,7 +13,6 @@ import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.service.VisitService;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

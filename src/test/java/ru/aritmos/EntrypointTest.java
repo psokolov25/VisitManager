@@ -42,7 +42,7 @@ class EntrypointTest {
     String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
     String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
     String creditCardId="35d73fdd-1597-4d94-a087-fd8a99c9d1ed";
-    String insuranceId="daa17035-7bd7-403f-a036-6c14b81e666f";
+
     @Test
     void testItWorks() {
         Assertions.assertTrue(application.isRunning());
@@ -172,7 +172,7 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+
         Thread.sleep(2000);
         Optional<Visit> currvisit=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (currvisit.isPresent()) {
