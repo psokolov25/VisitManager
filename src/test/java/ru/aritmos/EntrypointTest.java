@@ -171,7 +171,8 @@ class EntrypointTest {
 
         Service service;
         service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
-        ArrayList<String> serviceIds = new ArrayList<>();
+        ArrayList<String> serviceIds;
+        serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
 
@@ -184,7 +185,8 @@ class EntrypointTest {
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
             Thread.sleep(3000);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            visitService.addDeliveredService(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",creditCardId);
+            Visit visit;
+            visit = visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
             Thread.sleep(3000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
