@@ -184,14 +184,13 @@ class EntrypointTest {
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
             Thread.sleep(3000);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            Visit visit;
-            visit = visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
+            Visit visit = visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
             Thread.sleep(3000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
             Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
-            Assertions.assertEquals(visit.getCurrentService().getDeliveredServices().get(0).getId(), creditCardId);
+            Assertions.assertEquals(visit.getCurrentService().getDeliveredServices().get(creditCardId).getId(), creditCardId);
         }
 
     }
