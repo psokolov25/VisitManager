@@ -13,6 +13,7 @@ import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.service.VisitService;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,6 +58,10 @@ public class Branch extends BranchEntity {
      * Точки обслуживания
      */
     HashMap<String, ServicePoint> servicePoints = new HashMap<>();
+    /**
+     * Возможные оказанные услуги
+     */
+    HashMap<String, DeliveredService> possibleDeliveredServices = new HashMap<>();
 
     public Integer incrementTicketCounter(Queue queue) {
         if (this.getQueues().containsKey(queue.getId())) {
@@ -161,7 +166,7 @@ public class Branch extends BranchEntity {
     }
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService) {
         visitService.addEvent(visit,visitEvent,eventService);
-
+        visit.setStatus(visitEvent.getState().name());
         this.servicePoints.forEach((key, value) -> {
             if (value.getId().equals(visit.getServicePointId())) {
                 if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {

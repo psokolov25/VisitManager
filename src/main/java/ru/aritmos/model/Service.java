@@ -4,6 +4,9 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.HashMap;
 
 /**
  * Услуга
@@ -11,9 +14,10 @@ import lombok.EqualsAndHashCode;
 @Serdeable
 @EqualsAndHashCode(callSuper = true)
 @Data
+
 @Introspected
 
-public class Service extends BranchEntity{
+public class Service extends BasedService{
 
     public Service(String key,String name, Integer servingSL, String linkedQueueId) {
 
@@ -35,6 +39,10 @@ public class Service extends BranchEntity{
      * Флаг доступности
      */
     Boolean isAvailable ;
+    /**
+     * Список идентификаторов оказанных услуг
+     */
+    HashMap<String,DeliveredService> deliveredServices=new HashMap<>();
 
 
 }

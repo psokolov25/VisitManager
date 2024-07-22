@@ -207,11 +207,6 @@ public class Visit {
         ArrayList<VisitEventDateTime> subresult =new ArrayList<>();
         result.add(subresult);
         for (VisitEvent f:this.visitEvents) {
-            if(VisitEvent.isNewOfTransaction(f)) {
-                subresult = new ArrayList<>();
-                result.add(subresult);
-            }
-
 
             VisitEventDateTime visitEventDateTime = VisitEventDateTime.builder()
                     .visitEvent(f)
@@ -220,6 +215,12 @@ public class Visit {
                     .transactionCompletionStatus(VisitEvent.isNewOfTransaction(f)?VisitEvent.getStatus(f):null)
                     .build();
             subresult.add(visitEventDateTime);
+            if(VisitEvent.isNewOfTransaction(f)) {
+                subresult = new ArrayList<>();
+                result.add(subresult);
+            }
+
+
 
 
         }

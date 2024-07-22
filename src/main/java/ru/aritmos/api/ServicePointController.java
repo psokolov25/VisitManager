@@ -42,18 +42,20 @@ public class ServicePointController {
 
     /**
      * Возвращает все не занятые точки обслуживания
+     *
      * @param branchId идентификатор отделения
      * @return свободные точки обслуживания
      */
     @Tag(name = "Зона обслуживания")
     @Get("/branches/{branchId}/servicePoints/getFree")
     @ExecuteOn(TaskExecutors.IO)
-    public HashMap<String, ServicePoint> getFreeServicePoints(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4")  String branchId) {
+    public HashMap<String, ServicePoint> getFreeServicePoints(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
         return visitService.getStringServicePointHashMap(branchId);
     }
 
     /**
      * Открытие рабочей станции сотрудником
+     *
      * @param user сотрудник
      * @return сотрудник
      */
@@ -63,13 +65,14 @@ public class ServicePointController {
     public User loginUser(@Body User user) {
 
 
-            branchService.loginUser(user);
-            return user;
+        branchService.loginUser(user);
+        return user;
 
     }
 
     /**
      * Закрытие рабочей станции
+     *
      * @param user сотрудник
      * @return сотрудник
      */
@@ -77,14 +80,12 @@ public class ServicePointController {
     @Post("/branches/user/logout")
     @ExecuteOn(TaskExecutors.IO)
     public User logoutUser(@Body User user) {
-        if(user.getServicePoinrtId()!=null) {
+        if (user.getServicePoinrtId() != null) {
 
             branchService.logoutUser(user);
             return user;
-        }
-        else
-        {
-            throw new BusinessException(String.format("User %s already logged out",user.getName()),eventService,HttpStatus.CONFLICT);
+        } else {
+            throw new BusinessException(String.format("User %s already logged out", user.getName()), eventService, HttpStatus.CONFLICT);
         }
     }
 
@@ -100,7 +101,9 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Get(uri = "/branches/{branchId}/queues/{queueId}/visits/limit/{limit}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public List<TinyVisit> getVisits(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @PathVariable Long limit) {
+    public List<TinyVisit> getVisits(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                     @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
+                                     @PathVariable Long limit) {
 
         List<TinyVisit> result = new ArrayList<>();
 
@@ -144,7 +147,8 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/statuses", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public HashMap<String, Visit> getVisitsByStatuses(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> statuses) {
+    public HashMap<String, Visit> getVisitsByStatuses(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                                      @Body List<String> statuses) {
 
 
         return visitService.getVisitsByStatuses(branchId, statuses);
@@ -162,7 +166,9 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Get(uri = "/branches/{branchId}/queues/{queueId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit getVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "55da9b66-c928-4d47-9811-dbbab20d3780") String queueId, @PathVariable String visitId) {
+    public Visit getVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                          @PathVariable(defaultValue = "55da9b66-c928-4d47-9811-dbbab20d3780") String queueId,
+                          @PathVariable String visitId) {
 
 
         return visitService.getVisits(branchId, queueId).stream()
@@ -177,13 +183,15 @@ public class ServicePointController {
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visitId         идентификатор визита
+     * @param visitId        идентификатор визита
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/visits/{visitId}call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit callVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @PathVariable String visitId) {
+    public Visit callVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                           @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                           @PathVariable String visitId) {
 
 
         return visitService.visitCall(branchId, servicePointId, visitId);
@@ -201,7 +209,8 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Get(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Optional<Visit> visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+    public Optional<Visit> visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                               @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
 
         return visitService.visitCallForConfirm(branchId, servicePointId);
@@ -220,7 +229,9 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+    public Visit visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                     @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                     @Body Visit visit) {
 
 
         return visitService.visitCallForConfirm(branchId, servicePointId, visit);
@@ -239,10 +250,12 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/noshow", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit visitCallNoShow(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+    public Visit visitCallNoShow(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                 @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                 @Body Visit visit) {
 
 
-        return visitService.visitCallNoShow(branchId, servicePointId, visit);
+        return visitService.visitNoShow(branchId, servicePointId, visit);
 
 
     }
@@ -258,7 +271,9 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/recall", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit visitReCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+    public Visit visitReCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                       @Body Visit visit) {
 
 
         return visitService.visitReCallForConfirm(branchId, servicePointId, visit);
@@ -277,10 +292,54 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/confirmed/confirm", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit visitCallConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+    public Visit visitCallConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                  @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                  @Body Visit visit) {
 
 
-        return visitService.visitCallConfirm(branchId, servicePointId, visit);
+        return visitService.visitConfirm(branchId, servicePointId, visit);
+
+
+    }
+
+    /**
+     * Добавление предоставленной услуги
+     *
+     * @param branchId           идентификатор отделения
+     * @param servicePointId     идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор предоставленной услуги
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/deliveredservice/{deliveredServiceId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitAddDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                          @PathVariable(defaultValue = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed") String deliveredServiceId) {
+
+
+        return visitService.addDeliveredService(branchId, servicePointId, deliveredServiceId);
+
+
+    }
+
+    /**
+     * Удаление предоставленной услуги
+     *
+     * @param branchId           идентификатор отделения
+     * @param servicePointId     идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор предоставленной услуги
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Delete(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/deliveredservice/{deliveredServiceId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitDeleteDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                             @PathVariable(defaultValue = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed") String deliveredServiceId) {
+
+
+        return visitService.addDeliveredService(branchId, servicePointId, deliveredServiceId);
 
 
     }
@@ -295,7 +354,8 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/servicepoints/{servicePointId}/call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Optional<Visit> visitCall(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+    public Optional<Visit> visitCall(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                     @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
 
         return visitService.visitCall(branchId, servicePointId);
@@ -313,7 +373,8 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Get(uri = "/branches/{branchId}/servicepoints/{servicePointId}/queues", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Optional<List<Queue>> getQueues(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+    public Optional<List<Queue>> getQueues(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                           @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
 
         return visitService.getQueues(branchId, servicePointId);
@@ -331,10 +392,12 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Delete(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public void deleteVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @Body Visit visit) {
+    public void deleteVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                            @Body Visit visit) {
 
 
-        visitService.deleteVisit( visit);
+        visitService.deleteVisit(visit);
 
 
     }
@@ -350,7 +413,9 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit transferVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId) {
+    public Visit transferVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                               @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                               @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId) {
         Branch branch;
 
         try {
@@ -379,10 +444,12 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/visit/return", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit returnVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,@QueryValue(defaultValue = "3000") Long returnTimeDelay) {
+    public Visit returnVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                             @QueryValue(defaultValue = "3000") Long returnTimeDelay) {
 
 
-        return visitService.returnVisit(branchId, servicePointId,returnTimeDelay);
+        return visitService.returnVisit(branchId, servicePointId, returnTimeDelay);
 
 
     }
@@ -400,7 +467,9 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/queue/{queueId}/visit/transferFromQueue", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit visitTransferFromQueue(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId, @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @Body Visit visit) {
+    public Visit visitTransferFromQueue(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                        @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @Body Visit visit) {
         Branch branch;
 
         try {
@@ -429,11 +498,11 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Put(uri = "/branches/{branchId}/visits/serrvicepoints/{servicePointId}/visit/end", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit visitEnd(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+    public Visit visitEnd(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
 
         return visitService.visitEnd(branchId, servicePointId);
-
 
 
     }
