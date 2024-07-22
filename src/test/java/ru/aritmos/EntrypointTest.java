@@ -170,7 +170,7 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        visitService.createVisit(branchId, "1", serviceIds, false);
         Thread.sleep(10000);
         Optional<Visit> currvisit = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (currvisit.isPresent()) {
@@ -199,11 +199,12 @@ class EntrypointTest {
         service2 = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67")).findFirst().orElse(null);
 
         ArrayList<String> serviceIds = new ArrayList<>();
+        assert service2 != null;
         serviceIds.add(service2.getId());
+        assert service != null;
         serviceIds.add(service.getId());
 
 
-        assert service != null;
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Thread.sleep(10000);
         if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
