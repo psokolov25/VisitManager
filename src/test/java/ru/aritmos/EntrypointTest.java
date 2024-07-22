@@ -126,7 +126,8 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit;
+        visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Queue queue2 = branchService.getBranch(branchId).getQueues().values().stream().filter(f -> f.getName().contains("кассу")).toList().get(0);
@@ -232,7 +233,8 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit;
+        visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
         Assertions.assertEquals(servtime, 0);
         Thread.sleep(2000);
@@ -256,7 +258,8 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit;
+        visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
 
