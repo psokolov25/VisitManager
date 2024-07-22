@@ -18,6 +18,7 @@ import ru.aritmos.service.VisitService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -171,8 +172,8 @@ class EntrypointTest {
 
         Service service;
         service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
-        ArrayList<String> serviceIds = new ArrayList<>();
-        serviceIds.add(serviceId);
+        AtomicReference<ArrayList<String>> serviceIds = new AtomicReference<>(new ArrayList<>());
+        serviceIds.get().add(serviceId);
         assert service != null;
 
         Thread.sleep(2000);
@@ -184,7 +185,8 @@ class EntrypointTest {
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
             Thread.sleep(3000);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            Visit visit = visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
+            Visit visit;
+            visit = visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
             Thread.sleep(3000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
