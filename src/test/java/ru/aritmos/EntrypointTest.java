@@ -18,7 +18,6 @@ import ru.aritmos.service.VisitService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -42,7 +41,7 @@ class EntrypointTest {
     ManagementController managementController;
     String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
     String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
-    String creditCardId="35d73fdd-1597-4d94-a087-fd8a99c9d1ed";
+    String creditCardId = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed";
 
     @Test
     void testItWorks() {
@@ -75,8 +74,8 @@ class EntrypointTest {
             serviceList.put(kassaService.getId(), kassaService);
             serviceList.put(creditService.getId(), creditService);
             serviceList.put(bigCreditService.getId(), bigCreditService);
-            DeliveredService creditCard=new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed","Кредитная карта");
-            DeliveredService insurance=new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f","Страховка");
+            DeliveredService creditCard = new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Кредитная карта");
+            DeliveredService insurance = new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Страховка");
             creditCard.getServviceIds().add(creditService.getId());
             creditCard.getServviceIds().add(bigCreditService.getId());
             insurance.getServviceIds().add(creditService.getId());
@@ -107,10 +106,10 @@ class EntrypointTest {
 
             branch.setQueues(queueMap);
             branch.setServicePoints(servicePointMap);
-            branch.getPossibleDeliveredServices().put(creditCard.getId(),creditCard);
-            branch.getWorkProfiles().put(workProfileC.getId(),workProfileC);
-            branch.getWorkProfiles().put(workProfileFC.getId(),workProfileFC);
-            branch.getWorkProfiles().put(workProfileFSC.getId(),workProfileFSC);
+            branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
+            branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
+            branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
+            branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
             branchService.add(branch.getId(), branch);
         }
     }
@@ -148,18 +147,16 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
-        Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
+        Visit visitForConfirm = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        Long servtime = visitForConfirm.getServingTime();
         Assertions.assertEquals(servtime, 0);
         Thread.sleep(2000);
         visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         Thread.sleep(2000);
         visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-
         Thread.sleep(2000);
-
         Visit visit2;
         visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
-
         Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
 
 
@@ -175,7 +172,7 @@ class EntrypointTest {
         assert service != null;
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Thread.sleep(10000);
-        Optional<Visit> currvisit=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        Optional<Visit> currvisit = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (currvisit.isPresent()) {
             Long servtime = currvisit.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
@@ -183,7 +180,7 @@ class EntrypointTest {
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
             Thread.sleep(6000);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            visitService.addDeliveredService(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",creditCardId);
+            visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
             Thread.sleep(9000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
@@ -192,6 +189,7 @@ class EntrypointTest {
         }
 
     }
+
     @Test
     void checkConfirmVisitWithCallRuleTwoServices() throws InterruptedException {
 
