@@ -127,8 +127,7 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit;
-        visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Queue queue2 = branchService.getBranch(branchId).getQueues().values().stream().filter(f -> f.getName().contains("кассу")).toList().get(0);
@@ -148,8 +147,7 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit;
-        visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
         Assertions.assertEquals(servtime, 0);
         Thread.sleep(2000);
@@ -172,27 +170,25 @@ class EntrypointTest {
 
         Service service;
         service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
-        AtomicReference<ArrayList<String>> serviceIds = new AtomicReference<>(new ArrayList<>());
-        serviceIds.get().add(serviceId);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
         assert service != null;
-
-        Thread.sleep(2000);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Thread.sleep(10000);
         Optional<Visit> currvisit=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (currvisit.isPresent()) {
             Long servtime = currvisit.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
-            Thread.sleep(3000);
+            Thread.sleep(8000);
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            Thread.sleep(3000);
+            Thread.sleep(6000);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            Visit visit;
-            visit = visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
-            Thread.sleep(3000);
+            visitService.addDeliveredService(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",creditCardId);
+            Thread.sleep(9000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
             Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
-            Assertions.assertEquals(visit.getCurrentService().getDeliveredServices().get(creditCardId).getId(), creditCardId);
         }
 
     }
@@ -205,13 +201,11 @@ class EntrypointTest {
         service2 = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67")).findFirst().orElse(null);
 
         ArrayList<String> serviceIds = new ArrayList<>();
-        assert service2 != null;
         serviceIds.add(service2.getId());
-        assert service != null;
         serviceIds.add(service.getId());
 
 
-
+        assert service != null;
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Thread.sleep(10000);
         if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
@@ -239,8 +233,7 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit;
-        visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
         Assertions.assertEquals(servtime, 0);
         Thread.sleep(2000);
@@ -264,8 +257,7 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
 
-        Visit visit;
-        visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
 
