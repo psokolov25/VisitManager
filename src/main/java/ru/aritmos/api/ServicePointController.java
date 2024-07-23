@@ -322,43 +322,108 @@ public class ServicePointController {
 
 
     }
+
     /**
-     * Добавление предоставленной услуги
+     * Добавление итога текущей услуги
      *
-     * @param branchId           идентификатор отделения
-     * @param servicePointId     идентификатор точки обслуживания
-     * @param outcomeId идентификатор итога оказания услуги
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param outcomeId      идентификатор итога оказания услуги
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/outcome/{outcomeId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitAddOutcomeService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                                          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                          @PathVariable(defaultValue = "462bac1a-568a-4f1f-9548-1c7b61792b4b") String outcomeId) {
+                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                        @PathVariable(defaultValue = "462bac1a-568a-4f1f-9548-1c7b61792b4b") String outcomeId) {
 
 
-        return visitService.addOutcomeService(branchId, servicePointId,outcomeId);
+        return visitService.addOutcomeService(branchId, servicePointId, outcomeId);
+
+
+    }
+
+    /**
+     * Добавление услуги в визит
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param serviceId идентификатор итога оказания услуги
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/services/{serviceId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit addOutcomeDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                            @PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId) {
+
+
+        return visitService.addService(branchId, servicePointId, serviceId);
 
 
     }
     /**
+     * Добавление итога предоставленной услуги текущей услуги
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор предоставленной услуги
+     * @param outcomeId      идентификатор итога оказания услуги
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit addOutcomeDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                            @PathVariable() String deliveredServiceId,
+                                            @PathVariable(defaultValue = "462bac1a-568a-4f1f-9548-1c7b61792b4b") String outcomeId) {
+
+
+        return visitService.addOutcomeDeliveredService(branchId, servicePointId, deliveredServiceId, outcomeId);
+
+
+    }
+    /**
+     * Удаление итога предоставленной услуги текущей услуги
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор предоставленной услуги
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Delete(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit deleteOutcomeDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                            @PathVariable() String deliveredServiceId) {
+
+
+        return visitService.deleteOutcomeDeliveredService(branchId, servicePointId, deliveredServiceId);
+
+
+    }
+
+    /**
      * Удаление предоставленной услуги
      *
-     * @param branchId           идентификатор отделения
-     * @param servicePointId     идентификатор точки обслуживания
-     * @param serviceId идентификатор итога оказания услуги
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param serviceId      идентификатор итога оказания услуги
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
     @Delete(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/service/{serviceId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitDeleteOutcomeService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                        @PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId) {
+                                           @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                           @PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId) {
 
 
-        return visitService.deleteOutcomeService(branchId, servicePointId,serviceId);
+        return visitService.deleteOutcomeService(branchId, servicePointId, serviceId);
 
 
     }
