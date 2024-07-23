@@ -342,6 +342,26 @@ public class ServicePointController {
 
 
     }
+    /**
+     * Удаление предоставленной услуги
+     *
+     * @param branchId           идентификатор отделения
+     * @param servicePointId     идентификатор точки обслуживания
+     * @param serviceId идентификатор итога оказания услуги
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Delete(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/service/{serviceId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitDeleteOutcomeService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                        @PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId) {
+
+
+        return visitService.deleteOutcomeService(branchId, servicePointId,serviceId);
+
+
+    }
 
     /**
      * Удаление предоставленной услуги
