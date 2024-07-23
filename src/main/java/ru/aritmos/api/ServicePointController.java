@@ -322,6 +322,26 @@ public class ServicePointController {
 
 
     }
+    /**
+     * Добавление предоставленной услуги
+     *
+     * @param branchId           идентификатор отделения
+     * @param servicePointId     идентификатор точки обслуживания
+     * @param outcomeId идентификатор итога оказания услуги
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicepoints/{servicePointId}/outcome/{outcomeId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitAddOutcomeService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                          @PathVariable(defaultValue = "462bac1a-568a-4f1f-9548-1c7b61792b4b") String outcomeId) {
+
+
+        return visitService.addOutcomeService(branchId, servicePointId,outcomeId);
+
+
+    }
 
     /**
      * Удаление предоставленной услуги

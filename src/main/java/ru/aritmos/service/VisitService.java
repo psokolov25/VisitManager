@@ -289,18 +289,17 @@ public class VisitService {
         }
     }
 
-    public Visit addOutcomeService(String branchId, String servicePointId, String outcomeId) throws BusinessException{
+    public Visit addOutcomeService(String branchId, String servicePointId, String outcomeId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             if (servicePoint.getVisit() != null) {
                 Visit visit = servicePoint.getVisit();
-                if (visit.getCurrentService()==null) {
-                    throw new BusinessException("Current service is null!", eventService,HttpStatus.NOT_FOUND);
-                }
-                if (visit.getCurrentService().getPossibleOutcomes().keySet().stream().noneMatch(f -> f.equals(outcomeId))) {
-                    throw new BusinessException(String.format("Current service cant add outcome with id %s", outcomeId), eventService,HttpStatus.CONFLICT);
-                } else {
+                if (visit.getCurrentService()==null)
+                    throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
+                if (visit.getCurrentService().getPossibleOutcomes().keySet().stream().noneMatch(f -> f.equals(outcomeId)))
+                    throw new BusinessException(String.format("Current service cant add outcome with id %s", outcomeId), eventService, HttpStatus.CONFLICT);
+                else {
                     Outcome outcome = visit.getCurrentService().getPossibleOutcomes().get(outcomeId);
                     visit.getCurrentService().setOutcome(outcome);
 
