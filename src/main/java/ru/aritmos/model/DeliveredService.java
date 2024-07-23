@@ -6,6 +6,10 @@ import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Оказанная услуга
+ */
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Serdeable
@@ -14,5 +18,9 @@ public class DeliveredService extends BasedService{
     {
         super(id, name);
     }
+
+    /**
+     * Идентификаторы подходящих услуг
+     */
     List<String> servviceIds=new ArrayList<>();
 }
