@@ -398,13 +398,13 @@ public class VisitService {
     }
 
 
-    public Visit deleteOutcomeService(String branchId, String servicePointId, Long returnTimeDelay, String serviceId) {
+    public Visit deleteOutcomeService(String branchId, String servicePointId,  String serviceId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             if (servicePoint.getVisit() != null) {
                 Visit visit = servicePoint.getVisit();
-                if (!visit.getCurrentService().equals(serviceId)) {
+                if (!visit.getCurrentService().getId().equals(serviceId)) {
                     throw new BusinessException(String.format("Current service ID is not %s@", serviceId), eventService);
                 }
 
@@ -668,7 +668,7 @@ public class VisitService {
         visit.setQueueId(null);
         VisitEvent event = VisitEvent.CALLED;
         event.getParameters().put("servicePointId", servicePointId);
-        event.getParameters().put("queueId", queue.isPresent() ? queue.get().getId() : null);
+        event.getParameters().put("queueId", queue.map(BranchEntity::getId).orElse(null));
         event.getParameters().put("branchID", branchId);
         event.getParameters().put("staffId", visit.getUserId());
         event.getParameters().put("staff?Name", visit.getUserName());
