@@ -30,7 +30,7 @@ public class BusinessException extends RuntimeException {
                 .build());
         log.error(errorMessage);
     }
-    public BusinessException(String errorMessage, EventService eventService, HttpStatus status) {
+    public BusinessException(String errorMessage, EventService eventService, HttpStatus status)  throws HttpStatusException{
         super(errorMessage);
         BusinessError businessError = new BusinessError();
         businessError.setMessage(errorMessage);

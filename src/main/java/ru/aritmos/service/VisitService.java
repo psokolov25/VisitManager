@@ -6,6 +6,7 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import ru.aritmos.events.services.EventService;
@@ -288,7 +289,7 @@ public class VisitService {
         }
     }
 
-    public Visit addOutcomeService(String branchId, String servicePointId, String outcomeId) {
+    public Visit addOutcomeService(String branchId, String servicePointId, String outcomeId) throws BusinessException{
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
@@ -794,8 +795,8 @@ public class VisitService {
         event.getParameters().put("ServicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
         event.getParameters().put("serviceId", visit.getCurrentService().getId());
-        event.getParameters().put("staffId", visit.getUserId());
-        event.getParameters().put("staff?Name", visit.getUserName());
+        event.getParameters().put("staffId", userId);
+        event.getParameters().put("staff?Name", userName);
         branchService.updateVisit(visit, event, this);
 
 
