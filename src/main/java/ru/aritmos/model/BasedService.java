@@ -22,7 +22,7 @@ public class BasedService extends BranchEntity{
         super(id,name);
 
     }
-    HashMap<String,Outcome> possibleOutcomes=new HashMap<>();
+    HashMap<String,Outcome>possibleOutcomes=new HashMap<>();
     /**
      * Итог обслуживания
      */

@@ -90,7 +90,8 @@ public class VisitService {
                 visit.getVisitEvents().add(event);
 
 
-            } else throw new BusinessException(String.format("%s can't be next status %s",event.name(),visit.getVisitEvents().get(visit.getVisitEvents().size() - 1).name()), eventService, HttpStatus.CONFLICT);
+            } else
+                throw new BusinessException(String.format("%s can't be next status %s", event.name(), visit.getVisitEvents().get(visit.getVisitEvents().size() - 1).name()), eventService, HttpStatus.CONFLICT);
 
 
         }
@@ -222,8 +223,8 @@ public class VisitService {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             if (servicePoint.getVisit() != null) {
                 Visit visit = servicePoint.getVisit();
-                if (visit.getCurrentService()==null) {
-                    throw new BusinessException("Current service is null!", eventService,HttpStatus.NOT_FOUND);
+                if (visit.getCurrentService() == null) {
+                    throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
                 }
                 if (currentBranch.getPossibleDeliveredServices().keySet().stream().noneMatch(f -> f.contains(deliveredServiceId))) {
                     throw new BusinessException(String.format("Current service cant add delivererd service with id %s", deliveredServiceId), eventService);
@@ -234,7 +235,45 @@ public class VisitService {
                 VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
                 visitEvent.getParameters().put("servicePointId", servicePoint.getId());
                 visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
-                visitEvent.getParameters().put("serviceId",visit.getCurrentService().getId());
+                visitEvent.getParameters().put("deliveredServiceName", deliveredService.getName());
+                visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
+                visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
+                visitEvent.getParameters().put("branchId", branchId);
+                visitEvent.getParameters().put("staffId", visit.getUserId());
+                visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, visitEvent, this);
+                return visit;
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+    public Visit addService(String branchId, String servicePointId, String serviceId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+
+                if (visit.getCurrentService().getId().equals(serviceId)
+                        || visit.getUnservedServices().stream().anyMatch(f->f.getId().equals(serviceId))
+                        || visit.getServedServices().stream().anyMatch(f->f.getId().equals(serviceId))) {
+                    throw new BusinessException("Service already added!", eventService, HttpStatus.NOT_FOUND);
+                }
+                if (currentBranch.getServices().keySet().stream().noneMatch(f -> f.contains(serviceId))) {
+                    throw new BusinessException(String.format("Current visit cant add  service with id %s", serviceId), eventService);
+                }
+                Service service = currentBranch.getServices().get(serviceId);
+                visit.getUnservedServices().add(service);
+
+                VisitEvent visitEvent = VisitEvent.ADD_SERVICE;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+
+                visitEvent.getParameters().put("serviceId", service.getId());
+                visitEvent.getParameters().put("serviceName", service.getName());
                 visitEvent.getParameters().put("branchId", branchId);
                 visitEvent.getParameters().put("staffId", visit.getUserId());
                 visitEvent.getParameters().put("staff?Name", visit.getUserName());
@@ -249,23 +288,62 @@ public class VisitService {
         }
     }
 
-    public Visit addOutcomeService(String branchId, String servicePointId, Long returnTimeDelay, String serviceId, String outcomeId) {
+    public Visit addOutcomeService(String branchId, String servicePointId, String outcomeId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             if (servicePoint.getVisit() != null) {
                 Visit visit = servicePoint.getVisit();
-                if (!visit.getCurrentService().equals(serviceId)) {
-                    throw new BusinessException(String.format("Current service ID is not %s@", serviceId), eventService);
+                if (visit.getCurrentService()==null) {
+                    throw new BusinessException("Current service is null!", eventService,HttpStatus.NOT_FOUND);
                 }
                 if (visit.getCurrentService().getPossibleOutcomes().keySet().stream().noneMatch(f -> f.equals(outcomeId))) {
-                    throw new BusinessException(String.format("Current service cant add outcome with id %s", outcomeId), eventService);
+                    throw new BusinessException(String.format("Current service cant add outcome with id %s", outcomeId), eventService,HttpStatus.CONFLICT);
                 } else {
                     Outcome outcome = visit.getCurrentService().getPossibleOutcomes().get(outcomeId);
                     visit.getCurrentService().setOutcome(outcome);
 
                     VisitEvent visitEvent = VisitEvent.ADDED_SERVICE_RESULT;
                     visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                    visitEvent.getParameters().put("outcomeId", outcomeId);
+                    visitEvent.getParameters().put("outcomeName", outcome.getName());
+                    visitEvent.getParameters().put("branchId", branchId);
+                    visitEvent.getParameters().put("staffId", visit.getUserId());
+                    visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                    branchService.updateVisit(visit, visitEvent, this);
+                    return visit;
+                }
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public Visit addOutcomeDeliveredService(String branchId, String servicePointId, String deliveredServiceId, String outcomeId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService()==null) {
+                    throw new BusinessException("Current service is null!", eventService,HttpStatus.NOT_FOUND);
+                }
+                if (!visit.getCurrentService().getDeliveredServices().containsKey(deliveredServiceId)) {
+                    throw new BusinessException(String.format("Delivered service %s of current service ID is not %s", visit.getCurrentService().getId(), deliveredServiceId), eventService, HttpStatus.NOT_FOUND);
+                }
+                if (visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).getPossibleOutcomes().keySet().stream().noneMatch(f -> f.equals(outcomeId))) {
+                    throw new BusinessException(String.format("Current service with delivered service %s cant add outcome with id %s",deliveredServiceId, outcomeId), eventService, HttpStatus.NOT_FOUND);
+                } else {
+                    Outcome outcome = visit.getCurrentService().getPossibleOutcomes().get(outcomeId);
+                    visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).setOutcome(outcome);
+
+                    VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE_RESULT;
+                    visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                    visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
                     visitEvent.getParameters().put("outcomeId", outcomeId);
                     visitEvent.getParameters().put("branchId", branchId);
                     visitEvent.getParameters().put("staffId", visit.getUserId());
@@ -282,6 +360,43 @@ public class VisitService {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
         }
     }
+
+    public Visit deleteOutcomeDeliveredService(String branchId, String servicePointId, String serviceId, String deliveredServiceId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService()==null) {
+                    throw new BusinessException("Current service is null!", eventService,HttpStatus.NOT_FOUND);
+                }
+                if (!visit.getCurrentService().getDeliveredServices().containsKey(deliveredServiceId)) {
+                    throw new BusinessException(String.format("Delivered service %s of current service ID is not %s", visit.getCurrentService().getId(), deliveredServiceId), eventService, HttpStatus.NOT_FOUND);
+                }
+
+
+                    visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).setOutcome(null);
+
+                    VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE_RESULT;
+                    visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                    visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+                    visitEvent.getParameters().put("outcomeId", "");
+                    visitEvent.getParameters().put("branchId", branchId);
+                    visitEvent.getParameters().put("staffId", visit.getUserId());
+                    visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                    branchService.updateVisit(visit, visitEvent, this);
+                    return visit;
+
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     public Visit deleteOutcomeService(String branchId, String servicePointId, Long returnTimeDelay, String serviceId) {
         Branch currentBranch = branchService.getBranch(branchId);

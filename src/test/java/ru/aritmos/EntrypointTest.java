@@ -42,6 +42,8 @@ class EntrypointTest {
     String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
     String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
     String creditCardId = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed";
+    String acceptedOutcomeID = "462bac1a-568a-4f1f-9548-1c7b61792b4b";
+    String creditCardGivenId = "8dc29622-cd87-4384-85a7-04b66b28dd0f";
 
     @Test
     void testItWorks() {
@@ -65,6 +67,7 @@ class EntrypointTest {
             branch.setEntryPoints(entryPoints);
             Queue queueCredit = new Queue("Кредиты", "F");
             Service creditService = new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8c", "Кредит", 9000, queueCredit.getId());
+
             Queue queueBigCredit = new Queue("Очень большие кредиты", "S");
             Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd4", "Очень большой кредит", 9000, queueBigCredit.getId());
             Queue queueC = new Queue("В кассу", "C");
@@ -75,9 +78,14 @@ class EntrypointTest {
             serviceList.put(creditService.getId(), creditService);
             serviceList.put(bigCreditService.getId(), bigCreditService);
             DeliveredService creditCard = new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Кредитная карта");
+            Outcome creditAccepted = new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Одобрен");
+            Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Выдана");
+            creditAccepted.setCode(1L);
+            creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
             DeliveredService insurance = new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Страховка");
             creditCard.getServviceIds().add(creditService.getId());
             creditCard.getServviceIds().add(bigCreditService.getId());
+            creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
             insurance.getServviceIds().add(creditService.getId());
             insurance.getServviceIds().add(bigCreditService.getId());
             branch.setServices(serviceList);
@@ -172,17 +180,21 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
         visitService.createVisit(branchId, "1", serviceIds, false);
-        Thread.sleep(10000);
+        Thread.sleep(3000);
         Optional<Visit> currvisit = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (currvisit.isPresent()) {
             Long servtime = currvisit.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
-            Thread.sleep(8000);
+            Thread.sleep(3000);
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            Thread.sleep(6000);
+            Thread.sleep(3000);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
+
             visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
-            Thread.sleep(9000);
+
+            visitService.addOutcomeDeliveredService(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",creditCardId,creditCardGivenId);
+            visitService.addOutcomeService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",  acceptedOutcomeID);
+            Thread.sleep(3000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 

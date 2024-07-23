@@ -11,6 +11,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Serdeable
 public class Outcome extends BranchEntity{
+    public Outcome(String id,String name)
+    {
+        super(id,name);
+    }
     /**
      * Код итога обслуживания
      */
