@@ -6,7 +6,6 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import ru.aritmos.events.services.EventService;
@@ -361,7 +360,7 @@ public class VisitService {
         }
     }
 
-    public Visit deleteOutcomeDeliveredService(String branchId, String servicePointId, String serviceId, String deliveredServiceId) {
+    public Visit deleteOutcomeDeliveredService(String branchId, String servicePointId,  String deliveredServiceId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
