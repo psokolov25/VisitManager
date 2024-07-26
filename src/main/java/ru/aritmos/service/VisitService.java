@@ -178,7 +178,7 @@ public class VisitService {
      * @param entryPointId идентификатор энтри поинта
      * @param services список услуг
      * @param printTicket флаг печати талона
-     * @return
+     * @return визит
      */
     public Visit createVisit2(String branchId, String entryPointId, ArrayList<Service> services, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
@@ -268,7 +268,7 @@ public class VisitService {
      * @param branchId идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      * @param deliveredServiceId идентификатор оказанной услуги
-     * @return
+     * @return визит
      */
     public Visit addDeliveredService(String branchId, String servicePointId, String deliveredServiceId) {
         Branch currentBranch = branchService.getBranch(branchId);
@@ -310,7 +310,7 @@ public class VisitService {
      * @param branchId идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      * @param serviceId идентификатор услуги
-     * @return
+     * @return визит
      */
     public Visit addService(String branchId, String servicePointId, String serviceId) {
         Branch currentBranch = branchService.getBranch(branchId);
