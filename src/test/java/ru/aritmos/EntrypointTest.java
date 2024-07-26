@@ -17,6 +17,7 @@ import ru.aritmos.service.VisitService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,6 +41,9 @@ class EntrypointTest {
     ManagementController managementController;
     String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
     String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
+    String creditCardId = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed";
+    String acceptedOutcomeID = "462bac1a-568a-4f1f-9548-1c7b61792b4b";
+    String creditCardGivenId = "8dc29622-cd87-4384-85a7-04b66b28dd0f";
 
     @Test
     void testItWorks() {
@@ -63,6 +67,7 @@ class EntrypointTest {
             branch.setEntryPoints(entryPoints);
             Queue queueCredit = new Queue("Кредиты", "F");
             Service creditService = new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8c", "Кредит", 9000, queueCredit.getId());
+
             Queue queueBigCredit = new Queue("Очень большие кредиты", "S");
             Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd4", "Очень большой кредит", 9000, queueBigCredit.getId());
             Queue queueC = new Queue("В кассу", "C");
@@ -72,7 +77,17 @@ class EntrypointTest {
             serviceList.put(kassaService.getId(), kassaService);
             serviceList.put(creditService.getId(), creditService);
             serviceList.put(bigCreditService.getId(), bigCreditService);
-
+            DeliveredService creditCard = new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Кредитная карта");
+            Outcome creditAccepted = new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Одобрен");
+            Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Выдана");
+            creditAccepted.setCode(1L);
+            creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
+            DeliveredService insurance = new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Страховка");
+            creditCard.getServviceIds().add(creditService.getId());
+            creditCard.getServviceIds().add(bigCreditService.getId());
+            creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
+            insurance.getServviceIds().add(creditService.getId());
+            insurance.getServviceIds().add(bigCreditService.getId());
             branch.setServices(serviceList);
             ServicePoint servicePointFSC = new ServicePoint("be675d63-c5a1-41a9-a345-c82102ac42cc", "Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("Касса");
@@ -99,6 +114,10 @@ class EntrypointTest {
 
             branch.setQueues(queueMap);
             branch.setServicePoints(servicePointMap);
+            branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
+            branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
+            branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
+            branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
             branchService.add(branch.getId(), branch);
         }
     }
@@ -115,7 +134,8 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit;
+        visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Queue queue2 = branchService.getBranch(branchId).getQueues().values().stream().filter(f -> f.getName().contains("кассу")).toList().get(0);
@@ -136,18 +156,16 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
-        Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
+        Visit visitForConfirm = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        Long servtime = visitForConfirm.getServingTime();
         Assertions.assertEquals(servtime, 0);
         Thread.sleep(2000);
         visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         Thread.sleep(2000);
-        visitService.visitCallConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-
+        visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         Thread.sleep(2000);
-
         Visit visit2;
         visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
-
         Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
 
 
@@ -161,17 +179,22 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
-        Thread.sleep(10000);
-        if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
-            Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+        visitService.createVisit(branchId, "1", serviceIds, false);
+        Thread.sleep(3000);
+        Optional<Visit> currvisit = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        if (currvisit.isPresent()) {
+            Long servtime = currvisit.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
-            Thread.sleep(8000);
-            visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-            Thread.sleep(6000);
-            visitService.visitCallConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(3000);
+            visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
+            Thread.sleep(3000);
+            visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
 
-            Thread.sleep(9000);
+            visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
+
+            visitService.addOutcomeDeliveredService(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",creditCardId,creditCardGivenId);
+            visitService.addOutcomeService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",  acceptedOutcomeID);
+            Thread.sleep(3000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
@@ -179,6 +202,7 @@ class EntrypointTest {
         }
 
     }
+
     @Test
     void checkConfirmVisitWithCallRuleTwoServices() throws InterruptedException {
 
@@ -188,10 +212,12 @@ class EntrypointTest {
         service2 = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67")).findFirst().orElse(null);
 
         ArrayList<String> serviceIds = new ArrayList<>();
-        serviceIds.add(serviceId);
-        //serviceIds.add(service2.getId());
-
+        assert service2 != null;
+        serviceIds.add(service2.getId());
         assert service != null;
+        serviceIds.add(service.getId());
+
+
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Thread.sleep(10000);
         if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
@@ -200,9 +226,10 @@ class EntrypointTest {
             Thread.sleep(8000);
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
             Thread.sleep(6000);
-            visitService.visitCallConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
             Thread.sleep(9000);
+
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
@@ -218,7 +245,8 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit;
+        visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
         Assertions.assertEquals(servtime, 0);
         Thread.sleep(2000);
@@ -226,9 +254,9 @@ class EntrypointTest {
         Thread.sleep(2000);
 
 
-        Visit visit2 = visitService.visitCallNoShow(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        Visit visit2 = visitService.visitNoShow(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
-        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+        Assertions.assertEquals(visit2.getStatus(), VisitEvent.NO_SHOW.getState().name());
 
 
     }
@@ -242,7 +270,8 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        Visit visit;
+        visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
         Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
 
@@ -256,7 +285,7 @@ class EntrypointTest {
      * Проверка правильности работы счетчика визитов
      */
     @Test
-    void checkVisitcounter() {
+    void checkVisitCounter() {
         Service service;
         service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
         ArrayList<String> serviceIds = new ArrayList<>();

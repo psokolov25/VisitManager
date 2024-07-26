@@ -57,6 +57,10 @@ public class Branch extends BranchEntity {
      * Точки обслуживания
      */
     HashMap<String, ServicePoint> servicePoints = new HashMap<>();
+    /**
+     * Возможные оказанные услуги
+     */
+    HashMap<String, DeliveredService> possibleDeliveredServices = new HashMap<>();
 
     public Integer incrementTicketCounter(Queue queue) {
         if (this.getQueues().containsKey(queue.getId())) {
@@ -152,16 +156,16 @@ public class Branch extends BranchEntity {
                 .eventDate(ZonedDateTime.now())
                 .eventType("VISIT_" + action)
                 .params(new HashMap<>())
-                .body(visit.toBuilder().currentTransaction(null).transactions(null).build()).build());
+                .body(visit.toBuilder().build()).build());
         eventService.send("stat", false, Event.builder()
                 .eventDate(ZonedDateTime.now())
                 .eventType("VISIT_" + action)
                 .params(new HashMap<>())
-                .body(visit.toBuilder().currentTransaction(null).transactions(null).build()).build());
+                .body(visit.toBuilder().build()).build());
     }
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService) {
         visitService.addEvent(visit,visitEvent,eventService);
-
+        visit.setStatus(visitEvent.getState().name());
         this.servicePoints.forEach((key, value) -> {
             if (value.getId().equals(visit.getServicePointId())) {
                 if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
@@ -184,12 +188,12 @@ public class Branch extends BranchEntity {
                 .eventDate(ZonedDateTime.now())
                 .eventType("VISIT_" + visitEvent.name())
                 .params(new HashMap<>())
-                .body(visit.toBuilder().currentTransaction(null).transactions(null).build()).build());
+                .body(visit.toBuilder().build()).build());
         eventService.send("stat", false, Event.builder()
                 .eventDate(ZonedDateTime.now())
                 .eventType("VISIT_" + visitEvent.name())
                 .params(new HashMap<>())
-                .body(visit.toBuilder().currentTransaction(null).transactions(null).build()).build());
+                .body(visit.toBuilder().build()).build());
     }
 
     public void addUpdateService(HashMap<String, Service> serviceHashMap, EventService eventService, Boolean checkVisits) {
@@ -203,15 +207,7 @@ public class Branch extends BranchEntity {
                                         if (v2.getCurrentService() != null && v2.getCurrentService().getId().equals(k)) {
                                             v2.setCurrentService(v);
                                         }
-                                        if (v2.getCurrentTransaction().getService() != null && v2.getCurrentTransaction().getService().getId().equals(k)) {
-                                            v2.getCurrentTransaction().setService(v);
-                                        }
-                                        v2.getTransactions().forEach(t -> {
-                                                    if (t.getService() != null && t.getService().getId().equals(k)) {
-                                                        t.setService(v);
-                                                    }
-                                                }
-                                        );
+
                                         List<Service> unservedServices = v2.getUnservedServices().stream().map(m -> m.getId().equals(k) ? v : m).toList();
                                         v2.setUnservedServices(unservedServices);
 

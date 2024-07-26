@@ -30,8 +30,14 @@ public class Configuration {
             branch.setEntryPoints(entryPoints);
             Queue queueCredit = new Queue("55da9b66-c928-4d47-9811-dbbab20d3780", "Кредиты", "F");
             Service creditService = new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "Кредит", 9000, queueCredit.getId());
+            DeliveredService creditCard=new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed","Кредитная карта");
+            DeliveredService insurance=new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f","Страховка");
+            creditCard.getServviceIds().add(creditService.getId());
+
             Queue queueBigCredit = new Queue("c211ae6b-de7b-4350-8a4c-cff7ff98104e", "Очень большие кредиты", "S");
             Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd2", "Очень большой кредит", 9000, queueBigCredit.getId());
+            creditCard.getServviceIds().add(bigCreditService.getId());
+            insurance.getServviceIds().add(bigCreditService.getId());
             Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C");
             Service kassaService = new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
             ServicePoint servicePointFC = new ServicePoint("a66ff6f4-4f4a-4009-8602-0dc278024cf2", "Финансовый консультант");

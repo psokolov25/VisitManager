@@ -5,15 +5,18 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.HashMap;
+
 /**
  * Услуга
  */
 @Serdeable
 @EqualsAndHashCode(callSuper = true)
 @Data
+
 @Introspected
 
-public class Service extends BranchEntity{
+public class Service extends BasedService{
 
     public Service(String key,String name, Integer servingSL, String linkedQueueId) {
 
@@ -35,6 +38,10 @@ public class Service extends BranchEntity{
      * Флаг доступности
      */
     Boolean isAvailable ;
+    /**
+     * Список идентификаторов оказанных услуг
+     */
+    HashMap<String,DeliveredService> deliveredServices=new HashMap<>();
 
 
 }

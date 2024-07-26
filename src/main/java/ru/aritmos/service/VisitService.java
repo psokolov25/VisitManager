@@ -59,10 +59,25 @@ public class VisitService {
 
     }
 
+    /**
+     * Получение списка визитов в указанной очереди указанного отделения с ограничением выдачи элементов
+     * @param branchId идентификатор отделения
+     * @param queueId идентификатор очереди
+     * @param limit максимальное количество визитов
+     * @return список визитов
+     */
     public List<Visit> getVisits(String branchId, String queueId, Long limit) {
         return getVisits(branchId, queueId).stream().limit(limit).toList();
     }
 
+    /**
+     * Создание визита
+     * @param branchId идентификатор отделения
+     * @param entryPointId идентификатор энтри поинта
+     * @param servicesIds идентификаторы услуг
+     * @param printTicket флаг печати талона
+     * @return созданный визит
+     */
     public Visit createVisit(String branchId, String entryPointId, ArrayList<String> servicesIds, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServices().keySet().stream().anyMatch(servicesIds::contains)) {
@@ -77,7 +92,14 @@ public class VisitService {
             throw new BusinessException("Services not found!", eventService);
         }
     }
-    public void addEvent(Visit visit,VisitEvent event, EventService eventService) {
+
+    /**
+     * Добавление события в визит
+     * @param visit визит
+     * @param event событие
+     * @param eventService служба отправки события визита на шину данных
+     */
+    public void addEvent(Visit visit, VisitEvent event, EventService eventService) {
         if (visit.getVisitEvents().isEmpty()) {
             if (!event.equals(VisitEvent.CREATED))
                 throw new BusinessException("wasn't early created", eventService, HttpStatus.CONFLICT);
@@ -89,12 +111,20 @@ public class VisitService {
                 visit.getVisitEvents().add(event);
 
 
-            } else throw new BusinessException("can't be next status", eventService, HttpStatus.CONFLICT);
+            } else
+                throw new BusinessException(String.format("%s can't be next status %s", event.name(), visit.getVisitEvents().get(visit.getVisitEvents().size() - 1).name()), eventService, HttpStatus.CONFLICT);
 
 
         }
         event.getState();
     }
+
+    /**
+     * Получение списка очередей
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return опциональный список очередей
+     */
     public Optional<List<Queue>> getQueues(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
 
@@ -124,14 +154,32 @@ public class VisitService {
 
     }
 
-    public HashMap<String, Visit> getAllVisits(String brainchId) {
-        return branchService.getBranch(brainchId).getAllVisits();
+    /**
+     * @param branchId идентификатор отделения
+     * @return список визитов
+     */
+    public HashMap<String, Visit> getAllVisits(String branchId) {
+        return branchService.getBranch(branchId).getAllVisits();
     }
 
-    public HashMap<String, Visit> getVisitsByStatuses(String brainchId, List<String> statuses) {
-        return branchService.getBranch(brainchId).getVisitsByStatus(statuses);
+    /**
+     * Получение списка визитов с фильтрацией по их статусам
+     * @param branchId идентификатор отделения
+     * @param statuses список статусов, по котором должны быть отфильтрованы визиты
+     * @return список визитов
+     */
+    public HashMap<String, Visit> getVisitsByStatuses(String branchId, List<String> statuses) {
+        return branchService.getBranch(branchId).getVisitsByStatus(statuses);
     }
 
+    /**
+     * Создание визита
+     * @param branchId идентификатор отделения
+     * @param entryPointId идентификатор энтри поинта
+     * @param services список услуг
+     * @param printTicket флаг печати талона
+     * @return визит
+     */
     public Visit createVisit2(String branchId, String entryPointId, ArrayList<Service> services, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
 
@@ -167,7 +215,7 @@ public class VisitService {
                         .servicePointId(null)
 
                         .servedServices(new ArrayList<>())
-                        .transactions(new ArrayList<>())
+
                         .parameterMap(new HashMap<>())
                         .build();
                 Queue serviceQueue;
@@ -179,14 +227,13 @@ public class VisitService {
                     visit.setTicket((serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter())));
                     VisitEvent event = VisitEvent.CREATED;
                     event.dateTime = ZonedDateTime.now();
-                    visit.setTransaction(event, eventService,branchService);
-                    branchService.updateVisit(visit, event,this);
+
+                    branchService.updateVisit(visit, event, this);
                     if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
                         VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
                         queueEvent.dateTime = ZonedDateTime.now();
-                        queueEvent.getParameters().put("queueId",serviceQueue.getId());
+                        queueEvent.getParameters().put("queueId", serviceQueue.getId());
                         visit.setQueueId(serviceQueue.getId());
-                        visit.updateTransaction(queueEvent, eventService,branchService);
 
 
                         if (printTicket && entryPoint.getPrinterId() != null) {
@@ -195,7 +242,7 @@ public class VisitService {
 
 
                         //changedVisitEventSend("CREATED", null, visit, new HashMap<>());
-                        branchService.updateVisit(visit, queueEvent,this);
+                        branchService.updateVisit(visit, queueEvent, this);
                         log.info("Visit {} created!", visit);
 
                         return visit;
@@ -215,6 +262,268 @@ public class VisitService {
         throw new BusinessException("Queue  not found in branch configuration!", eventService);
     }
 
+
+    /**
+     * Добавление оказанной услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор оказанной услуги
+     * @return визит
+     */
+    public Visit addDeliveredService(String branchId, String servicePointId, String deliveredServiceId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService() == null) {
+                    throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
+                }
+                if (currentBranch.getPossibleDeliveredServices().keySet().stream().noneMatch(f -> f.contains(deliveredServiceId))) {
+                    throw new BusinessException(String.format("Current service cant add delivererd service with id %s", deliveredServiceId), eventService);
+                }
+                DeliveredService deliveredService = currentBranch.getPossibleDeliveredServices().get(deliveredServiceId);
+                visit.getCurrentService().getDeliveredServices().put(deliveredService.getId(), deliveredService);
+
+                VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+                visitEvent.getParameters().put("deliveredServiceName", deliveredService.getName());
+                visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
+                visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
+                visitEvent.getParameters().put("branchId", branchId);
+                visitEvent.getParameters().put("staffId", visit.getUserId());
+                visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, visitEvent, this);
+                return visit;
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Добавление услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param serviceId идентификатор услуги
+     * @return визит
+     */
+    public Visit addService(String branchId, String servicePointId, String serviceId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+
+                if (visit.getCurrentService().getId().equals(serviceId)
+                        || visit.getUnservedServices().stream().anyMatch(f->f.getId().equals(serviceId))
+                        || visit.getServedServices().stream().anyMatch(f->f.getId().equals(serviceId))) {
+                    throw new BusinessException("Service already added!", eventService, HttpStatus.NOT_FOUND);
+                }
+                if (currentBranch.getServices().keySet().stream().noneMatch(f -> f.contains(serviceId))) {
+                    throw new BusinessException(String.format("Current visit cant add  service with id %s", serviceId), eventService);
+                }
+                Service service = currentBranch.getServices().get(serviceId);
+                visit.getUnservedServices().add(service);
+
+                VisitEvent visitEvent = VisitEvent.ADD_SERVICE;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+
+                visitEvent.getParameters().put("serviceId", service.getId());
+                visitEvent.getParameters().put("serviceName", service.getName());
+                visitEvent.getParameters().put("branchId", branchId);
+                visitEvent.getParameters().put("staffId", visit.getUserId());
+                visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, visitEvent, this);
+                return visit;
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Добавление итога услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param outcomeId идентификатор итога услуги
+     * @return визит
+     */
+    public Visit addOutcomeService(String branchId, String servicePointId, String outcomeId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService()==null)
+                    throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
+                if (visit.getCurrentService().getPossibleOutcomes().keySet().stream().noneMatch(f -> f.equals(outcomeId)))
+                    throw new BusinessException(String.format("Current service cant add outcome with id %s", outcomeId), eventService, HttpStatus.CONFLICT);
+                else {
+                    Outcome outcome = visit.getCurrentService().getPossibleOutcomes().get(outcomeId);
+                    visit.getCurrentService().setOutcome(outcome);
+
+                    VisitEvent visitEvent = VisitEvent.ADDED_SERVICE_RESULT;
+                    visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                    visitEvent.getParameters().put("outcomeId", outcomeId);
+                    visitEvent.getParameters().put("outcomeName", outcome.getName());
+                    visitEvent.getParameters().put("branchId", branchId);
+                    visitEvent.getParameters().put("staffId", visit.getUserId());
+                    visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                    branchService.updateVisit(visit, visitEvent, this);
+                    return visit;
+                }
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Добавление итога оказанной услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор оказанной услуги
+     * @param outcomeId идентификатор итога услуги
+     * @return визит
+     */
+    public Visit addOutcomeDeliveredService(String branchId, String servicePointId, String deliveredServiceId, String outcomeId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService()==null) {
+                    throw new BusinessException("Current service is null!", eventService,HttpStatus.NOT_FOUND);
+                }
+                if (!visit.getCurrentService().getDeliveredServices().containsKey(deliveredServiceId)) {
+                    throw new BusinessException(String.format("Delivered service %s of current service ID is not %s", visit.getCurrentService().getId(), deliveredServiceId), eventService, HttpStatus.NOT_FOUND);
+                }
+                if (visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).getPossibleOutcomes().keySet().stream().noneMatch(f -> f.equals(outcomeId))) {
+                    throw new BusinessException(String.format("Current service with delivered service %s cant add outcome with id %s",deliveredServiceId, outcomeId), eventService, HttpStatus.NOT_FOUND);
+                } else {
+                    Outcome outcome = visit.getCurrentService().getPossibleOutcomes().get(outcomeId);
+                    visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).setOutcome(outcome);
+
+                    VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE_RESULT;
+                    visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                    visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+                    visitEvent.getParameters().put("outcomeId", outcomeId);
+                    visitEvent.getParameters().put("branchId", branchId);
+                    visitEvent.getParameters().put("staffId", visit.getUserId());
+                    visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                    branchService.updateVisit(visit, visitEvent, this);
+                    return visit;
+                }
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Удаление итога оказанной услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор оказанной услуги
+     * @return визит
+     */
+    public Visit deleteOutcomeDeliveredService(String branchId, String servicePointId,  String deliveredServiceId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService()==null) {
+                    throw new BusinessException("Current service is null!", eventService,HttpStatus.NOT_FOUND);
+                }
+                if (!visit.getCurrentService().getDeliveredServices().containsKey(deliveredServiceId)) {
+                    throw new BusinessException(String.format("Delivered service %s of current service ID is not %s", visit.getCurrentService().getId(), deliveredServiceId), eventService, HttpStatus.NOT_FOUND);
+                }
+
+
+                    visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).setOutcome(null);
+
+                    VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE_RESULT;
+                    visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                    visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+                    visitEvent.getParameters().put("outcomeId", "");
+                    visitEvent.getParameters().put("branchId", branchId);
+                    visitEvent.getParameters().put("staffId", visit.getUserId());
+                    visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                    branchService.updateVisit(visit, visitEvent, this);
+                    return visit;
+
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    /**
+     * Удаление итога услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param serviceId идентификатор услуги
+     * @return Услуга
+     */
+    public Visit deleteOutcomeService(String branchId, String servicePointId,  String serviceId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (!visit.getCurrentService().getId().equals(serviceId)) {
+                    throw new BusinessException(String.format("Current service ID is not %s@", serviceId), eventService);
+                }
+
+
+                visit.getCurrentService().setOutcome(null);
+
+                VisitEvent visitEvent = VisitEvent.DELETED_SERVICE_RESULT;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+
+                visitEvent.getParameters().put("branchId", branchId);
+                visitEvent.getParameters().put("staffId", visit.getUserId());
+                visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, visitEvent, this);
+                return visit;
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Возвращение визита в очередь с задержкой
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param returnTimeDelay задержка возвращения в секундах
+     * @return визит
+     */
     public Visit returnVisit(String branchId, String servicePointId, Long returnTimeDelay) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -223,10 +532,10 @@ public class VisitService {
                 Visit visit = servicePoint.getVisit();
                 visit.setReturnDateTime(ZonedDateTime.now());
                 visit.setReturnTimeDelay(returnTimeDelay);
-                VisitEvent visitEvent=VisitEvent.TRANSFER_TO_QUEUE;
-                visitEvent.getParameters().put("servicePointId",servicePoint.getId());
-                visitEvent.getParameters().put("branchId",branchId);
-                branchService.updateVisit(visit, visitEvent,this);
+                VisitEvent visitEvent = VisitEvent.TRANSFER_TO_QUEUE;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                visitEvent.getParameters().put("branchId", branchId);
+                branchService.updateVisit(visit, visitEvent, this);
                 if (visit.getParameterMap().containsKey("LastQueueId")) {
 
                     return visitTransfer(branchId, servicePointId, visit.getParameterMap().get("LastQueueId").toString());
@@ -241,6 +550,13 @@ public class VisitService {
         }
     }
 
+    /**
+     * Перевод визита  в очередь
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param queueId идентификатор очереди
+     * @return визит
+     */
     public Visit visitTransfer(String branchId, String servicePointId, String queueId) {
 
         Branch currentBranch = branchService.getBranch(branchId);
@@ -270,10 +586,11 @@ public class VisitService {
                 currentBranch.getQueues().put(queue.getId(), queue);
                 VisitEvent event = VisitEvent.BACK_TO_QUEUE;
                 event.dateTime = ZonedDateTime.now();
-                event.getParameters().put("branchId",queueId);
-                event.getParameters().put("queueId",queueId);
-                visit.updateTransaction(event, eventService,branchService);
-                branchService.updateVisit(visit, event,this);
+                event.getParameters().put("branchId", queueId);
+                event.getParameters().put("queueId", queueId);
+                event.getParameters().put("staffId", visit.getUserId());
+                event.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, event, this);
                 //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
                 log.info("Visit {} transfered!", visit);
                 return visit;
@@ -285,9 +602,17 @@ public class VisitService {
         }
     }
 
+    /**
+     * Перевод визита из очереди в очередь
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param queueId идентификатор очереди
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitTransferFromQueue(String branchId, String servicePointId, String queueId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
-        String oldQueueID=visit.getQueueId();
+        String oldQueueID = visit.getQueueId();
         if (visit.getQueueId().isBlank()) {
             throw new BusinessException("Visit not in a queue!", eventService);
         }
@@ -311,17 +636,24 @@ public class VisitService {
         currentBranch.getQueues().put(queue.getId(), queue);
         VisitEvent event = VisitEvent.BACK_TO_QUEUE;
         event.dateTime = ZonedDateTime.now();
-        event.getParameters().put("oldQueueID",oldQueueID);
-        event.getParameters().put("newQueueID",queueId);
-        event.getParameters().put("servicePointId",servicePointId);
+        event.getParameters().put("oldQueueID", oldQueueID);
+        event.getParameters().put("newQueueID", queueId);
+        event.getParameters().put("servicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
-        visit.setTransaction(event, eventService,branchService);
-        branchService.updateVisit(visit,event,this);
+        event.getParameters().put("staffId", visit.getUserId());
+        event.getParameters().put("staff?Name", visit.getUserName());
+        branchService.updateVisit(visit, event, this);
         //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
         return visit;
     }
 
+    /**
+     * Завершение визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return визит
+     */
     public Visit visitEnd(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
         Visit visit;
@@ -353,10 +685,11 @@ public class VisitService {
                     visit.setServedDateTime(ZonedDateTime.now());
                     event = VisitEvent.STOP_SERVING;
                     event.dateTime = ZonedDateTime.now();
-                    event.getParameters().put("servicePointId",servicePointId);
+                    event.getParameters().put("servicePointId", servicePointId);
                     event.getParameters().put("branchID", branchId);
-                    visit.updateTransaction(event, eventService,branchService);
-                    branchService.updateVisit(visit, event,this);
+                    event.getParameters().put("staffId", visit.getUserId());
+                    event.getParameters().put("staff?Name", visit.getUserName());
+                    branchService.updateVisit(visit, event, this);
                     //event = VisitEvent.VISIT_END_TRANSACTION;
                     //event.dateTime = ZonedDateTime.now();
                     visit.setReturnDateTime(ZonedDateTime.now());
@@ -364,12 +697,15 @@ public class VisitService {
                     //branchService.updateVisit(visit, event,this);
                     visit.setStartServingDateTime(null);
                     //visit.updateTransaction(event, eventService,branchService);
-                    event = VisitEvent.PLACED_IN_QUEUE;
+                    event = VisitEvent.BACK_TO_QUEUE;
                     event.getParameters().put("branchID", branchId);
-                    event.getParameters().put("queueId",queueIdToReturn);
-                    visit.setTransaction(event, eventService,branchService);
+                    event.getParameters().put("queueId", queueIdToReturn);
+                    event.getParameters().put("servicePointId", servicePointId);
+                    event.getParameters().put("staffId", visit.getUserId());
+                    event.getParameters().put("staff?Name", visit.getUserName());
+
                     visit.setServicePointId(null);
-                    branchService.updateVisit(visit, event,this);
+                    branchService.updateVisit(visit, event, this);
                     //Queue queue = currentBranch.getQueues().get(queueIdToReturn);
                     //queue.getVisits().add(visit);
                     //currentBranch.getQueues().put(queue.getId(), queue);
@@ -383,15 +719,16 @@ public class VisitService {
                     event = VisitEvent.STOP_SERVING;
                     event.dateTime = ZonedDateTime.now();
                     event.getParameters().put("branchID", branchId);
-                    visit.updateTransaction(event, eventService,branchService);
-                    branchService.updateVisit(visit, event,this);
+                    event.getParameters().put("staffId", visit.getUserId());
+                    event.getParameters().put("staff?Name", visit.getUserName());
+                    event.getParameters().put("servicePointId", servicePointId);
+                    branchService.updateVisit(visit, event, this);
                     event = VisitEvent.END;
                     event.dateTime = ZonedDateTime.now();
-                    visit.updateTransaction(event, eventService,branchService);
-                    visit.setServicePointId(null);
-                    branchService.updateVisit(visit, event,this);
-                }
 
+                    visit.setServicePointId(null);
+                    branchService.updateVisit(visit, event, this);
+                }
 
 
                 //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
@@ -410,7 +747,13 @@ public class VisitService {
 
     }
 
-
+    /**
+     * Вызов визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitCall(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
 
@@ -447,17 +790,19 @@ public class VisitService {
         visit.getParameterMap().put("LastQueueId", visit.getQueueId());
         visit.setQueueId(null);
         VisitEvent event = VisitEvent.CALLED;
-        event.getParameters().put("servicePointId",servicePointId);
-        event.getParameters().put("queueId",visit.getQueueId());
+        event.getParameters().put("servicePointId", servicePointId);
+        event.getParameters().put("queueId", queue.map(BranchEntity::getId).orElse(null));
         event.getParameters().put("branchID", branchId);
+        event.getParameters().put("staffId", visit.getUserId());
+        event.getParameters().put("staff?Name", visit.getUserName());
         event.dateTime = ZonedDateTime.now();
-        branchService.updateVisit(visit,event,this);
-        visit.updateTransaction(event, eventService,branchService);
+        branchService.updateVisit(visit, event, this);
+
         VisitEvent servingEvent = VisitEvent.START_SERVING;
         servingEvent.dateTime = ZonedDateTime.now();
         visit.setStartServingDateTime(ZonedDateTime.now());
-        visit.updateTransaction(servingEvent, eventService,branchService);
-        branchService.updateVisit(visit,servingEvent,this);
+
+        branchService.updateVisit(visit, servingEvent, this);
 
         log.info("Visit {} called!", visit);
         //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
@@ -465,6 +810,13 @@ public class VisitService {
 
     }
 
+    /**
+     * Вызов визита по идентификатору
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visitId идентификатор визита
+     * @return визит
+     */
     public Visit visitCall(String branchId, String servicePointId, String visitId) {
         if (this.getAllVisits(branchId).containsKey(visitId)) {
             Visit visit = this.getAllVisits(branchId).get(visitId);
@@ -475,11 +827,24 @@ public class VisitService {
 
     }
 
+    /**
+     * Вызов визита с ожиданием подтверждения прихода клиента
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
+        String userId = "";
+        String userName = "";
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            userId = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getId() : "";
+            userName = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getName() : "";
+        }
 
-
-        visit.setStatus("CALLED");
+        //visit.setStatus("CALLED");
         visit.setCallDateTime(ZonedDateTime.now());
 
 
@@ -488,8 +853,9 @@ public class VisitService {
         event.getParameters().put("servicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
         event.getParameters().put("queueId", visit.getQueueId());
-        visit.updateTransaction(event, eventService,branchService);
-        branchService.updateVisit(visit, event,this);
+        event.getParameters().put("staffId", userId);
+        event.getParameters().put("staff?Name", userName);
+        branchService.updateVisit(visit, event, this);
 
 
         log.info("Visit {} called!", visit);
@@ -497,12 +863,24 @@ public class VisitService {
         return visit;
 
     }
-
+    /**
+     * Повторный вызов визита с ожиданием подтверждения прихода клиента
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitReCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
 
+        String userId = "";
+        String userName = "";
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            userId = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getId() : "";
+            userName = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getName() : "";
+        }
 
-        visit.setStatus("RECALLED");
         visit.setCallDateTime(ZonedDateTime.now());
 
 
@@ -511,8 +889,9 @@ public class VisitService {
         event.getParameters().put("ServicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
         event.getParameters().put("queueId", visit.getQueueId());
-        visit.updateTransaction(event, eventService,branchService);
-        branchService.updateVisit(visit, event,this);
+        event.getParameters().put("staffId", userId);
+        event.getParameters().put("staff?Name", userName);
+        branchService.updateVisit(visit, event, this);
 
 
         log.info("Visit {} called!", visit);
@@ -521,9 +900,22 @@ public class VisitService {
 
     }
 
-    public Visit visitCallConfirm(String branchId, String servicePointId, Visit visit) {
+    /**
+     * Подтверждение прихода клиента
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
+    public Visit visitConfirm(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
+        String userId = "";
+        String userName = "";
 
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            userId = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getId() : "";
+            userName = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getName() : "";
+        }
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
@@ -531,8 +923,8 @@ public class VisitService {
                 throw new BusinessException("Visit alredey called in the ServicePoint! ", eventService, HttpStatus.CONFLICT);
             }
             visit.setServicePointId(servicePointId);
-            visit.setUserName(servicePoint.getUser() != null ? servicePoint.getUser().getName() : null);
-            visit.setUserId(servicePoint.getUser() != null ? servicePoint.getUser().getId() : null);
+            visit.setUserName(servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+            visit.setUserId(servicePoint.getUser() != null ? servicePoint.getUser().getId() : "");
 
 
         } else {
@@ -547,14 +939,14 @@ public class VisitService {
         visit.setQueueId(null);
 
 
-
         VisitEvent event = VisitEvent.START_SERVING;
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("ServicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
-        event.getParameters().put("Service", visit.getCurrentService().getId());
-        visit.updateTransaction(event, eventService,branchService);
-        branchService.updateVisit(visit, event,this);
+        event.getParameters().put("serviceId", visit.getCurrentService().getId());
+        event.getParameters().put("staffId", userId);
+        event.getParameters().put("staff?Name", userName);
+        branchService.updateVisit(visit, event, this);
 
 
         log.info("Visit {} statted serving!", visit);
@@ -563,9 +955,23 @@ public class VisitService {
 
     }
 
-    public Visit visitCallNoShow(String branchId, String servicePointId, Visit visit) {
+    /**
+     * Завершение не пришедшего визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
+    public Visit visitNoShow(String branchId, String servicePointId, Visit visit) {
 
+        Branch currentBranch = branchService.getBranch(branchId);
+        String userId = "";
+        String userName = "";
 
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            userId = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getId() : "";
+            userName = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getName() : "";
+        }
 
 
         visit.setStatus("NO_SHOW");
@@ -578,8 +984,9 @@ public class VisitService {
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("ServicePointId", servicePointId);
         event.getParameters().put("branchID", branchId);
-        visit.updateTransaction(event, eventService,branchService);
-        branchService.updateVisit(visit, event,this);
+        event.getParameters().put("staffId", userId);
+        event.getParameters().put("staff?Name", userName);
+        branchService.updateVisit(visit, event, this);
 
 
         log.info("Visit {} statted serving!", visit);
@@ -588,16 +995,35 @@ public class VisitService {
 
     }
 
+    /**
+     * Вызов визита с подтверждением прихода
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return визит
+     */
     public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
+        String userId = "";
+        String userName = "";
+
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            userId = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getId() : "";
+            userName = currentBranch.getServicePoints().get(servicePointId).getUser() != null ? currentBranch.getServicePoints().get(servicePointId).getUser().getName() : "";
+        }
 
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
 
             Optional<Visit> visit = callRule.call(currentBranch, servicePoint);
+            VisitEvent event = VisitEvent.CALLED;
+            event.dateTime = ZonedDateTime.now();
+            event.getParameters().put("ServicePointId", servicePointId);
+            event.getParameters().put("branchID", branchId);
+            event.getParameters().put("staffId", userId);
+            event.getParameters().put("staff?Name", userName);
             if (visit.isPresent()) {
-
-                return Optional.of(visitCallForConfirm(branchId, servicePointId, visit.get()));
+                branchService.updateVisit(visit.get(), event, this);
+                return visit;
             }
 
         } else {
@@ -610,6 +1036,12 @@ public class VisitService {
 
     }
 
+    /**
+     * Вызов визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return визит
+     */
 
     public Optional<Visit> visitCall(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
@@ -637,8 +1069,11 @@ public class VisitService {
         return Optional.empty();
     }
 
-
-    public void deleteVisit( Visit visit) {
+    /**
+     * Удаление визита
+     * @param visit визит
+     */
+    public void deleteVisit(Visit visit) {
 
         if (visit.getReturningTime() > 0 && visit.getReturningTime() < visit.getReturnTimeDelay()) {
             throw new BusinessException("You cant delete just returned visit!", eventService, HttpStatus.NOT_FOUND);
@@ -647,8 +1082,8 @@ public class VisitService {
         visit.setQueueId(null);
         VisitEvent event = VisitEvent.NO_SHOW;
         event.dateTime = ZonedDateTime.now();
-        visit.updateTransaction(event, eventService,branchService);
-        branchService.updateVisit(visit,event,this);
+
+        branchService.updateVisit(visit, event, this);
 
 
         log.info("Visit {} deleted!", visit);

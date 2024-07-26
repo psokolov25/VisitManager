@@ -1,7 +1,7 @@
 #tag::port[]
 micronaut:
   server:
-    port: 8081
+    port: 8080
 #end::port[]
 ---
 #tag::oauth2[]

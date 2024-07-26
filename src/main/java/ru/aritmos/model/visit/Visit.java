@@ -6,11 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import ru.aritmos.events.model.Event;
-import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Service;
-import ru.aritmos.service.BranchService;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -112,78 +109,10 @@ public class Visit {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Service> servedServices;
 
-    private Transaction currentTransaction;
 
 
-    public void setTransaction(VisitEvent event, EventService eventService, BranchService branchService) {
-        ArrayList<VisitEvent> events = new ArrayList<>();
-        events.add(event);
-        if (this.currentTransaction != null) {
-
-            if (this.transactions == null) {
-                this.transactions = new ArrayList<>();
-            }
-            this.transactions.add(currentTransaction);
 
 
-        }
-
-        this.currentTransaction = (new Transaction(this));
-        this.currentTransaction.getVisitEvents().addAll(events);
-        //this.currentTransaction.addEvent(event, eventService);
-
-        this.status = event.getState().name();
-        eventService.send("stat", false, Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("TRANSACTION_" + event.name())
-                .body(new VisitForTransaction(this, branchService))
-                .build());
-
-    }
-
-    public void updateTransaction(VisitEvent event, EventService eventService, BranchService branchService) {
-
-
-        if (this.currentTransaction == null) {
-
-            this.setCurrentTransaction(new Transaction(this));
-            List<VisitEvent> events = this.getCurrentTransaction().getVisitEvents();
-            this.getCurrentTransaction().getVisitEvents().addAll(events);
-            this.getCurrentTransaction().addEvent(event, eventService);
-
-            this.status = event.getState().name();
-        } else {
-            this.getCurrentTransaction().startDateTime = this.getCreateDateTime();
-            if (this.getQueueId() != null) {
-                this.getCurrentTransaction().queueId = this.getQueueId();
-            }
-            if (this.currentService != null) {
-                this.getCurrentTransaction().service = this.getCurrentService();
-            }
-            if (this.getServicePointId() != null) {
-                this.getCurrentTransaction().servicePointId = this.getServicePointId();
-            }
-            this.getCurrentTransaction().startServingDateTime = this.getStartServingDateTime();
-            this.getCurrentTransaction().callDateTime = this.getCallDateTime();
-            this.getCurrentTransaction().endDateTime = this.getEndDateTime();
-            this.getCurrentTransaction().employeeId = this.getUserId();
-
-            //this.currentTransaction.getVisitEvents().addAll(events);
-            this.getCurrentTransaction().addEvent(event, eventService);
-
-            this.status = event.getState().name();
-        }
-
-        eventService.send("stat", false, Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("TRANSACTION_" + event.name())
-                .body(new VisitForTransaction(this, branchService))
-                .build());
-
-    }
-
-    @JsonIgnore
-    ArrayList<Transaction> transactions;
     /**
      * Время ожидания в последней очереди в секундах
      */
@@ -278,11 +207,6 @@ public class Visit {
         ArrayList<VisitEventDateTime> subresult =new ArrayList<>();
         result.add(subresult);
         for (VisitEvent f:this.visitEvents) {
-            if(VisitEvent.isNewOfTransaction(f)) {
-                subresult = new ArrayList<>();
-                result.add(subresult);
-            }
-
 
             VisitEventDateTime visitEventDateTime = VisitEventDateTime.builder()
                     .visitEvent(f)
@@ -291,6 +215,12 @@ public class Visit {
                     .transactionCompletionStatus(VisitEvent.isNewOfTransaction(f)?VisitEvent.getStatus(f):null)
                     .build();
             subresult.add(visitEventDateTime);
+            if(VisitEvent.isNewOfTransaction(f)) {
+                subresult = new ArrayList<>();
+                result.add(subresult);
+            }
+
+
 
 
         }
