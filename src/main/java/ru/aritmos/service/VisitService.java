@@ -59,10 +59,25 @@ public class VisitService {
 
     }
 
+    /**
+     * Получение списка визитов в указанной очереди указанного отделения с ограничением выдачи элементов
+     * @param branchId идентификатор отделения
+     * @param queueId идентификатор очереди
+     * @param limit максимальное количество визитов
+     * @return список визитов
+     */
     public List<Visit> getVisits(String branchId, String queueId, Long limit) {
         return getVisits(branchId, queueId).stream().limit(limit).toList();
     }
 
+    /**
+     * Создание визита
+     * @param branchId идентификатор отделения
+     * @param entryPointId идентификатор энтри поинта
+     * @param servicesIds идентификаторы услуг
+     * @param printTicket флаг печати талона
+     * @return созданный визит
+     */
     public Visit createVisit(String branchId, String entryPointId, ArrayList<String> servicesIds, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServices().keySet().stream().anyMatch(servicesIds::contains)) {
@@ -78,6 +93,12 @@ public class VisitService {
         }
     }
 
+    /**
+     * Добавление события в визит
+     * @param visit визит
+     * @param event событие
+     * @param eventService служба отправки события визита на шину данных
+     */
     public void addEvent(Visit visit, VisitEvent event, EventService eventService) {
         if (visit.getVisitEvents().isEmpty()) {
             if (!event.equals(VisitEvent.CREATED))
@@ -98,6 +119,12 @@ public class VisitService {
         event.getState();
     }
 
+    /**
+     * Получение списка очередей
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return опциональный список очередей
+     */
     public Optional<List<Queue>> getQueues(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
 
@@ -127,14 +154,32 @@ public class VisitService {
 
     }
 
-    public HashMap<String, Visit> getAllVisits(String brainchId) {
-        return branchService.getBranch(brainchId).getAllVisits();
+    /**
+     * @param branchId идентификатор отделения
+     * @return список визитов
+     */
+    public HashMap<String, Visit> getAllVisits(String branchId) {
+        return branchService.getBranch(branchId).getAllVisits();
     }
 
-    public HashMap<String, Visit> getVisitsByStatuses(String brainchId, List<String> statuses) {
-        return branchService.getBranch(brainchId).getVisitsByStatus(statuses);
+    /**
+     * Получение списка визитов с фильтрацией по их статусам
+     * @param branchId идентификатор отделения
+     * @param statuses список статусов, по котором должны быть отфильтрованы визиты
+     * @return список визитов
+     */
+    public HashMap<String, Visit> getVisitsByStatuses(String branchId, List<String> statuses) {
+        return branchService.getBranch(branchId).getVisitsByStatus(statuses);
     }
 
+    /**
+     * Создание визита
+     * @param branchId идентификатор отделения
+     * @param entryPointId идентификатор энтри поинта
+     * @param services список услуг
+     * @param printTicket флаг печати талона
+     * @return
+     */
     public Visit createVisit2(String branchId, String entryPointId, ArrayList<Service> services, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
 
@@ -217,6 +262,14 @@ public class VisitService {
         throw new BusinessException("Queue  not found in branch configuration!", eventService);
     }
 
+
+    /**
+     * Добавление оказанной услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор оказанной услуги
+     * @return
+     */
     public Visit addDeliveredService(String branchId, String servicePointId, String deliveredServiceId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -251,6 +304,14 @@ public class VisitService {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
         }
     }
+
+    /**
+     * Добавление услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param serviceId идентификатор услуги
+     * @return
+     */
     public Visit addService(String branchId, String servicePointId, String serviceId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -288,6 +349,13 @@ public class VisitService {
         }
     }
 
+    /**
+     * Добавление итога услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param outcomeId идентификатор итога услуги
+     * @return визит
+     */
     public Visit addOutcomeService(String branchId, String servicePointId, String outcomeId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -322,6 +390,14 @@ public class VisitService {
         }
     }
 
+    /**
+     * Добавление итога оказанной услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор оказанной услуги
+     * @param outcomeId идентификатор итога услуги
+     * @return визит
+     */
     public Visit addOutcomeDeliveredService(String branchId, String servicePointId, String deliveredServiceId, String outcomeId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -360,6 +436,13 @@ public class VisitService {
         }
     }
 
+    /**
+     * Удаление итога оказанной услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param deliveredServiceId идентификатор оказанной услуги
+     * @return визит
+     */
     public Visit deleteOutcomeDeliveredService(String branchId, String servicePointId,  String deliveredServiceId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -397,6 +480,13 @@ public class VisitService {
     }
 
 
+    /**
+     * Удаление итога услуги
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param serviceId идентификатор услуги
+     * @return Услуга
+     */
     public Visit deleteOutcomeService(String branchId, String servicePointId,  String serviceId) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -427,6 +517,13 @@ public class VisitService {
         }
     }
 
+    /**
+     * Возвращение визита в очередь с задержкой
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param returnTimeDelay задержка возвращения в секундах
+     * @return визит
+     */
     public Visit returnVisit(String branchId, String servicePointId, Long returnTimeDelay) {
         Branch currentBranch = branchService.getBranch(branchId);
         if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -453,6 +550,13 @@ public class VisitService {
         }
     }
 
+    /**
+     * Перевод визита  в очередь
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param queueId идентификатор очереди
+     * @return визит
+     */
     public Visit visitTransfer(String branchId, String servicePointId, String queueId) {
 
         Branch currentBranch = branchService.getBranch(branchId);
@@ -498,6 +602,14 @@ public class VisitService {
         }
     }
 
+    /**
+     * Перевод визита из очереди в очередь
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param queueId идентификатор очереди
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitTransferFromQueue(String branchId, String servicePointId, String queueId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
         String oldQueueID = visit.getQueueId();
@@ -536,6 +648,12 @@ public class VisitService {
         return visit;
     }
 
+    /**
+     * Завершение визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return визит
+     */
     public Visit visitEnd(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
         Visit visit;
@@ -629,7 +747,13 @@ public class VisitService {
 
     }
 
-
+    /**
+     * Вызов визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitCall(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
 
@@ -686,6 +810,13 @@ public class VisitService {
 
     }
 
+    /**
+     * Вызов визита по идентификатору
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visitId идентификатор визита
+     * @return визит
+     */
     public Visit visitCall(String branchId, String servicePointId, String visitId) {
         if (this.getAllVisits(branchId).containsKey(visitId)) {
             Visit visit = this.getAllVisits(branchId).get(visitId);
@@ -696,6 +827,13 @@ public class VisitService {
 
     }
 
+    /**
+     * Вызов визита с ожиданием подтверждения прихода клиента
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
         String userId = "";
@@ -725,7 +863,13 @@ public class VisitService {
         return visit;
 
     }
-
+    /**
+     * Повторный вызов визита с ожиданием подтверждения прихода клиента
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitReCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
 
@@ -756,6 +900,13 @@ public class VisitService {
 
     }
 
+    /**
+     * Подтверждение прихода клиента
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitConfirm(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
         String userId = "";
@@ -804,6 +955,13 @@ public class VisitService {
 
     }
 
+    /**
+     * Завершение не пришедшего визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visit визит
+     * @return визит
+     */
     public Visit visitNoShow(String branchId, String servicePointId, Visit visit) {
 
         Branch currentBranch = branchService.getBranch(branchId);
@@ -837,6 +995,12 @@ public class VisitService {
 
     }
 
+    /**
+     * Вызов визита с подтверждением прихода
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return визит
+     */
     public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
         String userId = "";
@@ -872,6 +1036,12 @@ public class VisitService {
 
     }
 
+    /**
+     * Вызов визита
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return визит
+     */
 
     public Optional<Visit> visitCall(String branchId, String servicePointId) {
         Branch currentBranch = branchService.getBranch(branchId);
@@ -899,7 +1069,10 @@ public class VisitService {
         return Optional.empty();
     }
 
-
+    /**
+     * Удаление визита
+     * @param visit визит
+     */
     public void deleteVisit(Visit visit) {
 
         if (visit.getReturningTime() > 0 && visit.getReturningTime() < visit.getReturnTimeDelay()) {
