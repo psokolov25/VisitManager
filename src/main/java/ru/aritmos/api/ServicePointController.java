@@ -187,7 +187,7 @@ public class ServicePointController {
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
-    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}call", consumes = "application/json", produces = "application/json")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}/call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit callVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
                            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
@@ -501,6 +501,28 @@ public class ServicePointController {
                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
                             @Body Visit visit) {
 
+
+        visitService.deleteVisit(visit);
+
+
+    }
+    /**
+     * Удаление визита из очереди по идентификатору визита
+     *
+     * @param branchId       идентификатор отделения
+     * @param visitId идентификатор визита
+
+     */
+    @Tag(name = "Зона обслуживания")
+    @Delete(uri = "/branches/{branchId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public void deleteVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                            @PathVariable String visitId) {
+        if(!visitService.getAllVisits(branchId).containsKey(visitId))
+        {
+            throw new BusinessException(String.format("Visit with id %s not found!",visitId),eventService,HttpStatus.NOT_FOUND);
+        }
+        Visit visit=visitService.getAllVisits(branchId).get(visitId);
 
         visitService.deleteVisit(visit);
 

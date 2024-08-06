@@ -1080,7 +1080,7 @@ public class VisitService {
         }
         visit.setServicePointId(null);
         visit.setQueueId(null);
-        VisitEvent event = VisitEvent.NO_SHOW;
+        VisitEvent event = VisitEvent.VISIT_DELETED;
         event.dateTime = ZonedDateTime.now();
 
         branchService.updateVisit(visit, event, this);
