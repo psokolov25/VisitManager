@@ -7,13 +7,16 @@ import io.micronaut.context.annotation.ContextConfigurer;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
+import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
         info = @Info(
                 title = "VisitManagement",
                 version = "0.2"
-        )
+
+        ),servers = { @Server(url = "http://192.168.8.45:8080"),
+        @Server(url = "http://localhost:8080") }
 
 
 
