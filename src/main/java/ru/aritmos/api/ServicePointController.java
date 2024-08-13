@@ -72,7 +72,7 @@ public class ServicePointController {
                           @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId) {
 
 
-        return branchService.loginUser(branchId, userName, servicePointId, workProfileId);
+        return branchService.openServicePoint(branchId, userName, servicePointId, workProfileId);
 
 
     }
@@ -91,7 +91,7 @@ public class ServicePointController {
                            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
 
-        branchService.logoutUser(branchId, servicePointId);
+        branchService.closeServicePoint(branchId, servicePointId);
 
 
     }

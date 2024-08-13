@@ -64,8 +64,8 @@ public class Configuration {
             psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
 
             sidorovUser.setCurrentWorkProfileId(workProfileC.getId());
-            branchService.loginUser(psokolovUser,branch);
-            branchService.loginUser(sidorovUser,branch);
+            branchService.openServicePoint(psokolovUser,branch);
+            branchService.openServicePoint(sidorovUser,branch);
             HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
             servicePointMap.put(servicePointFC.getId(), servicePointFC);
             servicePointMap.put(servicePointFSC.getId(), servicePointFSC);
