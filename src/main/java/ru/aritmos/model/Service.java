@@ -25,7 +25,10 @@ public class Service extends BasedService{
         this.linkedQueueId = linkedQueueId;
         this.isAvailable=true;
     }
-
+    /**
+     * Возможные оказанные услуги
+     */
+    HashMap<String, DeliveredService> possibleDeliveredServices = new HashMap<>();
     /**
      * Нормативное время обслуживания
      */

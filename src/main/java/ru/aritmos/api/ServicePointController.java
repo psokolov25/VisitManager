@@ -399,9 +399,9 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit visitCallConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                                  @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                  @PathVariable String visitId) {
+    public Visit visitCallConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId
+                                  ,@PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId
+                                  ,@PathVariable String visitId) {
 
         Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitConfirm(branchId, servicePointId, visit);
@@ -412,17 +412,23 @@ public class ServicePointController {
     /**
      * Получение возможный предоставленных услуг
      *
-     * @param branchId  идентификатор отделения     *
+     * @param branchId идентификатор отделения     *
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания (в разработке!)")
-    @Get(uri = "/branches/{branchId}/deliveredServices", consumes = "application/json", produces = "application/json")
+    @Get(uri = "/branches/{branchId}/services/{serviceId}/deliveredServices", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public HashMap<String, DeliveredService> getDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    public HashMap<String, DeliveredService> getDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId
+                                                                 ,@PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId
+    ) {
 
 
         Branch branch = branchService.getBranch(branchId);
-        return branch.getPossibleDeliveredServices();
+        if (branch.getServices().containsKey(serviceId)) {
+            return branch.getServices().get(serviceId).getPossibleDeliveredServices();
+        } else {
+            throw new BusinessException(String.format("Service %s not found!", serviceId), eventService, HttpStatus.NOT_FOUND);
+        }
 
 
     }

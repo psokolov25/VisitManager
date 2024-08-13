@@ -57,10 +57,7 @@ public class Branch extends BranchEntity {
      * Точки обслуживания
      */
     HashMap<String, ServicePoint> servicePoints = new HashMap<>();
-    /**
-     * Возможные оказанные услуги
-     */
-    HashMap<String, DeliveredService> possibleDeliveredServices = new HashMap<>();
+
 
     public Integer incrementTicketCounter(Queue queue) {
         if (this.getQueues().containsKey(queue.getId())) {

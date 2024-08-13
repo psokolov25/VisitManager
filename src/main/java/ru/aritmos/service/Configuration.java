@@ -36,8 +36,11 @@ public class Configuration {
             DeliveredService creditCard=new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed","Кредитная карта");
             Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Выдана");
             creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
-            DeliveredService insurance=new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f","Страховка");
+            creditService.getPossibleDeliveredServices().put(creditCard.getId(),creditCard);
 
+
+            DeliveredService insurance=new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f","Страховка");
+            creditService.getPossibleDeliveredServices().put(insurance.getId(),insurance);
 
             Queue queueBigCredit = new Queue("c211ae6b-de7b-4350-8a4c-cff7ff98104e", "Очень большие кредиты", "S");
             Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd2", "Очень большой кредит", 9000, queueBigCredit.getId());
@@ -50,8 +53,7 @@ public class Configuration {
             serviceList.put(creditService.getId(), creditService);
             serviceList.put(bigCreditService.getId(), bigCreditService);
             branch.setServices(serviceList);
-            branch.getPossibleDeliveredServices().put(creditCard.getId(),creditCard);
-            branch.getPossibleDeliveredServices().put(insurance.getId(),insurance);
+
             ServicePoint servicePointFSC = new ServicePoint("099c43c1-40b5-4b80-928a-1d4b363152a8", "Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");
             WorkProfile workProfileC = new WorkProfile("Кассир");
@@ -89,8 +91,7 @@ public class Configuration {
 
             creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
             branch.setQueues(queueMap);
-            branch.getPossibleDeliveredServices().put(creditCard.getId(),creditCard);
-            branch.getPossibleDeliveredServices().put(insurance.getId(),insurance);
+
             branch.setServicePoints(servicePointMap);
             branch.getServicePoints().get(servicePointFC.getId()).setUser(psokolovUser);
             branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);

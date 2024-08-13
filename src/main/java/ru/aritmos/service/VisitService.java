@@ -296,10 +296,10 @@ public class VisitService {
                 if (visit.getCurrentService() == null) {
                     throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
                 }
-                if (currentBranch.getPossibleDeliveredServices().keySet().stream().noneMatch(f -> f.contains(deliveredServiceId))) {
+                if (visit.getCurrentService().getPossibleDeliveredServices().keySet().stream().noneMatch(f -> f.contains(deliveredServiceId))) {
                     throw new BusinessException(String.format("Current service cant add delivererd service with id %s", deliveredServiceId), eventService);
                 }
-                DeliveredService deliveredService = currentBranch.getPossibleDeliveredServices().get(deliveredServiceId);
+                DeliveredService deliveredService = visit.getCurrentService().getPossibleDeliveredServices().get(deliveredServiceId);
                 visit.getCurrentService().getDeliveredServices().put(deliveredService.getId(), deliveredService);
 
                 VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;

@@ -67,7 +67,14 @@ class EntrypointTest {
             branch.setEntryPoints(entryPoints);
             Queue queueCredit = new Queue("Кредиты", "F");
             Service creditService = new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8c", "Кредит", 9000, queueCredit.getId());
-
+            DeliveredService creditCard = new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Кредитная карта");
+            DeliveredService insurance = new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Страховка");
+            Outcome creditAccepted = new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Одобрен");
+            Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Выдана");
+            creditAccepted.setCode(1L);
+            creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
+            creditService.getPossibleDeliveredServices().put(creditCard.getId(),creditCard);
+            creditService.getPossibleDeliveredServices().put(insurance.getId(),insurance);
             Queue queueBigCredit = new Queue("Очень большие кредиты", "S");
             Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd4", "Очень большой кредит", 9000, queueBigCredit.getId());
             Queue queueC = new Queue("В кассу", "C");
@@ -77,12 +84,7 @@ class EntrypointTest {
             serviceList.put(kassaService.getId(), kassaService);
             serviceList.put(creditService.getId(), creditService);
             serviceList.put(bigCreditService.getId(), bigCreditService);
-            DeliveredService creditCard = new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Кредитная карта");
-            Outcome creditAccepted = new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Одобрен");
-            Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Выдана");
-            creditAccepted.setCode(1L);
-            creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
-            DeliveredService insurance = new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Страховка");
+
 
             creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
 
@@ -112,8 +114,7 @@ class EntrypointTest {
 
             branch.setQueues(queueMap);
             branch.setServicePoints(servicePointMap);
-            branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
-            branch.getPossibleDeliveredServices().put(insurance.getId(),insurance);
+
             branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
             branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
             branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
