@@ -10,10 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
-import ru.aritmos.model.Branch;
+import ru.aritmos.model.*;
 import ru.aritmos.model.Queue;
-import ru.aritmos.model.ServicePoint;
-import ru.aritmos.model.User;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.tiny.TinyVisit;
 import ru.aritmos.service.BranchService;
@@ -57,10 +55,10 @@ public class ServicePointController {
     /**
      * Открытие рабочей станции сотрудником
      *
-     * @param branchId идентификатор отделения
-     * @param userName имя пользователя
+     * @param branchId       идентификатор отделения
+     * @param userName       имя пользователя
      * @param servicePointId идентификатор точки обслуживания
-     * @param workProfileId идентификатор рабочего профиля
+     * @param workProfileId  идентификатор рабочего профиля
      * @return сотрудник
      */
     @Tag(name = "Зона обслуживания")
@@ -407,6 +405,48 @@ public class ServicePointController {
 
         Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitConfirm(branchId, servicePointId, visit);
+
+
+    }
+
+    /**
+     * Получение возможный предоставленных услуг
+     *
+     * @param branchId  идентификатор отделения     *
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Get(uri = "/branches/{branchId}/deliveredServices", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public HashMap<String, DeliveredService> getDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+
+
+        Branch branch = branchService.getBranch(branchId);
+        return branch.getPossibleDeliveredServices();
+
+
+    }
+
+    /**
+     * Получение возможных итогов для услуги
+     *
+     * @param branchId  идентификатор отделения
+     * @param serviceId идентификатор  услуги
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Get(uri = "/branches/{branchId}/services/{serviceId}/outcomes", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public HashMap<String, Outcome> getOutcomes(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                                @PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId) {
+
+
+        Branch branch = branchService.getBranch(branchId);
+        if (branch.getServices().containsKey(serviceId)) {
+            return branch.getServices().get(serviceId).getPossibleOutcomes();
+        } else {
+            throw new BusinessException(String.format("Service %s not found!", serviceId), eventService, HttpStatus.NOT_FOUND);
+        }
 
 
     }

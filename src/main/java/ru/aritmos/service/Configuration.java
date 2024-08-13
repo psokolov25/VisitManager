@@ -30,14 +30,18 @@ public class Configuration {
             branch.setEntryPoints(entryPoints);
             Queue queueCredit = new Queue("55da9b66-c928-4d47-9811-dbbab20d3780", "Кредиты", "F");
             Service creditService = new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "Кредит", 9000, queueCredit.getId());
+            Outcome creditAccepted = new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Одобрен");
+            creditAccepted.setCode(1L);
+            creditService.getPossibleOutcomes().put(creditAccepted.getId(),creditAccepted);
             DeliveredService creditCard=new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed","Кредитная карта");
+            Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Выдана");
+            creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
             DeliveredService insurance=new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f","Страховка");
-            creditCard.getServviceIds().add(creditService.getId());
+
 
             Queue queueBigCredit = new Queue("c211ae6b-de7b-4350-8a4c-cff7ff98104e", "Очень большие кредиты", "S");
             Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd2", "Очень большой кредит", 9000, queueBigCredit.getId());
-            creditCard.getServviceIds().add(bigCreditService.getId());
-            insurance.getServviceIds().add(bigCreditService.getId());
+
             Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C");
             Service kassaService = new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
             ServicePoint servicePointFC = new ServicePoint("a66ff6f4-4f4a-4009-8602-0dc278024cf2", "Финансовый консультант");
@@ -46,6 +50,8 @@ public class Configuration {
             serviceList.put(creditService.getId(), creditService);
             serviceList.put(bigCreditService.getId(), bigCreditService);
             branch.setServices(serviceList);
+            branch.getPossibleDeliveredServices().put(creditCard.getId(),creditCard);
+            branch.getPossibleDeliveredServices().put(insurance.getId(),insurance);
             ServicePoint servicePointFSC = new ServicePoint("099c43c1-40b5-4b80-928a-1d4b363152a8", "Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");
             WorkProfile workProfileC = new WorkProfile("Кассир");
@@ -75,8 +81,16 @@ public class Configuration {
             queueMap.put(queueBigCredit.getId(), queueBigCredit);
             queueMap.put(queueC.getId(), queueC);
 
-            branch.setQueues(queueMap);
 
+
+
+            creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
+
+
+            creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
+            branch.setQueues(queueMap);
+            branch.getPossibleDeliveredServices().put(creditCard.getId(),creditCard);
+            branch.getPossibleDeliveredServices().put(insurance.getId(),insurance);
             branch.setServicePoints(servicePointMap);
             branch.getServicePoints().get(servicePointFC.getId()).setUser(psokolovUser);
             branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);

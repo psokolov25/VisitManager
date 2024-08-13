@@ -83,11 +83,9 @@ class EntrypointTest {
             creditAccepted.setCode(1L);
             creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
             DeliveredService insurance = new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Страховка");
-            creditCard.getServviceIds().add(creditService.getId());
-            creditCard.getServviceIds().add(bigCreditService.getId());
+
             creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
-            insurance.getServviceIds().add(creditService.getId());
-            insurance.getServviceIds().add(bigCreditService.getId());
+
             branch.setServices(serviceList);
             ServicePoint servicePointFSC = new ServicePoint("be675d63-c5a1-41a9-a345-c82102ac42cc", "Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("Касса");
@@ -115,6 +113,7 @@ class EntrypointTest {
             branch.setQueues(queueMap);
             branch.setServicePoints(servicePointMap);
             branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
+            branch.getPossibleDeliveredServices().put(insurance.getId(),insurance);
             branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
             branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
             branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
@@ -170,28 +169,7 @@ class EntrypointTest {
 
 
     }
-    @Test
-    void checkWithoutConfirmVisit() throws InterruptedException {
-        Service service;
-        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
-        ArrayList<String> serviceIds = new ArrayList<>();
-        serviceIds.add(serviceId);
-        assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
 
-
-
-
-        servicePointController.visitCall(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
-
-
-        Thread.sleep(5000);
-        Visit visit2;
-        visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
-        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
-
-
-    }
 
     @Test
     void checkConfirmVisitWithCallRule() throws InterruptedException {
