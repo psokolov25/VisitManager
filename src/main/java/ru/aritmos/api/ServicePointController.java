@@ -63,7 +63,7 @@ public class ServicePointController {
      * @param workProfileId идентификатор рабочего профиля
      * @return сотрудник
      */
-    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Tag(name = "Зона обслуживания")
     @Post("/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open")
     @ExecuteOn(TaskExecutors.IO)
     public User loginUser(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -84,7 +84,7 @@ public class ServicePointController {
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      */
-    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Tag(name = "Зона обслуживания")
     @Post("/branches/{branchId}/servicePoints/{servicePointId}/close")
     @ExecuteOn(TaskExecutors.IO)
     public void logoutUser(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
