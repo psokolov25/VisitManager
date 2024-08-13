@@ -136,6 +136,22 @@ public class ServicePointController {
         return visitService.getAllVisits(branchId);
 
     }
+    /**
+     * Возвращает визит по его идентификатору
+     *
+     * @param branchId идентификатор отделения
+     * @param visitId идентификатор визита
+     * @return визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Get(uri = "/branches/{branchId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit getVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,@PathVariable String visitId) {
+
+
+        return visitService.getVisit(branchId,visitId);
+
+    }
 
     /**
      * Возвращает  список визитов в отделении с фильтрацией по статусу
