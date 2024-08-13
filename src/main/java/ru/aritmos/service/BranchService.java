@@ -121,7 +121,7 @@ public class BranchService {
         user.setCurrentWorkProfileId(workProfileId);
 
         Branch branch=this.getBranch(branchId);
-        branch.userLogin(user, eventService);
+        branch.openServicePoint(user, eventService);
 
         this.add(branch.getId(), branch);
         return user;
@@ -131,7 +131,7 @@ public class BranchService {
     public void openServicePoint(User user, Branch branch) {
 
 
-        branch.userLogin(user, eventService);
+        branch.openServicePoint(user, eventService);
         this.add(branch.getId(), branch);
 
 
@@ -142,7 +142,7 @@ public class BranchService {
     public void closeServicePoint(String branchId, String servicePointId) {
 
         Branch branch = this.getBranch(branchId);
-        branch.userLogout(servicePointId,eventService);
+        branch.closeServicePoint(servicePointId,eventService);
         this.add(branch.getId(),branch);
 
     }

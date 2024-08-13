@@ -98,12 +98,22 @@ public class Branch extends BranchEntity {
         return visits;
     }
 
-    public void userLogin(User user, EventService eventService) {
+    public void openServicePoint(User user, EventService eventService) {
         if (user.servicePointId != null) {
             if (this.getServicePoints().containsKey(user.servicePointId)) {
                 ServicePoint servicePoint = this.getServicePoints().get(user.getServicePointId());
                 if (servicePoint.getUser() == null) {
                     servicePoint.setUser(user);
+                    eventService.send("*", false, Event.builder()
+                            .eventDate(ZonedDateTime.now())
+                            .eventType("SERVICE_POINT_OPENED")
+                            .params(new HashMap<>())
+                            .body(servicePoint).build());
+                    eventService.send("stat", false, Event.builder()
+                            .eventDate(ZonedDateTime.now())
+                            .eventType("SERVICE_POINT_OPENED")
+                            .params(new HashMap<>())
+                            .body(servicePoint).build());
                 } else {
                     throw new BusinessException(String.format("In servicePoint %s already %s logged in ", user.servicePointId, servicePoint.getUser().getName()), eventService, HttpStatus.CONFLICT);
                 }
@@ -115,13 +125,23 @@ public class Branch extends BranchEntity {
     }
 
 
-    public void userLogout(String servicePointId, EventService eventService) {
+    public void closeServicePoint(String servicePointId, EventService eventService) {
 
             if (this.getServicePoints().containsKey(servicePointId)) {
                 ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
                 if (servicePoint.getUser() != null) {
 
                     servicePoint.setUser(null);
+                    eventService.send("*", false, Event.builder()
+                            .eventDate(ZonedDateTime.now())
+                            .eventType("SERVICE_POINT_CLOSED")
+                            .params(new HashMap<>())
+                            .body(servicePoint).build());
+                    eventService.send("stat", false, Event.builder()
+                            .eventDate(ZonedDateTime.now())
+                            .eventType("SERVICE_POINT_CLOSED")
+                            .params(new HashMap<>())
+                            .body(servicePoint).build());
 
                 }
                 else
