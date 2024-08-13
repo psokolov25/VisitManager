@@ -114,25 +114,9 @@ public class Branch extends BranchEntity {
 
     }
 
-    public void userLogout(User user, EventService eventService) {
-        if (user.servicePointId != null) {
-            if (this.getServicePoints().containsKey(user.servicePointId)) {
-                ServicePoint servicePoint = this.getServicePoints().get(user.getServicePointId());
-                if (servicePoint.getUser() != null && servicePoint.getUser().getId().equals(user.getId())) {
-                    servicePoint.setUser(null);
-                    user.setServicePointId(null);
-                    user.setCurrentWorkProfileId(null);
 
-                }
-
-            } else {
-                throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePointId, this.getName()), eventService, HttpStatus.NOT_FOUND);
-            }
-        }
-
-    }
     public void userLogout(String servicePointId, EventService eventService) {
-        User user;
+
             if (this.getServicePoints().containsKey(servicePointId)) {
                 ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
                 if (servicePoint.getUser() != null) {
