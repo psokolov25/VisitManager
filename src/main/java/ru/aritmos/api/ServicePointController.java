@@ -59,7 +59,7 @@ public class ServicePointController {
      * @param user сотрудник
      * @return сотрудник
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Post("/branches/user/login")
     @ExecuteOn(TaskExecutors.IO)
     public User loginUser(@Body User user) {
@@ -76,7 +76,7 @@ public class ServicePointController {
      * @param user сотрудник
      * @return сотрудник
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Post("/branches/user/logout")
     @ExecuteOn(TaskExecutors.IO)
     public User logoutUser(@Body User user) {
@@ -195,7 +195,7 @@ public class ServicePointController {
 
 
     /**
-     * Вызов визита
+     * Вызов визита по идентификатору
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
@@ -223,7 +223,7 @@ public class ServicePointController {
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
-    @Get(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<Visit> visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
                                                @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
@@ -256,7 +256,7 @@ public class ServicePointController {
     }
 
     /**
-     * Вызов визита с ожиданием подтверждения
+     * Вызов визита с ожиданием подтверждения  по идентификатору
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
@@ -297,7 +297,7 @@ public class ServicePointController {
 
     }
     /**
-     * Отмена вызова из-за того, что клиент не пришел
+     * Отмена вызова из-за того, что клиент не пришел  по идентификатору
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
@@ -338,7 +338,7 @@ public class ServicePointController {
 
     }
     /**
-     * Повторный вызов визита c ожиданием подтверждения
+     * Повторный вызов визита c ожиданием подтверждения  по идентификатору
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
@@ -409,7 +409,7 @@ public class ServicePointController {
      * @param deliveredServiceId идентификатор предоставленной услуги
      * @return вызванный визит
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitAddDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -430,7 +430,7 @@ public class ServicePointController {
      * @param outcomeId      идентификатор итога оказания услуги
      * @return вызванный визит
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitAddOutcomeService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -448,10 +448,10 @@ public class ServicePointController {
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param serviceId      идентификатор итога оказания услуги
+     * @param serviceId      идентификатор  услуги
      * @return вызванный визит
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/services/{serviceId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit addOutcomeDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -473,7 +473,7 @@ public class ServicePointController {
      * @param outcomeId          идентификатор итога оказания услуги
      * @return вызванный визит
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit addOutcomeDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -495,7 +495,7 @@ public class ServicePointController {
      * @param deliveredServiceId идентификатор предоставленной услуги
      * @return вызванный визит
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}/outcome", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit deleteOutcomeDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -516,7 +516,7 @@ public class ServicePointController {
      * @param serviceId      идентификатор итога оказания услуги
      * @return вызванный визит
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/service/{serviceId}/outcome", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitDeleteOutcomeService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -537,7 +537,7 @@ public class ServicePointController {
      * @param deliveredServiceId идентификатор предоставленной услуги
      * @return вызванный визит
      */
-    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Зона обслуживания (в разработке!)")
     @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitDeleteDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,

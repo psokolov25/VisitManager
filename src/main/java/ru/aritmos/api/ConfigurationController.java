@@ -49,7 +49,7 @@ public class ConfigurationController {
      * @param serviceHashMap список услуг
      * @param checkVisits флаг учитывания визитов при обновлении услуг (при наличии услуги в кааком нибудь визите - она обновляется)
      */
-    @Tag(name = "Конфигурация отделений")
+    @Tag(name = "Конфигурация отделений (в разработке!)")
     @Put(uri = "/branches/{branchId}/services")
     public void addUpdateService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body HashMap<String, Service> serviceHashMap,@QueryValue Boolean checkVisits) {
         branchService.addUpdateService(branchId, serviceHashMap,checkVisits);
@@ -60,7 +60,7 @@ public class ConfigurationController {
      * @param serviceIds список идентификаторов услуг
      * @param checkVisits флаг учитывания визитов при обновлении услуг (при наличии услуги в кааком нибудь визите - она удаляется)
      */
-    @Tag(name = "Конфигурация отделений")
+    @Tag(name = "Конфигурация отделений (в разработке!)")
     @Delete(uri = "/branches/{branchId}/services")
     public void deleteServices(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> serviceIds,@QueryValue Boolean checkVisits) {
         branchService.deleteServices(branchId, serviceIds,checkVisits);
@@ -73,7 +73,7 @@ public class ConfigurationController {
      * @param restoreUser флаг восстановления сотрудника после обновления
      * @param restoreVisit флаг восстановления визита после обновления
      */
-    @Tag(name = "Конфигурация отделений")
+    @Tag(name = "Конфигурация отделений (в разработке!)")
     @Put(uri = "/branches/{branchId}/servicePoints")
     public void addUpdateServicePoint(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body HashMap<String, ServicePoint> servicePointHashMap, @QueryValue Boolean restoreVisit, @QueryValue Boolean restoreUser) {
         branchService.addUpdateServicePoint(branchId, servicePointHashMap, restoreVisit, restoreUser);
@@ -83,7 +83,7 @@ public class ConfigurationController {
      * @param branchId идентификатор подразделения
      * @param servicePointIds список идентификаторов точек обслуживания
      */
-    @Tag(name = "Конфигурация отделений")
+    @Tag(name = "Конфигурация отделений (в разработке!)")
     @Delete(uri = "/branches/{branchId}/servicePoints")
     public void deleteServicePoints(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> servicePointIds) {
         branchService.deleteServicePoints(branchId, servicePointIds);
@@ -94,7 +94,7 @@ public class ConfigurationController {
      * @param queueHashMap список услуг     *
      * @param restoreVisits флаг восстановления визита после обновления
      */
-    @Tag(name = "Конфигурация отделений")
+    @Tag(name = "Конфигурация отделений (в разработке!)")
     @Put(uri = "/branches/{branchId}/queues")
     public void addUpdateQueues(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body HashMap<String, Queue> queueHashMap, @QueryValue Boolean restoreVisits) {
         branchService.addUpdateQueues(branchId, queueHashMap, restoreVisits);
@@ -104,7 +104,7 @@ public class ConfigurationController {
      * @param branchId идентификатор подразделения
      * @param queueIds список идентификаторов очередей
      */
-    @Tag(name = "Конфигурация отделений")
+    @Tag(name = "Конфигурация отделений (в разработке!)")
     @Delete(uri = "/branches/{branchId}/queues")
     public void deleteQueues(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @Body List<String> queueIds) {
         branchService.deleteQueues(branchId, queueIds);
