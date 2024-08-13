@@ -53,40 +53,47 @@ public class ServicePointController {
         return visitService.getStringServicePointHashMap(branchId);
     }
 
+
     /**
      * Открытие рабочей станции сотрудником
      *
-     * @param user сотрудник
+     * @param branchId идентификатор отделения
+     * @param userName имя пользователя
+     * @param servicePointId идентификатор точки обслуживания
+     * @param workProfileId идентификатор рабочего профиля
      * @return сотрудник
      */
     @Tag(name = "Зона обслуживания (в разработке!)")
-    @Post("/branches/user/login")
+    @Post("/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open")
     @ExecuteOn(TaskExecutors.IO)
-    public User loginUser(@Body User user) {
+    public User loginUser(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                          @PathVariable String userName,
+                          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                          @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId) {
 
 
-        branchService.loginUser(user);
-        return user;
+        return branchService.loginUser(branchId, userName, servicePointId, workProfileId);
+
 
     }
 
+
     /**
-     * Закрытие рабочей станции
+     * Закрытие рабочей станции сотрудником
      *
-     * @param user сотрудник
-     * @return сотрудник
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
      */
     @Tag(name = "Зона обслуживания (в разработке!)")
-    @Post("/branches/user/logout")
+    @Post("/branches/{branchId}/servicePoints/{servicePointId}/close")
     @ExecuteOn(TaskExecutors.IO)
-    public User logoutUser(@Body User user) {
-        if (user.getServicePoinrtId() != null) {
+    public void logoutUser(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                           @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
-            branchService.logoutUser(user);
-            return user;
-        } else {
-            throw new BusinessException(String.format("User %s already logged out", user.getName()), eventService, HttpStatus.CONFLICT);
-        }
+
+        branchService.logoutUser(branchId, servicePointId);
+
+
     }
 
 
@@ -136,20 +143,21 @@ public class ServicePointController {
         return visitService.getAllVisits(branchId);
 
     }
+
     /**
      * Возвращает визит по его идентификатору
      *
      * @param branchId идентификатор отделения
-     * @param visitId идентификатор визита
+     * @param visitId  идентификатор визита
      * @return визит
      */
     @Tag(name = "Зона обслуживания")
     @Get(uri = "/branches/{branchId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit getVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,@PathVariable String visitId) {
+    public Visit getVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable String visitId) {
 
 
-        return visitService.getVisit(branchId,visitId);
+        return visitService.getVisit(branchId, visitId);
 
     }
 
@@ -260,7 +268,7 @@ public class ServicePointController {
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visitId  идентификатор визита
+     * @param visitId        идентификатор визита
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -270,8 +278,8 @@ public class ServicePointController {
                                      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
                                      @PathVariable String visitId) {
 
-            Visit visit = visitService.getVisit(branchId, visitId);
-            return visitService.visitCallForConfirm(branchId, servicePointId, visit);
+        Visit visit = visitService.getVisit(branchId, visitId);
+        return visitService.visitCallForConfirm(branchId, servicePointId, visit);
 
 
     }
@@ -296,12 +304,13 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Отмена вызова из-за того, что клиент не пришел  по идентификатору
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visitId идентификатор визита
+     * @param visitId        идентификатор визита
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -311,7 +320,7 @@ public class ServicePointController {
                                  @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
                                  @PathVariable String visitId) {
 
-        Visit visit=visitService.getVisit(branchId,visitId);
+        Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitNoShow(branchId, servicePointId, visit);
 
 
@@ -337,12 +346,13 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Повторный вызов визита c ожиданием подтверждения  по идентификатору
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visitId идентификатор визита
+     * @param visitId        идентификатор визита
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -352,7 +362,7 @@ public class ServicePointController {
                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
                                        @PathVariable String visitId) {
 
-        Visit visit=visitService.getVisit(branchId,visitId);
+        Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitReCallForConfirm(branchId, servicePointId, visit);
 
 
@@ -385,7 +395,7 @@ public class ServicePointController {
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param visitId идентификатор визита
+     * @param visitId        идентификатор визита
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -395,7 +405,7 @@ public class ServicePointController {
                                   @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
                                   @PathVariable String visitId) {
 
-        Visit visit=visitService.getVisit(branchId,visitId);
+        Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitConfirm(branchId, servicePointId, visit);
 
 
@@ -709,7 +719,7 @@ public class ServicePointController {
             throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
         }
 
-        Visit visit=visitService.getVisit(branchId,visitId);
+        Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit);
 
 

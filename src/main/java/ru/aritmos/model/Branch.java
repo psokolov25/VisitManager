@@ -99,37 +99,59 @@ public class Branch extends BranchEntity {
     }
 
     public void userLogin(User user, EventService eventService) {
-        if (user.servicePoinrtId != null) {
-            if (this.getServicePoints().containsKey(user.servicePoinrtId)) {
-                ServicePoint servicePoint = this.getServicePoints().get(user.getServicePoinrtId());
+        if (user.servicePointId != null) {
+            if (this.getServicePoints().containsKey(user.servicePointId)) {
+                ServicePoint servicePoint = this.getServicePoints().get(user.getServicePointId());
                 if (servicePoint.getUser() == null) {
                     servicePoint.setUser(user);
                 } else {
-                    throw new BusinessException(String.format("In servicePoint %s already %s logged in %s ", user.servicePoinrtId, servicePoint.getUser().getName(), servicePoint.getUser().getName()), eventService, HttpStatus.CONFLICT);
+                    throw new BusinessException(String.format("In servicePoint %s already %s logged in ", user.servicePointId, servicePoint.getUser().getName()), eventService, HttpStatus.CONFLICT);
                 }
             } else {
-                throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePoinrtId, this.getName()), eventService, HttpStatus.CONFLICT);
+                throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePointId, this.getName()), eventService, HttpStatus.CONFLICT);
             }
         }
 
     }
 
     public void userLogout(User user, EventService eventService) {
-        if (user.servicePoinrtId != null) {
-            if (this.getServicePoints().containsKey(user.servicePoinrtId)) {
-                ServicePoint servicePoint = this.getServicePoints().get(user.getServicePoinrtId());
+        if (user.servicePointId != null) {
+            if (this.getServicePoints().containsKey(user.servicePointId)) {
+                ServicePoint servicePoint = this.getServicePoints().get(user.getServicePointId());
                 if (servicePoint.getUser() != null && servicePoint.getUser().getId().equals(user.getId())) {
                     servicePoint.setUser(null);
-                    user.setServicePoinrtId(null);
+                    user.setServicePointId(null);
                     user.setCurrentWorkProfileId(null);
+
                 }
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePoinrtId, this.getName()), eventService, HttpStatus.CONFLICT);
+                throw new BusinessException(String.format("ServicePoint %s not found in %s", user.servicePointId, this.getName()), eventService, HttpStatus.NOT_FOUND);
             }
         }
 
     }
+    public void userLogout(String servicePointId, EventService eventService) {
+        User user;
+            if (this.getServicePoints().containsKey(servicePointId)) {
+                ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
+                if (servicePoint.getUser() != null) {
+
+                    servicePoint.setUser(null);
+
+                }
+                else
+                {
+                    throw new BusinessException(String.format("ServicePoint %s already closed!", servicePointId), eventService, HttpStatus.CONFLICT);
+                }
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s not found in %s", servicePointId, this.getName()), eventService, HttpStatus.NOT_FOUND);
+            }
+
+
+    }
+
 
     public void updateVisit(Visit visit, EventService eventService, String action) {
 

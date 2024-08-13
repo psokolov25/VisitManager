@@ -121,6 +121,20 @@ public class BranchService {
 
 
     }
+    public User loginUser(String branchId,String userName,String servicePointId,String workProfileId) {
+        User user=new User(userName);
+        user.setBranchId(branchId);
+        user.setServicePointId(servicePointId);
+        user.setCurrentWorkProfileId(workProfileId);
+
+        Branch branch=this.getBranch(branchId);
+        branch.userLogin(user, eventService);
+
+        this.add(branch.getId(), branch);
+        return user;
+
+    }
+
     public void loginUser(User user,Branch branch) {
 
 
@@ -130,12 +144,20 @@ public class BranchService {
 
     }
 
+
     public void logoutUser(User user) {
 
         Branch branch = this.getBranch(user.getBranchId());
         branch.userLogout(user, eventService);
         this.add(branch.getId(), branch);
 
+
+    }
+    public void logoutUser(String branchId,String servicePointId) {
+
+        Branch branch = this.getBranch(branchId);
+        branch.userLogout(servicePointId,eventService);
+        this.add(branch.getId(),branch);
 
     }
 

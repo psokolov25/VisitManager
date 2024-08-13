@@ -50,9 +50,9 @@ public class Configuration {
             ServicePoint servicePointC = new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");
             WorkProfile workProfileC = new WorkProfile("Кассир");
             workProfileC.getQueueIds().add(queueC.getId());
-            WorkProfile workProfileFC = new WorkProfile("Финансовый консультант");
+            WorkProfile workProfileFC = new WorkProfile("d5a84e60-e605-4527-b065-f4bd7a385790","Финансовый консультант");
             workProfileFC.getQueueIds().add(queueCredit.getId());
-            WorkProfile workProfileFSC = new WorkProfile("Старший финансовый консультант");
+            WorkProfile workProfileFSC = new WorkProfile("76e4d31e-1787-476a-9668-9ff5c50c6855","Старший финансовый консультант");
             workProfileFSC.getQueueIds().add(queueBigCredit.getId());
             workProfileFSC.getQueueIds().add(queueCredit.getId());
 

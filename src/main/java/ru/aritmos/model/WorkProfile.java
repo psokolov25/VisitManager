@@ -20,6 +20,9 @@ public class WorkProfile extends BranchEntity{
     public WorkProfile(String name){
         super(name);
     }
+    public WorkProfile(String id,String name){
+        super(id,name);
+    }
 
     /**
      * Идентификаторы очередей

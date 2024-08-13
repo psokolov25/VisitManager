@@ -40,7 +40,7 @@ public class User extends BranchEntityWithVisits{
     /**
      * Идентификатор точки обслуживания
      */
-    String servicePoinrtId;
+    String servicePointId;
     /**
      * Идентификатор текущего отделения
      */
