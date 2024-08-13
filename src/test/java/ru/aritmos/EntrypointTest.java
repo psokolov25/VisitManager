@@ -170,6 +170,28 @@ class EntrypointTest {
 
 
     }
+    @Test
+    void checkWithoutConfirmVisit() throws InterruptedException {
+        Service service;
+        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+
+
+
+
+        servicePointController.visitCall(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+
+
+        Thread.sleep(5000);
+        Visit visit2;
+        visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+
+
+    }
 
     @Test
     void checkConfirmVisitWithCallRule() throws InterruptedException {

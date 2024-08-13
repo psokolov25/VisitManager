@@ -152,7 +152,7 @@ public class Visit {
 
     @JsonGetter
 
-    public Long getTotalWaitingTime() {
+    public Long getVisitLifeTime() {
         final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
         visitLifeTime = unit.between(this.getCreateDateTime() != null ? this.getCreateDateTime() : ZonedDateTime.now(), this.getEndDateTime() != null ? this.getEndDateTime() : ZonedDateTime.now());
