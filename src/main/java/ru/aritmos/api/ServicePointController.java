@@ -240,6 +240,27 @@ public class ServicePointController {
     }
 
     /**
+     * Вызов визита с ожиданием подтверждения
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visitId  идентификатор визита
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                     @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                     @PathVariable String visitId) {
+
+            Visit visit = visitService.getVisit(branchId, visitId);
+            return visitService.visitCallForConfirm(branchId, servicePointId, visit);
+
+
+    }
+
+    /**
      * Отмена вызова из-за того, что клиент не пришел
      *
      * @param branchId       идентификатор отделения
@@ -255,6 +276,26 @@ public class ServicePointController {
                                  @Body Visit visit) {
 
 
+        return visitService.visitNoShow(branchId, servicePointId, visit);
+
+
+    }
+    /**
+     * Отмена вызова из-за того, что клиент не пришел
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visitId идентификатор визита
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitCallNoShow(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                 @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                 @PathVariable String visitId) {
+
+        Visit visit=visitService.getVisit(branchId,visitId);
         return visitService.visitNoShow(branchId, servicePointId, visit);
 
 
@@ -280,6 +321,26 @@ public class ServicePointController {
 
 
     }
+    /**
+     * Повторный вызов визита c ожиданием подтверждения
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visitId идентификатор визита
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitReCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                       @PathVariable String visitId) {
+
+        Visit visit=visitService.getVisit(branchId,visitId);
+        return visitService.visitReCallForConfirm(branchId, servicePointId, visit);
+
+
+    }
 
     /**
      * Подтверждение прихода клиента
@@ -297,6 +358,28 @@ public class ServicePointController {
                                   @Body Visit visit) {
 
 
+        return visitService.visitConfirm(branchId, servicePointId, visit);
+
+
+    }
+
+
+    /**
+     * Подтверждение прихода клиента
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param visitId идентификатор визита
+     * @return вызванный визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitCallConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                  @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                  @PathVariable String visitId) {
+
+        Visit visit=visitService.getVisit(branchId,visitId);
         return visitService.visitConfirm(branchId, servicePointId, visit);
 
 
@@ -349,7 +432,7 @@ public class ServicePointController {
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param serviceId идентификатор итога оказания услуги
+     * @param serviceId      идентификатор итога оказания услуги
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -364,13 +447,14 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Добавление итога предоставленной услуги текущей услуги
      *
-     * @param branchId       идентификатор отделения
-     * @param servicePointId идентификатор точки обслуживания
+     * @param branchId           идентификатор отделения
+     * @param servicePointId     идентификатор точки обслуживания
      * @param deliveredServiceId идентификатор предоставленной услуги
-     * @param outcomeId      идентификатор итога оказания услуги
+     * @param outcomeId          идентификатор итога оказания услуги
      * @return вызванный визит
      */
     @Tag(name = "Зона обслуживания")
@@ -386,11 +470,12 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Удаление итога предоставленной услуги текущей услуги
      *
-     * @param branchId       идентификатор отделения
-     * @param servicePointId идентификатор точки обслуживания
+     * @param branchId           идентификатор отделения
+     * @param servicePointId     идентификатор точки обслуживания
      * @param deliveredServiceId идентификатор предоставленной услуги
      * @return вызванный визит
      */
@@ -398,8 +483,8 @@ public class ServicePointController {
     @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}/outcome", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit deleteOutcomeDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                                            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                            @PathVariable() String deliveredServiceId) {
+                                               @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                               @PathVariable() String deliveredServiceId) {
 
 
         return visitService.deleteOutcomeDeliveredService(branchId, servicePointId, deliveredServiceId);
@@ -506,23 +591,22 @@ public class ServicePointController {
 
 
     }
+
     /**
      * Удаление визита из очереди по идентификатору визита
      *
-     * @param branchId       идентификатор отделения
-     * @param visitId идентификатор визита
-
+     * @param branchId идентификатор отделения
+     * @param visitId  идентификатор визита
      */
     @Tag(name = "Зона обслуживания")
     @Delete(uri = "/branches/{branchId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public void deleteVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
                             @PathVariable String visitId) {
-        if(!visitService.getAllVisits(branchId).containsKey(visitId))
-        {
-            throw new BusinessException(String.format("Visit with id %s not found!",visitId),eventService,HttpStatus.NOT_FOUND);
+        if (!visitService.getAllVisits(branchId).containsKey(visitId)) {
+            throw new BusinessException(String.format("Visit with id %s not found!", visitId), eventService, HttpStatus.NOT_FOUND);
         }
-        Visit visit=visitService.getAllVisits(branchId).get(visitId);
+        Visit visit = visitService.getAllVisits(branchId).get(visitId);
 
         visitService.deleteVisit(visit);
 
@@ -534,7 +618,7 @@ public class ServicePointController {
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param queueId        идентификатор очереди     *
+     * @param queueId        идентификатор очереди
      * @return визит после перевода
      */
     @Tag(name = "Зона обслуживания")
@@ -581,6 +665,39 @@ public class ServicePointController {
 
     }
 
+
+    /**
+     * Перевод визита из очереди в очередь
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания     *
+     * @param queueId        идентификатор очереди
+     * @param visitId        идентификатор визита
+     * @return итоговый визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Put(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueue/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitTransferFromQueue(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                        @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @PathVariable String visitId) {
+        Branch branch;
+
+        try {
+            branch = branchService.getBranch(branchId);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        if (!branch.getQueues().containsKey(queueId)) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+        }
+
+        Visit visit=visitService.getVisit(branchId,visitId);
+        return visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit);
+
+
+    }
 
     /**
      * Перевод визита из очереди в очередь

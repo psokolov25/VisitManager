@@ -36,6 +36,26 @@ public class VisitService {
     @Value("${micronaut.application.name}")
     String applicationName;
 
+    /**
+     * Возвращает визит по его отделению и идентификатору
+     * @param branchId идентификатор отделения
+     * @param visitId идентификатор визита
+     * @return  визит
+     */
+    public Visit getVisit(String branchId,String visitId)
+    {
+        if(getAllVisits(branchId).containsKey(visitId))
+        {
+            return getAllVisits(branchId).get(visitId);
+        }
+        throw new BusinessException(String.format("Visit %s not found!", visitId), eventService, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Возвращает сервис поинты отделения
+     * @param branchId идентификатор отделения
+     * @return  перечень сервис поинтом, с ключом - идентификатором сервис поинта
+     */
     public @NotNull HashMap<String, ServicePoint> getStringServicePointHashMap(String branchId) {
         Branch currentBranch = branchService.getBranch(branchId);
         HashMap<String, ServicePoint> freeServicePoints = new HashMap<>();
@@ -43,8 +63,13 @@ public class VisitService {
         return freeServicePoints;
     }
 
+    /**
+     * Возвращает визиты содержащиеся в очереди
+     * @param branchId идентификатор отделения
+     * @param queueId идентификатор очереди
+     * @return список визитов
+      */
     @ExecuteOn(TaskExecutors.IO)
-
     public List<Visit> getVisits(String branchId, String queueId) {
         Branch currentBranch = branchService.getBranch(branchId);
         Queue queue;
