@@ -211,7 +211,6 @@ class EntrypointTest {
         }
 
     }
-
     @Test
     void checkConfirmVisitWithCallRuleTwoServices() throws InterruptedException {
 
