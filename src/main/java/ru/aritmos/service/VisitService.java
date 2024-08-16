@@ -296,10 +296,14 @@ public class VisitService {
                 if (visit.getCurrentService() == null) {
                     throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
                 }
-                if (visit.getCurrentService().getPossibleDeliveredServices().keySet().stream().noneMatch(f -> f.contains(deliveredServiceId))) {
-                    throw new BusinessException(String.format("Current service cant add delivererd service with id %s", deliveredServiceId), eventService);
+                if(!currentBranch.getPossibleDeliveredServices().containsKey(deliveredServiceId))
+                {
+                    throw new BusinessException(String.format("Delivered service with id %s not found!", deliveredServiceId), eventService,HttpStatus.NOT_FOUND);
                 }
-                DeliveredService deliveredService = visit.getCurrentService().getPossibleDeliveredServices().get(deliveredServiceId);
+                if (currentBranch.getPossibleDeliveredServices().values().stream().noneMatch(f ->f.getServviceIds().contains(visit.getCurrentService().getId()))) {
+                    throw new BusinessException(String.format("Current service cant add delivered service with id %s", deliveredServiceId), eventService,HttpStatus.CONFLICT);
+                }
+                DeliveredService deliveredService = currentBranch.getPossibleDeliveredServices().get(deliveredServiceId);
                 visit.getCurrentService().getDeliveredServices().put(deliveredService.getId(), deliveredService);
 
                 VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
@@ -365,6 +369,140 @@ public class VisitService {
         }
     }
 
+    /**
+     * Добавление текстовой пометки в визит
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param mark текстовая пометка
+     * @return визит
+     */
+    public Visit addMark(String branchId, String servicePointId, String mark) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService() == null)
+                    throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
+                visit.getCurrentService().getMarks().add(mark);
+                VisitEvent visitEvent = VisitEvent.ADDED_MARK;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                visitEvent.getParameters().put("mark", mark);
+                visitEvent.getParameters().put("branchId", branchId);
+                visitEvent.getParameters().put("staffId", visit.getUserId());
+                visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, visitEvent, this);
+                return visit;
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+    /**
+     * Удаление текстовой пометки в визит
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param mark текстовая пометка
+     * @return визит
+     */
+    public Visit deleteMark(String branchId, String servicePointId, String mark) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService() == null)
+                    throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
+                visit.getCurrentService().getMarks().removeIf(f->f.equals(mark));
+                VisitEvent visitEvent = VisitEvent.DELETED_MARK;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                visitEvent.getParameters().put("mark", mark);
+                visitEvent.getParameters().put("branchId", branchId);
+                visitEvent.getParameters().put("staffId", visit.getUserId());
+                visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, visitEvent, this);
+                return visit;
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    /**
+     * Добавление пометки в формате объекта
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param mark пометка в формате объекта
+     * @return визит
+     */
+    public Visit addMark(String branchId, String servicePointId, Object mark) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService() == null)
+                    throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
+                visit.getCurrentService().getMarks().add(mark);
+                VisitEvent visitEvent = VisitEvent.ADDED_MARK;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                visitEvent.getParameters().put("mark", mark.toString());
+                visitEvent.getParameters().put("branchId", branchId);
+                visitEvent.getParameters().put("staffId", visit.getUserId());
+                visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, visitEvent, this);
+                return visit;
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
+    /**
+     * Удаление пометки в формате объекта
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param mark текстовая пометка
+     * @return визит
+     */
+    public Visit deleteMark(String branchId, String servicePointId, Object mark) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null) {
+                Visit visit = servicePoint.getVisit();
+                if (visit.getCurrentService() == null)
+                    throw new BusinessException("Current service is null!", eventService, HttpStatus.NOT_FOUND);
+                visit.getCurrentService().getMarks().removeIf(f->f.equals(mark));
+                VisitEvent visitEvent = VisitEvent.DELETED_MARK;
+                visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+                visitEvent.getParameters().put("mark", mark.toString());
+                visitEvent.getParameters().put("branchId", branchId);
+                visitEvent.getParameters().put("staffId", visit.getUserId());
+                visitEvent.getParameters().put("staff?Name", visit.getUserName());
+                branchService.updateVisit(visit, visitEvent, this);
+                return visit;
+
+
+            } else {
+                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+        }
+    }
     /**
      * Добавление итога услуги
      *

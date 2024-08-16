@@ -19,6 +19,7 @@ import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Pavel Sokolov
@@ -160,7 +161,7 @@ public class ServicePointController {
     }
 
     /**
-     * Возвращает  список визитов в отделении с фильтрацией по статусу
+     * Возвращает список визитов в отделении с фильтрацией по статусу
      *
      * @param branchId идентификатор отделения
      * @param statuses массив статусов визита
@@ -418,14 +419,15 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания (в разработке!)")
     @Get(uri = "/branches/{branchId}/services/{serviceId}/deliveredServices", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public HashMap<String, DeliveredService> getDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId
+    public Map<String, DeliveredService> getDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId
                                                                  ,@PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId
     ) {
 
 
         Branch branch = branchService.getBranch(branchId);
         if (branch.getServices().containsKey(serviceId)) {
-            return branch.getServices().get(serviceId).getPossibleDeliveredServices();
+            return branch.getPossibleDeliveredServices().entrySet().stream().filter(f->f.getValue().getServviceIds().contains(serviceId)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                    (oldValue, newValue) -> oldValue));
         } else {
             throw new BusinessException(String.format("Service %s not found!", serviceId), eventService, HttpStatus.NOT_FOUND);
         }
@@ -474,6 +476,88 @@ public class ServicePointController {
 
 
         return visitService.addDeliveredService(branchId, servicePointId, deliveredServiceId);
+
+
+    }
+
+
+
+    /**
+     * Добавление текстовой пометки в визит
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param mark текстовая пометка
+     * @return визит
+     */
+    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark", consumes = "text/plain", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit addMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                        @Body String mark) {
+
+
+        return visitService.addMark(branchId, servicePointId, mark);
+
+
+    }
+
+    /**
+     * Удаление текстовой пометки в визит
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param mark текстовая пометка
+     * @return визит
+     */
+    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark", consumes = "text/plain", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit deleteMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                             @Body String mark) {
+
+
+        return visitService.deleteMark(branchId, servicePointId, mark);
+
+
+    }
+
+    /**
+     * Добавление пометки в формате объекта
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param mark текстовая пометка
+     * @return визит
+     */
+    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit addMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                             @Body Object mark) {
+
+
+        return visitService.addMark(branchId, servicePointId, mark);
+
+
+    }
+
+    /**
+     * Удаление пометки в формате объекта
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param mark текстовая пометка
+     * @return визит
+     */
+    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit deleteMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                             @Body Object mark) {
+
+
+        return visitService.deleteMark(branchId, servicePointId, mark);
 
 
     }

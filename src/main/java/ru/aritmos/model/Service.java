@@ -5,7 +5,9 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Услуга
@@ -24,11 +26,12 @@ public class Service extends BasedService{
         this.servingSL = servingSL;
         this.linkedQueueId = linkedQueueId;
         this.isAvailable=true;
+
     }
     /**
-     * Возможные оказанные услуги
+     * Заметки визита
      */
-    HashMap<String, DeliveredService> possibleDeliveredServices = new HashMap<>();
+    List<Object> marks=new ArrayList<>();
     /**
      * Нормативное время обслуживания
      */

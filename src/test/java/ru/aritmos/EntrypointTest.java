@@ -73,8 +73,8 @@ class EntrypointTest {
             Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Выдана");
             creditAccepted.setCode(1L);
             creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
-            creditService.getPossibleDeliveredServices().put(creditCard.getId(),creditCard);
-            creditService.getPossibleDeliveredServices().put(insurance.getId(),insurance);
+            branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
+            branch.getPossibleDeliveredServices().put(insurance.getId(), insurance);
             Queue queueBigCredit = new Queue("Очень большие кредиты", "S");
             Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd4", "Очень большой кредит", 9000, queueBigCredit.getId());
             Queue queueC = new Queue("В кассу", "C");
@@ -84,9 +84,11 @@ class EntrypointTest {
             serviceList.put(kassaService.getId(), kassaService);
             serviceList.put(creditService.getId(), creditService);
             serviceList.put(bigCreditService.getId(), bigCreditService);
-
-
-            creditCard.getPossibleOutcomes().put(creditCardGiven.getId(),creditCardGiven);
+            creditCard.getServviceIds().add(creditService.getId());
+            creditCard.getServviceIds().add(bigCreditService.getId());
+            insurance.getServviceIds().add(creditService.getId());
+            insurance.getServviceIds().add(bigCreditService.getId());
+            creditCard.getPossibleOutcomes().put(creditCardGiven.getId(), creditCardGiven);
 
             branch.setServices(serviceList);
             ServicePoint servicePointFSC = new ServicePoint("be675d63-c5a1-41a9-a345-c82102ac42cc", "Старший финансовый консультант");
@@ -190,11 +192,16 @@ class EntrypointTest {
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
             Thread.sleep(3000);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-
+            visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент был не в настроении");
             visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
 
-            visitService.addOutcomeDeliveredService(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",creditCardId,creditCardGivenId);
-            visitService.addOutcomeService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",  acceptedOutcomeID);
+            visitService.addOutcomeDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId, creditCardGivenId);
+            visitService.addOutcomeService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", acceptedOutcomeID);
+            Visit visit=visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел довольный");
+            visit=visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел не довольный");
+            Assertions.assertEquals(visit.getCurrentService().getMarks().size(),3);
+            visit=visitService.deleteMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел не довольный");
+            Assertions.assertEquals(visit.getCurrentService().getMarks().size(),2);
             Thread.sleep(3000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
