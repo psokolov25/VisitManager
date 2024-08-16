@@ -319,7 +319,7 @@ public class VisitService {
                 return visit;
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -362,7 +362,7 @@ public class VisitService {
                 return visit;
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -396,7 +396,7 @@ public class VisitService {
 
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -429,7 +429,7 @@ public class VisitService {
 
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -464,7 +464,7 @@ public class VisitService {
 
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -497,7 +497,7 @@ public class VisitService {
 
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -538,7 +538,7 @@ public class VisitService {
 
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -585,7 +585,7 @@ public class VisitService {
 
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -628,7 +628,7 @@ public class VisitService {
 
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -667,7 +667,7 @@ public class VisitService {
                 return visit;
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
@@ -701,7 +701,7 @@ public class VisitService {
                     throw new BusinessException("Visit cant be transfer!", eventService);
                 }
             } else {
-                throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("In ServicePoint %s visit not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         } else {
             throw new BusinessException(String.format("ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
