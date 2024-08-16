@@ -39,11 +39,11 @@ class EntrypointTest {
     ServicePointController servicePointController;
     @Inject
     ManagementController managementController;
-    String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
-    String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
-    String creditCardId = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed";
-    String acceptedOutcomeID = "462bac1a-568a-4f1f-9548-1c7b61792b4b";
-    String creditCardGivenId = "8dc29622-cd87-4384-85a7-04b66b28dd0f";
+    final String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
+    final String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
+    final String creditCardId = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed";
+    final String acceptedOutcomeID = "462bac1a-568a-4f1f-9548-1c7b61792b4b";
+    final String creditCardGivenId = "8dc29622-cd87-4384-85a7-04b66b28dd0f";
 
     @Test
     void testItWorks() {
@@ -197,7 +197,8 @@ class EntrypointTest {
 
             visitService.addOutcomeDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId, creditCardGivenId);
             visitService.addOutcomeService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", acceptedOutcomeID);
-            Visit visit=visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел довольный");
+            Visit visit;
+            visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел довольный");
             visit=visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел не довольный");
             Assertions.assertEquals(visit.getCurrentService().getMarks().size(),3);
             visit=visitService.deleteMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел не довольный");

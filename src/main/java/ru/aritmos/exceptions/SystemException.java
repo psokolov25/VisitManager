@@ -15,7 +15,7 @@ public class SystemException extends Exception {
 
     final EventService eventService;
 
-    String errorMessage;
+    final String errorMessage;
 
     public SystemException(String errorMessage, EventService eventService) {
         super(errorMessage);

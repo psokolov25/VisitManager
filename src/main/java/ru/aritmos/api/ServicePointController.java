@@ -578,7 +578,6 @@ public class ServicePointController {
 
         return visitService.addOutcomeService(branchId, servicePointId, outcomeId);
 
-
     }
 
     /**
