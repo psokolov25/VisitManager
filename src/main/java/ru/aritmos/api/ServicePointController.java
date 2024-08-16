@@ -538,8 +538,6 @@ public class ServicePointController {
 
 
         return visitService.addMark(branchId, servicePointId, mark);
-
-
     }
 
     /**
