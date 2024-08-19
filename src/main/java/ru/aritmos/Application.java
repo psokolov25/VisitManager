@@ -8,6 +8,7 @@ import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
 import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
@@ -17,7 +18,16 @@ import jakarta.annotation.PostConstruct;
 
         ), servers = {@Server(url = "http://192.168.8.45:8080"),
         @Server(url = "http://localhost:8080")}
-)
+        ,
+        tags = {
+
+                @Tag(name = "Зона обслуживания"),
+                @Tag(name = "Зона ожидания"),
+                @Tag(name = "Информация об отделении"),
+                @Tag(name = "Конфигурация отделений")
+
+
+        })
 
 public class Application {
 

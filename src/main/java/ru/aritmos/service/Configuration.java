@@ -22,6 +22,22 @@ public class Configuration {
 
 
             Branch branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b4", "Отделение на Тверской");
+            branch.getMarks().put(
+                    "04992364-9e96-4ec9-8a05-923766aa57e7",
+                    Mark
+                    .builder()
+                    .id("04992364-9e96-4ec9-8a05-923766aa57e7")
+                    .value("Клиент доволен")
+                    .build()
+            );
+            branch.getMarks().put(
+                    "d75076be-d3e0-4323-b7db-b32ea6b30817",
+                    Mark
+                            .builder()
+                            .id("d75076be-d3e0-4323-b7db-b32ea6b30817")
+                            .value("Клиент не доволен")
+                            .build()
+            );
             EntryPoint entryPoint = new EntryPoint();
             entryPoint.setPrinterId("2");
             entryPoint.setId("2");

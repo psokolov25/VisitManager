@@ -506,46 +506,26 @@ public class ServicePointController {
 
 
 
-    /**
-     * Добавление текстовой пометки в визит
-     * @param branchId идентификатор отделения
-     * @param servicePointId идентификатор точки обслуживания
-     * @param mark текстовая пометка
-     * @return визит
-     */
-    @Tag(name = "Зона обслуживания (в разработке!)")
-    @Tag(name = "Обслуживание (в разработке!)")
-    @Tag(name = "Пометки (в разработке!)")
-    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark", consumes = "text/plain", produces = "application/json")
-    @ExecuteOn(TaskExecutors.IO)
-    public Visit addMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                        @Body String mark) {
 
-
-        return visitService.addMark(branchId, servicePointId, mark);
-
-
-    }
 
     /**
      * Удаление текстовой пометки в визит
      * @param branchId идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param mark текстовая пометка
+     * @param markId идентификатор метки
      * @return визит
      */
     @Tag(name = "Зона обслуживания (в разработке!)")
     @Tag(name = "Обслуживание (в разработке!)")
     @Tag(name = "Пометки (в разработке!)")
-    @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark", consumes = "text/plain", produces = "application/json")
+    @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}", consumes = "text/plain", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit deleteMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
                              @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                             @Body String mark) {
+                             @PathVariable String markId) {
 
 
-        return visitService.deleteMark(branchId, servicePointId, mark);
+        return visitService.deleteMark(branchId, servicePointId, markId);
 
 
     }
@@ -554,42 +534,23 @@ public class ServicePointController {
      * Добавление пометки в формате объекта
      * @param branchId идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param mark текстовая пометка
+     * @param markId идентификатор метки
      * @return визит
      */
     @Tag(name = "Зона обслуживания (в разработке!)")
     @Tag(name = "Обслуживание (в разработке!)")
     @Tag(name = "Пометки (в разработке!)")
-    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark", consumes = "application/json", produces = "application/json")
+    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit addMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
                              @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                             @Body Object mark) {
+                             @PathVariable String markId) {
 
 
-        return visitService.addMark(branchId, servicePointId, mark);
+        return visitService.addMark(branchId, servicePointId, markId);
     }
 
-    /**
-     * Удаление пометки в формате объекта
-     * @param branchId идентификатор отделения
-     * @param servicePointId идентификатор точки обслуживания
-     * @param mark текстовая пометка
-     * @return визит
-     */
-    @Tag(name = "Зона обслуживания (в разработке!)")
-    @Tag(name = "Обслуживание (в разработке!)")
-    @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark", consumes = "application/json", produces = "application/json")
-    @ExecuteOn(TaskExecutors.IO)
-    public Visit deleteMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                             @Body Object mark) {
 
-
-        return visitService.deleteMark(branchId, servicePointId, mark);
-
-
-    }
 
     /**
      * Добавление итога текущей услуги

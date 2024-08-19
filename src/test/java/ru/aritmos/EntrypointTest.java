@@ -59,6 +59,22 @@ class EntrypointTest {
     void CreateBranch() {
         if (!branchService.getBranches().containsKey("bc08b7d2-c731-438d-9785-eba2078b2089")) {
             branch = new Branch("bc08b7d2-c731-438d-9785-eba2078b2089", "Отделение на Тверской");
+            branch.getMarks().put(
+                    "04992364-9e96-4ec9-8a05-923766aa57e7",
+                    Mark
+                            .builder()
+                            .id("04992364-9e96-4ec9-8a05-923766aa57e7")
+                            .value("Клиент доволен")
+                            .build()
+            );
+            branch.getMarks().put(
+                    "d75076be-d3e0-4323-b7db-b32ea6b30817",
+                    Mark
+                            .builder()
+                            .id("d75076be-d3e0-4323-b7db-b32ea6b30817")
+                            .value("Клиент не доволен")
+                            .build()
+            );
             EntryPoint entryPoint = new EntryPoint();
             entryPoint.setPrinterId("2");
             entryPoint.setId("1");
@@ -192,17 +208,17 @@ class EntrypointTest {
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
             Thread.sleep(3000);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент был не в настроении");
+            visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","d75076be-d3e0-4323-b7db-b32ea6b30817");
             visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
 
             visitService.addOutcomeDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId, creditCardGivenId);
             visitService.addOutcomeService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", acceptedOutcomeID);
             Visit visit;
-            visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел довольный");
-            visit=visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел не довольный");
-            Assertions.assertEquals(visit.getCurrentService().getMarks().size(),3);
-            visit=visitService.deleteMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","Клиент ушел не довольный");
-            Assertions.assertEquals(visit.getCurrentService().getMarks().size(),2);
+            visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","04992364-9e96-4ec9-8a05-923766aa57e7");
+            visit=visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","d75076be-d3e0-4323-b7db-b32ea6b30817");
+            Assertions.assertEquals(visit.getVisitMarks().size(),3);
+            visit=visitService.deleteMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","d75076be-d3e0-4323-b7db-b32ea6b30817");
+            Assertions.assertEquals(visit.getVisitMarks().size(),1);
             Thread.sleep(3000);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");

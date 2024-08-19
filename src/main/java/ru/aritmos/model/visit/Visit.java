@@ -1,12 +1,14 @@
 package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.*;
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ru.aritmos.model.EntryPoint;
+import ru.aritmos.model.Mark;
 import ru.aritmos.model.Service;
 
 import java.time.ZonedDateTime;
@@ -22,7 +24,7 @@ import java.util.List;
 @EqualsAndHashCode
 @Serdeable
 @Builder(toBuilder = true)
-
+@Introspected
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Visit {
@@ -108,7 +110,11 @@ public class Visit {
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Service> servedServices;
-
+    /**
+     * Заметки визита
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    List<Mark> visitMarks;
 
 
 

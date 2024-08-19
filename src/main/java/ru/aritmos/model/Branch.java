@@ -61,7 +61,10 @@ public class Branch extends BranchEntity {
      * Возможные оказанные услуги
      */
     HashMap<String, DeliveredService> possibleDeliveredServices = new HashMap<>();
-
+    /**
+     * Возможные заметки визита
+     */
+    HashMap<String,Mark> marks = new HashMap<>();
 
     public Integer incrementTicketCounter(Queue queue) {
         if (this.getQueues().containsKey(queue.getId())) {
