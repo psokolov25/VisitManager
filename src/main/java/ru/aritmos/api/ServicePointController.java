@@ -513,9 +513,9 @@ public class ServicePointController {
      * @param markId         идентификатор метки
      * @return визит
      */
-    @Tag(name = "Зона обслуживания (в разработке!)")
-    @Tag(name = "Обслуживание (в разработке!)")
-    @Tag(name = "Пометки (в разработке!)")
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Пометки")
     @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit deleteMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -534,9 +534,9 @@ public class ServicePointController {
      * @param branchId идентификатор отделения
      * @return список меток
      */
-    @Tag(name = "Зона обслуживания (в разработке!)")
-    @Tag(name = "Обслуживание (в разработке!)")
-    @Tag(name = "Пометки (в разработке!)")
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Пометки")
     @Get(uri = "/branches/{branchId}/marks/", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public HashMap<String,Mark> deleteMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
@@ -555,9 +555,9 @@ public class ServicePointController {
      * @param markId         идентификатор метки
      * @return визит
      */
-    @Tag(name = "Зона обслуживания (в разработке!)")
-    @Tag(name = "Обслуживание (в разработке!)")
-    @Tag(name = "Пометки (в разработке!)")
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Пометки")
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit addMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
