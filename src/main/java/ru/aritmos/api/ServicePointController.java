@@ -421,8 +421,8 @@ public class ServicePointController {
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitCallConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId
-                                  ,@PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId
-                                  ,@PathVariable String visitId) {
+            , @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId
+            , @PathVariable String visitId) {
 
         Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitConfirm(branchId, servicePointId, visit);
@@ -441,13 +441,13 @@ public class ServicePointController {
     @Get(uri = "/branches/{branchId}/services/{serviceId}/deliveredServices", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Map<String, DeliveredService> getDeliveredService(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId
-                                                                 ,@PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId
+            , @PathVariable(defaultValue = "c3916e7f-7bea-4490-b9d1-0d4064adbe8b") String serviceId
     ) {
 
 
         Branch branch = branchService.getBranch(branchId);
         if (branch.getServices().containsKey(serviceId)) {
-            return branch.getPossibleDeliveredServices().entrySet().stream().filter(f->f.getValue().getServviceIds().contains(serviceId)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+            return branch.getPossibleDeliveredServices().entrySet().stream().filter(f -> f.getValue().getServviceIds().contains(serviceId)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                     (oldValue, newValue) -> oldValue));
         } else {
             throw new BusinessException(String.format("Service %s not found!", serviceId), eventService, HttpStatus.NOT_FOUND);
@@ -505,24 +505,22 @@ public class ServicePointController {
     }
 
 
-
-
-
     /**
      * Удаление текстовой пометки в визит
-     * @param branchId идентификатор отделения
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param markId идентификатор метки
+     * @param markId         идентификатор метки
      * @return визит
      */
     @Tag(name = "Зона обслуживания (в разработке!)")
     @Tag(name = "Обслуживание (в разработке!)")
     @Tag(name = "Пометки (в разработке!)")
-    @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}", consumes = "text/plain", produces = "application/json")
+    @Delete(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit deleteMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                             @PathVariable String markId) {
+                            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                            @PathVariable(defaultValue = "04992364-9e96-4ec9-8a05-923766aa57e7") String markId) {
 
 
         return visitService.deleteMark(branchId, servicePointId, markId);
@@ -531,10 +529,30 @@ public class ServicePointController {
     }
 
     /**
-     * Добавление пометки в формате объекта
+     * Возвращение списка возможных меток отделения
+     *
      * @param branchId идентификатор отделения
+     * @return список меток
+     */
+    @Tag(name = "Зона обслуживания (в разработке!)")
+    @Tag(name = "Обслуживание (в разработке!)")
+    @Tag(name = "Пометки (в разработке!)")
+    @Get(uri = "/branches/{branchId}/marks/", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public HashMap<String,Mark> deleteMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+
+        Branch branch = branchService.getBranch(branchId);
+        return branch.getMarks();
+
+
+    }
+
+    /**
+     * Добавление пометки в формате объекта
+     *
+     * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
-     * @param markId идентификатор метки
+     * @param markId         идентификатор метки
      * @return визит
      */
     @Tag(name = "Зона обслуживания (в разработке!)")
@@ -543,13 +561,12 @@ public class ServicePointController {
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit addMark(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                             @PathVariable String markId) {
+                         @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                         @PathVariable(defaultValue = "04992364-9e96-4ec9-8a05-923766aa57e7") String markId) {
 
 
         return visitService.addMark(branchId, servicePointId, markId);
     }
-
 
 
     /**
