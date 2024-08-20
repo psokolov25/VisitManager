@@ -243,22 +243,95 @@ class EntrypointTest {
 
 
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
-        Thread.sleep(10000);
+         visitService.createVisit(branchId, "1", serviceIds, false);
+
+        Thread.sleep(1000);
         if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
             Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
             Assertions.assertEquals(servtime, 0);
-            Thread.sleep(8000);
+            Thread.sleep(800);
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-            Thread.sleep(6000);
+            Thread.sleep(600);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
-            Thread.sleep(9000);
+            Thread.sleep(900);
 
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
             Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
         }
+
+    }
+    @Test
+    void checkTRansferToPoolVisitWithCallRuleTwoServices() throws InterruptedException {
+
+        Service service;
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
+
+
+        ArrayList<String> serviceIds = new ArrayList<>();
+        assert service != null;
+        serviceIds.add(service.getId());
+
+
+
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+      // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
+
+        Thread.sleep(1000);
+        if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
+            Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+            Assertions.assertEquals(servtime, 0);
+            Thread.sleep(800);
+            visit=visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(600);
+
+            visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(600);
+            visit=visitService.visitTransferToServicePointPool(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", "be675d63-c5a1-41a9-a345-c82102ac42cc");
+
+            Thread.sleep(900);
+
+
+
+            Assertions.assertEquals(1,branchService.getBranch(branchId).getServicePoints().get("be675d63-c5a1-41a9-a345-c82102ac42cc").getVisits().size());
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getState().name());
+            visit=visitService.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit);
+            Thread.sleep(900);
+
+            visitService.visitConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit);
+            Thread.sleep(900);
+            visit=visitService.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
+        }
+
+    }
+    @Test
+    void checkTRansferToPoolVisitWithCallRuleFromQueue() throws InterruptedException {
+
+        Service service;
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
+        Service service2;
+        service2 = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67")).findFirst().orElse(null);
+
+        ArrayList<String> serviceIds = new ArrayList<>();
+        assert service != null;
+        serviceIds.add(service.getId());
+        assert service2 != null;
+        serviceIds.add(service2.getId());
+
+
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
+        visitService.visitTransferFromQueueToServicePointPool(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","be675d63-c5a1-41a9-a345-c82102ac42cc",visit);
+        Thread.sleep(1000);
+
+
+
+            Assertions.assertEquals(1,branchService.getBranch(branchId).getServicePoints().get("be675d63-c5a1-41a9-a345-c82102ac42cc").getVisits().size());
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getState().name());
+
 
     }
 

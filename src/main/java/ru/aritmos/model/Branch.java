@@ -77,6 +77,10 @@ public class Branch extends BranchEntity {
     public HashMap<String, Visit> getAllVisits() {
         HashMap<String, Visit> visits = new HashMap<>();
         this.getServicePoints().forEach((k, v) -> {
+            if(v.getUser()!=null)
+            {
+                v.getUser().getVisits().forEach(f -> visits.put(f.getId(), f));
+            }
             if (v.getVisit() != null) {
                 visits.put(v.getVisit().getId(), v.getVisit());
             }
@@ -211,6 +215,18 @@ public class Branch extends BranchEntity {
             value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
             if (value.getId().equals(visit.getQueueId())) {
                 value.getVisits().add(visit);
+            }
+
+        });
+        this.getServicePoints().forEach((key, value) -> {
+            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+            if (value.getId().equals(visit.getPoolServicePointId())) {
+                value.getVisits().add(visit);
+            }
+            if (value.getUser()!=null){
+                if (value.getUser().getId().equals(visit.getPoolUserId())) {
+                    value.getUser().getVisits().add(visit);
+                }
             }
 
         });
