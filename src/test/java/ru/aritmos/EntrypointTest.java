@@ -177,11 +177,11 @@ class EntrypointTest {
         Visit visitForConfirm = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         Long servtime = visitForConfirm.getServingTime();
         Assertions.assertEquals(servtime, 0);
-        Thread.sleep(2000);
+        Thread.sleep(200);
         visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-        Thread.sleep(2000);
+        Thread.sleep(200);
         visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-        Thread.sleep(2000);
+        Thread.sleep(200);
         Visit visit2;
         visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
@@ -199,14 +199,14 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
         visitService.createVisit(branchId, "1", serviceIds, false);
-        Thread.sleep(3000);
+        Thread.sleep(300);
         Optional<Visit> currvisit = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (currvisit.isPresent()) {
             Long servtime = currvisit.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
-            Thread.sleep(3000);
+            Thread.sleep(300);
             visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
-            Thread.sleep(3000);
+            Thread.sleep(300);
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", currvisit.get());
             visitService.addMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","d75076be-d3e0-4323-b7db-b32ea6b30817");
             visitService.addDeliveredService(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
@@ -219,7 +219,7 @@ class EntrypointTest {
             Assertions.assertEquals(visit.getVisitMarks().size(),3);
             visit=visitService.deleteMark(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","d75076be-d3e0-4323-b7db-b32ea6b30817");
             Assertions.assertEquals(visit.getVisitMarks().size(),1);
-            Thread.sleep(3000);
+            Thread.sleep(300);
 
             Visit visit2 = servicePointController.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
@@ -385,9 +385,9 @@ class EntrypointTest {
         visit = visitService.createVisit(branchId, "1", serviceIds, false);
         Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit).getServingTime();
         Assertions.assertEquals(servtime, 0);
-        Thread.sleep(2000);
+        Thread.sleep(200);
         visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-        Thread.sleep(2000);
+        Thread.sleep(200);
 
 
         Visit visit2 = visitService.visitNoShow(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
