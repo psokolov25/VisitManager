@@ -264,7 +264,7 @@ class EntrypointTest {
 
     }
     @Test
-    void checkTRansferToPoolVisitWithCallRuleTwoServices() throws InterruptedException {
+    void checkBackToPoolVisit() throws InterruptedException {
 
         Service service;
         service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
@@ -307,6 +307,45 @@ class EntrypointTest {
         }
 
     }
+
+    @Test
+    void checkTransferToPoolVisit() throws InterruptedException {
+
+        Service service;
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
+
+
+        ArrayList<String> serviceIds = new ArrayList<>();
+        assert service != null;
+        serviceIds.add(service.getId());
+
+
+
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
+
+        Thread.sleep(1000);
+
+
+            visit=visitService.visitTransferFromQueueToServicePointPool(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", "be675d63-c5a1-41a9-a345-c82102ac42cc",visit);
+
+            Thread.sleep(900);
+
+
+
+            Assertions.assertEquals(1,branchService.getBranch(branchId).getServicePoints().get("be675d63-c5a1-41a9-a345-c82102ac42cc").getVisits().size());
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getState().name());
+            visit=visitService.visitCallForConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit);
+            Thread.sleep(900);
+
+            visitService.visitConfirm(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc",visit);
+            Thread.sleep(900);
+            visit=visitService.visitEnd(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc");
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
+
+
+    }
+
     @Test
     void checkTRansferToPoolVisitWithCallRuleFromQueue() throws InterruptedException {
 

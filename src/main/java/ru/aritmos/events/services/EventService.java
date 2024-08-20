@@ -1,6 +1,8 @@
 package ru.aritmos.events.services;
 
 import io.micronaut.context.annotation.Value;
+import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -30,7 +32,7 @@ public class EventService {
         return format.format(date);
     }
 
-
+@ExecuteOn(value = TaskExecutors.IO)
     public void send(String destinationServices, Boolean sendToOtherBus, Event event) {
         event.setSenderService(applicationName);
         Mono.from(
