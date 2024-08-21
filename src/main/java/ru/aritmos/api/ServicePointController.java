@@ -826,6 +826,42 @@ public class ServicePointController {
 
 
     }
+    /**
+     * Перевод визита в очередь из точки обслуживания
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param poolServicePointId  идентификатор точки обслуживания пула
+     * @return визит после перевода
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Изменение визита")
+    @Put(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transferFromServicePoint", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitTransferToServicePointPool(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                               @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                               @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String poolServicePointId) {
+        Branch branch;
+
+        try {
+            branch = branchService.getBranch(branchId);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        if (!branch.getServicePoints().containsKey(poolServicePointId)) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+        }
+
+
+        return visitService.visitTransferToServicePointPool(branchId, servicePointId, poolServicePointId);
+
+
+    }
+
+
+
+
 
     /**
      * Возвращение визита в очередь
@@ -883,6 +919,39 @@ public class ServicePointController {
 
 
     }
+    /**
+     * Перевод визита из очереди в пул сервис поинта
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания     *
+     * @param poolServicePointId        идентификатор точки обслуживания пула
+     * @param visitId        идентификатор визита
+     * @return итоговый визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Изменение визита")
+    @Put(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transferFromQueue/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit poolServicePointId(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                        @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String poolServicePointId, @PathVariable String visitId) {
+        Branch branch;
+
+        try {
+            branch = branchService.getBranch(branchId);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        if (!branch.getServicePoints().containsKey(poolServicePointId)) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+        }
+
+        Visit visit = visitService.getVisit(branchId, visitId);
+        return visitService.visitTransferFromQueueToServicePointPool(branchId, servicePointId, poolServicePointId, visit);
+
+
+    }
 
     /**
      * Перевод визита из очереди в очередь
@@ -914,6 +983,39 @@ public class ServicePointController {
 
 
         return visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit);
+
+
+    }
+    /**
+     * Перевод визита из очереди в пул точки обслуживания
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param poolServicePointId        идентификатор точки обслуживания пула
+     * @param visit          переводимый визит
+     * @return итоговый визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Изменение визита")
+    @Put(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transferFromQueue", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit visitTransferFromQueueToServicePointPool(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                        @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String poolServicePointId, @Body Visit visit) {
+        Branch branch;
+
+        try {
+            branch = branchService.getBranch(branchId);
+        } catch (Exception ex) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+
+        }
+        if (!branch.getServices().containsKey(poolServicePointId)) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+        }
+
+
+        return visitService.visitTransferFromQueueToServicePointPool(branchId, servicePointId, poolServicePointId, visit);
 
 
     }
