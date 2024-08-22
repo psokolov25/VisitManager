@@ -854,7 +854,7 @@ public class ServicePointController {
         }
 
 
-        return visitService.visitTransferToServicePointPool(branchId, servicePointId, poolServicePointId);
+        return visitService.visitBackToServicePointPool(branchId, servicePointId, poolServicePointId);
 
 
     }
