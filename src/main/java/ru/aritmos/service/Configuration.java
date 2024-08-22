@@ -82,7 +82,7 @@ public class Configuration {
             workProfileFSC.getQueueIds().add(queueBigCredit.getId());
             workProfileFSC.getQueueIds().add(queueCredit.getId());
 
-            User psokolovUser = new User("psokolov");
+            User psokolovUser = new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89","psokolov");
             User sidorovUser = new User("isidorov");
             psokolovUser.setBranchId(branch.getId());
             sidorovUser.setBranchId(branch.getId());

@@ -86,7 +86,7 @@ public class EntrypointController {
     @Tag(name = "Зона ожидания")
     @Get(uri = "/branches/{branchId}/services", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public List<Service> GetAllServices(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    public List<Service> getAllAvilableServies(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
         try {
             return services.getAllAvilableServies(branchId);
 

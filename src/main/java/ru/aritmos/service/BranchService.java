@@ -112,6 +112,22 @@ public class BranchService {
 
 
     }
+    public void updateVisit(Visit visit, VisitEvent visitEvent,VisitService visitService,Boolean isAppend) {
+
+        Branch branch = this.getBranch(visit.getBranchId());
+        branch.updateVisit(visit, eventService,visitEvent,visitService,isAppend);
+        this.add(branch.getId(), branch);
+
+
+    }
+    public void updateVisit(Visit visit, VisitEvent visitEvent,VisitService visitService,Integer index) {
+
+        Branch branch = this.getBranch(visit.getBranchId());
+        branch.updateVisit(visit, eventService,visitEvent,visitService,index);
+        this.add(branch.getId(), branch);
+
+
+    }
 
 
     public User openServicePoint(String branchId, String userName, String servicePointId, String workProfileId) {

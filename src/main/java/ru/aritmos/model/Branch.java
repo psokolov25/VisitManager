@@ -64,7 +64,7 @@ public class Branch extends BranchEntity {
     /**
      * Возможные заметки визита
      */
-    HashMap<String,Mark> marks = new HashMap<>();
+    HashMap<String, Mark> marks = new HashMap<>();
 
     public Integer incrementTicketCounter(Queue queue) {
         if (this.getQueues().containsKey(queue.getId())) {
@@ -77,8 +77,7 @@ public class Branch extends BranchEntity {
     public HashMap<String, Visit> getAllVisits() {
         HashMap<String, Visit> visits = new HashMap<>();
         this.getServicePoints().forEach((k, v) -> {
-            if(v.getUser()!=null)
-            {
+            if (v.getUser() != null) {
                 v.getUser().getVisits().forEach(f -> visits.put(f.getId(), f));
             }
             if (v.getVisit() != null) {
@@ -135,31 +134,29 @@ public class Branch extends BranchEntity {
 
     public void closeServicePoint(String servicePointId, EventService eventService) {
 
-            if (this.getServicePoints().containsKey(servicePointId)) {
-                ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
-                if (servicePoint.getUser() != null) {
+        if (this.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
+            if (servicePoint.getUser() != null) {
 
-                    servicePoint.setUser(null);
-                    eventService.send("*", false, Event.builder()
-                            .eventDate(ZonedDateTime.now())
-                            .eventType("SERVICE_POINT_CLOSED")
-                            .params(new HashMap<>())
-                            .body(servicePoint).build());
-                    eventService.send("stat", false, Event.builder()
-                            .eventDate(ZonedDateTime.now())
-                            .eventType("SERVICE_POINT_CLOSED")
-                            .params(new HashMap<>())
-                            .body(servicePoint).build());
-
-                }
-                else
-                {
-                    throw new BusinessException(String.format("ServicePoint %s already closed!", servicePointId), eventService, HttpStatus.CONFLICT);
-                }
+                servicePoint.setUser(null);
+                eventService.send("*", false, Event.builder()
+                        .eventDate(ZonedDateTime.now())
+                        .eventType("SERVICE_POINT_CLOSED")
+                        .params(new HashMap<>())
+                        .body(servicePoint).build());
+                eventService.send("stat", false, Event.builder()
+                        .eventDate(ZonedDateTime.now())
+                        .eventType("SERVICE_POINT_CLOSED")
+                        .params(new HashMap<>())
+                        .body(servicePoint).build());
 
             } else {
-                throw new BusinessException(String.format("ServicePoint %s not found in %s", servicePointId, this.getName()), eventService, HttpStatus.NOT_FOUND);
+                throw new BusinessException(String.format("ServicePoint %s already closed!", servicePointId), eventService, HttpStatus.CONFLICT);
             }
+
+        } else {
+            throw new BusinessException(String.format("ServicePoint %s not found in %s", servicePointId, this.getName()), eventService, HttpStatus.NOT_FOUND);
+        }
 
 
     }
@@ -197,8 +194,119 @@ public class Branch extends BranchEntity {
                 .params(new HashMap<>())
                 .body(visit.toBuilder().build()).build());
     }
+
+    public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService, Boolean isAppend) {
+        visitService.addEvent(visit, visitEvent, eventService);
+        visit.setStatus(visitEvent.getState().name());
+        this.servicePoints.forEach((key, value) -> {
+            if (value.getId().equals(visit.getServicePointId())) {
+                if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
+                    value.setVisit(visit);
+                } else {
+                    throw new BusinessException(String.format("In ServicePoint %s already exists visit %s", value.getId(), value.getVisit().getId()), eventService, HttpStatus.CONFLICT);
+                }
+            } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
+                value.setVisit(null);
+            }
+        });
+        this.queues.forEach((key, value) -> {
+            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+            if (value.getId().equals(visit.getQueueId())) {
+                if (isAppend) {
+                    value.getVisits().add(visit);
+                } else {
+                    value.getVisits().add(0, visit);
+                }
+            }
+
+        });
+        this.getServicePoints().forEach((key, value) -> {
+            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+            if (value.getId().equals(visit.getPoolServicePointId())) {
+                if (isAppend) {
+                    value.getVisits().add(visit);
+                } else {
+                    value.getVisits().add(0, visit);
+                }
+            }
+            if (value.getUser() != null) {
+                if (value.getUser().getId().equals(visit.getPoolUserId())) {
+                    if (isAppend) {
+                        value.getUser().getVisits().add(visit);
+                    } else {
+                        value.getUser().getVisits().add(0, visit);
+                    }
+                }
+            }
+
+        });
+        eventService.send("*", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_" + visitEvent.name())
+                .params(new HashMap<>())
+                .body(visit.toBuilder().build()).build());
+        eventService.send("stat", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_" + visitEvent.name())
+                .params(new HashMap<>())
+                .body(visit.toBuilder().build()).build());
+    }
+
+    public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService, Integer index) {
+        visitService.addEvent(visit, visitEvent, eventService);
+        visit.setStatus(visitEvent.getState().name());
+        this.servicePoints.forEach((key, value) -> {
+            if (value.getId().equals(visit.getServicePointId())) {
+                if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
+                    value.setVisit(visit);
+                } else {
+                    throw new BusinessException(String.format("In ServicePoint %s already exists visit %s", value.getId(), value.getVisit().getId()), eventService, HttpStatus.CONFLICT);
+                }
+            } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
+                value.setVisit(null);
+            }
+        });
+        this.queues.forEach((key, value) -> {
+            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+            if (value.getId().equals(visit.getQueueId())) {
+
+
+                value.getVisits().add(index, visit);
+
+            }
+
+        });
+        this.getServicePoints().forEach((key, value) -> {
+            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+            if (value.getId().equals(visit.getPoolServicePointId())) {
+
+                value.getVisits().add(index, visit);
+
+            }
+            if (value.getUser() != null) {
+                if (value.getUser().getId().equals(visit.getPoolUserId())) {
+
+
+                    value.getUser().getVisits().add(index, visit);
+
+                }
+            }
+
+        });
+        eventService.send("*", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_" + visitEvent.name())
+                .params(new HashMap<>())
+                .body(visit.toBuilder().build()).build());
+        eventService.send("stat", false, Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("VISIT_" + visitEvent.name())
+                .params(new HashMap<>())
+                .body(visit.toBuilder().build()).build());
+    }
+
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService) {
-        visitService.addEvent(visit,visitEvent,eventService);
+        visitService.addEvent(visit, visitEvent, eventService);
         visit.setStatus(visitEvent.getState().name());
         this.servicePoints.forEach((key, value) -> {
             if (value.getId().equals(visit.getServicePointId())) {
@@ -223,7 +331,7 @@ public class Branch extends BranchEntity {
             if (value.getId().equals(visit.getPoolServicePointId())) {
                 value.getVisits().add(visit);
             }
-            if (value.getUser()!=null){
+            if (value.getUser() != null) {
                 if (value.getUser().getId().equals(visit.getPoolUserId())) {
                     value.getUser().getVisits().add(visit);
                 }
