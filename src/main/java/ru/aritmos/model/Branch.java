@@ -196,60 +196,14 @@ public class Branch extends BranchEntity {
     }
 
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService, Boolean isAppend) {
-        visitService.addEvent(visit, visitEvent, eventService);
-        visit.setStatus(visitEvent.getState().name());
-        this.servicePoints.forEach((key, value) -> {
-            if (value.getId().equals(visit.getServicePointId())) {
-                if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
-                    value.setVisit(visit);
-                } else {
-                    throw new BusinessException(String.format("In ServicePoint %s already exists visit %s", value.getId(), value.getVisit().getId()), eventService, HttpStatus.CONFLICT);
-                }
-            } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
-                value.setVisit(null);
-            }
-        });
-        this.queues.forEach((key, value) -> {
-            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
-            if (value.getId().equals(visit.getQueueId())) {
-                if (isAppend) {
-                    value.getVisits().add(visit);
-                } else {
-                    value.getVisits().add(0, visit);
-                }
-            }
-
-        });
-        this.getServicePoints().forEach((key, value) -> {
-            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
-            if (value.getId().equals(visit.getPoolServicePointId())) {
-                if (isAppend) {
-                    value.getVisits().add(visit);
-                } else {
-                    value.getVisits().add(0, visit);
-                }
-            }
-            if (value.getUser() != null) {
-                if (value.getUser().getId().equals(visit.getPoolUserId())) {
-                    if (isAppend) {
-                        value.getUser().getVisits().add(visit);
-                    } else {
-                        value.getUser().getVisits().add(0, visit);
-                    }
-                }
-            }
-
-        });
-        eventService.send("*", false, Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("VISIT_" + visitEvent.name())
-                .params(new HashMap<>())
-                .body(visit.toBuilder().build()).build());
-        eventService.send("stat", false, Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("VISIT_" + visitEvent.name())
-                .params(new HashMap<>())
-                .body(visit.toBuilder().build()).build());
+      if(isAppend)
+      {
+          updateVisit(visit,eventService,visitEvent,visitService,-1);
+      }
+      else
+      {
+          updateVisit(visit,eventService,visitEvent,visitService,0);
+      }
     }
 
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService, Integer index) {
@@ -271,8 +225,12 @@ public class Branch extends BranchEntity {
             if (value.getId().equals(visit.getQueueId())) {
 
                 try {
-
-                    value.getVisits().add(index, visit);
+                    if(!index.equals(-1)) {
+                        value.getVisits().add(index, visit);
+                    }
+                    else {
+                        value.getVisits().add(visit);
+                    }
                 } catch (IndexOutOfBoundsException e) {
                     throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getVisits().size()), eventService, HttpStatus.CONFLICT);
                 }
@@ -285,7 +243,12 @@ public class Branch extends BranchEntity {
                 try {
 
 
-                    value.getVisits().add(index, visit);
+                    if(!index.equals(-1)) {
+                        value.getVisits().add(index, visit);
+                    }
+                    else {
+                        value.getVisits().add(visit);
+                    }
                 } catch (IndexOutOfBoundsException e) {
                     throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getVisits().size()), eventService, HttpStatus.CONFLICT);
                 }
@@ -295,7 +258,12 @@ public class Branch extends BranchEntity {
                 if (value.getUser().getId().equals(visit.getPoolUserId())) {
 
                     try {
-                        value.getUser().getVisits().add(index, visit);
+                        if(!index.equals(-1)) {
+                            value.getUser().getVisits().add(index, visit);
+                        }
+                        else {
+                            value.getUser().getVisits().add(visit);
+                        }
                     } catch (IndexOutOfBoundsException e) {
                         throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getUser().getVisits().size()), eventService, HttpStatus.CONFLICT);
                     }
@@ -317,48 +285,7 @@ public class Branch extends BranchEntity {
     }
 
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService) {
-        visitService.addEvent(visit, visitEvent, eventService);
-        visit.setStatus(visitEvent.getState().name());
-        this.servicePoints.forEach((key, value) -> {
-            if (value.getId().equals(visit.getServicePointId())) {
-                if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
-                    value.setVisit(visit);
-                } else {
-                    throw new BusinessException(String.format("In ServicePoint %s already exists visit %s", value.getId(), value.getVisit().getId()), eventService, HttpStatus.CONFLICT);
-                }
-            } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
-                value.setVisit(null);
-            }
-        });
-        this.queues.forEach((key, value) -> {
-            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
-            if (value.getId().equals(visit.getQueueId())) {
-                value.getVisits().add(visit);
-            }
-
-        });
-        this.getServicePoints().forEach((key, value) -> {
-            value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
-            if (value.getId().equals(visit.getPoolServicePointId())) {
-                value.getVisits().add(visit);
-            }
-            if (value.getUser() != null) {
-                if (value.getUser().getId().equals(visit.getPoolUserId())) {
-                    value.getUser().getVisits().add(visit);
-                }
-            }
-
-        });
-        eventService.send("*", false, Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("VISIT_" + visitEvent.name())
-                .params(new HashMap<>())
-                .body(visit.toBuilder().build()).build());
-        eventService.send("stat", false, Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("VISIT_" + visitEvent.name())
-                .params(new HashMap<>())
-                .body(visit.toBuilder().build()).build());
+       updateVisit(visit,eventService,visitEvent,visitService,true);
     }
 
     public void addUpdateService(HashMap<String, Service> serviceHashMap, EventService eventService, Boolean checkVisits) {
