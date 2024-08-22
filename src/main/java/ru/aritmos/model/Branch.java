@@ -270,24 +270,35 @@ public class Branch extends BranchEntity {
             value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
             if (value.getId().equals(visit.getQueueId())) {
 
+                try {
 
-                value.getVisits().add(index, visit);
-
+                    value.getVisits().add(index, visit);
+                } catch (IndexOutOfBoundsException e) {
+                    throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getVisits().size()), eventService, HttpStatus.CONFLICT);
+                }
             }
 
         });
         this.getServicePoints().forEach((key, value) -> {
             value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
             if (value.getId().equals(visit.getPoolServicePointId())) {
+                try {
 
-                value.getVisits().add(index, visit);
+
+                    value.getVisits().add(index, visit);
+                } catch (IndexOutOfBoundsException e) {
+                    throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getVisits().size()), eventService, HttpStatus.CONFLICT);
+                }
 
             }
             if (value.getUser() != null) {
                 if (value.getUser().getId().equals(visit.getPoolUserId())) {
 
-
-                    value.getUser().getVisits().add(index, visit);
+                    try {
+                        value.getUser().getVisits().add(index, visit);
+                    } catch (IndexOutOfBoundsException e) {
+                        throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getUser().getVisits().size()), eventService, HttpStatus.CONFLICT);
+                    }
 
                 }
             }

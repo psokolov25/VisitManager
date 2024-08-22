@@ -899,7 +899,7 @@ public class ServicePointController {
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitTransferFromQueue(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
                                         @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                        @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @PathVariable String visitId, @QueryValue(defaultValue = "true") Integer index) {
+                                        @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId, @PathVariable String visitId, @QueryValue(defaultValue = "0") Integer index) {
         Branch branch;
 
         try {
