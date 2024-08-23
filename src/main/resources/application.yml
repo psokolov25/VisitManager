@@ -1,3 +1,13 @@
+application:
+  api:
+    swagger:
+      path: /api-docs/swagger
+      version: 3.19.4
+      layout: StandaloneLayout
+      deepLinking: true
+      urls:
+        - name: ubw-rest
+          url: /api-docs/swagger/ubw-rest-0.1.yml
 logger:
   levels: ALL
 
