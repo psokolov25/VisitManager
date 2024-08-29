@@ -10,7 +10,7 @@ import java.util.List;
 public class KeyCloackUser {
     private String email;
     private String name;
-
+    private HashMap<String,HashMap<String,List<String>>> resource_access;
     private String preferred_username;
     private List<String> roles;
     private HashMap<String,Object> attributes;

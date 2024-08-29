@@ -13,6 +13,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Named("keycloak")
@@ -56,8 +57,10 @@ public class UserMapper implements OpenIdAuthenticationMapper{
         stringObjectHashMap.put("token", tokenResponse.getAccessToken());
         return Mono.from(keyCloackClient.getUserInfo("Aritmos",stringObjectHashMap,  basicAuthToken(tokenResponse.getAccessToken()))).map(m -> m)
                 .map(user -> {
-
-                    return AuthenticationResponse.success(user.getPreferred_username(),user.getRoles()); // (4)
+                    List<String> roles = user.getRoles();
+                    roles.addAll(user.getResource_access().get(clientId).get("roles"));
+                    roles.addAll(user.getResource_access().get("account").get("roles"));
+                    return AuthenticationResponse.success(user.getPreferred_username(),user.getRoles().stream().distinct().toList()); // (4)
 
                 });
     }
