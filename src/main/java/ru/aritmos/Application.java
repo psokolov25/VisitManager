@@ -16,7 +16,9 @@ import jakarta.annotation.PostConstruct;
                 title = "VisitManagement",
                 version = "0.3"
 
-        ), servers = {@Server(url = "http://192.168.8.45:8080"),
+        ), servers = {
+        @Server(url = "http://192.168.1.8:8080"),
+                @Server(url = "http://192.168.8.45:8080"),
         @Server(url = "http://localhost:8080")}
         ,
         tags = {

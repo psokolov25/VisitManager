@@ -32,11 +32,14 @@ public class BranchService {
     @Inject
     EventService eventService;
 
+
     @Value("${micronaut.application.name}")
     String applicationName;
 
+
     @Cacheable(parameters = {"key"})
     public Branch getBranch(String key) throws BusinessException {
+
         Branch result = branches.get(key);
         if (result == null) {
             throw new BusinessException("Branch not found!!", eventService);

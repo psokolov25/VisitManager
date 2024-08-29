@@ -1,6 +1,8 @@
 package ru.aritmos;
 
 import io.micronaut.runtime.EmbeddedApplication;
+import io.micronaut.security.authentication.Authentication;
+import io.micronaut.security.utils.SecurityService;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,8 @@ class EntrypointTest {
     ServicePointController servicePointController;
     @Inject
     ManagementController managementController;
+    @Inject
+    SecurityService securityService;
     final String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
     final String serviceId = "c3916e7f-7bea-4490-b9d1-0d4064adbe8c";
     final String creditCardId = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed";
@@ -449,7 +453,7 @@ class EntrypointTest {
     @Test
     void checkGettingServices()
     {
-        Integer count =entrypointController.getAllAvilableServies(branchId).size();
+        Integer count =entrypointController.getAllAvilableServies(branchId, Authentication.build("psokolov")).size();
         Assertions.assertEquals(1,count);
     }
     /**

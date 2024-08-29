@@ -50,9 +50,7 @@ micronaut:
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
-  security:
-    authentication: cookie
-    enabled: false
+
 redis:
    uri: redis://192.168.8.45:6379
    cache:

@@ -6,6 +6,7 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
+import io.micronaut.security.utils.SecurityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import ru.aritmos.events.services.EventService;
@@ -15,7 +16,7 @@ import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
-
+import io.micronaut.security.authentication.Authentication;
 import java.util.*;
 
 /**
@@ -34,6 +35,10 @@ public class EntrypointController {
     VisitService visitService;
     @Inject
     EventService eventService;
+    @Inject
+    SecurityService securityService;
+
+
     @Value("${micronaut.application.name}")
     String applicationName;
 
@@ -86,8 +91,10 @@ public class EntrypointController {
     @Tag(name = "Зона ожидания")
     @Get(uri = "/branches/{branchId}/services", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public List<Service> getAllAvilableServies(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    public List<Service> getAllAvilableServies(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,Authentication authentication) {
         try {
+
+
             return services.getAllAvilableServies(branchId);
 
         } catch (BusinessException ex) {

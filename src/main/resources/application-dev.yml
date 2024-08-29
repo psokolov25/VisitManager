@@ -7,8 +7,16 @@ micronaut:
 #tag::oauth2[]
 micronaut:
   security:
+    authentication: cookie
+
     intercept-url-map:
       - pattern: /swagger-ui/*
+        access:
+          - isAuthenticated()
+      - pattern: /entrypoint/**
+        access:
+          - isAuthenticated()
+      - pattern: /servicepoint/**
         access:
           - isAuthenticated()
       - pattern: /swagger-ui/**
@@ -17,21 +25,25 @@ micronaut:
       - pattern: /swagger/**
         access:
           - isAuthenticated()
-      - pattern: /**
+
+      - pattern: /oauth/login/keycloak
         access:
-          - isAuthenticated()
-    authentication: bearer # <1>
+          - isAnonymous()
+
     oauth2:
       clients:
         keycloak: # <2>
-          client-secret: '${OAUTH_CLIENT_SECRET:Amt4akSb6MSjx8BZ4UThimDhpuYRwR9g}' # <3>
+          token:
+            auth-method: client_secret_post
+          client-secret: '${OAUTH_CLIENT_SECRET:ytzVZIiaDIORKjfKmhHxTVCTyFgT2dNf}' # <3>
           client-id: '${OAUTH_CLIENT_ID:myclient}' # <4>
           openid:
-            issuer: '${OIDC_ISSUER_DOMAIN:`http://localhost:8080`}/realms/${KEYCLOAK_REALM:aritmos}' # <5>
+            issuer: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.45:9090`}/realms/${KEYCLOAK_REALM:Aritmos}' # <5>
+
     endpoints:
       logout:
         get-allowed: true # <6>
-    enabled: false
+    enabled: true
 #end::oauth2[]
 
 graphql:

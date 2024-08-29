@@ -36,6 +36,7 @@ public class ServicePointController {
     VisitService visitService;
     @Inject
     EventService eventService;
+
     @Value("${micronaut.application.name}")
     String applicationName;
 
