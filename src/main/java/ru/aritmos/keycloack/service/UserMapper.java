@@ -47,12 +47,13 @@ public class UserMapper implements OpenIdAuthenticationMapper {
      * @param state состояние
      * @return данные авторизации
      */
+    @SuppressWarnings("unchecked")
     @Override
     public @NonNull Publisher<AuthenticationResponse> createAuthenticationResponse(String providerName, OpenIdTokenResponse tokenResponse, OpenIdClaims openIdClaims, @io.micronaut.core.annotation.Nullable State state) {
 
 
 
-        List<String> roles = new ArrayList<String>();
+        List<String> roles = new ArrayList<>();
         if (openIdClaims.contains("resource_access")) {
             try {
 
