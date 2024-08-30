@@ -12,11 +12,12 @@ import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Класс отвечает за маппинг свойств пользователя в Keycloak и стандартных свойств OpenId авторизации
+ */
 @Slf4j
 @Named("keycloak")
 @Singleton
@@ -33,30 +34,24 @@ public class UserMapper implements OpenIdAuthenticationMapper {
         this.keyCloackClient = keyCloackClient;
     }
 
-    //    @Override
-//    public Publisher<AuthenticationResponse> createAuthenticationResponse(@NotNull TokenResponse tokenResponse, @Nullable State state) { // (3)
-//        log.error(tokenResponse.getAccessToken());
-//        Object o = tokenResponse;
-//        return Flux.from(keyCloackClient.get(tokenResponse.getAccessToken())).map(m -> m)
-//                .map(user -> {
-//
-//                    return AuthenticationResponse.success(user.toString()); // (4)
-//                });
-//    }
-//    private static String basicAuth(String username, String password) {
-//        return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
-//    }
 
-    private static String basicAuthToken(String token) {
-        return "Bearer " + token;
-    }
-
-    //@Override
+    /**
+     * Берет данные пользователя из openIdClaims с возвращенными данными из Keycloak,
+     * извлекает свойства resource_access и realm_access и извлекает из них список ролей в виде списка строк
+     * и формирует ответ Авторизации передавая параметром ид пользователя, роли пользователя,
+     * набор аттрибутов пользователя
+     *
+     * @param providerName название провайдера данных пользователя (Keycloak)
+     * @param tokenResponse набор токенов (токен доступа и токен обновления)
+     * @param openIdClaims набор данных пользователя, передаваемые Keycloak
+     * @param state состояние
+     * @return данные авторизации
+     */
+    @Override
     public @NonNull Publisher<AuthenticationResponse> createAuthenticationResponse(String providerName, OpenIdTokenResponse tokenResponse, OpenIdClaims openIdClaims, @io.micronaut.core.annotation.Nullable State state) {
 
 
-        HashMap<String, Object> stringObjectHashMap = new HashMap<>();
-        stringObjectHashMap.put("token", tokenResponse.getAccessToken());
+
         List<String> roles = new ArrayList<String>();
         if (openIdClaims.contains("resource_access")) {
             LinkedTreeMap<String, LinkedTreeMap<String, Object>> rolesHashMap = (LinkedTreeMap<String, LinkedTreeMap<String, Object>>) openIdClaims.get("resource_access");
@@ -70,18 +65,22 @@ public class UserMapper implements OpenIdAuthenticationMapper {
 
         }
         if (openIdClaims.contains("realm_access")) {
-            LinkedTreeMap<String, Object> rolesHashMap = (LinkedTreeMap<String, Object>) openIdClaims.get("realm_access");
-            rolesHashMap.entrySet().forEach(k ->
-            {
-                if(k.getKey().equals("roles"))
+            try {
+                LinkedTreeMap<String, Object> rolesHashMap = (LinkedTreeMap<String, Object>) openIdClaims.get("realm_access");
+                rolesHashMap.entrySet().forEach(k ->
                 {
-                    roles.addAll((List<String>) k.getValue());
-                }
-            });
+                    if (k.getKey().equals("roles")) {
+                        roles.addAll((List<String>) k.getValue());
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
 
+            }
         }
 
-        //return AuthenticationResponse.success(user.getPreferred_username(),user.getRoles().stream().distinct().toList()); // (4)
+
         return Mono.just(openIdClaims).map(m -> m)
                 .map(user -> {
                             return AuthenticationResponse.success(user.getSubject(), roles,user.getClaims()); // (4)
