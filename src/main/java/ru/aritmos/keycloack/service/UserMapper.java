@@ -77,7 +77,7 @@ public class UserMapper implements OpenIdAuthenticationMapper {
                     }
                 });
             }
-            catch (ClassCastException ignored)
+            catch (Exception ignored)
             {
 
             }
