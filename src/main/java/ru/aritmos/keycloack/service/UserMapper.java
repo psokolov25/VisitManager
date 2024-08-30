@@ -1,5 +1,6 @@
 package ru.aritmos.keycloack.service;
 
+import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.annotation.NonNull;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,8 +21,8 @@ import java.util.List;
 @Named("keycloak")
 @Singleton
 @Replaces(DefaultOpenIdAuthenticationMapper.class)
-public class UserMapper implements OpenIdAuthenticationMapper{
-//public class UserMapper {
+public class UserMapper implements OpenIdAuthenticationMapper {
+    //public class UserMapper {
     @Property(name = "micronaut.security.oauth2.clients.keycloak.client-id")
     String clientId;
     @Property(name = "micronaut.security.oauth2.clients.keycloak.client-secret")
@@ -55,13 +57,36 @@ public class UserMapper implements OpenIdAuthenticationMapper{
 
         HashMap<String, Object> stringObjectHashMap = new HashMap<>();
         stringObjectHashMap.put("token", tokenResponse.getAccessToken());
-        return Mono.from(keyCloackClient.getUserInfo("Aritmos",stringObjectHashMap,  basicAuthToken(tokenResponse.getAccessToken()))).map(m -> m)
-                .map(user -> {
-                    List<String> roles = user.getRoles();
-                    roles.addAll(user.getResource_access().get(clientId).get("roles"));
-                    roles.addAll(user.getResource_access().get("account").get("roles"));
-                    return AuthenticationResponse.success(user.getPreferred_username(),user.getRoles().stream().distinct().toList()); // (4)
+        List<String> roles = new ArrayList<String>();
+        if (openIdClaims.contains("resource_access")) {
+            LinkedTreeMap<String, LinkedTreeMap<String, Object>> rolesHashMap = (LinkedTreeMap<String, LinkedTreeMap<String, Object>>) openIdClaims.get("resource_access");
+            rolesHashMap.entrySet().forEach(k ->
+            {
+                        if(k.getValue().containsKey("roles"))
+                        {
+                            roles.addAll((List<String>) k.getValue().get("roles"));
+                        }
+            });
 
-                });
+        }
+        if (openIdClaims.contains("realm_access")) {
+            LinkedTreeMap<String, Object> rolesHashMap = (LinkedTreeMap<String, Object>) openIdClaims.get("realm_access");
+            rolesHashMap.entrySet().forEach(k ->
+            {
+                if(k.getKey().equals("roles"))
+                {
+                    roles.addAll((List<String>) k.getValue());
+                }
+            });
+
+        }
+
+        //return AuthenticationResponse.success(user.getPreferred_username(),user.getRoles().stream().distinct().toList()); // (4)
+        return Mono.just(openIdClaims).map(m -> m)
+                .map(user -> {
+                            return AuthenticationResponse.success(user.getSubject(), roles,user.getClaims()); // (4)
+                        }
+                );
+
     }
 }
