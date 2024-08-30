@@ -54,27 +54,30 @@ public class UserMapper implements OpenIdAuthenticationMapper {
 
         List<String> roles = new ArrayList<String>();
         if (openIdClaims.contains("resource_access")) {
-            LinkedTreeMap<String, LinkedTreeMap<String, Object>> rolesHashMap = (LinkedTreeMap<String, LinkedTreeMap<String, Object>>) openIdClaims.get("resource_access");
-            rolesHashMap.entrySet().forEach(k ->
-            {
-                        if(k.getValue().containsKey("roles"))
-                        {
-                            roles.addAll((List<String>) k.getValue().get("roles"));
-                        }
-            });
+            try {
 
+
+                LinkedTreeMap<String, LinkedTreeMap<String, Object>> rolesHashMap = (LinkedTreeMap<String, LinkedTreeMap<String, Object>>) openIdClaims.get("resource_access");
+                rolesHashMap.forEach((key, value) -> {
+                    if (value.containsKey("roles")) {
+                        roles.addAll((List<String>) value.get("roles"));
+                    }
+                });
+            }
+            catch (ClassCastException ignored) {
+
+            }
         }
         if (openIdClaims.contains("realm_access")) {
             try {
                 LinkedTreeMap<String, Object> rolesHashMap = (LinkedTreeMap<String, Object>) openIdClaims.get("realm_access");
-                rolesHashMap.entrySet().forEach(k ->
-                {
-                    if (k.getKey().equals("roles")) {
-                        roles.addAll((List<String>) k.getValue());
+                rolesHashMap.forEach((key, value) -> {
+                    if (key.equals("roles")) {
+                        roles.addAll((List<String>) value);
                     }
                 });
             }
-            catch (Exception ex)
+            catch (ClassCastException ignored)
             {
 
             }
