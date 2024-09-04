@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 
 
+/**
+ * Служба отвечающая за работу с отделениями
+ */
 @Slf4j
 @Singleton
 @Named("Branch_cache")

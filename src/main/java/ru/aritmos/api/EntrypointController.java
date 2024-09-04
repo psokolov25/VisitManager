@@ -6,7 +6,6 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
-import io.micronaut.security.utils.SecurityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import ru.aritmos.events.services.EventService;
@@ -27,18 +26,32 @@ import java.util.*;
 
 @Controller("/entrypoint")
 public class EntrypointController {
+    /**
+     * Служба по работе с услугами
+     */
     @Inject
     Services services;
+    /**
+     * Служба по работе с отделениями
+     */
     @Inject
     BranchService branchService;
+    /**
+     * Служба для работы с визитами
+     */
     @Inject
     VisitService visitService;
+    /**
+     * Служба по отправке событий на шину данных
+     */
     @Inject
     EventService eventService;
-    @Inject
-    SecurityService securityService;
 
 
+
+    /**
+     * Название службы из файла настроек
+     */
     @Value("${micronaut.application.name}")
     String applicationName;
 
@@ -84,7 +97,7 @@ public class EntrypointController {
 
     /**
      * Получение списка доступных услуг
-     *
+     * @param authentication авторизационные данные пользователя
      * @param branchId идентификатор отделения
      * @return список услуг
      */

@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Класс, отвечающий за отправку событий в шину данных
+ */
 @Slf4j
 @Singleton
 public class EventService {

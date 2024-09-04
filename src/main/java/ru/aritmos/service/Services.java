@@ -9,12 +9,20 @@ import ru.aritmos.model.WorkProfile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс отвечающий за работу с услугами
+ */
 @Singleton
 public class Services {
     @Inject
     BranchService branchService;
 
 
+    /**
+     * Получение всех услуг отделения
+     * @param branchId  идентификатор отделения
+     * @return список услуг
+     */
     public List<Service> getAllServices(String branchId) {
         Branch currentBranch = branchService.getBranch(branchId);
         List<String> workProfilesIds =
@@ -40,6 +48,11 @@ public class Services {
                 return services;
     }
 
+    /**
+     * Получение всех доступных на данный момент услуг
+     * @param branchId идентификатор отделения
+     * @return список доступных услуг
+     */
     public List<Service> getAllAvilableServies(String branchId) {
 
         return this.getAllServices(branchId).stream().filter(Service::getIsAvailable).toList();
