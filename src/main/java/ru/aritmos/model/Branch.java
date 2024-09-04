@@ -74,6 +74,10 @@ public class Branch extends BranchEntity {
         return -1;
     }
 
+    /**
+     * Получение перечня всех визитов отделение, с ключем - идентификатором визита
+     * @return перечень визитов с ключем - идентификатором визита
+     */
     public HashMap<String, Visit> getAllVisits() {
         HashMap<String, Visit> visits = new HashMap<>();
         this.getServicePoints().forEach((k, v) -> {
@@ -91,7 +95,13 @@ public class Branch extends BranchEntity {
         });
         return visits;
     }
-
+    /**
+     * Получение перечня всех визитов отделение, с ключем - идентификатором визита с
+     * фильтрацией по статусам визита
+     * @param statuses спиок статусов
+     * @return перечень визитов с ключем - идентификатором визита
+     *
+     */
     public HashMap<String, Visit> getVisitsByStatus(List<String> statuses) {
         HashMap<String, Visit> visits = new HashMap<>();
         this.getAllVisits()
@@ -104,7 +114,7 @@ public class Branch extends BranchEntity {
                 );
         return visits;
     }
-
+    
     public void openServicePoint(User user, EventService eventService) {
         if (user.servicePointId != null) {
             if (this.getServicePoints().containsKey(user.servicePointId)) {

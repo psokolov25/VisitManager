@@ -56,6 +56,7 @@ public class EntrypointController {
      */
 
     @Tag(name = "Зона ожидания")
+    @Tag(name = "Полный список")
     @Post(uri = "/branches/{branchId}/entryPoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Visit createVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "2") String entryPointId, @Body ArrayList<String> serviceIds, @QueryValue Boolean printTicket) {
@@ -89,6 +90,7 @@ public class EntrypointController {
      */
 
     @Tag(name = "Зона ожидания")
+    @Tag(name = "Полный список")
     @Get(uri = "/branches/{branchId}/services", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public List<Service> getAllAvilableServies(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,Authentication authentication) {

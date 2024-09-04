@@ -15,6 +15,7 @@ import ru.aritmos.events.model.Event;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -26,13 +27,25 @@ public class EventService {
     @Value("${micronaut.application.name}")
     String applicationName;
 
+    /**
+     * Конвертация даты типа {@link ZonedDateTime} в строку формата EEE, dd MMM yyyy HH:mm:ss zzz
+     * @param date дата типа {@link ZonedDateTime}
+     * @return строка даты формата EEE, dd MMM yyyy HH:mm:ss zzz
+     */
     String getDateString(ZonedDateTime date) {
 
-        DateTimeFormatter format =  DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
         return format.format(date);
     }
 
-@ExecuteOn(value = TaskExecutors.IO)
+    /**
+     * Отправка события на шину данных
+     *
+     * @param destinationServices служба адресат
+     * @param sendToOtherBus      флаг переправки события в соседние шины данных
+     * @param event               тело события
+     */
+    @ExecuteOn(value = TaskExecutors.IO)
     public void send(String destinationServices, Boolean sendToOtherBus, Event event) {
         event.setSenderService(applicationName);
         Mono.from(
@@ -46,8 +59,30 @@ public class EventService {
 
     }
 
-    public void sendChangedEvent(String destinationServices, Boolean sendToOtherBus, Object oldValue, Object newValue, Map<String, String> params , String action) {
-        String className=oldValue!=null?oldValue.getClass().getName():newValue.getClass().getName();
+    /**
+     * Отправка события на шину данных
+     *
+     * @param destinationServices список служб адресатов
+     * @param sendToOtherBus      флаг переправки события в соседние шины данных
+     * @param event               тело события
+     */
+    @SuppressWarnings("unused")
+    public void send(List<String> destinationServices, Boolean sendToOtherBus, Event event) {
+        destinationServices.forEach(f -> send(f, sendToOtherBus, event));
+    }
+
+    /**
+     * Отправка события изменения сущности
+     *
+     * @param destinationServices служба адресат
+     * @param sendToOtherBus      флаг переправки события в соседние шины данных
+     * @param oldValue            старое значение
+     * @param newValue            новое значение
+     * @param params              дополнительные параметры
+     * @param action              действие над событием
+     */
+    public void sendChangedEvent(String destinationServices, Boolean sendToOtherBus, Object oldValue, Object newValue, Map<String, String> params, String action) {
+        String className = oldValue != null ? oldValue.getClass().getName() : newValue.getClass().getName();
         Event event = Event.builder()
                 .eventDate(ZonedDateTime.now())
                 .eventType("ENTITY_CHANGED")
@@ -63,5 +98,20 @@ public class EventService {
         this.send(destinationServices, sendToOtherBus, event);
 
 
+    }
+
+    /**
+     * Отправка события изменения сущности
+     *
+     * @param destinationServices список служб адресатов
+     * @param sendToOtherBus      флаг переправки события в соседние шины данных
+     * @param oldValue            старое значение
+     * @param newValue            новое значение
+     * @param params              дополнительные параметры
+     * @param action              действие над событием
+     */
+    @SuppressWarnings("unused")
+    public void sendChangedEvent(List<String> destinationServices, Boolean sendToOtherBus, Object oldValue, Object newValue, Map<String, String> params, String action) {
+        destinationServices.forEach(f -> sendChangedEvent(f, sendToOtherBus, oldValue, newValue, params, action));
     }
 }

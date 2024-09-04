@@ -40,6 +40,7 @@ public class ManagementController {
      * @return состояние отделения
      */
     @Tag(name = "Информация об отделении")
+    @Tag(name = "Полный список")
     @Get(uri = "/branches/{id}")
     @ExecuteOn(TaskExecutors.IO)
     public Branch getBranch(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4")  String id) {
@@ -58,6 +59,7 @@ public class ManagementController {
      * @return массив идентификаторов и названий отделений
      */
     @Tag(name = "Информация об отделении")
+    @Tag(name = "Полный список")
     @Get(uri = "/branches")
     @ExecuteOn(TaskExecutors.IO)
     public Map<String,Branch> getBranches() {
