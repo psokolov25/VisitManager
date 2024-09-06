@@ -18,10 +18,6 @@ public class CustomSecurityRule implements SecurityRule<HttpRequest<Object>> {
     public int getOrder() {
         return 100000;
     }
-
-
-
-
     @Override
     public Publisher<SecurityRuleResult> check(@Nullable HttpRequest<Object> request, @Nullable Authentication authentication) {
         return Mono.just(SecurityRuleResult.UNKNOWN);
