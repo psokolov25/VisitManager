@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.aritmos</groupId>
     <artifactId>entrypoint</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <packaging>${packaging}</packaging>
 
     <parent>

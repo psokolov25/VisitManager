@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.tiny.TinyClass;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
@@ -55,8 +56,8 @@ public class ManagementController {
     }
 
     /**
-     * Получение массива идентификаторов и названий отделений
-     * @return массив идентификаторов и названий отделений
+     * Получение массива идентификаторов и объектов отделений
+     * @return массив идентификаторов и отделений
      */
     @Tag(name = "Информация об отделении")
     @Tag(name = "Полный список")
@@ -64,6 +65,18 @@ public class ManagementController {
     @ExecuteOn(TaskExecutors.IO)
     public Map<String,Branch> getBranches() {
        return branchService.getBranches();
+    }
+
+    /**
+     * Получение массива идентификаторов и названий отделений
+     * @return массив идентификаторов и названий отделений
+     */
+    @Tag(name = "Информация об отделении")
+    @Tag(name = "Полный список")
+    @Get(uri = "/branches/tiny")
+    @ExecuteOn(TaskExecutors.IO)
+    public List<TinyClass> getTinyBranches() {
+        return branchService.getBranches().values().stream().map(m->new TinyClass(m.getId(),m.getName())).toList();
     }
 
 
