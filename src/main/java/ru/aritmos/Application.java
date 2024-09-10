@@ -14,11 +14,11 @@ import jakarta.annotation.PostConstruct;
 @OpenAPIDefinition(
         info = @Info(
                 title = "VisitManagement",
-                version = "0.3"
+                version = "0.4"
 
         ), servers = {
+        @Server(url = "http://192.168.8.45:8080"),
         @Server(url = "http://192.168.1.8:8080"),
-                @Server(url = "http://192.168.8.45:8080"),
         @Server(url = "http://localhost:8080")}
         ,
         tags = {

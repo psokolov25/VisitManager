@@ -2,6 +2,7 @@ package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.*;
 import io.micronaut.core.annotation.Introspected;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.Data;
@@ -80,6 +81,7 @@ public class Visit {
      * Дата завершения визита
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Nullable
     ZonedDateTime endDateTime;
 
     /**
@@ -216,14 +218,14 @@ public class Visit {
     List<VisitEvent> visitEvents;
 
     @JsonGetter
-    public ArrayList<ArrayList<VisitEventDateTime>> getEvents() {
+    public ArrayList<ArrayList<VisitEventInformation>> getEvents() {
 
-        ArrayList<ArrayList<VisitEventDateTime>> result = new ArrayList<>();
-        ArrayList<VisitEventDateTime> subresult =new ArrayList<>();
+        ArrayList<ArrayList<VisitEventInformation>> result = new ArrayList<>();
+        ArrayList<VisitEventInformation> subresult =new ArrayList<>();
         result.add(subresult);
         for (VisitEvent f:this.visitEvents) {
 
-            VisitEventDateTime visitEventDateTime = VisitEventDateTime.builder()
+            VisitEventInformation visitEventDateTime = VisitEventInformation.builder()
                     .visitEvent(f)
                     .eventDateTime(f.dateTime)
                     .parameters(f.getParameters())

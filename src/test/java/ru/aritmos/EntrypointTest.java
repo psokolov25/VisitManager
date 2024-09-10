@@ -294,13 +294,13 @@ class EntrypointTest {
 
             servicePointController.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
             Thread.sleep(600);
-            visit = servicePointController.visitBackToServicePointPool(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", "be675d63-c5a1-41a9-a345-c82102ac42cc");
+            visit = servicePointController.visitPutBack(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",150L);
 
             Thread.sleep(900);
 
 
-            Assertions.assertEquals(1, branchService.getBranch(branchId).getServicePoints().get("be675d63-c5a1-41a9-a345-c82102ac42cc").getVisits().size());
-            Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getState().name());
+            Assertions.assertEquals(0, branchService.getBranch(branchId).getServicePoints().get("be675d63-c5a1-41a9-a345-c82102ac42cc").getVisits().size());
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
             visit = servicePointController.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
             Thread.sleep(900);
 
@@ -339,7 +339,7 @@ class EntrypointTest {
             Thread.sleep(600);
             String servicePointId="be675d63-c5a1-41a9-a345-c82102ac42cc";
             String userId="2198423c-760e-4d39-8930-12602552b1a9";
-            visit = servicePointController.visitBackToUserPool(branchId, servicePointId, userId);
+            visit = servicePointController.visitBackToUserPool(branchId, servicePointId, userId,150L);
 
             Thread.sleep(900);
 
@@ -453,7 +453,7 @@ class EntrypointTest {
     @Test
     void checkGettingServices()
     {
-        Integer count =entrypointController.getAllAvilableServies(branchId, Authentication.build("psokolov")).size();
+        Integer count =entrypointController.getAllAvilableServies(branchId).size();
         Assertions.assertEquals(1,count);
     }
     /**

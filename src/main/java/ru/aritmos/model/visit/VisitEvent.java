@@ -34,9 +34,11 @@ public enum VisitEvent {
     private static final List<VisitEvent> newTransactionEvents = new ArrayList<>() {
         {
 
-            add(BACK_TO_QUEUE);
-
-
+            add(STOP_SERVING);
+            add(NO_SHOW);
+            add(PLACED_IN_QUEUE);
+            add(TRANSFER_TO_SERVICE_POINT_POOL);
+            add(TRANSFER_TO_USER_POOL);
         }
     };
 
@@ -46,7 +48,12 @@ public enum VisitEvent {
 
 
     private static final Map<VisitEvent, TransactionCompletionStatus> transactionStatus = Map.ofEntries(
-            Map.entry(BACK_TO_QUEUE, TransactionCompletionStatus.BACK_TO_QUEUE)
+            Map.entry(STOP_SERVING, TransactionCompletionStatus.OK),
+            Map.entry(NO_SHOW, TransactionCompletionStatus.NO_SHOW),
+            Map.entry(PLACED_IN_QUEUE, TransactionCompletionStatus.TRANSFER_TO_QUEUE),
+            Map.entry(TRANSFER_TO_SERVICE_POINT_POOL, TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT),
+            Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_STAFF)
+
 
     );
 
@@ -69,7 +76,7 @@ public enum VisitEvent {
             Map.entry(END, List.of(ADDED_MARK, DELETED_MARK)),
             Map.entry(BACK_TO_SERVICE_POINT_POOL, List.of(CALLED, RECALLED, VISIT_DELETED, ADDED_MARK, DELETED_MARK, TRANSFER_TO_SERVICE_POINT_POOL)),
             Map.entry(BACK_TO_USER_POOL, List.of(CALLED, RECALLED, VISIT_DELETED, ADDED_MARK, DELETED_MARK, TRANSFER_TO_SERVICE_POINT_POOL)),
-
+            Map.entry(BACK_TO_QUEUE, List.of(CALLED, RECALLED, VISIT_DELETED, ADDED_MARK, DELETED_MARK, TRANSFER_TO_SERVICE_POINT_POOL)),
             Map.entry(TRANSFER_TO_SERVICE_POINT_POOL, List.of(CALLED, RECALLED, VISIT_DELETED, ADDED_MARK, DELETED_MARK, TRANSFER_TO_SERVICE_POINT_POOL)),
             Map.entry(TRANSFER_TO_USER_POOL, List.of(CALLED, ADDED_MARK, DELETED_MARK)),
             Map.entry(VISIT_END_TRANSACTION, List.of(PLACED_IN_QUEUE, ADDED_MARK, DELETED_MARK)),

@@ -12,6 +12,8 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
 import ru.aritmos.model.Queue;
+import ru.aritmos.model.tiny.TinyClass;
+import ru.aritmos.model.tiny.TinyServicePoint;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.tiny.TinyVisit;
 import ru.aritmos.service.BranchService;
@@ -53,6 +55,51 @@ public class ServicePointController {
     @ExecuteOn(TaskExecutors.IO)
     public HashMap<String, ServicePoint> getFreeServicePoints(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
         return visitService.getStringServicePointHashMap(branchId);
+    }
+
+    /**
+     * Возвращает все точки обслуживания
+     *
+     * @param branchId идентификатор отделения
+     * @return свободные точки обслуживания
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Данные о точках обслуживания")
+    @Tag(name = "Полный список")
+    @Get("/branches/{branchId}/servicePoints")
+    @ExecuteOn(TaskExecutors.IO)
+    public List<TinyServicePoint> getServicePoints(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+        return visitService.getServicePointHashMap(branchId).values().stream().map(m -> new TinyServicePoint(m.getId(), m.getName(), m.getUser() == null)).toList();
+    }
+
+    /**
+     * Возвращает все точку обслуживания по логину сотрудника
+     *
+     * @param branchId идентификатор отделения
+     * @return свободные точки обслуживания
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Данные о точках обслуживания")
+    @Tag(name = "Полный список")
+    @Get("/branches/{branchId}/servicePoints/user/{userName}")
+    @ExecuteOn(TaskExecutors.IO)
+    public Optional<ServicePoint> getServicePointsByUserName(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable String userName) {
+        return visitService.getServicePointHashMap(branchId).values().stream().filter(f -> f.getUser() != null && f.getUser().getName().equals(userName)).findFirst();
+    }
+
+    /**
+     * Возвращает все  точки обслуживания
+     *
+     * @param branchId идентификатор отделения
+     * @return свободные точки обслуживания
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Данные о рабочих профилях")
+    @Tag(name = "Полный список")
+    @Get("/branches/{branchId}/workProfiles")
+    @ExecuteOn(TaskExecutors.IO)
+    public List<TinyClass> getWorkProfiles(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+        return visitService.getWorkProfiles(branchId);
     }
 
 
@@ -867,6 +914,7 @@ public class ServicePointController {
      * @param branchId           идентификатор отделения
      * @param servicePointId     идентификатор точки обслуживания
      * @param poolServicePointId идентификатор точки обслуживания пула
+     * @param returnTimeDelay    задержка возвращения в секундах
      * @return визит после перевода
      */
     @Tag(name = "Зона обслуживания")
@@ -878,7 +926,7 @@ public class ServicePointController {
     @ExecuteOn(TaskExecutors.IO)
     public Visit visitBackToServicePointPool(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
                                              @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String poolServicePointId) {
+                                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String poolServicePointId, @QueryValue Long returnTimeDelay) {
         Branch branch;
 
         try {
@@ -892,7 +940,7 @@ public class ServicePointController {
         }
 
 
-        return visitService.visitBackToServicePointPool(branchId, servicePointId, poolServicePointId);
+        return visitService.visitBackToServicePointPool(branchId, servicePointId, poolServicePointId, returnTimeDelay);
 
 
     }
@@ -917,7 +965,7 @@ public class ServicePointController {
                              @QueryValue(defaultValue = "3000") Long returnTimeDelay) {
 
 
-        return visitService.returnVisit(branchId, servicePointId, returnTimeDelay);
+        return visitService.visitBackToQueue(branchId, servicePointId, returnTimeDelay);
 
 
     }
@@ -1291,7 +1339,9 @@ public class ServicePointController {
     @Tag(name = "Перевод визита")
     @Tag(name = "Полный список")
     @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}/position/{index}")
-    public Visit visitTransferFromQueueToUserPool(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId, @PathVariable String visitId, @QueryValue(defaultValue = "0") Integer index) {
+    public Visit visitTransferFromQueueToUserPool(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                                  @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
+                                                  @PathVariable String visitId, @QueryValue(defaultValue = "0") Integer index) {
         Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitTransferFromQueueToUserPool(branchId, userId, visit, index);
 
@@ -1300,9 +1350,10 @@ public class ServicePointController {
     /**
      * Возвращение визита из сервис поинта в юзер пул
      *
-     * @param branchId       идентификатор отделения
-     * @param servicePointId идентификатор точки обслуживания
-     * @param userId         идентификатор сотрудника
+     * @param branchId        идентификатор отделения
+     * @param servicePointId  идентификатор точки обслуживания
+     * @param userId          идентификатор сотрудника
+     * @param returnTimeDelay задержка возвращения в секундах
      * @return визит
      */
     @Tag(name = "Зона обслуживания")
@@ -1311,7 +1362,25 @@ public class ServicePointController {
     @Tag(name = "Возвращение визита")
     @Tag(name = "Полный список")
     @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}")
-    public Visit visitBackToUserPool(String branchId, String servicePointId, String userId) {
-        return visitService.visitBackToUserPool(branchId, servicePointId, userId);
+    public Visit visitBackToUserPool(String branchId, String servicePointId, String userId, Long returnTimeDelay) {
+        return visitService.visitBackToUserPool(branchId, servicePointId, userId, returnTimeDelay);
+    }
+
+    /**
+     * Возвращение визита из сервис поинта
+     *
+     * @param branchId        идентификатор отделения
+     * @param servicePointId  идентификатор точки обслуживания     *
+     * @param returnTimeDelay задержка возвращения в секундах
+     * @return визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Возвращение визита")
+    @Tag(name = "Полный список")
+    @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back")
+    public Visit visitPutBack(String branchId, String servicePointId,  Long returnTimeDelay) {
+        return visitService.visitPutBack(branchId, servicePointId,  returnTimeDelay);
     }
 }

@@ -15,7 +15,7 @@ import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
-import io.micronaut.security.authentication.Authentication;
+
 import java.util.*;
 
 /**
@@ -97,7 +97,6 @@ public class EntrypointController {
 
     /**
      * Получение списка доступных услуг
-     * @param authentication авторизационные данные пользователя
      * @param branchId идентификатор отделения
      * @return список услуг
      */
@@ -106,7 +105,7 @@ public class EntrypointController {
     @Tag(name = "Полный список")
     @Get(uri = "/branches/{branchId}/services", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public List<Service> getAllAvilableServies(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,Authentication authentication) {
+    public List<Service> getAllAvilableServies(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
         try {
 
             return services.getAllAvilableServies(branchId);

@@ -54,6 +54,9 @@ public class UserMapper implements OpenIdAuthenticationMapper {
 
 
         List<String> roles = new ArrayList<>();
+        /*
+          Извлечение из openIsClaims данных о клиентских ролях пользователя и заполнение ролями списка roles
+         */
         if (openIdClaims.contains("resource_access")) {
             try {
 
@@ -69,6 +72,9 @@ public class UserMapper implements OpenIdAuthenticationMapper {
 
             }
         }
+        /*
+          Извлечение из openIsClaims данных о ролях Keycloak реалма пользователя и заполнение ролями списка roles
+         */
         if (openIdClaims.contains("realm_access")) {
             try {
                 LinkedTreeMap<String, Object> rolesHashMap = (LinkedTreeMap<String, Object>) openIdClaims.get("realm_access");
@@ -84,7 +90,10 @@ public class UserMapper implements OpenIdAuthenticationMapper {
             }
         }
 
-
+        /*
+        Асинхронное успешное возвращение данных пользователя, с передачей идентификатора пользователя (возможно в будущем заменим на логин
+        ,список ролей, и список аттрибутов пользователя
+         */
         return Mono.just(openIdClaims).map(m -> m)
                 .map(user -> {
                             return AuthenticationResponse.success(user.getSubject(), roles,user.getClaims()); // (4)

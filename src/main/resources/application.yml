@@ -26,6 +26,8 @@ kafka:
 micronaut:
   server:
     port: 8080
+    cors:
+      enabled: true
   application:
     rules:
       callVisit: simple  #custom|simple

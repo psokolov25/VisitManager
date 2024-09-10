@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 @Builder
 @Serdeable
-public class VisitEventDateTime {
+public class VisitEventInformation {
     VisitEvent visitEvent;
     ZonedDateTime eventDateTime;
 
