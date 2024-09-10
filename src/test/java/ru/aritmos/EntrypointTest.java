@@ -282,11 +282,13 @@ class EntrypointTest {
 
 
         Visit visit = entrypointController.createVisit(branchId, "1", serviceIds, false);
+        visit=servicePointController.visitTransferFromQueueToUserPool(branchId,"2198423c-760e-4d39-8930-12602552b1a9",visit.getId(),false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
-        if (servicePointController.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
-            Long servtime = servicePointController.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+        Optional<Visit> visits=servicePointController.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",visit.getId());
+        if (visits.isPresent()) {
+            Long servtime = visits.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
             Thread.sleep(800);
             visit = servicePointController.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
@@ -300,7 +302,7 @@ class EntrypointTest {
 
 
             Assertions.assertEquals(0, branchService.getBranch(branchId).getServicePoints().get("be675d63-c5a1-41a9-a345-c82102ac42cc").getVisits().size());
-            Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
             visit = servicePointController.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
             Thread.sleep(900);
 
@@ -474,12 +476,12 @@ class EntrypointTest {
         Thread.sleep(200);
         servicePointController.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         Thread.sleep(200);
+        Optional<Visit> visits=servicePointController.visitNoShow(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        if(visits.isPresent()) {
+            Visit visit2 = visits.get();
 
-
-        Visit visit2 = servicePointController.visitNoShow(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-
-        Assertions.assertEquals(visit2.getStatus(), VisitEvent.NO_SHOW.getState().name());
-
+            Assertions.assertEquals(visit2.getStatus(), VisitEvent.NO_SHOW.getState().name());
+        }
 
     }
 
