@@ -1,5 +1,6 @@
 package ru.aritmos.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.*;
@@ -28,8 +29,10 @@ public class BranchEntityWithVisits extends BranchEntity {
         this.id = id;
         this.name = name;
     }
+
     /**
      * Визиты
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Visit> visits = new ArrayList<>();
 }

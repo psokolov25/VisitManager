@@ -1142,7 +1142,7 @@ public class VisitService {
             poolServicePoint = currentBranch.getServicePoints().get(poolServicePointId);
         } else {
 
-            throw new BusinessException("Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+            throw new BusinessException("Service Point not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
 
         visit.setQueueId(null);
@@ -1468,7 +1468,7 @@ public class VisitService {
      * @param visit          визит
      * @return визит
      */
-    public Visit visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
+    public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
         String userId = "";
         String userName = "";
@@ -1495,7 +1495,7 @@ public class VisitService {
 
         log.info("Visit {} called!", visit);
         //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
-        return visit;
+        return Optional.of(visit);
 
     }
 
@@ -1612,7 +1612,7 @@ public class VisitService {
      * @param visit          визит
      * @return визит
      */
-    public Visit visitNoShow(String branchId, String servicePointId, Visit visit) {
+    public Optional<Visit> visitNoShow(String branchId, String servicePointId, Visit visit) {
 
         Branch currentBranch = branchService.getBranch(branchId);
         String userId = "";
@@ -1641,7 +1641,7 @@ public class VisitService {
 
         log.info("Visit {} statted serving!", visit);
         //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
-        return visit;
+        return Optional.of(visit);
 
     }
 

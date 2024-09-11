@@ -2,8 +2,8 @@ package ru.aritmos.model.visit;
 
 import com.fasterxml.jackson.annotation.*;
 import io.micronaut.core.annotation.Introspected;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +28,8 @@ import java.util.List;
 @Introspected
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
+
+
 public class Visit {
     /**
      * Идентификатор визита
@@ -58,56 +60,67 @@ public class Visit {
     /**
      * Дата перевода
      */
+    @Schema(nullable = true)
     ZonedDateTime transferDateTime;
 
     /**
      * Дата возвращения
      */
+    @Schema(nullable = true)
     ZonedDateTime returnDateTime;
 
     /**
      * Дата вызова
      */
+    @Schema(nullable = true)
     ZonedDateTime callDateTime;
     /**
      * Дата начала обслуживания
      */
+    @Schema(nullable = true)
     ZonedDateTime startServingDateTime;
     /**
      * Дата завершения обслуживания
      */
+    @Schema(nullable = true)
     ZonedDateTime servedDateTime;
     /**
      * Дата завершения визита
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Nullable
+    @Schema(nullable = true)
     ZonedDateTime endDateTime;
 
     /**
      * Идентификатор точки обслуживания
      */
+    @Schema(nullable = true)
     String servicePointId;
     /**
      * Логин вызвавшего сотрудника
      */
+    @Schema(nullable = true)
     String userName;
     /**
      * Id вызвавшего сотрудника
      */
+    @Schema(nullable = true)
     String userId;
     /**
      * Id сотрудника, в пуле которого располагается визит
      */
+    @Schema(nullable = true)
     String poolUserId;
 
     /**
      * Id точка обслуживания, в пуле которого располагается визит
      */
+    @Schema(nullable = true)
     String poolServicePointId;
     /**
      * Лимит ожидания после возвращения визита в очередь
      */
+    @Schema(nullable = true)
     Long returnTimeDelay;
     /**
      * Массив не обслуженных услуг
@@ -148,6 +161,7 @@ public class Visit {
     /**
      * Время прошедшее от возвращения в очередь
      */
+    @Schema(nullable = true)
     Long returningTime;
 
     @JsonGetter
@@ -165,6 +179,7 @@ public class Visit {
     /**
      * Общее время с создания визита в секундах
      */
+    @Schema(nullable = true)
     Long visitLifeTime;
 
     @JsonGetter
@@ -179,6 +194,7 @@ public class Visit {
     /**
      * Время обслуживания в секундах
      */
+    @Schema(nullable = true)
     Long servingTime;
 
 
@@ -213,6 +229,7 @@ public class Visit {
     /**
      * Идентификатор очереди
      */
+    @Schema(nullable = true)
     String queueId;
 
     List<VisitEvent> visitEvents;
