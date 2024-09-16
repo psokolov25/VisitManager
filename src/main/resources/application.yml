@@ -35,7 +35,7 @@ micronaut:
       callRuleApiUrl: http://localhost:8085/customcallrule
     returnTimeDelay: 8000
     name: entrypoint
-    dataBusUrl: http://192.168.8.45:8082
+    dataBusUrl: ${DATABUS_URL:"http://192.168.8.45:8082"}
     dataBusUrlRetryPeriod: '1s'
     dataBusUrlRetryMaxPeriod: '45m'
     dataBusUrlRetryRepeat: 30
@@ -55,6 +55,7 @@ micronaut:
 
 redis:
    uri: redis://192.168.8.45:6379
+   #uri: ${REDIS_URL}
    cache:
      key-serializer:  io.micronaut.core.serialize.ObjectSerializer
      value-serializer:  io.micronaut.core.serialize.ObjectSerializer

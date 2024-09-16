@@ -207,7 +207,6 @@ public class ServicePointController {
 
     /**
      * Возвращает визит по его идентификатору
-     *
      * @param branchId идентификатор отделения
      * @param visitId  идентификатор визита
      * @return визит
@@ -245,9 +244,7 @@ public class ServicePointController {
     }
 
     /**
-     * Получает данные о визите,
-     * визиты сортируются по времени ожидания,
-     * от большего к мееньшкму
+     * Получает данные о визите
      * @param branchId идентификатор отделения
      * @param queueId  идентификатор очереди
      * @param visitId  идентификатор визита
@@ -272,7 +269,6 @@ public class ServicePointController {
 
     /**
      * Вызов визита по идентификатору
-     *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      * @param visitId        идентификатор визита

@@ -123,7 +123,7 @@ public class Configuration {
 
 
 //
-//            Branch branch2 = new Branch("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3", "Отделение на Ямской");
+            Branch branch2 = new Branch("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3", "Отделение на Ямской");
 //            branch2.getMarks().put(
 //                    "86daccb9-9767-4b37-b603-e6956803933c",
 //                    Mark
@@ -217,13 +217,13 @@ public class Configuration {
 //            branch2.getWorkProfiles().put(workProfileC2.getId(), workProfileC2);
 //            branch2.getWorkProfiles().put(workProfileFC2.getId(), workProfileFC2);
 //            branch2.getWorkProfiles().put(workProfileFSC2.getId(), workProfileFSC2);
-//            branchService.add(branch2.getId(), branch2);
-//            Branch branch3 = new Branch("e64078c1-e95a-40fd-b8b1-6bc3c8912abb", "Отделение на Арбате");
-//            Branch branch4 = new Branch("a06fabe5-0f69-41f8-b7d0-21da39cdaace", "Отделение на Центральной");
-//            Branch branch5 = new Branch("15c9d0f3-384d-4a22-a5f2-84ceac1fa094", "Отделение на Урицкого");
-//            branchService.add(branch3.getId(),branch3);
-//            branchService.add(branch4.getId(),branch4);
-//            branchService.add(branch5.getId(),branch5);
+            branchService.add(branch2.getId(), branch2);
+            Branch branch3 = new Branch("e64078c1-e95a-40fd-b8b1-6bc3c8912abb", "Отделение на Арбате");
+            Branch branch4 = new Branch("a06fabe5-0f69-41f8-b7d0-21da39cdaace", "Отделение на Центральной");
+            Branch branch5 = new Branch("15c9d0f3-384d-4a22-a5f2-84ceac1fa094", "Отделение на Урицкого");
+            branchService.add(branch3.getId(),branch3);
+            branchService.add(branch4.getId(),branch4);
+            branchService.add(branch5.getId(),branch5);
         }
     }
 }
