@@ -1021,7 +1021,7 @@ public class VisitService {
         visit.setQueueId(queue.getId());
 
 
-        VisitEvent event = VisitEvent.BACK_TO_QUEUE;
+        VisitEvent event = VisitEvent.TRANSFER_TO_QUEUE;
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("oldQueueID", oldQueueID);
         event.getParameters().put("newQueueID", queueId);
@@ -1068,7 +1068,7 @@ public class VisitService {
         visit.setQueueId(queue.getId());
 
 
-        VisitEvent event = VisitEvent.BACK_TO_QUEUE;
+        VisitEvent event = VisitEvent.TRANSFER_TO_QUEUE;
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("oldQueueID", oldQueueID);
         event.getParameters().put("newQueueID", queueId);

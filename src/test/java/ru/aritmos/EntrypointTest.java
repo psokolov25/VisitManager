@@ -85,7 +85,7 @@ class EntrypointTest {
             HashMap<String, EntryPoint> entryPoints = new HashMap<>();
             entryPoints.put(entryPoint.getId(), entryPoint);
             branch.setEntryPoints(entryPoints);
-            Queue queueCredit = new Queue("Кредиты", "F");
+            Queue queueCredit = new Queue("371986f3-7872-4a4f-ab02-731f0ae4598e","Кредиты", "F");
             Service creditService = new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8c", "Кредит", 9000, queueCredit.getId());
             DeliveredService creditCard = new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Кредитная карта");
             DeliveredService insurance = new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Страховка");
@@ -95,7 +95,7 @@ class EntrypointTest {
             creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
             branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
             branch.getPossibleDeliveredServices().put(insurance.getId(), insurance);
-            Queue queueBigCredit = new Queue("Очень большие кредиты", "S");
+            Queue queueBigCredit = new Queue("bd4b586e-c93e-4e07-9a76-586dd84ddea5","Очень большие кредиты", "S");
             Service bigCreditService = new Service("569769e8-3bb3-4263-bd2e-42d8b3ec0bd4", "Очень большой кредит", 9000, queueBigCredit.getId());
             Queue queueC = new Queue("В кассу", "C");
             Service kassaService = new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67", "Касса", 9000, queueC.getId());
@@ -375,7 +375,7 @@ class EntrypointTest {
 
 
         Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
-        //visit=visitService.visitTransferFromQueueToUserPool(branchId,"2198423c-760e-4d39-8930-12602552b1a9",visit.getId(),false);
+        visit=visitService.visitTransferFromQueue(branchId,"be675d63-c5a1-41a9-a345-c82102ac42cc","bd4b586e-c93e-4e07-9a76-586dd84ddea5",visit,false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
@@ -492,7 +492,42 @@ class EntrypointTest {
         }
 
     }
+    @Test
+    void checkTransferToQueueVisit() throws InterruptedException {
 
+        Service service;
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
+
+
+        ArrayList<String> serviceIds = new ArrayList<>();
+        assert service != null;
+        serviceIds.add(service.getId());
+
+
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
+
+        Thread.sleep(1000);
+
+
+        visit = visitService.visitTransferFromQueue(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit,true);
+
+        Thread.sleep(900);
+
+
+        Assertions.assertEquals(1, branchService.getBranch(branchId).getQueues().get("bd4b586e-c93e-4e07-9a76-586dd84ddea5").getVisits().size());
+        Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_QUEUE.getState().name());
+        Optional<Visit> visits = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        if(visits.isPresent()) {
+            Thread.sleep(900);
+
+            visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visits.get());
+            Thread.sleep(900);
+            visit = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
+        }
+
+    }
     @Test
     void checkTransferToPoolVisitWithCallRuleFromQueue() throws InterruptedException {
 
