@@ -284,12 +284,14 @@ public class VisitService {
                     visit.setQueueId(serviceQueue.getId());
                     visit.setTicket((serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter())));
                     VisitEvent event = VisitEvent.CREATED;
+                    event.getParameters().put("serviceId",!services.isEmpty()?services.get(0).getId():null);
                     event.dateTime = ZonedDateTime.now();
 
                     branchService.updateVisit(visit, event, this);
                     if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
                         VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
                         queueEvent.dateTime = ZonedDateTime.now();
+                        queueEvent.getParameters().put("serviceId",!services.isEmpty()?services.get(0).getId():null);
                         queueEvent.getParameters().put("queueId", serviceQueue.getId());
                         visit.setQueueId(serviceQueue.getId());
 
