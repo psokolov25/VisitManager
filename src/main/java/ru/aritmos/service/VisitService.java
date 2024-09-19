@@ -93,6 +93,7 @@ public class VisitService {
      * Возвращает визиты содержащиеся в очереди
      * визиты сортируются по времени ожидания,
      * от большего к мееньшкму
+     *
      * @param branchId идентификатор отделения
      * @param queueId  идентификатор очереди
      * @return список визитов
@@ -118,6 +119,7 @@ public class VisitService {
      * если количество визитов меньше - выводятся все визиты
      * визиты сортируются по времени ожидания,
      * от большего к мееньшкму
+     *
      * @param branchId идентификатор отделения
      * @param queueId  идентификатор очереди
      * @param limit    максимальное количество визитов
@@ -284,14 +286,14 @@ public class VisitService {
                     visit.setQueueId(serviceQueue.getId());
                     visit.setTicket((serviceQueue.getTicketPrefix() + String.format("%03d", serviceQueue.getTicketCounter())));
                     VisitEvent event = VisitEvent.CREATED;
-                    event.getParameters().put("serviceId",!services.isEmpty()?services.get(0).getId():null);
+                    event.getParameters().put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
                     event.dateTime = ZonedDateTime.now();
 
                     branchService.updateVisit(visit, event, this);
                     if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
                         VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
                         queueEvent.dateTime = ZonedDateTime.now();
-                        queueEvent.getParameters().put("serviceId",!services.isEmpty()?services.get(0).getId():null);
+                        queueEvent.getParameters().put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
                         queueEvent.getParameters().put("queueId", serviceQueue.getId());
                         visit.setQueueId(serviceQueue.getId());
 
@@ -896,34 +898,53 @@ public class VisitService {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             if (servicePoint.getVisit() != null) {
                 Visit visit = servicePoint.getVisit();
-                if(visit.getParameterMap().containsKey("LastPoolServicePointId"))
-                {
-                    String ppolId=visit.getParameterMap().get("LastPoolServicePointId").toString();
+                if (visit.getParameterMap().containsKey("LastPoolServicePointId")) {
+                    String ppolId = visit.getParameterMap().get("LastPoolServicePointId").toString();
                     visit.getParameterMap().remove("LastPoolServicePointId");
-                    return visitBackToServicePointPool(branchId,servicePointId,ppolId,returnTimeDelay);
+                    return visitBackToServicePointPool(branchId, servicePointId, ppolId, returnTimeDelay);
 
-                }
-                else if (visit.getParameterMap().containsKey("LastPoolUserId"))
-                {
-                    String ppolId=visit.getParameterMap().get("LastPoolUserId").toString();
+                } else if (visit.getParameterMap().containsKey("LastPoolUserId")) {
+                    String ppolId = visit.getParameterMap().get("LastPoolUserId").toString();
                     visit.getParameterMap().remove("LastPoolUserId");
-                    return visitBackToUserPool(branchId,servicePointId,ppolId,returnTimeDelay);
-                }
-                else if(visit.getParameterMap().containsKey("LastQueueId"))
-                {
+                    return visitBackToUserPool(branchId, servicePointId, ppolId, returnTimeDelay);
+                } else if (visit.getParameterMap().containsKey("LastQueueId")) {
                     visit.getParameterMap().remove("LastQueueId");
-                     return visitBackToQueue(branchId,servicePointId,returnTimeDelay);
-                }
-                else
-                {
+                    return visitBackToQueue(branchId, servicePointId, returnTimeDelay);
+                } else {
                     throw new BusinessException(String.format("Visit in ServicePoint %s! cant be put back!", servicePointId), eventService, HttpStatus.NOT_FOUND);
                 }
-            }
-            else {
+            } else {
                 throw new BusinessException(String.format("Visit in ServicePoint %s! not exist!", servicePointId), eventService, HttpStatus.NOT_FOUND);
             }
         }
         throw new BusinessException(String.format("Visit in ServicePoint %s! cant be put back!", servicePointId), eventService, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Отложить визит в указанной точке обслуживания
+     *
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @return отложенный визит
+     */
+    public Visit visitPostPone(String branchId, String servicePointId) {
+        Branch currentBranch = branchService.getBranch(branchId);
+        if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            if (servicePoint.getVisit() != null && servicePoint.getUser() != null) {
+                return visitBackToUserPool(branchId, servicePointId, servicePoint.getUser().getId(), 0L);
+            } else {
+                if (servicePoint.getVisit() == null) {
+                    throw new BusinessException("Visit in ServicePoint " + servicePointId + " not exist!", eventService, HttpStatus.NOT_FOUND);
+                } else {
+                    throw new BusinessException("User not exist!", eventService, HttpStatus.NOT_FOUND);
+                }
+            }
+
+
+        } else {
+            throw new BusinessException("Service point " + servicePointId + " not exist!", eventService, HttpStatus.NOT_FOUND);
+        }
     }
 
     /**

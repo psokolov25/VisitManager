@@ -12,6 +12,8 @@ logger:
   levels: ALL
 graphql:
   enabled: true
+  graphiql: # enables the /graphiql endpoint to test calls against your graph.
+    enabled: true
 loki:
   url: http://192.168.3.13:3100/loki/api/v1/push
 kafka:

@@ -93,7 +93,7 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Tag(name = "Данные о точках обслуживания")
     @Tag(name = "Полный список")
-    @Get("/branches/{branchId}/servicePoints/user/{userName}")
+    @Get("/branches/{branchId}/users/user/{userName}")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<User> getUserByUserName(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable String userName) {
         Optional<ServicePoint> servicePoint = visitService.getServicePointHashMap(branchId).values().stream().filter(f -> f.getUser() != null && f.getUser().getName().equals(userName)).findFirst();
@@ -1383,6 +1383,22 @@ public class ServicePointController {
         return visitService.visitBackToUserPool(branchId, servicePointId, userId, returnTimeDelay);
     }
 
+    /**
+     * Отложить визит
+     *
+     * @param branchId        идентификатор отделения
+     * @param servicePointId  идентификатор точки обслуживания
+     * @return визит
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Возвращение визита")
+    @Tag(name = "Полный список")
+    @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}")
+    public Visit visitPostPone(String branchId, String servicePointId) {
+        return visitService.visitPostPone(branchId, servicePointId);
+    }
     /**
      * Возвращение визита из сервис поинта
      *

@@ -317,6 +317,52 @@ class EntrypointTest {
 
     }
     @Test
+    void checkPostPoneVisit() throws InterruptedException {
+
+        Service service;
+        service = managementController.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c")).findFirst().orElse(null);
+
+
+        ArrayList<String> serviceIds = new ArrayList<>();
+        assert service != null;
+        serviceIds.add(service.getId());
+
+
+        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
+
+        Thread.sleep(1000);
+        if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
+            Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+            Assertions.assertEquals(servtime, 0);
+            Thread.sleep(800);
+            visit = visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(600);
+
+            visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(600);
+            String servicePointId="be675d63-c5a1-41a9-a345-c82102ac42cc";
+            String userId="2198423c-760e-4d39-8930-12602552b1a9";
+            visit = visitService.visitPostPone(branchId, servicePointId);
+
+            Thread.sleep(900);
+
+
+            Assertions.assertEquals(1, branchService.getBranch(branchId).getServicePoints().get("be675d63-c5a1-41a9-a345-c82102ac42cc").getUser().getVisits().size());
+            Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
+            Optional<Visit> visits = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            if(visits.isPresent()) {
+                Thread.sleep(900);
+
+                visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visits.get());
+                Thread.sleep(900);
+                visit = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+                Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
+            }
+        }
+
+    }
+    @Test
     void checkBackServicePointPoolVisit() throws InterruptedException {
 
         Service service;
