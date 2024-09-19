@@ -10,7 +10,8 @@ application:
           url: /api-docs/swagger/ubw-rest-0.1.yml
 logger:
   levels: ALL
-
+graphql:
+  enabled: true
 loki:
   url: http://192.168.3.13:3100/loki/api/v1/push
 kafka:

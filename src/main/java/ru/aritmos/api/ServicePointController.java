@@ -73,7 +73,7 @@ public class ServicePointController {
     }
 
     /**
-     * Возвращает точку обслуживания по логину сотрудника     *
+     * Возвращает точку обслуживания по логину сотрудника
      * @param branchId идентификатор отделения
      * @return свободные точки обслуживания
      */
@@ -85,7 +85,20 @@ public class ServicePointController {
     public Optional<ServicePoint> getServicePointsByUserName(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable String userName) {
         return visitService.getServicePointHashMap(branchId).values().stream().filter(f -> f.getUser() != null && f.getUser().getName().equals(userName)).findFirst();
     }
-
+    /**
+     * Возвращает сотрудника по логину
+     * @param branchId идентификатор отделения
+     * @return пользователь занимающий рабочее место
+     */
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Данные о точках обслуживания")
+    @Tag(name = "Полный список")
+    @Get("/branches/{branchId}/servicePoints/user/{userName}")
+    @ExecuteOn(TaskExecutors.IO)
+    public Optional<User> getUserByUserName(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable String userName) {
+        Optional<ServicePoint> servicePoint = visitService.getServicePointHashMap(branchId).values().stream().filter(f -> f.getUser() != null && f.getUser().getName().equals(userName)).findFirst();
+        return servicePoint.map(ServicePoint::getUser);
+    }
     /**
      * Возвращает все точки обслуживания
      *
@@ -379,7 +392,7 @@ public class ServicePointController {
     }
 
     /**
-     * Отмена вызова из-за того, что клиент не пришел  по идентификатору
+     * Отмена вызова из-за того, что клиент не пришел по идентификатору
      *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
