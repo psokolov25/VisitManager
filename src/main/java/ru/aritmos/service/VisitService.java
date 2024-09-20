@@ -1734,6 +1734,8 @@ public class VisitService {
             Optional<Visit> visit2 = servicePoint.map(point -> visitCall(visit.getBranchId(), point.getId(), visit));
             if(visit2.isPresent())
             {
+                servicePoint.get().setAutoCallMode(false);
+                currentBranch.getServicePoints().put(servicePoint.get().getId(),servicePoint.get());
                 return visit2.get();
             }
 
