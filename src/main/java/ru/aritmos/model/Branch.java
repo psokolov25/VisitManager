@@ -1,6 +1,7 @@
 package ru.aritmos.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
@@ -30,6 +31,10 @@ import java.util.List;
 
 
 public class Branch extends BranchEntity {
+    /**
+     * Перечень настроек отделения
+     */
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     HashMap<String, Object> parameterMap = new HashMap<>();
 
     public Branch(String key, String name) {
@@ -66,6 +71,7 @@ public class Branch extends BranchEntity {
      */
     HashMap<String, Mark> marks = new HashMap<>();
 
+
     public Integer incrementTicketCounter(Queue queue) {
         if (this.getQueues().containsKey(queue.getId())) {
             this.queues.get(queue.getId()).setTicketCounter(++this.queues.get(queue.getId()).ticketCounter);
@@ -76,6 +82,7 @@ public class Branch extends BranchEntity {
 
     /**
      * Получение перечня всех визитов отделение, с ключем - идентификатором визита
+     *
      * @return перечень визитов с ключем - идентификатором визита
      */
     public HashMap<String, Visit> getAllVisits() {
@@ -95,12 +102,13 @@ public class Branch extends BranchEntity {
         });
         return visits;
     }
+
     /**
      * Получение перечня всех визитов отделение, с ключем - идентификатором визита с
      * фильтрацией по статусам визита
+     *
      * @param statuses спиок статусов
      * @return перечень визитов с ключем - идентификатором визита
-     *
      */
     public HashMap<String, Visit> getVisitsByStatus(List<String> statuses) {
         HashMap<String, Visit> visits = new HashMap<>();
@@ -114,7 +122,7 @@ public class Branch extends BranchEntity {
                 );
         return visits;
     }
-    
+
     public void openServicePoint(User user, EventService eventService) {
         if (user.servicePointId != null) {
             if (this.getServicePoints().containsKey(user.servicePointId)) {
@@ -206,14 +214,11 @@ public class Branch extends BranchEntity {
     }
 
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService, Boolean isAppend) {
-      if(isAppend)
-      {
-          updateVisit(visit,eventService,visitEvent,visitService,-1);
-      }
-      else
-      {
-          updateVisit(visit,eventService,visitEvent,visitService,0);
-      }
+        if (isAppend) {
+            updateVisit(visit, eventService, visitEvent, visitService, -1);
+        } else {
+            updateVisit(visit, eventService, visitEvent, visitService, 0);
+        }
     }
 
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService, Integer index) {
@@ -235,14 +240,13 @@ public class Branch extends BranchEntity {
             if (value.getId().equals(visit.getQueueId())) {
 
                 try {
-                    if(!index.equals(-1)) {
+                    if (!index.equals(-1)) {
                         value.getVisits().add(index, visit);
-                    }
-                    else {
+                    } else {
                         value.getVisits().add(visit);
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getVisits().size()), eventService, HttpStatus.CONFLICT);
+                    throw new BusinessException(String.format("Visit position %s out of range of list range %s!", index, value.getVisits().size()), eventService, HttpStatus.CONFLICT);
                 }
             }
 
@@ -253,14 +257,13 @@ public class Branch extends BranchEntity {
                 try {
 
 
-                    if(!index.equals(-1)) {
+                    if (!index.equals(-1)) {
                         value.getVisits().add(index, visit);
-                    }
-                    else {
+                    } else {
                         value.getVisits().add(visit);
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getVisits().size()), eventService, HttpStatus.CONFLICT);
+                    throw new BusinessException(String.format("Visit position %s out of range of list range %s!", index, value.getVisits().size()), eventService, HttpStatus.CONFLICT);
                 }
 
             }
@@ -268,14 +271,13 @@ public class Branch extends BranchEntity {
                 if (value.getUser().getId().equals(visit.getPoolUserId())) {
 
                     try {
-                        if(!index.equals(-1)) {
+                        if (!index.equals(-1)) {
                             value.getUser().getVisits().add(index, visit);
-                        }
-                        else {
+                        } else {
                             value.getUser().getVisits().add(visit);
                         }
                     } catch (IndexOutOfBoundsException e) {
-                        throw new BusinessException(String.format("Visit position %s out of range of list range %s!",index,value.getUser().getVisits().size()), eventService, HttpStatus.CONFLICT);
+                        throw new BusinessException(String.format("Visit position %s out of range of list range %s!", index, value.getUser().getVisits().size()), eventService, HttpStatus.CONFLICT);
                     }
 
                 }
@@ -295,7 +297,7 @@ public class Branch extends BranchEntity {
     }
 
     public void updateVisit(Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService) {
-       updateVisit(visit,eventService,visitEvent,visitService,true);
+        updateVisit(visit, eventService, visitEvent, visitService, true);
     }
 
     public void addUpdateService(HashMap<String, Service> serviceHashMap, EventService eventService, Boolean checkVisits) {

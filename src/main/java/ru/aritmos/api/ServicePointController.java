@@ -312,7 +312,7 @@ public class ServicePointController {
     @Tag(name = "Зона обслуживания")
     @Tag(name = "Вызов")
     @Tag(name = "Полный список")
-    @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call", consumes = "application/json", produces = "application/json")
+    @Post(uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<Visit> visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
                                                @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {

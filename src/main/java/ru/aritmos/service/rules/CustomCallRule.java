@@ -10,6 +10,7 @@ import ru.aritmos.model.ServicePoint;
 import ru.aritmos.service.rules.client.CallRuleClient;
 import ru.aritmos.model.visit.Visit;
 
+import java.util.List;
 import java.util.Optional;
 
 @Singleton
@@ -26,5 +27,10 @@ public class CustomCallRule implements CallRule {
         return callRuleClient.callRule(branch, servicePoint);
 
 
+    }
+
+    @Override
+    public List<ServicePoint> getAvaliableServicePoints(Branch currentBranch, Visit visit) {
+        return List.of();
     }
 }

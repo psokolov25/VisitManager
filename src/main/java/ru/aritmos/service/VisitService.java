@@ -145,7 +145,7 @@ public class VisitService {
             servicesIds.forEach(f -> services.add(currentBranch.getServices().get(f)));
 
 
-            return createVisit2(branchId, entryPointId, services, printTicket);
+            return visitAutoCall(createVisit2(branchId, entryPointId, services, printTicket));
 
 
         } else {
@@ -1710,11 +1710,30 @@ public class VisitService {
 
         }
 
-
         return Optional.empty();
 
     }
 
+
+    /**
+     * Автовызов визита
+     * @param visit созданный визит
+     * @return визит после аввтовызова
+     */
+    public Visit visitAutoCall(Visit visit)
+    {
+        Branch currentBranch = branchService.getBranch(visit.getBranchId());
+        if(currentBranch.getParameterMap().containsKey("autoCallMode") && (Boolean) currentBranch.getParameterMap().get("autoCallMode")) {
+            Optional<ServicePoint> servicePoint = callRule.getAvaliableServicePoints(currentBranch, visit).stream().filter(ServicePoint::getAutoCallMode).findFirst();
+            Optional<Visit> visit2 = servicePoint.map(point -> visitCall(visit.getBranchId(), point.getId(), visit));
+            if(visit2.isPresent())
+            {
+                return visit2.get();
+            }
+
+        }
+        return visit;
+    }
     /**
      * Вызов визита
      *

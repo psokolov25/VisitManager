@@ -8,6 +8,7 @@ import jakarta.inject.Singleton;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.BranchEntity;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
@@ -66,5 +67,18 @@ public class SimpleCallRule implements CallRule {
         return Optional.empty();
 
 
+    }
+    /**
+     * Возвращает список точек обслуживания, которые могут вызвать данный визит
+     * @param currentBranch текущее отделение
+     * @param visit визит
+     * @return список точек обслуживания
+     */
+    @Override
+
+    public List<ServicePoint> getAvaliableServicePoints(Branch currentBranch,Visit visit)   {
+
+        List<String> workProfileIds=currentBranch.getWorkProfiles().values().stream().filter(f->f.getQueueIds().contains(visit.getCurrentService().getLinkedQueueId())).map(BranchEntity::getId).toList();
+        return currentBranch.getServicePoints().values().stream().filter(f->f.getUser()!=null && workProfileIds.contains(f.getUser().getCurrentWorkProfileId())).toList();
     }
 }

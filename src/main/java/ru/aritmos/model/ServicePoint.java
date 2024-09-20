@@ -1,5 +1,6 @@
 package ru.aritmos.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
@@ -32,4 +33,9 @@ public class ServicePoint extends BranchEntityWithVisits {
      * Обслуживающий пользователь
      */
     User user;
+    /**
+     * Режим автоматического вызова при создании визита
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    Boolean autoCallMode;
 }

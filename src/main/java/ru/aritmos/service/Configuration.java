@@ -38,6 +38,7 @@ public class Configuration {
                             .value("Клиент не доволен")
                             .build()
             );
+            branch.getParameterMap().put("autoCallMode",true);
             EntryPoint entryPoint = new EntryPoint();
             entryPoint.setPrinterId("2");
             entryPoint.setId("2");
