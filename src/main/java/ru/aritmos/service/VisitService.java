@@ -1709,7 +1709,13 @@ public class VisitService {
             throw new BusinessException("User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
 
         }
-
+        if(currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true"))
+        {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            servicePoint.setAutoCallMode(true);
+            currentBranch.getServicePoints().put(servicePoint.getId(),servicePoint);
+            branchService.add(currentBranch.getId(),currentBranch);
+        }
         return Optional.empty();
 
     }
@@ -1723,7 +1729,7 @@ public class VisitService {
     public Visit visitAutoCall(Visit visit)
     {
         Branch currentBranch = branchService.getBranch(visit.getBranchId());
-        if(currentBranch.getParameterMap().containsKey("autoCallMode") && (Boolean) currentBranch.getParameterMap().get("autoCallMode")) {
+        if(currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
             Optional<ServicePoint> servicePoint = callRule.getAvaliableServicePoints(currentBranch, visit).stream().filter(ServicePoint::getAutoCallMode).findFirst();
             Optional<Visit> visit2 = servicePoint.map(point -> visitCall(visit.getBranchId(), point.getId(), visit));
             if(visit2.isPresent())
@@ -1764,6 +1770,11 @@ public class VisitService {
         } else {
             throw new BusinessException("ServicePoint not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
 
+        }
+        if(currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true"))
+        {
+            ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+            servicePoint.setAutoCallMode(true);
         }
         return Optional.empty();
     }

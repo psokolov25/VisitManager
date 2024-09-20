@@ -79,6 +79,6 @@ public class SimpleCallRule implements CallRule {
     public List<ServicePoint> getAvaliableServicePoints(Branch currentBranch,Visit visit)   {
 
         List<String> workProfileIds=currentBranch.getWorkProfiles().values().stream().filter(f->f.getQueueIds().contains(visit.getCurrentService().getLinkedQueueId())).map(BranchEntity::getId).toList();
-        return currentBranch.getServicePoints().values().stream().filter(f->f.getUser()!=null && workProfileIds.contains(f.getUser().getCurrentWorkProfileId())).toList();
+        return currentBranch.getServicePoints().values().stream().filter(f->f.getUser()!=null).filter(f2-> workProfileIds.contains(f2.getUser().getCurrentWorkProfileId())).toList();
     }
 }
