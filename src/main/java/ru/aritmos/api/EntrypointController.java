@@ -62,7 +62,7 @@ public class EntrypointController {
      * @param entryPointId идентификатор точки создания визита
      * @param serviceIds   массив идентификаторов услуг (на пример [
      *                     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
-     *                     ]
+     *                     ] )
      * @param printTicket  флаг печати талона
      * @return созданный визит
      */
@@ -99,20 +99,31 @@ public class EntrypointController {
 
 
     /**
-     * Добавление параметров в визит
+     * Создание визита с передачей параметров визита и перечня услуг
      *
      * @param branchId     идентификатор отделения
      * @param entryPointId идентификатор точки создания визита
      * @param printTicket  флаг печати талона
-     * @param parameters   услуги и параметры визита
+     * @param parameters   услуги и параметры визита (пример
+     *{
+     * 	"serviceIds": [
+     * 		"c3916e7f-7bea-4490-b9d1-0d4064adbe8b",
+     * 		"9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
+     * 	],
+     * 	"parameters": {
+     * 		"sex": "male",
+     * 		"age": "33"
+     * 	    }
+     * }
+     *
      * @return визит
      */
     @Tag(name = "Зона ожидания")
     @Tag(name = "Полный список")
     @Post(uri = "/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit createVisit(@PathVariable String branchId,
-                             @PathVariable String entryPointId,
+    public Visit createVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                             @PathVariable(defaultValue = "2") String entryPointId,
 
                              @Body VisitParameters parameters,
                              @QueryValue Boolean printTicket) {

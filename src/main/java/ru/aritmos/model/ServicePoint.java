@@ -37,7 +37,7 @@ public class ServicePoint extends BranchEntityWithVisits {
      * Режим автоматического вызова при создании визита
      */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    Boolean autoCallMode;
+    Boolean autoCallMode=false;
     /**
      * Режим подтверждения вызова
      */
