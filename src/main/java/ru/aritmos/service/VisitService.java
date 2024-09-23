@@ -153,6 +153,8 @@ public class VisitService {
         }
     }
 
+
+
     /**
      * Добавление события в визит
      *
@@ -322,7 +324,10 @@ public class VisitService {
         }
 
         throw new BusinessException("Queue  not found in branch configuration!", eventService);
+
     }
+
+
 
 
     /**
@@ -1404,7 +1409,7 @@ public class VisitService {
      * @param visit          визит
      * @return визит
      */
-    public Visit visitCall(String branchId, String servicePointId, Visit visit) {
+    public Optional<Visit> visitCall(String branchId, String servicePointId, Visit visit) {
         Branch currentBranch = branchService.getBranch(branchId);
 
         Optional<Queue> queue;
@@ -1466,7 +1471,7 @@ public class VisitService {
 
         log.info("Visit {} called!", visit);
         //changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
-        return visit;
+        return Optional.of(visit);
 
     }
 
@@ -1478,12 +1483,12 @@ public class VisitService {
      * @param visitId        идентификатор визита
      * @return визит
      */
-    public Visit visitCall(String branchId, String servicePointId, String visitId) {
+    public Optional<Visit> visitCall(String branchId, String servicePointId, String visitId) {
         if (this.getAllVisits(branchId).containsKey(visitId)) {
             Visit visit = this.getAllVisits(branchId).get(visitId);
             return this.visitCall(branchId, servicePointId, visit);
         }
-        throw new BusinessException(String.format("Visit %s not found!", visitId), eventService, HttpStatus.NOT_FOUND);
+        return Optional.empty();
 
 
     }
@@ -1709,12 +1714,11 @@ public class VisitService {
             throw new BusinessException("User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
 
         }
-        if(currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true"))
-        {
+        if (currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             servicePoint.setAutoCallMode(true);
-            currentBranch.getServicePoints().put(servicePoint.getId(),servicePoint);
-            branchService.add(currentBranch.getId(),currentBranch);
+            currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
+            branchService.add(currentBranch.getId(), currentBranch);
         }
         return Optional.empty();
 
@@ -1723,25 +1727,40 @@ public class VisitService {
 
     /**
      * Автовызов визита
+     *
      * @param visit созданный визит
      * @return визит после аввтовызова
      */
-    public Visit visitAutoCall(Visit visit)
-    {
+    public Visit visitAutoCall(Visit visit) {
         Branch currentBranch = branchService.getBranch(visit.getBranchId());
-        if(currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
-            Optional<ServicePoint> servicePoint = callRule.getAvaliableServicePoints(currentBranch, visit).stream().filter(ServicePoint::getAutoCallMode).findFirst();
-            Optional<Visit> visit2 = servicePoint.map(point -> visitCall(visit.getBranchId(), point.getId(), visit));
-            if(visit2.isPresent())
+        Optional<Visit> visit2;
+        if (currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
+            Optional<ServicePoint> servicePoint =
+                    callRule.getAvaliableServicePoints(currentBranch, visit).stream().filter(f -> f.getAutoCallMode() && f.getVisit() == null).findFirst();
+            if(servicePoint.isPresent())
             {
-                servicePoint.get().setAutoCallMode(false);
-                currentBranch.getServicePoints().put(servicePoint.get().getId(),servicePoint.get());
-                return visit2.get();
+                if(!servicePoint.get().getIsConfirmRequired())
+                {
+                     visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
+                }
+                else
+                {
+                    visit2=visitCallForConfirm(visit.getBranchId(), servicePoint.get().getId(), visit);
+
+                }
+                if (visit2.isPresent()) {
+                    servicePoint.get().setAutoCallMode(false);
+                    currentBranch.getServicePoints().put(servicePoint.get().getId(), servicePoint.get());
+                    return visit2.get();
+                }
             }
+
+
 
         }
         return visit;
     }
+
     /**
      * Вызов визита
      *
@@ -1760,7 +1779,7 @@ public class VisitService {
                 Optional<Visit> visit = callRule.call(currentBranch, servicePoint);
                 if (visit.isPresent()) {
 
-                    return visit.map(value -> this.visitCall(branchId, servicePointId, value));
+                    return visitCall(branchId, servicePoint.getId(), visit.get());
                 }
 
             } else {
@@ -1773,10 +1792,11 @@ public class VisitService {
             throw new BusinessException("ServicePoint not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
 
         }
-        if(currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true"))
-        {
+        if (currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             servicePoint.setAutoCallMode(true);
+            currentBranch.getServicePoints().put(servicePoint.getId(),servicePoint);
+            branchService.add(currentBranch.getId(),currentBranch);
         }
         return Optional.empty();
     }

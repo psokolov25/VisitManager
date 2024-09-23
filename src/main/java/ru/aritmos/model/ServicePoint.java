@@ -36,6 +36,12 @@ public class ServicePoint extends BranchEntityWithVisits {
     /**
      * Режим автоматического вызова при создании визита
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     Boolean autoCallMode;
+    /**
+     * Режим подтверждения вызова
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    Boolean isConfirmRequired=false;
+
 }

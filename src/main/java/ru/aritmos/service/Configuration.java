@@ -67,6 +67,7 @@ public class Configuration {
             Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C");
             Service kassaService = new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
             ServicePoint servicePointFC = new ServicePoint("a66ff6f4-4f4a-4009-8602-0dc278024cf2", "Финансовый консультант");
+            servicePointFC.setIsConfirmRequired(true);
             HashMap<String, Service> serviceList = new HashMap<>();
             serviceList.put(kassaService.getId(), kassaService);
             serviceList.put(creditService.getId(), creditService);
@@ -74,7 +75,9 @@ public class Configuration {
             branch.setServices(serviceList);
 
             ServicePoint servicePointFSC = new ServicePoint("099c43c1-40b5-4b80-928a-1d4b363152a8", "Старший финансовый консультант");
+
             ServicePoint servicePointC = new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");
+
             WorkProfile workProfileC = new WorkProfile("Кассир");
             workProfileC.getQueueIds().add(queueC.getId());
             WorkProfile workProfileFC = new WorkProfile("d5a84e60-e605-4527-b065-f4bd7a385790","Финансовый консультант");

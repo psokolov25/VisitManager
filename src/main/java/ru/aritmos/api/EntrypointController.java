@@ -48,7 +48,6 @@ public class EntrypointController {
     EventService eventService;
 
 
-
     /**
      * Название службы из файла настроек
      */
@@ -72,7 +71,10 @@ public class EntrypointController {
     @Tag(name = "Полный список")
     @Post(uri = "/branches/{branchId}/entryPoints/{entryPointId}/visit", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit createVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "2") String entryPointId, @Body ArrayList<String> serviceIds, @QueryValue Boolean printTicket) {
+    public Visit createVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                             @PathVariable(defaultValue = "2") String entryPointId,
+                             @Body ArrayList<String> serviceIds,
+                             @QueryValue Boolean printTicket) {
         Branch branch;
         try {
             branch = branchService.getBranch(branchId);
@@ -95,11 +97,62 @@ public class EntrypointController {
 
     }
 
+
+    /**
+     * Добавление параметров в визит
+     *
+     * @param branchId     идентификатор отделения
+     * @param entryPointId идентификатор точки создания визита
+     * @param printTicket  флаг печати талона
+     * @param parameters   услуги и параметры визита
+     * @return визит
+     */
+    @Tag(name = "Зона ожидания")
+    @Tag(name = "Полный список")
+    @Post(uri = "/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit createVisit(@PathVariable String branchId,
+                             @PathVariable String entryPointId,
+
+                             @Body VisitParameters parameters,
+                             @QueryValue Boolean printTicket) {
+        Visit visit = createVisit(branchId, entryPointId, parameters.getServiceIds(), printTicket);
+        visit = setParameterMap(branchId, visit.getId(), parameters.getParameters());
+        return visit;
+
+    }
+
+
+    /**
+     * Добавление параметров в визит
+     *
+     * @param branchId     идентификатор отделения
+     * @param visitId      идентификатор визита
+     * @param parameterMap набор параметров
+     * @return визит
+     */
+    @Tag(name = "Зона ожидания")
+    @Tag(name = "Полный список")
+    @Put(uri = "/branches/{branchId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
+    public Visit setParameterMap(@PathVariable String branchId, @PathVariable String visitId, @Body HashMap<String, Object> parameterMap) {
+        Visit visit = visitService.getVisit(branchId, visitId);
+        visit.setParameterMap(parameterMap);
+
+        branchService.updateVisit(visit, "VISIT_SET_PARAMETER_MAP");
+        return visit;
+
+    }
+
+
+
+
     /**
      * Получение списка доступных услуг
      * Услуга считается доступной,
      * если на рабочем месте присутствует сотрудник
      * чей рабочий профиль позволяет обслужить данную услугу
+     *
      * @param branchId идентификатор отделения
      * @return список услуг
      */
