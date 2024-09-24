@@ -255,11 +255,12 @@ class EntrypointTest {
         //Visit visit=visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
-        if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
-            Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+        Optional<Visit> visitOptional=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        if (visitOptional.isPresent()) {
+            Long servtime = visitOptional.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
             Thread.sleep(800);
-            visit=visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            visit=visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visitOptional.get());
             Thread.sleep(600);
             visit=visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
@@ -336,11 +337,12 @@ class EntrypointTest {
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
-        if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
-            Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+        Optional<Visit> visitOptional=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        if (visitOptional.isPresent()) {
+            Long servtime = visitOptional.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
             Thread.sleep(800);
-            visit = visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            visit = visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visitOptional.get());
             Thread.sleep(600);
 
             visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
@@ -477,8 +479,9 @@ class EntrypointTest {
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
-        if (visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").isPresent()) {
-            Long servtime = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc").get().getServingTime();
+        Optional<Visit> visitOptional=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        if (visitOptional.isPresent()) {
+            Long servtime = visitOptional.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
             Thread.sleep(800);
             visit = visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);

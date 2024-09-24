@@ -43,7 +43,7 @@ public class SimpleCallRule implements CallRule {
                         filter(f -> queueIds.contains(f.getKey())).
                         map(Map.Entry::getValue).toList();
                 Optional<Visit> result = availableQueues.stream()
-                        .map(Queue::getVisits).flatMap(List::stream).toList().stream().filter(f -> f.getReturnDateTime() == null || f.getReturningTime() >  f.getReturnTimeDelay()).max((o1, o2) ->
+                        .map(Queue::getVisits).flatMap(List::stream).toList().stream().filter(f -> (f.getReturnDateTime() == null || f.getReturningTime() >  f.getReturnTimeDelay()) && f.getStatus().contains("WAITING")).max((o1, o2) ->
                                 o1.getReturningTime().compareTo(o2.getReturningTime()) == 0 ?
                                         o1.getWaitingTime().compareTo(o2.getWaitingTime()) :
                                         o1.getReturningTime().compareTo(o2.getReturningTime()));
