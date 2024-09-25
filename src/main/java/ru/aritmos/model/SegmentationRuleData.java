@@ -14,5 +14,6 @@ import java.util.HashMap;
 public class SegmentationRuleData {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     HashMap<String,String> keyProperty;
+    String serviceId;
     String queueId;
 }

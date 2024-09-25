@@ -9,26 +9,26 @@ import ru.aritmos.model.visit.Visit;
 
 import java.util.List;
 import java.util.Optional;
+
 @Requires(property = "micronaut.application.rules.segmentation", value = "simple")
 @Singleton
 public class SimpleSegmentationRule implements SegmentationRule {
 
     @Override
     public Optional<Queue> getQueue(Visit visit, Branch branch) {
-        if(visit.getCurrentService()!=null)
-        {
-            Optional<String> queueId=checkSegmentationRules(visit,branch.getSegmentationRules());
-            if(queueId.isPresent()){
+        if (visit.getCurrentService() != null) {
+            Optional<String> queueId = checkSegmentationRules(visit, branch.getSegmentationRules());
+            if (queueId.isPresent()) {
                 return Optional.of(branch.getQueues().get(queueId.get()));
             }
-            if(branch.getQueues().containsKey(visit.getCurrentService().getLinkedQueueId()))
-            {
+            if (branch.getQueues().containsKey(visit.getCurrentService().getLinkedQueueId())) {
                 return Optional.of(branch.getQueues().get(visit.getCurrentService().getLinkedQueueId()));
             }
         }
 
         return Optional.empty();
     }
+
     /**
      * Поиск идентификатора очереди в правиле сегментации
      *
@@ -37,11 +37,15 @@ public class SimpleSegmentationRule implements SegmentationRule {
      * @return идентификатор очереди
      */
     private Optional<String> checkSegmentationRules(Visit visit, List<SegmentationRuleData> rules) {
-        if(!visit.getParameterMap().isEmpty()) {
-            Optional<SegmentationRuleData> result = rules.stream().filter(f -> visit.getParameterMap().entrySet().containsAll(f.getKeyProperty().entrySet())).findFirst();
+        if (!visit.getParameterMap().isEmpty()) {
+
+
+            Optional<SegmentationRuleData> result = rules.stream().filter(f -> f.getServiceId()==null || f.getServiceId().equals(visit.getCurrentService().getId())).filter(f -> visit.getParameterMap().entrySet().containsAll(f.getKeyProperty().entrySet())).findFirst();
+
             return result.map(SegmentationRuleData::getQueueId);
-        }
-        else {
+
+
+        } else {
             return Optional.empty();
         }
     }
