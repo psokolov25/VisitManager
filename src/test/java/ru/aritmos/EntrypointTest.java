@@ -1,7 +1,6 @@
 package ru.aritmos;
 
 import io.micronaut.runtime.EmbeddedApplication;
-import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.utils.SecurityService;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -19,6 +18,7 @@ import ru.aritmos.service.VisitService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -109,7 +109,23 @@ class EntrypointTest {
             insurance.getServviceIds().add(creditService.getId());
             insurance.getServviceIds().add(bigCreditService.getId());
             creditCard.getPossibleOutcomes().put(creditCardGiven.getId(), creditCardGiven);
+            List<SegmentationRuleData> rules = new ArrayList<SegmentationRuleData>() {{
+                add(SegmentationRuleData.builder()
+                        .queueId(queueCredit.getId())
+                        .keyProperty(new HashMap<>(){{
+                            put("sex","male");
+                            put("age","33");
 
+                        }}).build());
+                add(SegmentationRuleData.builder()
+                        .queueId(queueBigCredit.getId())
+                        .keyProperty(new HashMap<>(){{
+                            put("sex","male");
+                            put("age","33");
+                            put("level","vip");
+                        }}).build());
+            }};
+            branch.setSegmentationRules(rules);
             branch.setServices(serviceList);
             ServicePoint servicePointFSC = new ServicePoint("be675d63-c5a1-41a9-a345-c82102ac42cc", "Старший финансовый консультант");
             ServicePoint servicePointC = new ServicePoint("Касса");
@@ -157,7 +173,8 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
         Visit visit;
-        visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        visit = visitService.createVisit(branchId, "1", visitParameters,false);
 
         Queue queue = branchService.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Queue queue2 = branchService.getBranch(branchId).getQueues().values().stream().filter(f -> f.getName().contains("кассу")).toList().get(0);
@@ -177,7 +194,8 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         Optional<Visit> visitForConfirm = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         if (visitForConfirm.isPresent()) {
             Long servtime = visitForConfirm.get().getServingTime();
@@ -203,7 +221,8 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        visitService.createVisit(branchId, "1", visitParameters,false);
         Thread.sleep(300);
         Optional<Visit> currvisit = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (currvisit.isPresent()) {
@@ -255,14 +274,14 @@ class EntrypointTest {
         //Visit visit=visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
-        Optional<Visit> visitOptional=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (visitOptional.isPresent()) {
             Long servtime = visitOptional.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
             Thread.sleep(800);
-            visit=visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visitOptional.get());
+            visit = visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visitOptional.get());
             Thread.sleep(600);
-            visit=visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            visit = visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
             Thread.sleep(900);
 
@@ -286,7 +305,8 @@ class EntrypointTest {
         serviceIds.add(service.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         visit = visitService.visitTransferFromQueueToUserPool(branchId, "2198423c-760e-4d39-8930-12602552b1a9", visit, false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
@@ -333,11 +353,12 @@ class EntrypointTest {
         serviceIds.add(service.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
-        Optional<Visit> visitOptional=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (visitOptional.isPresent()) {
             Long servtime = visitOptional.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
@@ -381,7 +402,8 @@ class EntrypointTest {
         serviceIds.add(service.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         visit = visitService.visitTransferFromQueueToServicePointPool(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", "be675d63-c5a1-41a9-a345-c82102ac42cc", visit, false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
@@ -428,7 +450,8 @@ class EntrypointTest {
         serviceIds.add(service.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         visit = visitService.visitTransferFromQueue(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
@@ -475,11 +498,12 @@ class EntrypointTest {
         serviceIds.add(service.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
-        Optional<Visit> visitOptional=visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+        Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
         if (visitOptional.isPresent()) {
             Long servtime = visitOptional.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
@@ -523,7 +547,8 @@ class EntrypointTest {
         serviceIds.add(service.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
@@ -560,7 +585,8 @@ class EntrypointTest {
         serviceIds.add(service.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
@@ -597,7 +623,8 @@ class EntrypointTest {
         serviceIds.add(service.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
         Thread.sleep(1000);
@@ -637,7 +664,8 @@ class EntrypointTest {
         serviceIds.add(service2.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
         visitService.visitTransferFromQueueToServicePointPool(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", "be675d63-c5a1-41a9-a345-c82102ac42cc", visit, true);
         Thread.sleep(1000);
@@ -664,7 +692,8 @@ class EntrypointTest {
         serviceIds.add(service2.getId());
 
 
-        Visit visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        Visit visit = visitService.createVisit(branchId, "1", visitParameters,false);
         // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
         visit = visitService.visitTransferFromQueueToUserPool(branchId, "2198423c-760e-4d39-8930-12602552b1a9", visit, true);
         Thread.sleep(1000);
@@ -676,9 +705,7 @@ class EntrypointTest {
 
     }
 
-    /**
-     * Проверка правильности получения доступных услуг
-     */
+
 
     /**
      * Проверка завершения визита с итогом "Не пришел"
@@ -693,13 +720,14 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
         Visit visit;
-        visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        visit = visitService.createVisit(branchId, "1", visitParameters,false);
         Optional<Visit> visits = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
         if (visits.isPresent()) {
             Long servtime = visits.get().getServingTime();
             Assertions.assertEquals(servtime, 0);
             Thread.sleep(200);
-            visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            visit = visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visits.get());
             Thread.sleep(200);
             Optional<Visit> visits2 = visitService.visitNoShow(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
             if (visits2.isPresent()) {
@@ -710,6 +738,37 @@ class EntrypointTest {
         }
     }
 
+
+    @Test
+    void checkConfirmVisitWithRule() throws InterruptedException {
+        Service service;
+        service = branchService.getBranch(branchId).getServices().values().stream().filter(f -> f.getId().equals(serviceId)).findFirst().orElse(null);
+        ArrayList<String> serviceIds = new ArrayList<>();
+        serviceIds.add(serviceId);
+        assert service != null;
+
+        Visit visit = entrypointController.createVisit(branchId, "1",VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>(){{
+            put("sex","male");
+            put("age","33");
+            put("level","vip");
+        }}).build(),false );
+
+        Assertions.assertEquals(visit.getQueueId(),"bd4b586e-c93e-4e07-9a76-586dd84ddea5");
+        Optional<Visit> visitForConfirm = visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        if (visitForConfirm.isPresent()) {
+            Long servtime = visitForConfirm.get().getServingTime();
+            Assertions.assertEquals(servtime, 0);
+            Thread.sleep(200);
+            visitService.visitReCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(200);
+            visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+            Thread.sleep(200);
+            Visit visit2;
+            visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
+            Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
+        }
+
+    }
     /**
      * Проверка корректности формирования номера талона
      */
@@ -723,7 +782,8 @@ class EntrypointTest {
         assert service != null;
 
         Visit visit;
-        visit = visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        visit = visitService.createVisit(branchId, "1", visitParameters,false);
 
         Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
 
@@ -744,7 +804,8 @@ class EntrypointTest {
         serviceIds.add(serviceId);
         assert service != null;
         Integer visitsbefore = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
-        visitService.createVisit(branchId, "1", serviceIds, false);
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        visitService.createVisit(branchId, "1", visitParameters,false);
         Integer visitafter = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId()).getTicketCounter();
         Assertions.assertEquals(1, visitafter - visitsbefore);
     }
@@ -759,7 +820,9 @@ class EntrypointTest {
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add(serviceId);
         assert service != null;
-        String visitId = visitService.createVisit(branchId, "1", serviceIds, false).getId();
+        VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+
+        String visitId = visitService.createVisit(branchId, "1", visitParameters,false).getId();
         Queue queue = managementController.getBranch(branchId).getQueues().get(service.getLinkedQueueId());
         Assertions.assertTrue(queue.getVisits().stream().map(Visit::getId).toList().contains(visitId));
 

@@ -134,25 +134,24 @@ public class VisitService {
      *
      * @param branchId     идентификатор отделения
      * @param entryPointId идентификатор энтри поинта
-     * @param servicesIds  идентификаторы услуг
+     * @param visitParameters  передаваемые список услуг и дополнительные параметры визита
      * @param printTicket  флаг печати талона
      * @return созданный визит
      */
-    public Visit createVisit(String branchId, String entryPointId, ArrayList<String> servicesIds, Boolean printTicket) {
+    public Visit createVisit(String branchId, String entryPointId, VisitParameters visitParameters, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
-        if (currentBranch.getServices().keySet().stream().anyMatch(servicesIds::contains)) {
+        if (currentBranch.getServices().keySet().stream().anyMatch(visitParameters.getServiceIds()::contains)) {
             ArrayList<Service> services = new ArrayList<>();
-            servicesIds.forEach(f -> services.add(currentBranch.getServices().get(f)));
+            visitParameters.getServiceIds().forEach(f -> services.add(currentBranch.getServices().get(f)));
 
 
-            return visitAutoCall(createVisit2(branchId, entryPointId, services, printTicket));
+            return visitAutoCall(createVisit2(branchId, entryPointId, services,visitParameters.getParameters(), printTicket));
 
 
         } else {
             throw new BusinessException("Services not found!", eventService);
         }
     }
-
 
 
     /**
@@ -242,7 +241,7 @@ public class VisitService {
      * @param printTicket  флаг печати талона
      * @return визит
      */
-    public Visit createVisit2(String branchId, String entryPointId, ArrayList<Service> services, Boolean printTicket) {
+    public Visit createVisit2(String branchId, String entryPointId, ArrayList<Service> services,HashMap<String,String> parametersMap, Boolean printTicket) {
         Branch currentBranch = branchService.getBranch(branchId);
 
         if (!services.isEmpty()) {
@@ -279,7 +278,7 @@ public class VisitService {
 
                         .servedServices(new ArrayList<>())
 
-                        .parameterMap(new HashMap<>()).build();
+                        .parameterMap(parametersMap).build();
                 Queue serviceQueue;
                 if (segmentationRule.getQueue(visit, currentBranch).isPresent()) {
                     serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
@@ -326,8 +325,6 @@ public class VisitService {
         throw new BusinessException("Queue  not found in branch configuration!", eventService);
 
     }
-
-
 
 
     /**
@@ -764,7 +761,7 @@ public class VisitService {
                 branchService.updateVisit(visit, visitEvent, this);
                 if (visit.getParameterMap().containsKey("LastQueueId")) {
 
-                    return visitTransfer(branchId, servicePointId, visit.getParameterMap().get("LastQueueId").toString());
+                    return visitTransfer(branchId, servicePointId, visit.getParameterMap().get("LastQueueId"));
                 } else {
                     throw new BusinessException("Visit cant be transfer!", eventService);
                 }
@@ -904,12 +901,12 @@ public class VisitService {
             if (servicePoint.getVisit() != null) {
                 Visit visit = servicePoint.getVisit();
                 if (visit.getParameterMap().containsKey("LastPoolServicePointId")) {
-                    String ppolId = visit.getParameterMap().get("LastPoolServicePointId").toString();
+                    String ppolId = visit.getParameterMap().get("LastPoolServicePointId");
                     visit.getParameterMap().remove("LastPoolServicePointId");
                     return visitBackToServicePointPool(branchId, servicePointId, ppolId, returnTimeDelay);
 
                 } else if (visit.getParameterMap().containsKey("LastPoolUserId")) {
-                    String ppolId = visit.getParameterMap().get("LastPoolUserId").toString();
+                    String ppolId = visit.getParameterMap().get("LastPoolUserId");
                     visit.getParameterMap().remove("LastPoolUserId");
                     return visitBackToUserPool(branchId, servicePointId, ppolId, returnTimeDelay);
                 } else if (visit.getParameterMap().containsKey("LastQueueId")) {
@@ -1493,6 +1490,8 @@ public class VisitService {
 
     }
 
+
+
     /**
      * Вызов визита с ожиданием подтверждения прихода клиента
      *
@@ -1737,15 +1736,11 @@ public class VisitService {
         if (currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
             Optional<ServicePoint> servicePoint =
                     callRule.getAvaliableServicePoints(currentBranch, visit).stream().filter(f -> f.getAutoCallMode() && f.getVisit() == null).findFirst();
-            if(servicePoint.isPresent())
-            {
-                if(!servicePoint.get().getIsConfirmRequired())
-                {
-                     visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
-                }
-                else
-                {
-                    visit2=visitCallForConfirm(visit.getBranchId(), servicePoint.get().getId(), visit);
+            if (servicePoint.isPresent()) {
+                if (!servicePoint.get().getIsConfirmRequired()) {
+                    visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
+                } else {
+                    visit2 = visitCallForConfirm(visit.getBranchId(), servicePoint.get().getId(), visit);
 
                 }
                 if (visit2.isPresent()) {
@@ -1754,7 +1749,6 @@ public class VisitService {
                     return visit2.get();
                 }
             }
-
 
 
         }
@@ -1795,8 +1789,8 @@ public class VisitService {
         if (currentBranch.getParameterMap().containsKey("autoCallMode") && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
             ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
             servicePoint.setAutoCallMode(true);
-            currentBranch.getServicePoints().put(servicePoint.getId(),servicePoint);
-            branchService.add(currentBranch.getId(),currentBranch);
+            currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
+            branchService.add(currentBranch.getId(), currentBranch);
         }
         return Optional.empty();
     }

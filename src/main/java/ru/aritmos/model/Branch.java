@@ -14,6 +14,7 @@ import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.service.VisitService;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -71,6 +72,11 @@ public class Branch extends BranchEntity {
      */
     HashMap<String, Mark> marks = new HashMap<>();
 
+    /**
+     * Правила сегментации, где ключом является набор параметров визита, а значением идентификатор соответствующей очереди
+     */
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    List<SegmentationRuleData> segmentationRules =new ArrayList<>();
 
     public Integer incrementTicketCounter(Queue queue) {
         if (this.getQueues().containsKey(queue.getId())) {

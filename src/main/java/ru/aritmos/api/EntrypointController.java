@@ -85,10 +85,9 @@ public class EntrypointController {
         }
         if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList()).containsAll(serviceIds)) {
 
-            ArrayList<String> services = new ArrayList<>();
-            branchService.getBranch(branchId).getServices().values().stream().map(BranchEntity::getId).filter(serviceIds::contains).forEach(services::add);
 
-            return visitService.createVisit(branchId, entryPointId, services, printTicket);
+            VisitParameters visitParameters=VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+            return visitService.createVisit(branchId, entryPointId, visitParameters, printTicket);
 
         } else {
             throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -127,9 +126,25 @@ public class EntrypointController {
 
                              @Body VisitParameters parameters,
                              @QueryValue Boolean printTicket) {
-        Visit visit = createVisit(branchId, entryPointId, parameters.getServiceIds(), printTicket);
-        visit = setParameterMap(branchId, visit.getId(), parameters.getParameters());
-        return visit;
+        Branch branch;
+        try {
+            branch = branchService.getBranch(branchId);
+        } catch (Exception ex) {
+            throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
+
+
+        }
+        if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList()).containsAll(parameters.getServiceIds())) {
+
+
+
+            return visitService.createVisit(branchId, entryPointId, parameters, printTicket);
+
+        } else {
+            throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
+
+        }
+
 
     }
 
@@ -146,7 +161,7 @@ public class EntrypointController {
     @Tag(name = "Полный список")
     @Put(uri = "/branches/{branchId}/visits/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
-    public Visit setParameterMap(@PathVariable String branchId, @PathVariable String visitId, @Body HashMap<String, Object> parameterMap) {
+    public Visit setParameterMap(@PathVariable String branchId, @PathVariable String visitId, @Body HashMap<String, String> parameterMap) {
         Visit visit = visitService.getVisit(branchId, visitId);
         visit.setParameterMap(parameterMap);
 

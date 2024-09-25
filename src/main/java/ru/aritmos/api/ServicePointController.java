@@ -45,6 +45,7 @@ public class ServicePointController {
     /**
      * Возвращает все не занятые сотрудниками
      * точки обслуживания
+     *
      * @param branchId идентификатор отделения
      * @return свободные точки обслуживания
      */
@@ -74,6 +75,7 @@ public class ServicePointController {
 
     /**
      * Возвращает точку обслуживания по логину сотрудника
+     *
      * @param branchId идентификатор отделения
      * @return свободные точки обслуживания
      */
@@ -85,8 +87,10 @@ public class ServicePointController {
     public Optional<ServicePoint> getServicePointsByUserName(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable String userName) {
         return visitService.getServicePointHashMap(branchId).values().stream().filter(f -> f.getUser() != null && f.getUser().getName().equals(userName)).findFirst();
     }
+
     /**
      * Возвращает сотрудника по логину
+     *
      * @param branchId идентификатор отделения
      * @return пользователь занимающий рабочее место
      */
@@ -99,6 +103,7 @@ public class ServicePointController {
         Optional<ServicePoint> servicePoint = visitService.getServicePointHashMap(branchId).values().stream().filter(f -> f.getUser() != null && f.getUser().getName().equals(userName)).findFirst();
         return servicePoint.map(ServicePoint::getUser);
     }
+
     /**
      * Возвращает все точки обслуживания
      *
@@ -118,6 +123,7 @@ public class ServicePointController {
     /**
      * Открытие рабочей станции сотрудником
      * Если рабочая станция уже открыта - выдается 409 ошибка (конфликт)
+     *
      * @param branchId       идентификатор отделения
      * @param userName       имя пользователя
      * @param servicePointId идентификатор точки обслуживания
@@ -145,6 +151,7 @@ public class ServicePointController {
      * Закрытие рабочей станции сотрудником
      * Если рабочая станция уже закрыта
      * выдается 409 ошибка (конфликт)
+     *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      */
@@ -169,6 +176,7 @@ public class ServicePointController {
      * если количество визитов меньше - выводятся все визиты.
      * Визиты сортируются по времени ожидания,
      * от большего к меньшему
+     *
      * @param branchId идентификатор отделения
      * @param queueId  идентификатор очереди
      * @param limit    количество последних возвращаемых талонов
@@ -203,6 +211,7 @@ public class ServicePointController {
      * Возвращает полный список визитов в отделении
      * учитываются визиты расположенные в очередях, пулах рабочих станций
      * и пулах сотрудников, а так же визиты обслуживаемые в данный момент
+     *
      * @param branchId идентификатор отделения
      * @return список визитов
      */
@@ -220,6 +229,7 @@ public class ServicePointController {
 
     /**
      * Возвращает визит по его идентификатору
+     *
      * @param branchId идентификатор отделения
      * @param visitId  идентификатор визита
      * @return визит
@@ -239,6 +249,7 @@ public class ServicePointController {
     /**
      * Возвращает список визитов в отделении с фильтрацией по статусу
      * выводятся визиты, чей статус входит в передаваемым в теле запроса списком статусов.
+     *
      * @param branchId идентификатор отделения
      * @param statuses массив статусов визита
      * @return список визитов
@@ -258,6 +269,7 @@ public class ServicePointController {
 
     /**
      * Получает данные о визите
+     *
      * @param branchId идентификатор отделения
      * @param queueId  идентификатор очереди
      * @param visitId  идентификатор визита
@@ -282,6 +294,7 @@ public class ServicePointController {
 
     /**
      * Вызов визита по идентификатору
+     *
      * @param branchId       идентификатор отделения
      * @param servicePointId идентификатор точки обслуживания
      * @param visitId        идентификатор визита
@@ -293,8 +306,8 @@ public class ServicePointController {
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}/call", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<Visit> callVisit(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                           @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                           @PathVariable String visitId) {
+                                     @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                     @PathVariable String visitId) {
 
 
         return visitService.visitCall(branchId, servicePointId, visitId);
@@ -337,8 +350,8 @@ public class ServicePointController {
     @Post(uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<Visit> visitCallForConfirm(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                                     @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                     @Body Visit visit) {
+                                               @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                               @Body Visit visit) {
 
 
         return visitService.visitCallForConfirm(branchId, servicePointId, visit);
@@ -359,8 +372,8 @@ public class ServicePointController {
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<Visit> visitCallForConfirmByVisitId(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                                     @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                     @PathVariable String visitId) {
+                                                        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                                        @PathVariable String visitId) {
 
         Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitCallForConfirm(branchId, servicePointId, visit);
@@ -382,8 +395,8 @@ public class ServicePointController {
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<Visit> visitNoShow(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                             @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                             @Body Visit visit) {
+                                       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                       @Body Visit visit) {
 
 
         return visitService.visitNoShow(branchId, servicePointId, visit);
@@ -405,8 +418,8 @@ public class ServicePointController {
     @Post(uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow/{visitId}", consumes = "application/json", produces = "application/json")
     @ExecuteOn(TaskExecutors.IO)
     public Optional<Visit> visitCallNoShow(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-                                 @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-                                 @PathVariable String visitId) {
+                                           @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                                           @PathVariable String visitId) {
 
         Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitNoShow(branchId, servicePointId, visit);
@@ -824,7 +837,7 @@ public class ServicePointController {
     /**
      * Возвращает список доступных точек обслуживания очередей
      * (в зависимости от сотрудников,
-     *  расположенных в точке обслуживания и имеющих соответсвующий рабочий профиль)
+     * расположенных в точке обслуживания и имеющих соответсвующий рабочий профиль)
      * (то есть имеющего возможность вызывать из выводимой очереди)
      *
      * @param branchId       идентификатор отделения
@@ -1336,7 +1349,10 @@ public class ServicePointController {
     @Tag(name = "Перевод визита")
     @Tag(name = "Полный список")
     @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}")
-    public Visit visitTransferFromQueueToUserPool(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId, @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId, @PathVariable String visitId, @QueryValue(defaultValue = "true") Boolean isAppend) {
+    public Visit visitTransferFromQueueToUserPool(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                                                  @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
+                                                  @PathVariable String visitId,
+                                                  @QueryValue(defaultValue = "true") Boolean isAppend) {
         Visit visit = visitService.getVisit(branchId, visitId);
         return visitService.visitTransferFromQueueToUserPool(branchId, userId, visit, isAppend);
 
@@ -1386,8 +1402,8 @@ public class ServicePointController {
     /**
      * Отложить визит
      *
-     * @param branchId        идентификатор отделения
-     * @param servicePointId  идентификатор точки обслуживания
+     * @param branchId       идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
      * @return визит
      */
     @Tag(name = "Зона обслуживания")
@@ -1399,8 +1415,9 @@ public class ServicePointController {
     public Visit visitPostPone(String branchId, String servicePointId) {
         return visitService.visitPostPone(branchId, servicePointId);
     }
+
     /**
-     * Возвращение визита из сервис поинта
+     * Возвращение визита из сервиса поинта
      *
      * @param branchId        идентификатор отделения
      * @param servicePointId  идентификатор точки обслуживания     *
@@ -1413,7 +1430,9 @@ public class ServicePointController {
     @Tag(name = "Возвращение визита")
     @Tag(name = "Полный список")
     @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back")
-    public Visit visitPutBack(String branchId, String servicePointId,  Long returnTimeDelay) {
-        return visitService.visitPutBack(branchId, servicePointId,  returnTimeDelay);
+    public Visit visitPutBack(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+                              @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+                              @QueryValue(defaultValue = "0") Long returnTimeDelay) {
+        return visitService.visitPutBack(branchId, servicePointId, returnTimeDelay);
     }
 }

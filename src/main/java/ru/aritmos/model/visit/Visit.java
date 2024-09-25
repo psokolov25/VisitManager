@@ -217,7 +217,7 @@ public class Visit {
      * Дополнительные параметры визита
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    HashMap<String, Object> parameterMap;
+    HashMap<String, String> parameterMap;
     /**
      * Признак печати талона
      */
