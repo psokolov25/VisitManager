@@ -12,7 +12,13 @@ import ru.aritmos.model.visit.Visit;
 @Requires(property = "micronaut.application.rules.segmentation", value = "simple")
 @Singleton
 public class SimpleSegmentationRule implements SegmentationRule {
-
+  /**
+   * Возвращает очередь согласно текущей услуги визита,
+   * если у услуги предусмотрено правило - выполняется оно, если нет - берется очередь с указанной для очереди услугой
+   * @param visit визитё
+   * @param branch отделение
+   * @return Очередь
+   */
   @Override
   public Optional<Queue> getQueue(Visit visit, Branch branch) {
     if (visit.getCurrentService() != null) {
