@@ -114,15 +114,15 @@ class EntrypointTest {
                         .queueId(queueCredit.getId())
                         .keyProperty(new HashMap<>(){{
                             put("sex","male");
-                            put("age","33");
+                            put("age","18-32");
 
                         }}).build());
                 add(SegmentationRuleData.builder()
                         .queueId(queueBigCredit.getId())
                         .keyProperty(new HashMap<>(){{
                             put("sex","male");
-                            put("age","33");
-                            put("level","vip");
+                            put("age","33-55");
+
                         }}).build());
             }};
             branch.setSegmentationRules(rules);
@@ -268,7 +268,7 @@ class EntrypointTest {
 
         VisitParameters visitParameters = new VisitParameters();
         visitParameters.getParameters().put("sex", "male");
-        visitParameters.getParameters().put("age", "33");
+        visitParameters.getParameters().put("age", "33-55");
         visitParameters.setServiceIds(serviceIds);
         Visit visit = entrypointController.createVisit(branchId, "1", visitParameters, false);
         //Visit visit=visitService.createVisit(branchId, "1", serviceIds, false);
@@ -749,7 +749,7 @@ class EntrypointTest {
 
         Visit visit = entrypointController.createVisit(branchId, "1",VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>(){{
             put("sex","male");
-            put("age","33");
+            put("age","33-55");
             put("level","vip");
         }}).build(),false );
 

@@ -38,7 +38,7 @@ public class SimpleSegmentationRule implements SegmentationRule {
      */
     private Optional<String> checkSegmentationRules(Visit visit, List<SegmentationRuleData> rules) {
         if(!visit.getParameterMap().isEmpty()) {
-            Optional<SegmentationRuleData> result = rules.stream().filter(f -> f.getKeyProperty().entrySet().containsAll(visit.getParameterMap().entrySet())).findFirst();
+            Optional<SegmentationRuleData> result = rules.stream().filter(f -> visit.getParameterMap().entrySet().containsAll(f.getKeyProperty().entrySet())).findFirst();
             return result.map(SegmentationRuleData::getQueueId);
         }
         else {
