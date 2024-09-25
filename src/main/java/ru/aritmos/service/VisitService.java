@@ -38,6 +38,7 @@ public class VisitService {
     @Value("${micronaut.application.name}")
     String applicationName;
 
+
     /**
      * Возвращает визит по его отделению и идентификатору
      *
