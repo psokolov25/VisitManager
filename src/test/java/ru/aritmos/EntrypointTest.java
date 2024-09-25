@@ -111,6 +111,7 @@ class EntrypointTest {
             creditCard.getPossibleOutcomes().put(creditCardGiven.getId(), creditCardGiven);
             List<SegmentationRuleData> rules = new ArrayList<SegmentationRuleData>() {{
                 add(SegmentationRuleData.builder()
+                        .serviceId(creditService.getId())
                         .queueId(queueCredit.getId())
                         .keyProperty(new HashMap<>(){{
                             put("sex","male");
@@ -118,6 +119,7 @@ class EntrypointTest {
 
                         }}).build());
                 add(SegmentationRuleData.builder()
+                        .serviceId(creditService.getId())
                         .queueId(queueBigCredit.getId())
                         .keyProperty(new HashMap<>(){{
                             put("sex","male");
