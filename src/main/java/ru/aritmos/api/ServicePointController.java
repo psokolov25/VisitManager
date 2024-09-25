@@ -89,6 +89,26 @@ public class ServicePointController {
   }
 
   /**
+   * Возвращает точку обслуживания по логину сотрудника *
+   *
+   * @return свободные точки обслуживания
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные о точках обслуживания")
+  @Tag(name = "Полный список")
+  @Get("/servicePoints/user/{userName}")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<ServicePoint> getServicePointsByUserName(@PathVariable String userName) {
+
+    return branchService.getDetailedBranches().values().stream()
+        .flatMap(
+            fm ->
+                fm.getServicePoints().values().stream()
+                    .filter(f -> f.getUser() != null && f.getUser().getName().equals(userName)))
+        .findFirst();
+  }
+
+  /**
    * Возвращает сотрудника по логину
    *
    * @param branchId идентификатор отделения

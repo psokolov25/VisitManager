@@ -57,6 +57,18 @@ public class BranchService {
             });
     return result;
   }
+  public HashMap<String, Branch> getDetailedBranches() {
+
+    HashMap<String, Branch> result = new HashMap<>();
+    branches
+            .values()
+            .forEach(
+                    f -> {
+                      Branch branch = getBranch(f.getId());
+                      result.put(branch.getId(), branch);
+                    });
+    return result;
+  }
 
   @CachePut(parameters = {"key"})
   public Branch add(String key, Branch branch) {
@@ -74,7 +86,15 @@ public class BranchService {
           "config", true, null, branch, new HashMap<>(), "BRANCH_CREATED");
       // eventService.sendChangedEvent("*", true, null, branch, new HashMap<>(), "CREATED");
     }
+    branch.getQueues().forEach((key1, value) -> value.setBranchId(key));
+    branch.getServicePoints().forEach((key1, value) -> value.setBranchId(key));
+    branch.getEntryPoints().forEach((key1, value) -> value.setBranchId(key));
+    branch.getServices().forEach((key1, value) -> value.setBranchId(key));
+    branch.getWorkProfiles().forEach((key1, value) -> value.setBranchId(key));
+
+
     branches.put(key, branch);
+
     log.info("Putting branchInfo {}", branch);
     return branch;
   }
