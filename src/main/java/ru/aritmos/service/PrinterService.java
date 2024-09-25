@@ -10,14 +10,11 @@ import ru.aritmos.model.visit.Visit;
 @Singleton
 @Slf4j
 public class PrinterService {
-    @Inject
-    PrinterClient printerClient;
+  @Inject PrinterClient printerClient;
 
-    public void print(String id, Visit visit){
-       log.info("Sending to printer client {}",id);
-       Mono.from(printerClient.print("UTF-8",true,visit))
-                .subscribe(s->log.info("Printing {}!",s)
-                ,e->log.error("Error",e));
-    }
-
+  public void print(String id, Visit visit) {
+    log.info("Sending to printer client {}", id);
+    Mono.from(printerClient.print("UTF-8", true, visit))
+        .subscribe(s -> log.info("Printing {}!", s), e -> log.error("Error", e));
+  }
 }

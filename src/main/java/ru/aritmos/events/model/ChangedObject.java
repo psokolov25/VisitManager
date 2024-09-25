@@ -8,8 +8,8 @@ import lombok.Data;
 @Serdeable
 @Builder
 public class ChangedObject {
-    Object oldValue;
-    Object newValue;
-    String className;
-    String action;
+  Object oldValue;
+  Object newValue;
+  String className;
+  String action;
 }

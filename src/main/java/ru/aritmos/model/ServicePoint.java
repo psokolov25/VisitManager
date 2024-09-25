@@ -7,41 +7,31 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.aritmos.model.visit.Visit;
 
-/**
- * Точка обслуживания
- */
+/** Точка обслуживания */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
 @Introspected
-
 public class ServicePoint extends BranchEntityWithVisits {
-    public  ServicePoint(String id,String name)
-    {
-        super(id,name);
-    }
-    public  ServicePoint(String name)
-    {
-        super(name);
-    }
+  /** Визит */
+  Visit visit;
 
-    /**
-     * Визит
-     */
-    Visit visit;
-    /**
-     * Обслуживающий пользователь
-     */
-    User user;
-    /**
-     * Режим автоматического вызова при создании визита
-     */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    Boolean autoCallMode=false;
-    /**
-     * Режим подтверждения вызова
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    Boolean isConfirmRequired=false;
+  /** Обслуживающий пользователь */
+  User user;
 
+  /** Режим автоматического вызова при создании визита */
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  Boolean autoCallMode = false;
+
+  /** Режим подтверждения вызова */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  Boolean isConfirmRequired = false;
+
+  public ServicePoint(String id, String name) {
+    super(id, name);
+  }
+
+  public ServicePoint(String name) {
+    super(name);
+  }
 }

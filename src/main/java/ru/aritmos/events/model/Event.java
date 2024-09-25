@@ -2,11 +2,10 @@ package ru.aritmos.events.model;
 
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
-import lombok.Builder;
-import lombok.Data;
-
 import java.time.ZonedDateTime;
 import java.util.Map;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
@@ -16,9 +15,9 @@ import java.util.Map;
 Класс события
  */
 public class Event {
-    String senderService;
-    ZonedDateTime eventDate;
-    String eventType;
-    Map<String,String> params;
-    Object body;
+  String senderService;
+  ZonedDateTime eventDate;
+  String eventType;
+  Map<String, String> params;
+  Object body;
 }

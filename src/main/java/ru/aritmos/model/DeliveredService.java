@@ -1,26 +1,20 @@
 package ru.aritmos.model;
 
 import io.micronaut.serde.annotation.Serdeable;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Оказанная услуга
- */
+/** Оказанная услуга */
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Serdeable
-public class DeliveredService extends BasedService{
-    public DeliveredService(String id,String name)
-    {
-        super(id, name);
-    }
+public class DeliveredService extends BasedService {
+  /** Идентификаторы подходящих услуг */
+  List<String> servviceIds = new ArrayList<>();
 
-    /**
-     * Идентификаторы подходящих услуг
-     */
-    List<String> servviceIds=new ArrayList<>();
+  public DeliveredService(String id, String name) {
+    super(id, name);
+  }
 }

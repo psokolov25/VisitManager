@@ -5,18 +5,17 @@ import graphql.schema.DataFetchingEnvironment;
 import jakarta.inject.Singleton;
 import ru.aritmos.model.Branch;
 
-
 @Singleton
 public class BranchFetchData implements DataFetcher<Iterable<Branch>> {
-    final BranchService branchService;
+  final BranchService branchService;
 
-    public BranchFetchData(BranchService branchService) {
-        this.branchService = branchService;
-    }
+  public BranchFetchData(BranchService branchService) {
+    this.branchService = branchService;
+  }
 
-    @Override
-    public Iterable<Branch> get(DataFetchingEnvironment env) {
+  @Override
+  public Iterable<Branch> get(DataFetchingEnvironment env) {
 
-        return branchService.getBranches().values();
-    }
+    return branchService.getBranches().values();
+  }
 }

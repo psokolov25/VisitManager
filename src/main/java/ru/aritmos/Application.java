@@ -1,9 +1,9 @@
 package ru.aritmos;
 
-import io.micronaut.core.annotation.NonNull;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.ApplicationContextConfigurer;
 import io.micronaut.context.annotation.ContextConfigurer;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
@@ -12,51 +12,34 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
-        info = @Info(
-                title = "VisitManagement",
-                version = "0.4"
-
-        ), servers = {
-        @Server(url = "http://192.168.8.45:8080"),
-        @Server(url = "http://192.168.1.8:8080"),
-        @Server(url = "http://localhost:8080")}
-        ,
-        tags = {
-
-                @Tag(name = "Зона обслуживания"),
-                @Tag(name = "Зона ожидания"),
-                @Tag(name = "Информация об отделении"),
-                @Tag(name = "Конфигурация отделений")
-
-
-        })
-
+    info = @Info(title = "VisitManagement", version = "0.4"),
+    servers = {
+      @Server(url = "http://192.168.8.45:8080"),
+      @Server(url = "http://192.168.1.8:8080"),
+      @Server(url = "http://localhost:8080")
+    },
+    tags = {
+      @Tag(name = "Зона обслуживания"),
+      @Tag(name = "Зона ожидания"),
+      @Tag(name = "Информация об отделении"),
+      @Tag(name = "Конфигурация отделений")
+    })
 public class Application {
 
+  public static void main(String[] args) {
 
-    @ContextConfigurer
-    public static class Configurer implements ApplicationContextConfigurer {
-        @Override
-        public void configure(@NonNull ApplicationContextBuilder builder) {
+    Micronaut.run(Application.class, args);
+  }
 
+  @PostConstruct
+  public void getConfiguration() {}
 
-            builder.defaultEnvironments("dev");
-        }
+  @ContextConfigurer
+  public static class Configurer implements ApplicationContextConfigurer {
+    @Override
+    public void configure(@NonNull ApplicationContextBuilder builder) {
 
+      builder.defaultEnvironments("dev");
     }
-
-    @PostConstruct
-    public void getConfiguration() {
-
-    }
-
-    public static void main(String[] args) {
-
-
-        Micronaut.run(Application.class, args);
-
-
-    }
-
-
+  }
 }

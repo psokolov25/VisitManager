@@ -6,25 +6,20 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import java.util.HashMap;
-/**
- * Базовая услуга
- */
+
+/** Базовая услуга */
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Serdeable
 @NoArgsConstructor
-
 @AllArgsConstructor
+public class BasedService extends BranchEntity {
+  HashMap<String, Outcome> possibleOutcomes = new HashMap<>();
 
-public class BasedService extends BranchEntity{
-    public BasedService(String id,String name)
-    {
-        super(id,name);
+  /** Итог обслуживания */
+  Outcome outcome;
 
-    }
-    HashMap<String,Outcome>possibleOutcomes=new HashMap<>();
-    /**
-     * Итог обслуживания
-     */
-    Outcome outcome;
+  public BasedService(String id, String name) {
+    super(id, name);
+  }
 }

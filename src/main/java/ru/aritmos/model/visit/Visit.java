@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.*;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,15 +17,7 @@ import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Mark;
 import ru.aritmos.model.Service;
 
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-/**
- * Визит
- */
+/** Визит */
 @Data
 @EqualsAndHashCode
 @Serdeable
@@ -28,238 +25,191 @@ import java.util.List;
 @Introspected
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-
-
 public class Visit {
-    /**
-     * Идентификатор визита
-     */
-    String id;
-    /**
-     * Статус визита
-     */
-    String status;
-    /**
-     * Талон
-     */
-    String ticket;
-    /**
-     * Идентификатор отделения
-     */
-    String branchId;
+  /** Идентификатор визита */
+  String id;
 
-    /**
-     * Название отделения
-     */
-    String branchName;
-    /**
-     * Дата создания визита
-     */
-    ZonedDateTime createDateTime;
+  /** Статус визита */
+  String status;
 
-    /**
-     * Дата перевода
-     */
-    @Schema(nullable = true)
-    ZonedDateTime transferDateTime;
+  /** Талон */
+  String ticket;
 
-    /**
-     * Дата возвращения
-     */
-    @Schema(nullable = true)
-    ZonedDateTime returnDateTime;
+  /** Идентификатор отделения */
+  String branchId;
 
-    /**
-     * Дата вызова
-     */
-    @Schema(nullable = true)
-    ZonedDateTime callDateTime;
-    /**
-     * Дата начала обслуживания
-     */
-    @Schema(nullable = true)
-    ZonedDateTime startServingDateTime;
-    /**
-     * Дата завершения обслуживания
-     */
-    @Schema(nullable = true)
-    ZonedDateTime servedDateTime;
-    /**
-     * Дата завершения визита
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Schema(nullable = true)
-    ZonedDateTime endDateTime;
+  /** Название отделения */
+  String branchName;
 
-    /**
-     * Идентификатор точки обслуживания
-     */
-    @Schema(nullable = true)
-    String servicePointId;
-    /**
-     * Логин вызвавшего сотрудника
-     */
-    @Schema(nullable = true)
-    String userName;
-    /**
-     * Id вызвавшего сотрудника
-     */
-    @Schema(nullable = true)
-    String userId;
-    /**
-     * Id сотрудника, в пуле которого располагается визит
-     */
-    @Schema(nullable = true)
-    String poolUserId;
+  /** Дата создания визита */
+  ZonedDateTime createDateTime;
 
-    /**
-     * Id точка обслуживания, в пуле которого располагается визит
-     */
-    @Schema(nullable = true)
-    String poolServicePointId;
-    /**
-     * Лимит ожидания после возвращения визита в очередь
-     */
-    @Schema(nullable = true)
-    Long returnTimeDelay;
-    /**
-     * Массив не обслуженных услуг
-     */
+  /** Дата перевода */
+  @Schema(nullable = true)
+  ZonedDateTime transferDateTime;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    List<Service> unservedServices;
-    /**
-     * Обслуженные услуги
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    List<Service> servedServices;
-    /**
-     * Заметки визита
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    List<Mark> visitMarks;
+  /** Дата возвращения */
+  @Schema(nullable = true)
+  ZonedDateTime returnDateTime;
 
+  /** Дата вызова */
+  @Schema(nullable = true)
+  ZonedDateTime callDateTime;
 
+  /** Дата начала обслуживания */
+  @Schema(nullable = true)
+  ZonedDateTime startServingDateTime;
 
+  /** Дата завершения обслуживания */
+  @Schema(nullable = true)
+  ZonedDateTime servedDateTime;
 
+  /** Дата завершения визита */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Schema(nullable = true)
+  ZonedDateTime endDateTime;
 
-    /**
-     * Время ожидания в последней очереди в секундах
-     */
-    Long waitingTime;
+  /** Идентификатор точки обслуживания */
+  @Schema(nullable = true)
+  String servicePointId;
 
-    @JsonGetter
+  /** Логин вызвавшего сотрудника */
+  @Schema(nullable = true)
+  String userName;
 
-    public Long getWaitingTime() {
-        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+  /** Id вызвавшего сотрудника */
+  @Schema(nullable = true)
+  String userId;
 
-        waitingTime = unit.between(this.getReturnDateTime() != null ? this.getReturnDateTime() : this.getCreateDateTime() != null ? this.getCreateDateTime() : ZonedDateTime.now(), this.getStartServingDateTime() != null ? this.getStartServingDateTime() : ZonedDateTime.now());
-        return waitingTime;
+  /** Id сотрудника, в пуле которого располагается визит */
+  @Schema(nullable = true)
+  String poolUserId;
 
+  /** Id точка обслуживания, в пуле которого располагается визит */
+  @Schema(nullable = true)
+  String poolServicePointId;
+
+  /** Лимит ожидания после возвращения визита в очередь */
+  @Schema(nullable = true)
+  Long returnTimeDelay;
+
+  /** Массив не обслуженных услуг */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  List<Service> unservedServices;
+
+  /** Обслуженные услуги */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  List<Service> servedServices;
+
+  /** Заметки визита */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  List<Mark> visitMarks;
+
+  /** Время ожидания в последней очереди в секундах */
+  Long waitingTime;
+
+  /** Время прошедшее от возвращения в очередь */
+  @Schema(nullable = true)
+  Long returningTime;
+
+  /** Общее время с создания визита в секундах */
+  @Schema(nullable = true)
+  Long visitLifeTime;
+
+  /** Время обслуживания в секундах */
+  @Schema(nullable = true)
+  Long servingTime;
+
+  /** Текущая услуга */
+  Service currentService;
+
+  /** Дополнительные параметры визита */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  HashMap<String, String> parameterMap;
+
+  /** Признак печати талона */
+  Boolean printTicket;
+
+  /** Точка создания визита талона */
+  EntryPoint entryPoint;
+
+  /** Идентификатор очереди */
+  @Schema(nullable = true)
+  String queueId;
+
+  List<VisitEvent> visitEvents;
+
+  @JsonGetter
+  public Long getWaitingTime() {
+    final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+
+    waitingTime =
+        unit.between(
+            this.getReturnDateTime() != null
+                ? this.getReturnDateTime()
+                : this.getCreateDateTime() != null ? this.getCreateDateTime() : ZonedDateTime.now(),
+            this.getStartServingDateTime() != null
+                ? this.getStartServingDateTime()
+                : ZonedDateTime.now());
+    return waitingTime;
+  }
+
+  @JsonGetter
+  public Long getReturningTime() {
+    final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+    if (this.returnDateTime != null) {
+      returningTime = unit.between(this.returnDateTime, ZonedDateTime.now());
+      return returningTime;
     }
+    return 0L;
+  }
 
-    /**
-     * Время прошедшее от возвращения в очередь
-     */
-    @Schema(nullable = true)
-    Long returningTime;
+  @JsonGetter
+  public Long getVisitLifeTime() {
+    final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
-    @JsonGetter
-    public Long getReturningTime() {
-        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        if (this.returnDateTime != null) {
-            returningTime = unit.between(this.returnDateTime, ZonedDateTime.now());
-            return returningTime;
-        }
-        return 0L;
+    visitLifeTime =
+        unit.between(
+            this.getCreateDateTime() != null ? this.getCreateDateTime() : ZonedDateTime.now(),
+            this.getEndDateTime() != null ? this.getEndDateTime() : ZonedDateTime.now());
+    return visitLifeTime;
+  }
 
-    }
+  @JsonGetter
+  public Long getServingTime() {
+    final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
 
+    servingTime =
+        unit.between(
+            this.startServingDateTime != null
+                ? this.getStartServingDateTime()
+                : ZonedDateTime.now(),
+            this.getServedDateTime() != null ? this.getServedDateTime() : ZonedDateTime.now());
+    return servingTime;
+  }
 
-    /**
-     * Общее время с создания визита в секундах
-     */
-    @Schema(nullable = true)
-    Long visitLifeTime;
+  @JsonGetter
+  public ArrayList<ArrayList<VisitEventInformation>> getEvents() {
 
-    @JsonGetter
+    ArrayList<ArrayList<VisitEventInformation>> result = new ArrayList<>();
+    ArrayList<VisitEventInformation> subresult = new ArrayList<>();
+    result.add(subresult);
+    for (VisitEvent f : this.visitEvents) {
 
-    public Long getVisitLifeTime() {
-        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-
-        visitLifeTime = unit.between(this.getCreateDateTime() != null ? this.getCreateDateTime() : ZonedDateTime.now(), this.getEndDateTime() != null ? this.getEndDateTime() : ZonedDateTime.now());
-        return visitLifeTime;
-    }
-
-    /**
-     * Время обслуживания в секундах
-     */
-    @Schema(nullable = true)
-    Long servingTime;
-
-
-    @JsonGetter
-    public Long getServingTime() {
-        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-
-        servingTime = unit.between(this.startServingDateTime != null ? this.getStartServingDateTime() : ZonedDateTime.now(), this.getServedDateTime() != null ? this.getServedDateTime() : ZonedDateTime.now());
-        return servingTime;
-
-    }
-
-    /**
-     * Текущая услуга
-     */
-
-    Service currentService;
-
-    /**
-     * Дополнительные параметры визита
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    HashMap<String, String> parameterMap;
-    /**
-     * Признак печати талона
-     */
-    Boolean printTicket;
-    /**
-     * Точка создания визита талона
-     */
-    EntryPoint entryPoint;
-    /**
-     * Идентификатор очереди
-     */
-    @Schema(nullable = true)
-    String queueId;
-
-    List<VisitEvent> visitEvents;
-
-    @JsonGetter
-    public ArrayList<ArrayList<VisitEventInformation>> getEvents() {
-
-        ArrayList<ArrayList<VisitEventInformation>> result = new ArrayList<>();
-        ArrayList<VisitEventInformation> subresult =new ArrayList<>();
+      VisitEventInformation visitEventDateTime =
+          VisitEventInformation.builder()
+              .visitEvent(f)
+              .eventDateTime(f.dateTime)
+              .parameters(f.getParameters())
+              .transactionCompletionStatus(
+                  VisitEvent.isNewOfTransaction(f) ? VisitEvent.getStatus(f) : null)
+              .build();
+      subresult.add(visitEventDateTime);
+      if (VisitEvent.isNewOfTransaction(f)) {
+        subresult = new ArrayList<>();
         result.add(subresult);
-        for (VisitEvent f:this.visitEvents) {
-
-            VisitEventInformation visitEventDateTime = VisitEventInformation.builder()
-                    .visitEvent(f)
-                    .eventDateTime(f.dateTime)
-                    .parameters(f.getParameters())
-                    .transactionCompletionStatus(VisitEvent.isNewOfTransaction(f)?VisitEvent.getStatus(f):null)
-                    .build();
-            subresult.add(visitEventDateTime);
-            if(VisitEvent.isNewOfTransaction(f)) {
-                subresult = new ArrayList<>();
-                result.add(subresult);
-            }
-
-
-
-
-        }
-        return result;
+      }
     }
-
+    return result;
+  }
 }
-

@@ -8,29 +8,29 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Inject;
+import java.io.IOException;
+import java.util.HashMap;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
-import ru.aritmos.exceptions.SystemException;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 @Slf4j
 @KafkaListener(offsetReset = OffsetReset.EARLIEST)
 public class KaffkaListener {
     private final static  HashMap<String, EventHandler> allHandlers = new HashMap<>();
     private final static  HashMap<String, EventHandler> serviceHandlers = new HashMap<>();
+    @Inject
+    ObjectMapper objectMapper;
+
     public static void addAllEventHandler(String eventType,EventHandler handler)
     {
         allHandlers.put(eventType,handler);
     }
+
     public static void addServiceEventHandler(String eventType,EventHandler handler)
     {
         serviceHandlers.put(eventType,handler);
     }
-    @Inject
-    ObjectMapper objectMapper;
 
     /**
      * Получает сообщения от шины дынных адресованные данной службе
@@ -40,7 +40,7 @@ public class KaffkaListener {
      */
     @Topic("event_${micronaut.application.name}")
     @ExecuteOn(TaskExecutors.IO)
-    public void recieve(@KafkaKey String key, String event) throws IOException, SystemException {
+    public void recieve(@KafkaKey String key, String event) throws IOException {
 
         log.debug("Recieve key {} value {}", key, event);
         Event event1 = objectMapper.readValue(event, Event.class);
@@ -59,7 +59,7 @@ public class KaffkaListener {
      */
     @Topic("events")
     @ExecuteOn(TaskExecutors.IO)
-    public void recieveAll(@KafkaKey String key, String event) throws IOException, SystemException {
+    public void recieveAll(@KafkaKey String key, String event) throws IOException {
         log.debug("Recieve broadcast message key {} value {}", key, event);
         Event event1 = objectMapper.readValue(event, Event.class);
         if(allHandlers.containsKey(event1.getEventType()))

@@ -57,14 +57,14 @@ micronaut:
         mapping: /swagger-ui/**
 
 redis:
-   uri: redis://192.168.8.45:6379
-   #uri: ${REDIS_URL}
-   cache:
-     key-serializer:  io.micronaut.core.serialize.ObjectSerializer
-     value-serializer:  io.micronaut.core.serialize.ObjectSerializer
+  uri: redis://192.168.8.45:6379
+  #uri: ${REDIS_URL}
+  cache:
+    key-serializer: io.micronaut.core.serialize.ObjectSerializer
+    value-serializer: io.micronaut.core.serialize.ObjectSerializer
 
-   caches:
-     branches:
-       charset: UTF-8
+  caches:
+    branches:
+      charset: UTF-8
 
 

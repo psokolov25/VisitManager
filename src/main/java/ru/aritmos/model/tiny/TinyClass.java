@@ -8,9 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
-/**
- * Класс для формирования списков объектов
- */
+/** Класс для формирования списков объектов */
 @Data
 @Introspected
 @Jacksonized
@@ -19,12 +17,9 @@ import lombok.extern.jackson.Jacksonized;
 @NoArgsConstructor
 @Serdeable
 public class TinyClass {
-    /**
-     * Идентификатора объекта
-     */
-    private String id;
-    /**
-     * Название объекта
-     */
-    private String name;
+  /** Идентификатора объекта */
+  private String id;
+
+  /** Название объекта */
+  private String name;
 }

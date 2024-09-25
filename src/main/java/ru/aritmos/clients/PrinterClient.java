@@ -13,8 +13,14 @@ import ru.aritmos.model.visit.Visit;
 
 @Client(value = "${micronaut.application.printerServiceURL}")
 public interface PrinterClient {
-    @Retryable(delay = "${micronaut.application.printerRetryPeriod:5s}",maxDelay = "${micronaut.application.printerRetryMaxPeriod:45m}",attempts = "${micronaut.application.printerUrlRetryRepeat:30}")
-    @Post(uri = "/printer/visit", produces = "application/json", consumes = "application/json")
-    @ExecuteOn(TaskExecutors.IO)
-    Publisher<HttpResponse<?>> print(@QueryValue(defaultValue = "UTF-8") String charset, @QueryValue Boolean responseRequired, @Body Visit visit);
+  @Retryable(
+      delay = "${micronaut.application.printerRetryPeriod:5s}",
+      maxDelay = "${micronaut.application.printerRetryMaxPeriod:45m}",
+      attempts = "${micronaut.application.printerUrlRetryRepeat:30}")
+  @Post(uri = "/printer/visit", produces = "application/json", consumes = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  Publisher<HttpResponse<?>> print(
+      @QueryValue(defaultValue = "UTF-8") String charset,
+      @QueryValue Boolean responseRequired,
+      @Body Visit visit);
 }

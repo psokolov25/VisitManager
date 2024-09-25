@@ -4,15 +4,14 @@ import io.micronaut.serde.annotation.Serdeable;
 
 @Serdeable
 public enum TransactionCompletionStatus {
-    OK,
-    NO_SHOW,
-    REMOVED_BY_EMP,
-    REMOVED_BY_CUSTOMER,
-    REMOVED_BY_RESET,
-    TRANSFER_TO_QUEUE,
-    TRANSFER_TO_SERVICE_POINT,
-    TRANSFER_TO_STAFF,
-    LOGOUT,
-    CLOSE_SP
-
+  OK,
+  NO_SHOW,
+  REMOVED_BY_EMP,
+  REMOVED_BY_CUSTOMER,
+  REMOVED_BY_RESET,
+  TRANSFER_TO_QUEUE,
+  TRANSFER_TO_SERVICE_POINT,
+  TRANSFER_TO_STAFF,
+  LOGOUT,
+  CLOSE_SP
 }

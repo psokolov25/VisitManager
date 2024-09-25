@@ -12,9 +12,7 @@ import ru.aritmos.model.Service;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
-/**
- * Сокращенное представление визита
- */
+/** Сокращенное представление визита */
 @Data
 @EqualsAndHashCode
 @Serdeable
@@ -22,44 +20,37 @@ import java.time.temporal.ChronoUnit;
 @Introspected
 @ToString
 public class TinyVisit {
-    /**
-     *Дата и время создания визита
-     */
-    ZonedDateTime createDate;
-    /**
-     * Идентификатор визита
-     */
-    String id;
-    /**
-     * Номер талона
-     */
-    String ticketId;
-    /**
-     * Текущая услуга
-     */
-    Service currentService;
-    /**
-     * Дата и время перевода
-     */
-    ZonedDateTime transferDate;
-    @JsonGetter
-    public Long getWaitingTime() {
-        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        waitingTime = unit.between( transferDate,ZonedDateTime.now());
-        return waitingTime;
-    }
-    /**
-     * Время ожидания в секундах
-     */
-    Long waitingTime;
+  /** Дата и время создания визита */
+  ZonedDateTime createDate;
 
-    @JsonGetter
-    public Long getTotalWaitingTime() {
-        final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-        totalWaitingTime = unit.between( getCreateDate(),ZonedDateTime.now());
-        return totalWaitingTime;
-    }
-    Long totalWaitingTime;
+  /** Идентификатор визита */
+  String id;
 
+  /** Номер талона */
+  String ticketId;
 
+  /** Текущая услуга */
+  Service currentService;
+
+  /** Дата и время перевода */
+  ZonedDateTime transferDate;
+
+  /** Время ожидания в секундах */
+  Long waitingTime;
+
+  Long totalWaitingTime;
+
+  @JsonGetter
+  public Long getWaitingTime() {
+    final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+    waitingTime = unit.between(transferDate, ZonedDateTime.now());
+    return waitingTime;
+  }
+
+  @JsonGetter
+  public Long getTotalWaitingTime() {
+    final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+    totalWaitingTime = unit.between(getCreateDate(), ZonedDateTime.now());
+    return totalWaitingTime;
+  }
 }

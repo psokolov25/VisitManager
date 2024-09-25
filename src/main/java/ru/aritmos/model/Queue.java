@@ -5,37 +5,28 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * Очередь
- */
+/** Очередь */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
 @Introspected
-
-
 public final class Queue extends BranchEntityWithVisits {
-    /**
-     * Счетчик талонов
-     */
-    Integer ticketCounter = 0;
-    /**
-     * Буква талона
-     */
-    final String ticketPrefix;
-    /**
-     * Стандартное время ожидания
-     */
-    Integer waitingSL;
+  /** Буква талона */
+  final String ticketPrefix;
 
-    public Queue(String name, String ticketPrefix) {
-        super(name);
-        this.ticketPrefix = ticketPrefix;
-    }
+  /** Счетчик талонов */
+  Integer ticketCounter = 0;
 
-    public Queue(String id, String name, String ticketPrefix) {
-        super(id, name);
-        this.ticketPrefix = ticketPrefix;
-    }
+  /** Стандартное время ожидания */
+  Integer waitingSL;
 
+  public Queue(String name, String ticketPrefix) {
+    super(name);
+    this.ticketPrefix = ticketPrefix;
+  }
+
+  public Queue(String id, String name, String ticketPrefix) {
+    super(id, name);
+    this.ticketPrefix = ticketPrefix;
+  }
 }

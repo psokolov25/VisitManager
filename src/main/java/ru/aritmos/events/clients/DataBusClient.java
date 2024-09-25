@@ -6,27 +6,30 @@ import io.micronaut.http.annotation.Header;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.client.annotation.Client;
-
 import io.micronaut.retry.annotation.Retryable;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.reactivestreams.Publisher;
-
-
 import java.util.Map;
+import org.reactivestreams.Publisher;
 
 @Client(value = "${micronaut.application.dataBusUrl}")
 public interface DataBusClient {
-    @Retryable(delay = "${micronaut.application.dataBusUrlRetryPeriod:30s}",maxDelay = "${micronaut.application.dataBusUrlRetryMaxPeriod:45m}",attempts = "${micronaut.application.dataBusUrlRetryRepeat:30}")
-    @SingleResult
-    @Post(uri = "/databus/events/types/{type}", produces = "application/json", consumes = "application/json")
-    @ExecuteOn(TaskExecutors.IO)
-    Publisher<Map<String,String>> send(@Header("Service-Destination") String destinationServices,
-                                       @Header("Send-To-OtherBus") Boolean sendToOtherBus,
-                                       @Header("Send-Date") @Parameter(example = "Wed, 09 Apr 2008 23:55:38 GMT") String sendDate,
-                                       @Header("Service-Sender") String senderService,
-                                       @PathVariable String type,
-                                       @Body Object body);
-
+  @Retryable(
+      delay = "${micronaut.application.dataBusUrlRetryPeriod:30s}",
+      maxDelay = "${micronaut.application.dataBusUrlRetryMaxPeriod:45m}",
+      attempts = "${micronaut.application.dataBusUrlRetryRepeat:30}")
+  @SingleResult
+  @Post(
+      uri = "/databus/events/types/{type}",
+      produces = "application/json",
+      consumes = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  Publisher<Map<String, String>> send(
+      @Header("Service-Destination") String destinationServices,
+      @Header("Send-To-OtherBus") Boolean sendToOtherBus,
+      @Header("Send-Date") @Parameter(example = "Wed, 09 Apr 2008 23:55:38 GMT") String sendDate,
+      @Header("Service-Sender") String senderService,
+      @PathVariable String type,
+      @Body Object body);
 }

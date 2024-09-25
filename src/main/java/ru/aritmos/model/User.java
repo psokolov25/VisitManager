@@ -5,46 +5,35 @@ import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * Пользователь
- */
+/** Пользователь */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
 @Introspected
+public class User extends BranchEntityWithVisits {
+  /** Имя */
+  String firstName;
 
-public class User extends BranchEntityWithVisits{
-    public User(String id,String name){
-        super(id,name);
-    }
-    public User(String name){
-        super(name);
-    }
+  /** Фамилия */
+  String lastName;
 
-    /**
-     * Имя
-     */
-    String firstName;
-    /**
-     * Фамилия
-     */
-    String lastName;
-    /**
-     * Электронная почта
-     */
-    String email;
-    /**
-     * Идентификатор текущего рабочего профиля
-     */
-    String currentWorkProfileId;
-    /**
-     * Идентификатор точки обслуживания
-     */
-    String servicePointId;
-    /**
-     * Идентификатор текущего отделения
-     */
-    String branchId;
+  /** Электронная почта */
+  String email;
 
+  /** Идентификатор текущего рабочего профиля */
+  String currentWorkProfileId;
 
+  /** Идентификатор точки обслуживания */
+  String servicePointId;
+
+  /** Идентификатор текущего отделения */
+  String branchId;
+
+  public User(String id, String name) {
+    super(id, name);
+  }
+
+  public User(String name) {
+    super(name);
+  }
 }

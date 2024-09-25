@@ -4,11 +4,11 @@ server:
   http_listen_port: 3100
 
 memberlist:
-  join_members: ["read", "write", "backend"]
+  join_members: [ "read", "write", "backend" ]
   dead_node_reclaim_time: 30s
   gossip_to_dead_nodes_time: 15s
   left_ingesters_timeout: 30s
-  bind_addr: ['0.0.0.0']
+  bind_addr: [ '0.0.0.0' ]
   bind_port: 7946
   gossip_interval: 2s
 
