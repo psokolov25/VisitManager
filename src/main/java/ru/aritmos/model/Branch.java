@@ -496,22 +496,17 @@ public class Branch extends BranchEntity {
   public void adUpdateServiceGroups(
       HashMap<String, ServiceGroup> serviceGroupHashMap, EventService eventService) {
 
-    serviceGroupHashMap
-            .forEach((key, value) -> value
-                    .serviceIds
-                    .forEach(
-                            serviceId -> {
-                                if (!this.getServices().containsKey(serviceId)) {
-                                    throw new BusinessException(
-                                            "Service " + serviceId + " not found!",
-                                            eventService,
-                                            HttpStatus.NOT_FOUND);
-                                } else {
-                                    this.getServices()
-                                            .get(serviceId)
-                                            .setServiceGroupId(key);
-                                }
-                            }));
+    serviceGroupHashMap.forEach(
+        (key, value) ->
+            value.serviceIds.forEach(
+                serviceId -> {
+                  if (!this.getServices().containsKey(serviceId)) {
+                    throw new BusinessException(
+                        "Service " + serviceId + " not found!", eventService, HttpStatus.NOT_FOUND);
+                  } else {
+                    this.getServices().get(serviceId).setServiceGroupId(key);
+                  }
+                }));
     this.setServiceGroups(serviceGroupHashMap);
     eventService.sendChangedEvent(
         "config",
@@ -619,15 +614,15 @@ public class Branch extends BranchEntity {
       HashMap<String, SegmentationRuleData> segmentationRuleDataHashMap,
       EventService eventService) {
 
-    segmentationRuleDataHashMap
-            .forEach((key, value) -> {
-                if (!this.getServiceGroups().containsKey(value.serviceGroupId)) {
-                    throw new BusinessException(
-                            "Service group " + value.serviceGroupId + " not found!",
-                            eventService,
-                            HttpStatus.NOT_FOUND);
-                }
-            });
+    segmentationRuleDataHashMap.forEach(
+        (key, value) -> {
+          if (!this.getServiceGroups().containsKey(value.serviceGroupId)) {
+            throw new BusinessException(
+                "Service group " + value.serviceGroupId + " not found!",
+                eventService,
+                HttpStatus.NOT_FOUND);
+          }
+        });
     this.setSegmentationRules(segmentationRuleDataHashMap);
     eventService.sendChangedEvent(
         "config",

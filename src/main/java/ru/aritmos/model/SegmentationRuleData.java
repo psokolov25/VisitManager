@@ -15,10 +15,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SegmentationRuleData extends BranchEntity {
+  /** Перечень свойств визита, которые должны присутствовать в визите для срабатывания правила */
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   HashMap<String, String> visitProperty;
 
+  /** Идентификатор группы услуг */
   String serviceGroupId;
-  String queueId;
 
+  /** Идентификатор очереди */
+  String queueId;
 }

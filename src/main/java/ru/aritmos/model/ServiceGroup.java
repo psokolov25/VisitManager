@@ -2,7 +2,6 @@ package ru.aritmos.model;
 
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.List;
-
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = false)
@@ -19,5 +18,4 @@ public class ServiceGroup extends BranchEntity {
     super(id, name, branchId);
     this.serviceIds = serviceIds;
   }
-
 }

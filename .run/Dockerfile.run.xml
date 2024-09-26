@@ -2,7 +2,8 @@
     <configuration default="false" name="Dockerfile" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
         <deployment type="dockerfile">
             <settings>
-                <option name="imageTag" value="0.4"/>
+                <option name="imageTag" value="aritmos/visitmanager:0.5"/>
+                <option name="command" value=""/>
                 <option name="containerName" value="visitmanager"/>
                 <option name="portBindings">
                     <list>
@@ -13,6 +14,7 @@
                     </list>
                 </option>
                 <option name="commandLineOptions" value="-d --restart always"/>
+                <option name="showCommandPreview" value="true"/>
                 <option name="sourceFilePath" value="Dockerfile"/>
             </settings>
         </deployment>
