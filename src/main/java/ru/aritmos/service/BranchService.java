@@ -57,16 +57,17 @@ public class BranchService {
             });
     return result;
   }
+
   public HashMap<String, Branch> getDetailedBranches() {
 
     HashMap<String, Branch> result = new HashMap<>();
     branches
-            .values()
-            .forEach(
-                    f -> {
-                      Branch branch = getBranch(f.getId());
-                      result.put(branch.getId(), branch);
-                    });
+        .values()
+        .forEach(
+            f -> {
+              Branch branch = getBranch(f.getId());
+              result.put(branch.getId(), branch);
+            });
     return result;
   }
 
@@ -91,7 +92,7 @@ public class BranchService {
     branch.getEntryPoints().forEach((key1, value) -> value.setBranchId(key));
     branch.getServices().forEach((key1, value) -> value.setBranchId(key));
     branch.getWorkProfiles().forEach((key1, value) -> value.setBranchId(key));
-
+    branch.getServiceGroups().forEach((key1, value) -> value.setBranchId(key));
 
     branches.put(key, branch);
 
@@ -202,6 +203,13 @@ public class BranchService {
     this.add(branch.getId(), branch);
   }
 
+  public void addUpdateServiceGroups(
+      String branchId, HashMap<String, ServiceGroup> serviceGroupsHashMap) {
+    Branch branch = this.getBranch(branchId);
+    branch.adUpdateServiceGroups(serviceGroupsHashMap, eventService);
+    this.add(branch.getId(), branch);
+  }
+
   public void deleteServicePoints(String branchId, List<String> servicePointIds) {
     Branch branch = this.getBranch(branchId);
     branch.deleteServicePoints(servicePointIds, eventService);
@@ -218,6 +226,13 @@ public class BranchService {
   public void deleteQueues(String branchId, List<String> queueIds) {
     Branch branch = this.getBranch(branchId);
     branch.deleteQueues(queueIds, eventService);
+    this.add(branch.getId(), branch);
+  }
+
+  public void addUpdateSegentationRules(
+      String branchId, HashMap<String, SegmentationRuleData> segmentationRuleDataHashMap) {
+    Branch branch = this.getBranch(branchId);
+    branch.adUpdateSegmentRules(segmentationRuleDataHashMap, eventService);
     this.add(branch.getId(), branch);
   }
 }

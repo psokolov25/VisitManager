@@ -8,13 +8,13 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import ru.aritmos.api.EntrypointController;
 import ru.aritmos.api.ManagementController;
 import ru.aritmos.api.ServicePointController;
+import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
@@ -39,6 +39,7 @@ class EntrypointTest {
   @Inject ServicePointController servicePointController;
   @Inject ManagementController managementController;
   @Inject SecurityService securityService;
+  @Inject EventService eventService;
   Branch branch;
 
   @Test
@@ -107,15 +108,37 @@ class EntrypointTest {
       creditCard.getServviceIds().add(bigCreditService.getId());
       insurance.getServviceIds().add(creditService.getId());
       insurance.getServviceIds().add(bigCreditService.getId());
-      creditCard.getPossibleOutcomes().put(creditCardGiven.getId(), creditCardGiven);
-      List<SegmentationRuleData> rules =
-          new ArrayList<SegmentationRuleData>() {
+
+      branch.setServices(serviceList);
+      ServiceGroup creditServiceGroup =
+          new ServiceGroup(
+              "c004322d-f426-4de5-b2ff-b904480efb8b",
+              "Кредиты",
+              new ArrayList<String>() {
+                {
+                  add(creditService.getId());
+                  add(bigCreditService.getId());
+                }
+              },
+              branchId);
+      branch.adUpdateServiceGroups(
+          new HashMap<String, ServiceGroup>() {
             {
-              add(
+              put(creditServiceGroup.getId(), creditServiceGroup);
+            }
+          },
+          eventService);
+      creditCard.getPossibleOutcomes().put(creditCardGiven.getId(), creditCardGiven);
+      HashMap<String, SegmentationRuleData> rules =
+          new HashMap<String, SegmentationRuleData>() {
+            {
+              put(
+                  "c7bad215-a6c1-45f1-ab59-44dac8f4c9d6",
                   SegmentationRuleData.builder()
-                      .serviceId(creditService.getId())
+                      .id("c7bad215-a6c1-45f1-ab59-44dac8f4c9d6")
+                      .serviceGroupId(creditService.getServiceGroupId())
                       .queueId(queueCredit.getId())
-                      .keyProperty(
+                      .visitProperty(
                           new HashMap<>() {
                             {
                               put("sex", "male");
@@ -123,11 +146,13 @@ class EntrypointTest {
                             }
                           })
                       .build());
-              add(
+              put(
+                  "44ab710f-4f0c-46bf-ab1a-9599d9df52b2",
                   SegmentationRuleData.builder()
-                      .serviceId(creditService.getId())
+                      .id("44ab710f-4f0c-46bf-ab1a-9599d9df52b2")
+                      .serviceGroupId(bigCreditService.getServiceGroupId())
                       .queueId(queueBigCredit.getId())
-                      .keyProperty(
+                      .visitProperty(
                           new HashMap<>() {
                             {
                               put("sex", "male");
@@ -138,7 +163,6 @@ class EntrypointTest {
             }
           };
       branch.setSegmentationRules(rules);
-      branch.setServices(serviceList);
       ServicePoint servicePointFSC =
           new ServicePoint(
               "be675d63-c5a1-41a9-a345-c82102ac42cc", "Старший финансовый консультант");

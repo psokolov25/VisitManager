@@ -22,6 +22,8 @@ public class Service extends BasedService {
   /** Флаг доступности */
   Boolean isAvailable;
 
+  String serviceGroupId;
+
   /** Список идентификаторов оказанных услуг */
   HashMap<String, DeliveredService> deliveredServices = new HashMap<>();
 

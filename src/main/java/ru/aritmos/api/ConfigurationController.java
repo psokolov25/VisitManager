@@ -6,10 +6,7 @@ import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import ru.aritmos.model.Branch;
-import ru.aritmos.model.Queue;
-import ru.aritmos.model.Service;
-import ru.aritmos.model.ServicePoint;
+import ru.aritmos.model.*;
 import ru.aritmos.service.BranchService;
 
 /**
@@ -95,6 +92,40 @@ public class ConfigurationController {
       @QueryValue Boolean restoreVisit,
       @QueryValue Boolean restoreUser) {
     branchService.addUpdateServicePoint(branchId, servicePointHashMap, restoreVisit, restoreUser);
+  }
+
+  /**
+   * Добавление или обновление точек обслуживания
+   *
+   * @param branchId идентификатор подразделения
+   * @param serviceGroupHashMap список групп услуг
+   */
+  @Tag(name = "Конфигурация отделений")
+  @Tag(name = "Полный список")
+  @Tag(name = "Группы услуг")
+  @Put(uri = "/branches/{branchId}/serviceGroups")
+  public void addUpdateServiceGroups(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @Body HashMap<String, ServiceGroup> serviceGroupHashMap) {
+
+    branchService.addUpdateServiceGroups(branchId, serviceGroupHashMap);
+  }
+
+  /**
+   * Добавление или обновление точек обслуживания
+   *
+   * @param branchId идентификатор подразделения
+   * @param segmentationRuleDataHashMap список правил сегментации
+   */
+  @Tag(name = "Конфигурация отделений")
+  @Tag(name = "Полный список")
+  @Tag(name = "Правила сегментации")
+  @Put(uri = "/branches/{branchId}/segmentationRules")
+  public void addUpdateSegmentationRules(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @Body HashMap<String, SegmentationRuleData> segmentationRuleDataHashMap) {
+
+    branchService.addUpdateSegentationRules(branchId, segmentationRuleDataHashMap);
   }
 
   /**

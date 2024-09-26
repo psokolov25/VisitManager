@@ -1,11 +1,11 @@
 package ru.aritmos.model;
 
 import io.micronaut.serde.annotation.Serdeable;
+import java.util.HashMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import java.util.HashMap;
 
 /** Базовая услуга */
 @EqualsAndHashCode(callSuper = false)

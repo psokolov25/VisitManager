@@ -13,8 +13,9 @@ import ru.aritmos.model.visit.Visit;
 @Singleton
 public class SimpleSegmentationRule implements SegmentationRule {
   /**
-   * Возвращает очередь согласно текущей услуги визита,
-   * если у услуги предусмотрено правило - выполняется оно, если нет - берется очередь с указанной для очереди услугой
+   * Возвращает очередь согласно текущей услуги визита, если у услуги предусмотрено правило -
+   * выполняется оно, если нет - берется очередь с указанной для очереди услугой
+   *
    * @param visit визитё
    * @param branch отделение
    * @return Очередь
@@ -22,7 +23,8 @@ public class SimpleSegmentationRule implements SegmentationRule {
   @Override
   public Optional<Queue> getQueue(Visit visit, Branch branch) {
     if (visit.getCurrentService() != null) {
-      Optional<String> queueId = checkSegmentationRules(visit, branch.getSegmentationRules());
+      Optional<String> queueId =
+          checkSegmentationRules(visit, branch.getSegmentationRules().values().stream().toList());
       if (queueId.isPresent()) {
         return Optional.of(branch.getQueues().get(queueId.get()));
       }
@@ -48,11 +50,15 @@ public class SimpleSegmentationRule implements SegmentationRule {
           rules.stream()
               .filter(
                   f ->
-                      f.getServiceId() == null
-                          || f.getServiceId().equals(visit.getCurrentService().getId()))
+                      f.getServiceGroupId() == null
+                          || f.getServiceGroupId()
+                              .equals(visit.getCurrentService().getServiceGroupId()))
               .filter(
                   f ->
-                      visit.getParameterMap().entrySet().containsAll(f.getKeyProperty().entrySet()))
+                      visit
+                          .getParameterMap()
+                          .entrySet()
+                          .containsAll(f.getVisitProperty().entrySet()))
               .findFirst();
 
       return result.map(SegmentationRuleData::getQueueId);

@@ -3,18 +3,17 @@ package ru.aritmos.model;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.UUID;
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 /** Сущность отделения */
 @Data
 @Introspected
 @Jacksonized
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Serdeable
@@ -24,8 +23,10 @@ public class BranchEntity {
 
   /** Название */
   String name;
+
   /** Идентификатор отделения */
   String branchId;
+
   public BranchEntity(String name) {
     this.id = UUID.randomUUID().toString();
     this.name = name;

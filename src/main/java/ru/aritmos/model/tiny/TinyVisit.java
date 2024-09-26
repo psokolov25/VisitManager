@@ -3,14 +3,13 @@ package ru.aritmos.model.tiny;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ru.aritmos.model.Service;
-
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 
 /** Сокращенное представление визита */
 @Data

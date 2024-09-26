@@ -76,7 +76,6 @@ public class VisitService {
             Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, HashMap::new));
   }
 
-
   /**
    * Возвращает рабочие профили
    *

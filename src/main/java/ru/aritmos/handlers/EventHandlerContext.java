@@ -31,7 +31,7 @@ public class EventHandlerContext {
     KaffkaListener.addAllEventHandler("BUSINESS_ERROR", businesErrorHandler);
     KaffkaListener.addAllEventHandler("SYSTEM_ERROR", systemErrorHandler);
     KaffkaListener.addAllEventHandler("ENTITY_CHANGED", entityChangedHandler);
-    KaffkaListener.addServiceEventHandler("ENTITY_CHANGED",entityChangedHandler);
+    KaffkaListener.addServiceEventHandler("ENTITY_CHANGED", entityChangedHandler);
     configuration.getConfiguration();
   }
 

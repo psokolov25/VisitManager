@@ -4,17 +4,21 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.HashMap;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Introspected
-@Builder
+@SuperBuilder
 @Serdeable
-public class SegmentationRuleData {
+@AllArgsConstructor
+@NoArgsConstructor
+public class SegmentationRuleData extends BranchEntity {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  HashMap<String, String> keyProperty;
+  HashMap<String, String> visitProperty;
 
-  String serviceId;
+  String serviceGroupId;
   String queueId;
+
 }

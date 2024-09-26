@@ -6,7 +6,6 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.*;
@@ -56,7 +55,11 @@ public class Branch extends BranchEntity {
    * соответствующей очереди
    */
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  List<SegmentationRuleData> segmentationRules = new ArrayList<>();
+  HashMap<String, SegmentationRuleData> segmentationRules = new HashMap<>();
+
+  /** Группы услуг */
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  HashMap<String, ServiceGroup> serviceGroups = new HashMap<>();
 
   public Branch(String key, String name) {
     super(key, name);
@@ -114,6 +117,12 @@ public class Branch extends BranchEntity {
     return visits;
   }
 
+  /**
+   * Открытие точки обслуживания
+   *
+   * @param user сотрудник, открывший точку ослуживания
+   * @param eventService служба рассылки событий
+   */
   public void openServicePoint(User user, EventService eventService) {
     if (user.servicePointId != null) {
       if (this.getServicePoints().containsKey(user.servicePointId)) {
@@ -155,6 +164,12 @@ public class Branch extends BranchEntity {
     }
   }
 
+  /**
+   * Закрытие точки обслуживания
+   *
+   * @param servicePointId идентификатор точки обслуживания
+   * @param eventService служба рассылки событий
+   */
   public void closeServicePoint(String servicePointId, EventService eventService) {
 
     if (this.getServicePoints().containsKey(servicePointId)) {
@@ -478,6 +493,35 @@ public class Branch extends BranchEntity {
         });
   }
 
+  public void adUpdateServiceGroups(
+      HashMap<String, ServiceGroup> serviceGroupHashMap, EventService eventService) {
+
+    serviceGroupHashMap
+            .forEach((key, value) -> value
+                    .serviceIds
+                    .forEach(
+                            serviceId -> {
+                                if (!this.getServices().containsKey(serviceId)) {
+                                    throw new BusinessException(
+                                            "Service " + serviceId + " not found!",
+                                            eventService,
+                                            HttpStatus.NOT_FOUND);
+                                } else {
+                                    this.getServices()
+                                            .get(serviceId)
+                                            .setServiceGroupId(key);
+                                }
+                            }));
+    this.setServiceGroups(serviceGroupHashMap);
+    eventService.sendChangedEvent(
+        "config",
+        false,
+        null,
+        serviceGroupHashMap,
+        new HashMap<>(),
+        "Add or update service groups");
+  }
+
   public void addUpdateServicePoint(
       HashMap<String, ServicePoint> servicePointHashMap,
       Boolean restoreVisit,
@@ -569,5 +613,28 @@ public class Branch extends BranchEntity {
               "config", false, null, this.getQueues().get(f), new HashMap<>(), "Delete queue");
           this.getQueues().remove(f);
         });
+  }
+
+  public void adUpdateSegmentRules(
+      HashMap<String, SegmentationRuleData> segmentationRuleDataHashMap,
+      EventService eventService) {
+
+    segmentationRuleDataHashMap
+            .forEach((key, value) -> {
+                if (!this.getServiceGroups().containsKey(value.serviceGroupId)) {
+                    throw new BusinessException(
+                            "Service group " + value.serviceGroupId + " not found!",
+                            eventService,
+                            HttpStatus.NOT_FOUND);
+                }
+            });
+    this.setSegmentationRules(segmentationRuleDataHashMap);
+    eventService.sendChangedEvent(
+        "config",
+        false,
+        null,
+        segmentationRuleDataHashMap,
+        new HashMap<>(),
+        "Add or update service groups");
   }
 }
