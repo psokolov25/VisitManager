@@ -30,25 +30,36 @@ public class Branch extends BranchEntity {
   HashMap<String, Object> parameterMap = new HashMap<>();
 
   /** Точки входа */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, EntryPoint> entryPoints = new HashMap<>();
 
   /** Очереди */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, Queue> queues = new HashMap<>();
 
   /** Услуги */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, Service> services = new HashMap<>();
 
   /** Рабочие профили */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, WorkProfile> workProfiles = new HashMap<>();
 
   /** Точки обслуживания */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, ServicePoint> servicePoints = new HashMap<>();
 
   /** Возможные оказанные услуги */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, DeliveredService> possibleDeliveredServices = new HashMap<>();
 
   /** Возможные заметки визита */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, Mark> marks = new HashMap<>();
+
+  /** Перечень сотрудников работающих и работавших в отделении */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  HashMap<String, User> users = new HashMap<>();
 
   /**
    * Правила сегментации, где ключом является набор параметров визита, а значением идентификатор
@@ -175,7 +186,7 @@ public class Branch extends BranchEntity {
     if (this.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
       if (servicePoint.getUser() != null) {
-
+        getUsers().put(servicePoint.getUser().getName(), servicePoint.getUser());
         servicePoint.setUser(null);
         eventService.send(
             "*",
@@ -338,6 +349,7 @@ public class Branch extends BranchEntity {
                 }
               }
               if (value.getUser() != null) {
+                getUsers().put(value.getUser().getName(), value.getUser());
                 if (value.getUser().getId().equals(visit.getPoolUserId())) {
 
                   try {

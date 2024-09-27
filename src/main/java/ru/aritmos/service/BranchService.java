@@ -148,22 +148,21 @@ public class BranchService {
 
   public User openServicePoint(
       String branchId, String userName, String servicePointId, String workProfileId) {
-    User user = new User(userName);
-    user.setBranchId(branchId);
-    user.setServicePointId(servicePointId);
-    user.setCurrentWorkProfileId(workProfileId);
-
     Branch branch = this.getBranch(branchId);
-    branch.openServicePoint(user, eventService);
+    if (branch.getUsers().containsKey(userName)) {
+      branch.openServicePoint(branch.getUsers().get(userName), eventService);
+      this.add(branch.getId(), branch);
+      return branch.getUsers().get(userName);
+    } else {
+      User user = new User(userName);
+      user.setBranchId(branchId);
+      user.setServicePointId(servicePointId);
+      user.setCurrentWorkProfileId(workProfileId);
 
-    this.add(branch.getId(), branch);
-    return user;
-  }
-
-  public void openServicePoint(User user, Branch branch) {
-
-    branch.openServicePoint(user, eventService);
-    this.add(branch.getId(), branch);
+      branch.openServicePoint(user, eventService);
+      this.add(branch.getId(), branch);
+      return user;
+    }
   }
 
   public void closeServicePoint(String branchId, String servicePointId) {
@@ -171,6 +170,11 @@ public class BranchService {
     Branch branch = this.getBranch(branchId);
     branch.closeServicePoint(servicePointId, eventService);
     this.add(branch.getId(), branch);
+  }
+
+  public HashMap<String, User> getUsers(String branchId) {
+    Branch branch = this.getBranch(branchId);
+    return branch.getUsers();
   }
 
   public Integer incrementTicetCounter(String branchId, Queue queue) {

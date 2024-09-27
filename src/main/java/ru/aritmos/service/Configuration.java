@@ -104,8 +104,9 @@ public class Configuration {
       psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
 
       sidorovUser.setCurrentWorkProfileId(workProfileC.getId());
-      branchService.openServicePoint(psokolovUser, branch);
-      branchService.openServicePoint(sidorovUser, branch);
+
+      // branchService.openServicePoint(psokolovUser, branch);
+      // branchService.openServicePoint(sidorovUser, branch);
       HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
       servicePointMap.put(servicePointFC.getId(), servicePointFC);
       servicePointMap.put(servicePointFSC.getId(), servicePointFSC);
@@ -125,6 +126,8 @@ public class Configuration {
       branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
       branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
       branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
+      branchService.openServicePoint(
+          branch.getId(), psokolovUser.getName(), servicePointFC.getId(), workProfileFC.getId());
       branchService.add(branch.getId(), branch);
 
       //

@@ -112,7 +112,7 @@ public class ConfigurationController {
   }
 
   /**
-   * Добавление или обновление точек обслуживания
+   * Добавление или обновление правил сегментации
    *
    * @param branchId идентификатор подразделения
    * @param segmentationRuleDataHashMap список правил сегментации
