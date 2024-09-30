@@ -97,13 +97,7 @@ public class Configuration {
       workProfileFSC.getQueueIds().add(queueCredit.getId());
 
       User psokolovUser = new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov");
-      User sidorovUser = new User("isidorov");
-      psokolovUser.setBranchId(branch.getId());
-      sidorovUser.setBranchId(branch.getId());
-
-      psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
-
-      sidorovUser.setCurrentWorkProfileId(workProfileC.getId());
+      //User sidorovUser = new User("isidorov");
 
       // branchService.openServicePoint(psokolovUser, branch);
       // branchService.openServicePoint(sidorovUser, branch);
@@ -126,10 +120,10 @@ public class Configuration {
       branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
       branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
       branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
+
+      branchService.add(branch.getId(), branch);
       branchService.openServicePoint(
           branch.getId(), psokolovUser.getName(), servicePointFC.getId(), workProfileFC.getId());
-      branchService.add(branch.getId(), branch);
-
       //
       Branch branch2 = new Branch("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3", "Отделение на Ямской");
       //            branch2.getMarks().put(

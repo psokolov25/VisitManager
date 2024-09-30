@@ -1412,8 +1412,11 @@ public class VisitService {
     if (visit.getQueueId().isBlank()) {
       throw new BusinessException("Visit not in a queue!", eventService);
     }
-
-    if (!this.getAllWorkingUsers(branchId).containsKey(userId)) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    if (!currentBranch.getUsers().values().stream()
+        .map(BranchEntity::getId)
+        .toList()
+        .contains(userId)) {
 
       throw new BusinessException(
           "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);

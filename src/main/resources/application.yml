@@ -58,6 +58,7 @@ micronaut:
 
 redis:
   uri: redis://192.168.8.45:6379
+  #uri: redis://192.168.8.45:7379
   #uri: ${REDIS_URL}
   cache:
     key-serializer: io.micronaut.core.serialize.ObjectSerializer

@@ -135,11 +135,14 @@ public class Branch extends BranchEntity {
    * @param eventService служба рассылки событий
    */
   public void openServicePoint(User user, EventService eventService) {
+    getUsers().put(user.getName(), user);
     if (user.servicePointId != null) {
       if (this.getServicePoints().containsKey(user.servicePointId)) {
         ServicePoint servicePoint = this.getServicePoints().get(user.getServicePointId());
-        if (servicePoint.getUser() == null) {
+        if (servicePoint.getUser() == null
+            || servicePoint.getUser().getName().equals(user.getName())) {
           servicePoint.setUser(user);
+          this.getUsers().put(user.getName(), user);
           eventService.send(
               "*",
               false,

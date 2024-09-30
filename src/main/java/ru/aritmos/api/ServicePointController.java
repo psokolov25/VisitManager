@@ -55,11 +55,12 @@ public class ServicePointController {
    * Возвращает все точки обслуживания
    *
    * @param branchId идентификатор отделения
-   * @return свободные точки обслуживания
+   * @return точки обслуживания
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
+  @Tag(name = "Данные о пулах")
   @Get("/branches/{branchId}/servicePoints")
   @ExecuteOn(TaskExecutors.IO)
   public List<TinyServicePoint> getServicePoints(
@@ -67,6 +68,23 @@ public class ServicePointController {
     return visitService.getServicePointHashMap(branchId).values().stream()
         .map(m -> new TinyServicePoint(m.getId(), m.getName(), m.getUser() == null))
         .toList();
+  }
+
+  /**
+   * Возвращает все точки обслуживания (с данными пулов)
+   *
+   * @param branchId идентификатор отделения
+   * @return свободные обслуживания
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные о точках обслуживания")
+  @Tag(name = "Полный список")
+  @Tag(name = "Данные о пулах")
+  @Get("/branches/{branchId}/servicePoints")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<ServicePoint> getDetailedServicePoints(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    return visitService.getServicePointHashMap(branchId).values().stream().toList();
   }
 
   /**
@@ -98,6 +116,7 @@ public class ServicePointController {
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Данные о сртрудника")
   @Tag(name = "Полный список")
+  @Tag(name = "Данные о пулах")
   @Get("/branches/{branchId}/users")
   @ExecuteOn(TaskExecutors.IO)
   public HashMap<String, User> getUsersOfBranch(
@@ -147,7 +166,7 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает все точки обслуживания
+   * Возвращает все рабочие профили
    *
    * @param branchId идентификатор отделения
    * @return свободные точки обслуживания
@@ -178,7 +197,7 @@ public class ServicePointController {
   @Post(
       "/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open")
   @ExecuteOn(TaskExecutors.IO)
-  public User loginUser(
+  public User openServicePoint(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable String userName,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
