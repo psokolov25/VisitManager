@@ -18,7 +18,7 @@ import ru.aritmos.model.visit.Visit;
 @NoArgsConstructor
 public class BranchEntityWithVisits extends BranchEntity {
   /** Визиты */
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   List<Visit> visits = new ArrayList<>();
 
   public BranchEntityWithVisits(String name) {

@@ -37,7 +37,7 @@
             <sortByTime>true</sortByTime>
         </format>
     </appender>
-    <logger name="io.micronaut.http" level="TRACE"/>
+<!--    <logger name="io.micronaut.http" level="TRACE"/>-->
     <root level="info">
         <appender-ref ref="STDOUT"/>
         <!--        <appender-ref ref="LOKI"/>-->

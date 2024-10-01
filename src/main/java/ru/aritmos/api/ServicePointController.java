@@ -80,7 +80,7 @@ public class ServicePointController {
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
-  @Get("/branches/{branchId}/servicePoints")
+  @Get("/branches/{branchId}/servicePoints/detailed")
   @ExecuteOn(TaskExecutors.IO)
   public List<ServicePoint> getDetailedServicePoints(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
