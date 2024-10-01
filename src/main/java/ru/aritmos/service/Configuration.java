@@ -97,7 +97,7 @@ public class Configuration {
       workProfileFSC.getQueueIds().add(queueCredit.getId());
 
       User psokolovUser = new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov");
-      //User sidorovUser = new User("isidorov");
+      // User sidorovUser = new User("isidorov");
 
       // branchService.openServicePoint(psokolovUser, branch);
       // branchService.openServicePoint(sidorovUser, branch);
