@@ -5,6 +5,7 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -27,11 +28,23 @@ public class VisitService {
   @Inject BranchService branchService;
   @Inject EventService eventService;
   @Inject PrinterService printerService;
-  @Inject CallRule callRule;
+  CallRule waitingTimeCallRule;
+
+  CallRule lifeTimeCallRule;
   @Inject SegmentationRule segmentationRule;
 
   @Value("${micronaut.application.name}")
   String applicationName;
+
+  @Inject
+  public void setWaitingTimeCallRule(@Named("MaxWaitingTimeCallRule") CallRule callRule) {
+    this.waitingTimeCallRule = callRule;
+  }
+
+  @Inject
+  public void setLifeTimeCallRule(@Named("MaxLifeTimeCallRule") CallRule callRule) {
+    this.lifeTimeCallRule = callRule;
+  }
 
   /**
    * Возвращает визит по его отделению и идентификатору
@@ -1586,7 +1599,8 @@ public class VisitService {
    * @param visit визит
    * @return визит
    */
-  public Optional<Visit> visitCall(String branchId, String servicePointId, Visit visit) {
+  public Optional<Visit> visitCallWithMaxWaitingTime(
+      String branchId, String servicePointId, Visit visit) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     Optional<Queue> queue;
@@ -1668,10 +1682,11 @@ public class VisitService {
    * @param visitId идентификатор визита
    * @return визит
    */
-  public Optional<Visit> visitCall(String branchId, String servicePointId, String visitId) {
+  public Optional<Visit> visitCallWithMaxWaitingTime(
+      String branchId, String servicePointId, String visitId) {
     if (this.getAllVisits(branchId).containsKey(visitId)) {
       Visit visit = this.getAllVisits(branchId).get(visitId);
-      return this.visitCall(branchId, servicePointId, visit);
+      return this.visitCallWithMaxWaitingTime(branchId, servicePointId, visit);
     }
     return Optional.empty();
   }
@@ -1684,7 +1699,8 @@ public class VisitService {
    * @param visit визит
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
+  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(
+      String branchId, String servicePointId, Visit visit) {
 
     String userId = "";
     String userName = "";
@@ -1878,13 +1894,14 @@ public class VisitService {
   }
 
   /**
-   * Вызов визита с подтверждением прихода
+   * Вызов визита с подтверждением прихода c максимальным временем ожидания
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId) {
+  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(
+      String branchId, String servicePointId) {
     Branch currentBranch = branchService.getBranch(branchId);
     String userId = "";
     String userName = "";
@@ -1903,7 +1920,60 @@ public class VisitService {
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
 
-      Optional<Visit> visit = callRule.call(currentBranch, servicePoint);
+      Optional<Visit> visit = waitingTimeCallRule.call(currentBranch, servicePoint);
+      VisitEvent event = VisitEvent.CALLED;
+      event.dateTime = ZonedDateTime.now();
+      event.getParameters().put("ServicePointId", servicePointId);
+      event.getParameters().put("branchID", branchId);
+      event.getParameters().put("staffId", userId);
+      event.getParameters().put("staff?Name", userName);
+      if (visit.isPresent()) {
+        branchService.updateVisit(visit.get(), event, this);
+        return visit;
+      }
+
+    } else {
+      throw new BusinessException(
+          "User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
+    }
+    if (currentBranch.getParameterMap().containsKey("autoCallMode")
+        && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      servicePoint.setAutoCallMode(true);
+      currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
+      branchService.add(currentBranch.getId(), currentBranch);
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Вызов визита с подтверждением прихода c максимальным временем создания визита
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return визит
+   */
+  public Optional<Visit> visitCallForConfirmWithMaxLifeTime(
+      String branchId, String servicePointId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    String userId = "";
+    String userName = "";
+
+    if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+      userId =
+          currentBranch.getServicePoints().get(servicePointId).getUser() != null
+              ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
+              : "";
+      userName =
+          currentBranch.getServicePoints().get(servicePointId).getUser() != null
+              ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
+              : "";
+    }
+
+    if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+
+      Optional<Visit> visit = lifeTimeCallRule.call(currentBranch, servicePoint);
       VisitEvent event = VisitEvent.CALLED;
       event.dateTime = ZonedDateTime.now();
       event.getParameters().put("ServicePointId", servicePointId);
@@ -1941,14 +2011,17 @@ public class VisitService {
     if (currentBranch.getParameterMap().containsKey("autoCallMode")
         && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
       Optional<ServicePoint> servicePoint =
-          callRule.getAvaliableServicePoints(currentBranch, visit).stream()
+          waitingTimeCallRule.getAvaliableServicePoints(currentBranch, visit).stream()
               .filter(f -> f.getAutoCallMode() && f.getVisit() == null)
               .findFirst();
       if (servicePoint.isPresent()) {
         if (!servicePoint.get().getIsConfirmRequired()) {
-          visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
+          visit2 =
+              visitCallWithMaxWaitingTime(visit.getBranchId(), servicePoint.get().getId(), visit);
         } else {
-          visit2 = visitCallForConfirm(visit.getBranchId(), servicePoint.get().getId(), visit);
+          visit2 =
+              visitCallForConfirmWithMaxWaitingTime(
+                  visit.getBranchId(), servicePoint.get().getId(), visit);
         }
         if (visit2.isPresent()) {
           servicePoint.get().setAutoCallMode(false);
@@ -1961,23 +2034,62 @@ public class VisitService {
   }
 
   /**
-   * Вызов визита
+   * Вызов визита с максимальным временем ожидания
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Optional<Visit> visitCall(String branchId, String servicePointId) {
+  public Optional<Visit> visitCallWithMaxWaitingTime(String branchId, String servicePointId) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
       if (servicePoint.getUser() != null) {
 
-        Optional<Visit> visit = callRule.call(currentBranch, servicePoint);
+        Optional<Visit> visit = waitingTimeCallRule.call(currentBranch, servicePoint);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get());
+          return visitCallWithMaxWaitingTime(branchId, servicePoint.getId(), visit.get());
+        }
+
+      } else {
+        throw new BusinessException(
+            "User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
+      }
+
+    } else {
+      throw new BusinessException(
+          "ServicePoint not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+    }
+    if (currentBranch.getParameterMap().containsKey("autoCallMode")
+        && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      servicePoint.setAutoCallMode(true);
+      currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
+      branchService.add(currentBranch.getId(), currentBranch);
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Вызов визита с максимальным временем жизни визита
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return визит
+   */
+  public Optional<Visit> visitCallWithMaxLifeTime(String branchId, String servicePointId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+
+    if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      if (servicePoint.getUser() != null) {
+
+        Optional<Visit> visit = lifeTimeCallRule.call(currentBranch, servicePoint);
+        if (visit.isPresent()) {
+
+          return visitCallWithMaxWaitingTime(branchId, servicePoint.getId(), visit.get());
         }
 
       } else {

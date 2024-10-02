@@ -1,5 +1,3 @@
-
-
 import org.slf4j.LoggerFactory
 import ru.aritmos.model.visit.Visit
 

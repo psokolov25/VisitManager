@@ -1,6 +1,5 @@
 package ru.aritmos.service.rules;
 
-import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -17,9 +16,8 @@ import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
 
 @Singleton
-@Named("SimpleCallRule")
-@Requires(property = "micronaut.application.rules.callVisit", value = "simple")
-public class SimpleCallRule implements CallRule {
+@Named("MaxWaitingTimeCallRule")
+public class MaxWaitingTimeCallRule implements CallRule {
   @Inject EventService eventService;
 
   @Override
