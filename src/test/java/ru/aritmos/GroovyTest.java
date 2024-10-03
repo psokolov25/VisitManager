@@ -14,13 +14,11 @@ import org.junit.jupiter.api.Assertions;
 import ru.aritmos.model.visit.Visit;
 
 @Slf4j
-//@MicronautTest
-@SuppressWarnings({"unchecked","unused"})
+// @MicronautTest
+@SuppressWarnings({"unchecked", "unused"})
 public class GroovyTest {
 
-
-
- //@Test
+  // @Test
   public void testGroovy() throws IOException, URISyntaxException, InterruptedException {
 
     ClassLoader classLoader = getClass().getClassLoader();
