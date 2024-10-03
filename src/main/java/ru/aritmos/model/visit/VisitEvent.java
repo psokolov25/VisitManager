@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import io.micronaut.serde.annotation.Serdeable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,15 +39,13 @@ public enum VisitEvent {
   VISIT_TRANSFER_FROM_QUEUE,
   VISIT_DELETED;
   private static final List<VisitEvent> newTransactionEvents =
-      new ArrayList<>() {
-        {
-          add(STOP_SERVING);
-          add(NO_SHOW);
-          add(PLACED_IN_QUEUE);
-          add(TRANSFER_TO_SERVICE_POINT_POOL);
-          add(TRANSFER_TO_USER_POOL);
-        }
-      };
+      List.of(
+          STOP_SERVING,
+          NO_SHOW,
+          PLACED_IN_QUEUE,
+          TRANSFER_TO_SERVICE_POINT_POOL,
+          TRANSFER_TO_USER_POOL);
+
   private static final Map<VisitEvent, TransactionCompletionStatus> transactionStatus =
       Map.ofEntries(
           Map.entry(STOP_SERVING, TransactionCompletionStatus.OK),
@@ -58,7 +55,7 @@ public enum VisitEvent {
               TRANSFER_TO_SERVICE_POINT_POOL,
               TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT),
           Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_STAFF));
-
+  private static final List<VisitEvent> notSendToStat = List.of(RECALLED);
   private static final Map<VisitEvent, List<VisitEvent>> nextEvents =
       Map.ofEntries(
           Map.entry(CREATED, List.of(PLACED_IN_QUEUE, CALLED, RECALLED, ADDED_MARK, DELETED_MARK)),
@@ -97,6 +94,8 @@ public enum VisitEvent {
           Map.entry(
               START_SERVING,
               List.of(
+                  RECALLED,
+                  NO_SHOW,
                   BACK_TO_USER_POOL,
                   BACK_TO_QUEUE,
                   BACK_TO_SERVICE_POINT_POOL,
@@ -298,6 +297,10 @@ public enum VisitEvent {
 
   public static Boolean isNewOfTransaction(VisitEvent visitEvent) {
     return VisitEvent.newTransactionEvents.stream().anyMatch(am -> am.equals(visitEvent));
+  }
+
+  public static Boolean isIgnoredInStat(VisitEvent visitEvent) {
+    return notSendToStat.contains(visitEvent);
   }
 
   public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {

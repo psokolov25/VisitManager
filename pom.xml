@@ -13,7 +13,7 @@
         <version>4.4.3</version>
     </parent>
     <properties>
-        <packaging>jar</packaging>
+        <packaging>docker</packaging>
         <jdk.version>17</jdk.version>
         <release.version>17</release.version>
         <micronaut.version>4.4.3</micronaut.version>

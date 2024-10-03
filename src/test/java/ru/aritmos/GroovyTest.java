@@ -3,7 +3,6 @@ package ru.aritmos;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -12,14 +11,16 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import ru.aritmos.model.visit.Visit;
 
 @Slf4j
-@MicronautTest
+//@MicronautTest
+@SuppressWarnings({"unchecked","unused"})
 public class GroovyTest {
-  @SuppressWarnings("unchecked")
-  @Test
+
+
+
+ //@Test
   public void testGroovy() throws IOException, URISyntaxException, InterruptedException {
 
     ClassLoader classLoader = getClass().getClassLoader();

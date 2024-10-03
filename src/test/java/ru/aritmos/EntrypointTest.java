@@ -378,21 +378,22 @@ class EntrypointTest {
       Assertions.assertEquals(visit2.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
     }
   }
+
   @Test
   void checkConfirmVisitWithCallRuleMaxLifeTimeTwoServices() throws InterruptedException {
 
     Service service;
     service =
-            managementController.getBranch(branchId).getServices().values().stream()
-                    .filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c"))
-                    .findFirst()
-                    .orElse(null);
+        managementController.getBranch(branchId).getServices().values().stream()
+            .filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c"))
+            .findFirst()
+            .orElse(null);
     Service service2;
     service2 =
-            managementController.getBranch(branchId).getServices().values().stream()
-                    .filter(f -> f.getId().equals("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67"))
-                    .findFirst()
-                    .orElse(null);
+        managementController.getBranch(branchId).getServices().values().stream()
+            .filter(f -> f.getId().equals("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67"))
+            .findFirst()
+            .orElse(null);
 
     ArrayList<String> serviceIds = new ArrayList<>();
     assert service2 != null;
@@ -409,14 +410,14 @@ class EntrypointTest {
 
     Thread.sleep(1000);
     Optional<Visit> visitOptional =
-            visitService.visitCallForConfirmWithMaxLifeTime(branchId, servicePointFcId);
+        visitService.visitCallForConfirmWithMaxLifeTime(branchId, servicePointFcId);
     if (visitOptional.isPresent()) {
       Long servtime = visitOptional.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
       Thread.sleep(800);
       visit =
-              visitService.visitReCallForConfirm(
-                      branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visitOptional.get());
+          visitService.visitReCallForConfirm(
+              branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visitOptional.get());
       Thread.sleep(600);
       visit = visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
 
@@ -427,6 +428,7 @@ class EntrypointTest {
       Assertions.assertEquals(visit2.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
     }
   }
+
   @Test
   void checkBackUserToPoolVisit() throws InterruptedException {
 
@@ -983,6 +985,37 @@ class EntrypointTest {
     visit = visitService.createVisit(branchId, "1", visitParameters, false);
     Optional<Visit> visits =
         visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
+    if (visits.isPresent()) {
+      Long servtime = visits.get().getServingTime();
+      Assertions.assertEquals(servtime, 0);
+      Thread.sleep(200);
+      visit = visitService.visitReCallForConfirm(branchId, servicePointFcId, visits.get());
+      Thread.sleep(200);
+      Optional<Visit> visits2 = visitService.visitNoShow(branchId, servicePointFcId, visit);
+      if (visits2.isPresent()) {
+        Visit visit2 = visits2.get();
+
+        Assertions.assertEquals(visit2.getStatus(), VisitEvent.NO_SHOW.getState().name());
+      }
+    }
+  }
+
+  @Test
+  void checkNoShowVisitWithoutConfirm() throws InterruptedException {
+    Service service;
+    service =
+        managementController.getBranch(branchId).getServices().values().stream()
+            .filter(f -> f.getId().equals(serviceId))
+            .findFirst()
+            .orElse(null);
+    ArrayList<String> serviceIds = new ArrayList<>();
+    serviceIds.add(serviceId);
+    assert service != null;
+    Visit visit;
+    VisitParameters visitParameters =
+        VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+    visit = visitService.createVisit(branchId, "1", visitParameters, false);
+    Optional<Visit> visits = visitService.visitCallWithMaxWaitingTime(branchId, servicePointFcId);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);

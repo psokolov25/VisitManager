@@ -381,15 +381,17 @@ public class Branch extends BranchEntity {
             .params(new HashMap<>())
             .body(visit.toBuilder().build())
             .build());
-    eventService.send(
-        "stat",
-        false,
-        Event.builder()
-            .eventDate(ZonedDateTime.now())
-            .eventType("VISIT_" + visitEvent.name())
-            .params(new HashMap<>())
-            .body(visit.toBuilder().build())
-            .build());
+    if (!VisitEvent.isIgnoredInStat(visitEvent)) {
+      eventService.send(
+          "stat",
+          false,
+          Event.builder()
+              .eventDate(ZonedDateTime.now())
+              .eventType("VISIT_" + visitEvent.name())
+              .params(new HashMap<>())
+              .body(visit.toBuilder().build())
+              .build());
+    }
   }
 
   public void updateVisit(
