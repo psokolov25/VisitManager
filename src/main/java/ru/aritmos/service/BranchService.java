@@ -150,7 +150,7 @@ public class BranchService {
       String branchId, String userName, String servicePointId, String workProfileId) {
     Branch branch = this.getBranch(branchId);
     if (branch.getUsers().containsKey(userName)) {
-      User user=branch.getUsers().get(userName);
+      User user = branch.getUsers().get(userName);
       user.setServicePointId(servicePointId);
       user.setCurrentWorkProfileId(workProfileId);
       branch.openServicePoint(user, eventService);

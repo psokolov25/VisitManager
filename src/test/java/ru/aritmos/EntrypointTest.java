@@ -1191,6 +1191,7 @@ class EntrypointTest {
         assertThrows(BusinessException.class, () -> branchService.getBranch("not exist"));
     Assertions.assertEquals(exception.getMessage(), "Branch not found!!");
   }
+
   @Test
   public void testGroovy() throws IOException, URISyntaxException, InterruptedException {
 
@@ -1204,49 +1205,49 @@ class EntrypointTest {
     GroovyShell shell = new GroovyShell(binding);
     // Текст скрипта на groovy, подгружается из файла (возможно так же и другое хранение скрипта)
     String scriptCode =
-            Files.readString(
-                    Paths.get(Objects.requireNonNull(classLoader.getResource("test.groovy")).toURI()));
+        Files.readString(
+            Paths.get(Objects.requireNonNull(classLoader.getResource("test.groovy")).toURI()));
     // Обработка скрипта перед выполнением
     Script script = shell.parse(scriptCode);
     // Передача двух тестовых визитов
     binding.setVariable(
-            "visits",
-            new ArrayList<Visit>() {
-              {
-                add(
-                        Visit.builder()
-                                .id("test1")
-                                .createDateTime(ZonedDateTime.now())
-                                .queueId("123")
-                                .build());
-                Thread.sleep(0);
-                add(
-                        Visit.builder()
-                                .id("test2")
-                                .createDateTime(ZonedDateTime.now())
-                                .servicePointId("123")
-                                .build());
-                Thread.sleep(10);
-                add(
-                        Visit.builder()
-                                .id("test2")
-                                .createDateTime(ZonedDateTime.now())
-                                .poolUserId("20")
-                                .build());
-              }
-            });
+        "visits",
+        new ArrayList<Visit>() {
+          {
+            add(
+                Visit.builder()
+                    .id("test1")
+                    .createDateTime(ZonedDateTime.now())
+                    .queueId("123")
+                    .build());
+            Thread.sleep(0);
+            add(
+                Visit.builder()
+                    .id("test2")
+                    .createDateTime(ZonedDateTime.now())
+                    .servicePointId("123")
+                    .build());
+            Thread.sleep(10);
+            add(
+                Visit.builder()
+                    .id("test2")
+                    .createDateTime(ZonedDateTime.now())
+                    .poolUserId("20")
+                    .build());
+          }
+        });
     // Передача дополнительных параметров, в данном случае идентификаторы очереди, юзерпула и пула
     // точки обслуживания
     // из которых нужно извлекать визиты
     binding.setVariable(
-            "params",
-            new HashMap<String, Object>() {
-              {
-                put("queueId", "123");
-                put("userPoolId", "123");
-                put("servicePointId", "123");
-              }
-            });
+        "params",
+        new HashMap<String, Object>() {
+          {
+            put("queueId", "123");
+            put("userPoolId", "123");
+            put("servicePointId", "123");
+          }
+        });
     // Запуск выполнения скрипта
     script.run();
     // Получение значений всех переменных скрипта

@@ -392,6 +392,17 @@ public class Branch extends BranchEntity {
               .body(visit.toBuilder().build())
               .build());
     }
+    if (VisitEvent.isFrontEndEvent(visitEvent)) {
+      eventService.send(
+          "frontend",
+          false,
+          Event.builder()
+              .eventDate(ZonedDateTime.now())
+              .eventType("VISIT_" + visitEvent.name())
+              .params(new HashMap<>())
+              .body(visit.toBuilder().build())
+              .build());
+    }
   }
 
   public void updateVisit(

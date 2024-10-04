@@ -12,32 +12,84 @@ import lombok.Getter;
 @Serdeable
 @JsonFormat
 public enum VisitEvent {
+  /** Визит создан */
   CREATED,
+  /** Визит размещен в очередь после создания */
   PLACED_IN_QUEUE,
+  /** Визит вызыве */
   CALLED,
+  /** Визит повторно вызван */
   RECALLED,
+  /** Визит натат обслуживаться (текущая услуга) */
   START_SERVING,
+  /** Визит завершен обслуживаться (текущая услуга) */
   STOP_SERVING,
+  /** Визит завершен так как клиент не пришел */
   NO_SHOW,
+  /** Визит завершен */
   END,
+  /** Визит переведен в пул сотрудника */
   TRANSFER_TO_USER_POOL,
+  /** Визит переведен в пул точки обслуживания */
   TRANSFER_TO_SERVICE_POINT_POOL,
-  BACK_TO_USER_POOL,
-  BACK_TO_QUEUE,
-  BACK_TO_SERVICE_POINT_POOL,
+  /** Визит переведен в очередь */
   TRANSFER_TO_QUEUE,
+  /** Визит возвращен в пул сотрудника */
+  BACK_TO_USER_POOL,
+  /** Визит возвращен в очередь */
+  BACK_TO_QUEUE,
+  /** Визит возвращен в пул точки обслуживания */
+  BACK_TO_SERVICE_POINT_POOL,
+  /** В визит добавлена услуга */
   ADD_SERVICE,
+  /** В визит добавлена фактическая услуга */
   ADDED_DELIVERED_SERVICE,
+  /** В визите удалена фактическая услуга */
   DELETED_DELIVERED_SERVICE,
+  /** В визит добавлен итог фактической услуги */
   ADDED_DELIVERED_SERVICE_RESULT,
+  /** В визит добавлен итог услуги */
   ADDED_SERVICE_RESULT,
+  /** В визит добавлена пометка */
   ADDED_MARK,
+  /** В визит удалена пометка */
   DELETED_MARK,
+  /** В визит удален итог фактической услуги */
   DELETED_DELIVERED_SERVICE_RESULT,
+  /** В визит удален итог услуги */
   DELETED_SERVICE_RESULT,
+  /** У визита закночена транзакция */
   VISIT_END_TRANSACTION,
+  /** Визит переведен из очереди */
   VISIT_TRANSFER_FROM_QUEUE,
+  /** Визит удален */
   VISIT_DELETED;
+
+  private static final List<VisitEvent> frontEndVisitEvents =
+      List.of(
+          CREATED,
+          PLACED_IN_QUEUE,
+          CALLED,
+          RECALLED,
+          START_SERVING,
+          STOP_SERVING,
+          NO_SHOW,
+          END,
+          TRANSFER_TO_USER_POOL,
+          TRANSFER_TO_SERVICE_POINT_POOL,
+          BACK_TO_USER_POOL,
+          BACK_TO_QUEUE,
+          BACK_TO_SERVICE_POINT_POOL,
+          TRANSFER_TO_QUEUE,
+          ADD_SERVICE,
+          ADDED_DELIVERED_SERVICE,
+          DELETED_DELIVERED_SERVICE,
+          ADDED_DELIVERED_SERVICE_RESULT,
+          ADDED_SERVICE_RESULT,
+          ADDED_MARK,
+          DELETED_MARK,
+          DELETED_DELIVERED_SERVICE_RESULT,
+          DELETED_SERVICE_RESULT);
   private static final List<VisitEvent> newTransactionEvents =
       List.of(
           STOP_SERVING,
@@ -301,6 +353,10 @@ public enum VisitEvent {
 
   public static Boolean isIgnoredInStat(VisitEvent visitEvent) {
     return notSendToStat.contains(visitEvent);
+  }
+
+  public static Boolean isFrontEndEvent(VisitEvent visitEvent) {
+    return frontEndVisitEvents.contains(visitEvent);
   }
 
   public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {
