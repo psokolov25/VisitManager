@@ -9,5 +9,7 @@ import ru.aritmos.model.visit.Visit;
 public interface CallRule extends Rule {
   Optional<Visit> call(Branch branch, ServicePoint servicePoint);
 
+  Optional<Visit> call(Branch branch, ServicePoint servicePoint, List<String> queueIds);
+
   List<ServicePoint> getAvaliableServicePoints(Branch currentBranch, Visit visit);
 }

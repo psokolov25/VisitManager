@@ -25,6 +25,11 @@ public class CustomCallRule implements CallRule {
   }
 
   @Override
+  public Optional<Visit> call(Branch branch, ServicePoint servicePoint, List<String> queueIds) {
+    return Optional.empty();
+  }
+
+  @Override
   public List<ServicePoint> getAvaliableServicePoints(Branch currentBranch, Visit visit) {
     return List.of();
   }

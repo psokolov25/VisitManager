@@ -61,6 +61,40 @@ public class MaxLifeTimeCallRule implements CallRule {
     return Optional.empty();
   }
 
+  @Override
+  public Optional<Visit> call(Branch branch, ServicePoint servicePoint, List<String> queueIds) {
+    if (servicePoint.getUser() != null) {
+
+      String workprofileId = servicePoint.getUser().getCurrentWorkProfileId();
+      if (branch.getWorkProfiles().containsKey(workprofileId)) {
+        for (String f : queueIds) {
+          Queue availableQueue = branch.getQueues().get(f);
+          if (!availableQueue.getVisits().isEmpty()) {
+            Optional<Visit> result =
+                availableQueue.getVisits().stream()
+                    .filter(
+                        f2 ->
+                            (f2.getReturnDateTime() == null
+                                    || f2.getReturningTime() > f2.getReturnTimeDelay())
+                                && f2.getStatus().contains("WAITING"))
+                    .max(
+                        (o1, o2) ->
+                            o1.getReturningTime().compareTo(o2.getReturningTime()) == 0
+                                ? o1.getVisitLifeTime().compareTo(o2.getVisitLifeTime())
+                                : o1.getReturningTime().compareTo(o2.getReturningTime()));
+            result.ifPresent(visit -> visit.setReturnDateTime(null));
+            return result;
+          }
+        }
+      }
+
+    } else {
+      throw new BusinessException(
+          "User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
+    }
+    return Optional.empty();
+  }
+
   /**
    * Возвращает список точек обслуживания, которые могут вызвать данный визит
    *

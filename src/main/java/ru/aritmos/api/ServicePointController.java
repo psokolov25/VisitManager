@@ -408,6 +408,30 @@ public class ServicePointController {
   }
 
   /**
+   * Вызов наиболее ожидающего визита с ожиданием подтверждения из списка очередей
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param queueIds идентификаторы очередей
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Вызов")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCallForConfirmMaxWaitingTime(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body List<String> queueIds) {
+
+    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId, queueIds);
+  }
+
+  /**
    * Вызов с максимальным временем жизни визита с ожиданием подтверждения
    *
    * @param branchId идентификатор отделения
@@ -427,6 +451,31 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
     return visitService.visitCallForConfirmWithMaxLifeTime(branchId, servicePointId);
+  }
+
+  /**
+   * Вызов с максимальным временем жизни визита с ожиданием подтверждения из списка очередей
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param queueIds идентификаторы очередей
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Вызов")
+  @Tag(name = "Полный список")
+  @Post(
+      uri =
+          "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues/maxLifeTime",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCallForConfirmMaxLifeTime(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body List<String> queueIds) {
+
+    return visitService.visitCallForConfirmWithMaxLifeTime(branchId, servicePointId, queueIds);
   }
 
   /**
@@ -963,6 +1012,31 @@ public class ServicePointController {
   }
 
   /**
+   * Вызов визита с наибольшим временем ожидания
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param queueIds идентификаторы очередей
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Вызов")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCall(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body List<String> queueIds) {
+
+    return visitService.visitCallWithMaxWaitingTime(branchId, servicePointId, queueIds);
+  }
+
+  /**
    * Вызов визита с наибольшим временем жизни визита
    *
    * @param branchId идентификатор отделения
@@ -983,6 +1057,31 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
     return visitService.visitCallWithMaxLifeTime(branchId, servicePointId);
+  }
+
+  /**
+   * Вызов визита с наибольшим временем жизни визита
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param queueIds идентификаторы очередей
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Вызов")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues/maxLifeTime",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCallMaxLifeTime(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body List<String> queueIds) {
+
+    return visitService.visitCallWithMaxLifeTime(branchId, servicePointId, queueIds);
   }
 
   /**

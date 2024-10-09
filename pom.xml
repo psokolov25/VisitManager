@@ -13,7 +13,7 @@
         <version>4.4.3</version>
     </parent>
     <properties>
-        <packaging>docker</packaging>
+        <packaging>jar</packaging>
         <jdk.version>17</jdk.version>
         <release.version>17</release.version>
         <micronaut.version>4.4.3</micronaut.version>
@@ -82,11 +82,8 @@
             <artifactId>micronaut-reactor-http-client</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>io.micronaut.redis</groupId>
-            <artifactId>micronaut-redis-lettuce</artifactId>
-            <scope>compile</scope>
-        </dependency>
+
+
         <dependency>
             <groupId>io.micronaut.security</groupId>
             <artifactId>micronaut-security-oauth2</artifactId>
