@@ -1,0 +1,78 @@
+application:
+  api:
+    swagger:
+      path: /api-docs/swagger
+      version: 3.19.4
+      layout: StandaloneLayout
+      deepLinking: true
+      urls:
+        - name: ubw-rest
+          url: /api-docs/swagger/ubw-rest-0.1.yml
+logger:
+  levels: ALL
+graphql:
+  enabled: true
+  graphiql: # enables the /graphiql endpoint to test calls against your graph.
+    enabled: true
+loki:
+  url: http://192.168.3.13:3100/loki/api/v1/push
+kafka:
+  consumers:
+    default:
+      allow.auto.create.topics: true
+  producers:
+    default:
+      allow.auto.create.topics: true
+  bootstrap:
+    servers: 192.168.8.45:9094
+
+micronaut:
+  test:
+    resources:
+      enabled: true
+
+  server:
+    port: 8080
+    cors:
+      enabled: true
+  application:
+    rules:
+      segmentation: simple  #custom|simple
+      callRuleApiUrl: http://localhost:8085/customcallrule
+    returnTimeDelay: 8000
+    name: visit_manager
+    dataBusUrl: http://192.168.8.45:8082
+    dataBusUrlRetryPeriod: '1s'
+    dataBusUrlRetryMaxPeriod: '45m'
+    dataBusUrlRetryRepeat: 30
+    configurationURL: http://localhost:8081
+    printerServiceURL: http://192.168.3.33:8084
+    printerRetryPeriod: '1s'
+    printerRetryMaxPeriod: '45m'
+    printerRetryRepeat: 30
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+
+redis:
+  #uri: redis://192.168.8.45:6379
+  #uri: redis://localhost:6379
+  uri: redis://192.168.8.45:7379
+  #uri: ${REDIS_SERVER:`http://localhost:8080/`}
+  cache:
+    key-serializer: io.micronaut.core.serialize.ObjectSerializer
+    value-serializer: io.micronaut.core.serialize.ObjectSerializer
+
+  caches:
+    branches:
+      charset: UTF-8
+
+
+
+
+
