@@ -276,11 +276,11 @@ public class Branch extends BranchEntity {
       EventService eventService,
       VisitEvent visitEvent,
       VisitService visitService,
-      Boolean isAppend) {
-    if (isAppend) {
-      updateVisit(visit, eventService, visitEvent, visitService, -1);
-    } else {
+      Boolean isToStart) {
+    if (isToStart) {
       updateVisit(visit, eventService, visitEvent, visitService, 0);
+    } else {
+      updateVisit(visit, eventService, visitEvent, visitService, -1);
     }
   }
 

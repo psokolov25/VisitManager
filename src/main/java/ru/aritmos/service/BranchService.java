@@ -131,10 +131,10 @@ public class BranchService {
   }
 
   public void updateVisit(
-      Visit visit, VisitEvent visitEvent, VisitService visitService, Boolean isAppend) {
+      Visit visit, VisitEvent visitEvent, VisitService visitService, Boolean isToStart) {
 
     Branch branch = this.getBranch(visit.getBranchId());
-    branch.updateVisit(visit, eventService, visitEvent, visitService, isAppend);
+    branch.updateVisit(visit, eventService, visitEvent, visitService, isToStart);
     this.add(branch.getId(), branch);
   }
 

@@ -34,7 +34,9 @@ public class MaxLifeTimeCallRule implements CallRule {
                 .map(Map.Entry::getValue)
                 .toList();
         Optional<Visit> result =
-            availableQueues.stream().map(Queue::getVisits).flatMap(List::stream).toList().stream()
+            availableQueues.stream()
+                .map(Queue::getVisits)
+                .flatMap(List::stream)
                 .filter(
                     f ->
                         (f.getReturnDateTime() == null
@@ -47,6 +49,7 @@ public class MaxLifeTimeCallRule implements CallRule {
                             : o1.getReturningTime().compareTo(o2.getReturningTime()));
 
         if (result.isPresent()) {
+          result.get().getParameterMap().remove("isTransfereedToStart");
           result.get().setReturnDateTime(null);
           return result;
         } else {

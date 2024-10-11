@@ -382,7 +382,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable String visitId) {
 
-    return visitService.visitCallWithMaxWaitingTime(branchId, servicePointId, visitId);
+    return visitService.visitCall(branchId, servicePointId, visitId);
   }
 
   /**
@@ -404,7 +404,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
-    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId);
+    return visitService.visitCallForConfirm(branchId, servicePointId);
   }
 
   /**
@@ -428,7 +428,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @Body List<String> queueIds) {
 
-    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId, queueIds);
+    return visitService.visitCallForConfirm(branchId, servicePointId, queueIds);
   }
 
   /**
@@ -499,7 +499,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @Body Visit visit) {
 
-    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId, visit);
+    return visitService.visitCallForConfirm(branchId, servicePointId, visit);
   }
 
   /**
@@ -523,7 +523,7 @@ public class ServicePointController {
       @PathVariable String visitId) {
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId, visit);
+    return visitService.visitCallForConfirm(branchId, servicePointId, visit);
   }
 
   /**
@@ -1008,7 +1008,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
-    return visitService.visitCallWithMaxWaitingTime(branchId, servicePointId);
+    return visitService.visitCallWith(branchId, servicePointId);
   }
 
   /**
@@ -1033,7 +1033,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @Body List<String> queueIds) {
 
-    return visitService.visitCallWithMaxWaitingTime(branchId, servicePointId, queueIds);
+    return visitService.visitCallWith(branchId, servicePointId, queueIds);
   }
 
   /**
@@ -1299,7 +1299,7 @@ public class ServicePointController {
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit, index);
+    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, index);
   }
 
   /**
@@ -1340,7 +1340,7 @@ public class ServicePointController {
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit, isAppend);
+    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, isAppend);
   }
 
   /**
@@ -1380,7 +1380,7 @@ public class ServicePointController {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
     }
 
-    return visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit, isAppend);
+    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, isAppend);
   }
 
   /**
@@ -1420,7 +1420,7 @@ public class ServicePointController {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
     }
 
-    return visitService.visitTransferFromQueue(branchId, servicePointId, queueId, visit, index);
+    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, index);
   }
 
   /**

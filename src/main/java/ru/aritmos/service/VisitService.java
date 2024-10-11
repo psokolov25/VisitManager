@@ -1207,7 +1207,7 @@ public class VisitService {
    * @param index позиция визита в списке
    * @return визит
    */
-  public Visit visitTransferFromQueue(
+  public Visit visitTransfer(
       String branchId, String servicePointId, String queueId, Visit visit, Integer index) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
@@ -1245,22 +1245,19 @@ public class VisitService {
   }
 
   /**
-   * Перевод визита из очереди в очередь
+   * Перевод визита в очередь
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @param queueId идентификатор очереди
    * @param visit визит
-   * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param isToStart флаг вставки визита в начало или в конец (по умолчанию в начало)
    * @return визит
    */
-  public Visit visitTransferFromQueue(
-      String branchId, String servicePointId, String queueId, Visit visit, Boolean isAppend) {
+  public Visit visitTransfer(
+      String branchId, String servicePointId, String queueId, Visit visit, Boolean isToStart) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
-    if (visit.getQueueId().isBlank()) {
-      throw new BusinessException("Visit not in a queue!", eventService);
-    }
 
     Queue queue;
     if (currentBranch.getQueues().containsKey(queueId)) {
@@ -1273,7 +1270,13 @@ public class VisitService {
 
     currentBranch.getServicePoints().get(servicePointId);
     visit.setServicePointId(null);
+    if (visit.getServicePointId() != null) {
+      visit.setReturnDateTime(ZonedDateTime.now());
+    }
 
+    if (isToStart) {
+      visit.getParameterMap().put("isTransfereedToStart", "true");
+    }
     assert queue != null;
     visit.setQueueId(queue.getId());
 
@@ -1285,7 +1288,7 @@ public class VisitService {
     event.getParameters().put("branchID", branchId);
     event.getParameters().put("staffId", visit.getUserId());
     event.getParameters().put("staff?Name", visit.getUserName());
-    branchService.updateVisit(visit, event, this, isAppend);
+    branchService.updateVisit(visit, event, this, isToStart);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     log.info("Visit {} transfered!", visit);
     return visit;
@@ -1600,7 +1603,7 @@ public class VisitService {
    * @param visit визит
    * @return визит
    */
-  public Optional<Visit> visitCallWithMaxWaitingTime(
+  public Optional<Visit> visitCall(
       String branchId, String servicePointId, Visit visit) {
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -1608,7 +1611,7 @@ public class VisitService {
 
     visit.setStatus("CALLED");
     visit.setCallDateTime(ZonedDateTime.now());
-
+    visit.getParameterMap().remove("isTransfereedToStart");
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
       if (servicePoint.getVisit() != null) {
@@ -1683,11 +1686,11 @@ public class VisitService {
    * @param visitId идентификатор визита
    * @return визит
    */
-  public Optional<Visit> visitCallWithMaxWaitingTime(
+  public Optional<Visit> visitCall(
       String branchId, String servicePointId, String visitId) {
     if (this.getAllVisits(branchId).containsKey(visitId)) {
       Visit visit = this.getAllVisits(branchId).get(visitId);
-      return this.visitCallWithMaxWaitingTime(branchId, servicePointId, visit);
+      return this.visitCall(branchId, servicePointId, visit);
     }
     return Optional.empty();
   }
@@ -1700,7 +1703,7 @@ public class VisitService {
    * @param visit визит
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(
+  public Optional<Visit> visitCallForConfirm(
       String branchId, String servicePointId, Visit visit) {
 
     String userId = "";
@@ -1720,6 +1723,7 @@ public class VisitService {
     // visit.setStatus("CALLED");
     visit.setCallDateTime(ZonedDateTime.now());
     visit.getParameterMap().put("LastQueueId", visit.getQueueId());
+    visit.getParameterMap().remove("isTransfereedToStart");
     VisitEvent event = VisitEvent.CALLED;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("servicePointId", servicePointId);
@@ -1764,7 +1768,7 @@ public class VisitService {
     }
 
     visit.setCallDateTime(ZonedDateTime.now());
-
+    visit.getParameterMap().remove("isTransfereedToStart");
     VisitEvent event = VisitEvent.RECALLED;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("ServicePointId", servicePointId);
@@ -1901,7 +1905,7 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(
+  public Optional<Visit> visitCallForConfirm(
       String branchId, String servicePointId) {
     Branch currentBranch = branchService.getBranch(branchId);
     String userId = "";
@@ -1955,7 +1959,7 @@ public class VisitService {
    * @param queueIds идентификаторы очередей
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(
+  public Optional<Visit> visitCallForConfirm(
       String branchId, String servicePointId, List<String> queueIds) {
     Branch currentBranch = branchService.getBranch(branchId);
     String userId = "";
@@ -2126,10 +2130,10 @@ public class VisitService {
       if (servicePoint.isPresent()) {
         if (!servicePoint.get().getIsConfirmRequired()) {
           visit2 =
-              visitCallWithMaxWaitingTime(visit.getBranchId(), servicePoint.get().getId(), visit);
+              visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
         } else {
           visit2 =
-              visitCallForConfirmWithMaxWaitingTime(
+              visitCallForConfirm(
                   visit.getBranchId(), servicePoint.get().getId(), visit);
         }
         if (visit2.isPresent()) {
@@ -2149,7 +2153,7 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Optional<Visit> visitCallWithMaxWaitingTime(String branchId, String servicePointId) {
+  public Optional<Visit> visitCallWith(String branchId, String servicePointId) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -2159,7 +2163,7 @@ public class VisitService {
         Optional<Visit> visit = waitingTimeCallRule.call(currentBranch, servicePoint);
         if (visit.isPresent()) {
 
-          return visitCallWithMaxWaitingTime(branchId, servicePoint.getId(), visit.get());
+          return visitCall(branchId, servicePoint.getId(), visit.get());
         }
 
       } else {
@@ -2189,7 +2193,7 @@ public class VisitService {
    * @param queueIds идентификаторы очередей
    * @return визит
    */
-  public Optional<Visit> visitCallWithMaxWaitingTime(
+  public Optional<Visit> visitCallWith(
       String branchId, String servicePointId, List<String> queueIds) {
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -2200,7 +2204,7 @@ public class VisitService {
         Optional<Visit> visit = waitingTimeCallRule.call(currentBranch, servicePoint, queueIds);
         if (visit.isPresent()) {
 
-          return visitCallWithMaxWaitingTime(branchId, servicePoint.getId(), visit.get());
+          return visitCall(branchId, servicePoint.getId(), visit.get());
         }
 
       } else {
@@ -2239,7 +2243,7 @@ public class VisitService {
         Optional<Visit> visit = lifeTimeCallRule.call(currentBranch, servicePoint);
         if (visit.isPresent()) {
 
-          return visitCallWithMaxWaitingTime(branchId, servicePoint.getId(), visit.get());
+          return visitCall(branchId, servicePoint.getId(), visit.get());
         }
 
       } else {
@@ -2280,7 +2284,7 @@ public class VisitService {
         Optional<Visit> visit = lifeTimeCallRule.call(currentBranch, servicePoint, queueIds);
         if (visit.isPresent()) {
 
-          return visitCallWithMaxWaitingTime(branchId, servicePoint.getId(), visit.get());
+          return visitCall(branchId, servicePoint.getId(), visit.get());
         }
 
       } else {
