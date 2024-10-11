@@ -20,7 +20,7 @@ import ru.aritmos.model.visit.Visit;
 public class MaxWaitingTimeCallRule implements CallRule {
   @Inject EventService eventService;
 
-    private Integer visitComparer(Visit visit1, Visit visit2) {
+  private Integer visitComparer(Visit visit1, Visit visit2) {
     if (visit1.getParameterMap().containsKey("isTransfereedToStart")) {
       if (visit2.getParameterMap().containsKey("isTransfereedToStart")) {
         return Long.compare(visit1.getWaitingTime(), visit2.getWaitingTime());
@@ -50,15 +50,16 @@ public class MaxWaitingTimeCallRule implements CallRule {
                 .map(Map.Entry::getValue)
                 .toList();
 
-          Optional<Visit> result = availableQueues.stream()
-                  .map(Queue::getVisits)
-                  .flatMap(List::stream)
-                  .filter(
-                          f ->
-                                  (f.getReturnDateTime() == null
-                                          || f.getReturningTime() > f.getReturnTimeDelay())
-                                          && f.getStatus().contains("WAITING"))
-                  .max(this::visitComparer);
+        Optional<Visit> result =
+            availableQueues.stream()
+                .map(Queue::getVisits)
+                .flatMap(List::stream)
+                .filter(
+                    f ->
+                        (f.getReturnDateTime() == null
+                                || f.getReturningTime() > f.getReturnTimeDelay())
+                            && f.getStatus().contains("WAITING"))
+                .max(this::visitComparer);
         result.ifPresent(visit -> visit.getParameterMap().remove("isTransfereedToStart"));
         result.ifPresent(visit -> visit.setReturnDateTime(null));
         return result;

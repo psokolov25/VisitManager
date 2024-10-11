@@ -1603,8 +1603,7 @@ public class VisitService {
    * @param visit визит
    * @return визит
    */
-  public Optional<Visit> visitCall(
-      String branchId, String servicePointId, Visit visit) {
+  public Optional<Visit> visitCall(String branchId, String servicePointId, Visit visit) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     Optional<Queue> queue;
@@ -1686,8 +1685,7 @@ public class VisitService {
    * @param visitId идентификатор визита
    * @return визит
    */
-  public Optional<Visit> visitCall(
-      String branchId, String servicePointId, String visitId) {
+  public Optional<Visit> visitCall(String branchId, String servicePointId, String visitId) {
     if (this.getAllVisits(branchId).containsKey(visitId)) {
       Visit visit = this.getAllVisits(branchId).get(visitId);
       return this.visitCall(branchId, servicePointId, visit);
@@ -1703,8 +1701,7 @@ public class VisitService {
    * @param visit визит
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirm(
-      String branchId, String servicePointId, Visit visit) {
+  public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId, Visit visit) {
 
     String userId = "";
     String userName = "";
@@ -1905,8 +1902,7 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirm(
-      String branchId, String servicePointId) {
+  public Optional<Visit> visitCallForConfirm(String branchId, String servicePointId) {
     Branch currentBranch = branchService.getBranch(branchId);
     String userId = "";
     String userName = "";
@@ -2129,12 +2125,9 @@ public class VisitService {
               .findFirst();
       if (servicePoint.isPresent()) {
         if (!servicePoint.get().getIsConfirmRequired()) {
-          visit2 =
-              visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
+          visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
         } else {
-          visit2 =
-              visitCallForConfirm(
-                  visit.getBranchId(), servicePoint.get().getId(), visit);
+          visit2 = visitCallForConfirm(visit.getBranchId(), servicePoint.get().getId(), visit);
         }
         if (visit2.isPresent()) {
           servicePoint.get().setAutoCallMode(false);

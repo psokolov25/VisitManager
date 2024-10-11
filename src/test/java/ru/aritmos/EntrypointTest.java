@@ -264,8 +264,7 @@ class EntrypointTest {
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     Optional<Visit> visitForConfirm =
-        visitService.visitCallForConfirm(
-            branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
     if (visitForConfirm.isPresent()) {
       Long servtime = visitForConfirm.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -296,8 +295,7 @@ class EntrypointTest {
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     visitService.createVisit(branchId, "1", visitParameters, false);
     Thread.sleep(300);
-    Optional<Visit> currvisit =
-        visitService.visitCallForConfirm(branchId, servicePointFcId);
+    Optional<Visit> currvisit = visitService.visitCallForConfirm(branchId, servicePointFcId);
     if (currvisit.isPresent()) {
       Long servtime = currvisit.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -368,8 +366,7 @@ class EntrypointTest {
     // Visit visit=visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
-    Optional<Visit> visitOptional =
-        visitService.visitCallForConfirm(branchId, servicePointFcId);
+    Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, servicePointFcId);
     if (visitOptional.isPresent()) {
       Long servtime = visitOptional.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -461,8 +458,7 @@ class EntrypointTest {
 
     Thread.sleep(1000);
     Optional<Visit> visits =
-        visitService.visitCallForConfirm(
-            branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -488,8 +484,7 @@ class EntrypointTest {
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
       visits =
-          visitService.visitCallForConfirm(
-              branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+          visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -521,8 +516,7 @@ class EntrypointTest {
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
-    Optional<Visit> visitOptional =
-        visitService.visitCallForConfirm(branchId, servicePointFcId);
+    Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, servicePointFcId);
     if (visitOptional.isPresent()) {
       Long servtime = visitOptional.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -548,8 +542,7 @@ class EntrypointTest {
               .getVisits()
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
-      Optional<Visit> visits =
-          visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -585,8 +578,7 @@ class EntrypointTest {
 
     Thread.sleep(1000);
     Optional<Visit> visits =
-        visitService.visitCallForConfirm(
-            branchId, "993211e7-31c8-4dcf-bab1-ecf7b9094d4c", visit);
+        visitService.visitCallForConfirm(branchId, "993211e7-31c8-4dcf-bab1-ecf7b9094d4c", visit);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -610,8 +602,7 @@ class EntrypointTest {
               .size());
       Assertions.assertEquals(
           visit.getStatus(), VisitEvent.BACK_TO_SERVICE_POINT_POOL.getState().name());
-      visits =
-          visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -646,8 +637,7 @@ class EntrypointTest {
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
-    Optional<Visit> visits =
-        visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -670,8 +660,7 @@ class EntrypointTest {
               .getVisits()
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
-      visits =
-          visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -703,8 +692,7 @@ class EntrypointTest {
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
-    Optional<Visit> visitOptional =
-        visitService.visitCallForConfirm(branchId, servicePointFcId);
+    Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, servicePointFcId);
     if (visitOptional.isPresent()) {
       Long servtime = visitOptional.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -730,8 +718,7 @@ class EntrypointTest {
               .getVisits()
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
-      Optional<Visit> visits =
-          visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -780,8 +767,7 @@ class EntrypointTest {
             .size());
     Assertions.assertEquals(
         visit.getStatus(), VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getState().name());
-    Optional<Visit> visits =
-        visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Thread.sleep(900);
 
@@ -828,8 +814,7 @@ class EntrypointTest {
             .getVisits()
             .size());
     Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_USER_POOL.getState().name());
-    Optional<Visit> visits =
-        visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Thread.sleep(900);
 
@@ -876,8 +861,7 @@ class EntrypointTest {
             .getVisits()
             .size());
     Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_QUEUE.getState().name());
-    Optional<Visit> visits =
-        visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Thread.sleep(900);
 
@@ -992,8 +976,7 @@ class EntrypointTest {
     VisitParameters visitParameters =
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     visit = visitService.createVisit(branchId, "1", visitParameters, false);
-    Optional<Visit> visits =
-        visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
