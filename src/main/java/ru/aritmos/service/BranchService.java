@@ -168,10 +168,10 @@ public class BranchService {
     }
   }
 
-  public void closeServicePoint(String branchId, String servicePointId) {
+  public void closeServicePoint(String branchId, String servicePointId,VisitService visitService) {
 
     Branch branch = this.getBranch(branchId);
-    branch.closeServicePoint(servicePointId, eventService);
+    branch.closeServicePoint(servicePointId, eventService,visitService);
     this.add(branch.getId(), branch);
   }
 

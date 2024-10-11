@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
+
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import ru.aritmos.service.VisitService;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Branch extends BranchEntity {
+
   /** Перечень настроек отделения */
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   HashMap<String, Object> parameterMap = new HashMap<>();
@@ -184,12 +186,34 @@ public class Branch extends BranchEntity {
    * @param servicePointId идентификатор точки обслуживания
    * @param eventService служба рассылки событий
    */
-  public void closeServicePoint(String servicePointId, EventService eventService) {
+  public void closeServicePoint(String servicePointId, EventService eventService,VisitService visitService) {
 
     if (this.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
       if (servicePoint.getUser() != null) {
+        if (servicePoint.getVisit() != null) {
+            visitService.visitEnd(this.getId(),servicePointId);
+        }
+
         getUsers().put(servicePoint.getUser().getName(), servicePoint.getUser());
+        eventService.send(
+            "*",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("SERVICE_POINT_CLOSING")
+                .params(new HashMap<>())
+                .body(servicePoint)
+                .build());
+        eventService.send(
+            "stat",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("SERVICE_POINT_CLOSING")
+                .params(new HashMap<>())
+                .body(servicePoint)
+                .build());
         servicePoint.setUser(null);
         eventService.send(
             "*",
