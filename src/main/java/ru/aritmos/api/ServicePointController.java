@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
+import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.tiny.TinyClass;
@@ -31,6 +32,7 @@ public class ServicePointController {
   @Inject BranchService branchService;
   @Inject VisitService visitService;
   @Inject EventService eventService;
+  @Inject KeyCloackClient keyCloackClient;
 
   @Value("${micronaut.application.name}")
   String applicationName;

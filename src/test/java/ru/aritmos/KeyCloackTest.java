@@ -22,7 +22,7 @@ public class KeyCloackTest {
     if (res.isPresent()) {
       AuthzClient authzClient = AuthzClient.create(res.get());
 
-      AuthorizationResponse t = authzClient.authorization("psokolov2", "bd290776").authorize();
+      AuthorizationResponse t = authzClient.authorization("admin", "admin").authorize();
 
       // AuthorizationResponse t2 = authzClient.authorization("admin", "admin").authorize();
       // AuthorizationResponse t3 = authzClient.authorization("admin", "admin").authorize();
@@ -34,15 +34,14 @@ public class KeyCloackTest {
       keycloak
           .realm("Aritmos")
           .users()
-          .get(keycloak.realm("Aritmos").users().search("psokolov").get(0).getId())
+          .get(keycloak.realm("Aritmos").users().search("psokolov2").get(0).getId())
           .getUserSessions()
-          .forEach(f -> keycloak.realm("Aritmos").deleteSession(f.getId(), false));
-      keycloak
-          .realm("Aritmos")
-          .users()
-          .get(keycloak.realm("Aritmos").users().search("admin").get(0).getId())
-          .getUserSessions()
-          .forEach(f -> keycloak.realm("Aritmos").deleteSession(f.getId(), false));
+          .forEach(
+              f -> {
+                log.info("{}", f);
+                keycloak.realm("Aritmos").deleteSession(f.getId(), false);
+              });
+
       log.info("{}", keycloak.serverInfo().getInfo());
       log.info(t4.toString());
     }

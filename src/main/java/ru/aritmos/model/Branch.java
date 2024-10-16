@@ -214,6 +214,7 @@ public class Branch extends BranchEntity {
                 .params(new HashMap<>())
                 .body(servicePoint)
                 .build());
+        visitService.keyCloackClient.DeleteSession(servicePoint.getUser().getName());
         servicePoint.setUser(null);
         eventService.send(
             "*",

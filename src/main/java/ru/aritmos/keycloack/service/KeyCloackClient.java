@@ -1,29 +1,83 @@
 package ru.aritmos.keycloack.service;
 
-import io.micronaut.core.async.annotation.SingleResult;
+import io.micronaut.context.annotation.Property;
+import io.micronaut.core.io.scan.DefaultClassPathResourceLoader;
 import io.micronaut.http.annotation.*;
-import io.micronaut.http.client.annotation.Client;
-import java.util.HashMap;
-import java.util.Map;
-import org.reactivestreams.Publisher;
-import ru.aritmos.keycloack.model.KeyCloackUser;
+import jakarta.inject.Singleton;
+import java.io.InputStream;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.representations.idm.authorization.AuthorizationResponse;
+import ru.aritmos.keycloack.model.Credentials;
 
-@Client("http://192.168.8.45:9090")
-public interface KeyCloackClient {
-  @SingleResult
-  @Post(
-      value = "/realms/Aritmos/protocol/openid-connect/token/introspect",
-      produces = "application/x-www-form-urlencoded")
-  Publisher<HashMap<String, Object>> get(
-      @Body Map<String, Object> attrs, @Header String authorization);
+@Slf4j
+@Singleton
+public class KeyCloackClient {
+  @Property(name = "micronaut.security.oauth2.clients.keycloak.techlogin")
+  String techlogin;
 
-  @SingleResult
-  @Post(value = "/realms/{realm}/protocol/openid-connect/userinfo", produces = "application/json")
-  Publisher<KeyCloackUser> getUserInfo(
-      @PathVariable String realm, @Body Map<String, Object> attrs, @Header String authorization);
+  @Property(name = "micronaut.security.oauth2.clients.keycloak.techpassword")
+  String techpassword;
 
-  @SingleResult
-  @Get(value = "/admin/realms/{realm}/users/{userId}", produces = "application/json")
-  Publisher<HashMap<String, Object>> getUserInfo(
-      @PathVariable String realm, @PathVariable String userId, @Header String authorization);
+  @Property(name = "micronaut.security.oauth2.clients.keycloak.client-id")
+  String clientId;
+
+  @Property(name = "micronaut.security.oauth2.clients.keycloak.realm")
+  String realm;
+
+  @Property(name = "micronaut.security.oauth2.clients.keycloak.keycloakurl")
+  String keycloakUrl;
+
+  DefaultClassPathResourceLoader resourceLoader =
+      new DefaultClassPathResourceLoader(this.getClass().getClassLoader());
+
+  /**
+   * Авторизация пользователя в Keycloak
+   *
+   * @param credentials логин и пароль пользователя
+   * @return - данные авторизации (токен, токен обновления и т д )
+   */
+  public Optional<AuthorizationResponse> Auth(@Body Credentials credentials) {
+    Optional<InputStream> res = resourceLoader.getResourceAsStream("keycloak.json");
+    if (res.isPresent()) {
+      AuthzClient authzClient = AuthzClient.create(res.get());
+
+      return Optional.of(
+          authzClient.authorization(credentials.getLogin(), credentials.getPassword()).authorize());
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Удаления сеанса сотрудника
+   *
+   * @param login логин сотрудника
+   */
+  public void DeleteSession(@PathVariable String login) {
+    Optional<InputStream> res = resourceLoader.getResourceAsStream("keycloak.json");
+    if (res.isPresent()) {
+      AuthzClient authzClient = AuthzClient.create(res.get());
+
+      AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
+
+      // AuthorizationResponse t2 = authzClient.authorization("admin", "admin").authorize();
+      // AuthorizationResponse t3 = authzClient.authorization("admin", "admin").authorize();
+      Keycloak keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
+
+      keycloak
+          .realm(realm)
+          .users()
+          .get(keycloak.realm(realm).users().search(login).get(0).getId())
+          .getUserSessions()
+          .forEach(
+              f -> {
+                log.info("{}", f);
+                keycloak.realm(realm).deleteSession(f.getId(), false);
+              });
+
+      log.info("{}", keycloak.serverInfo().getInfo());
+    }
+  }
 }

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
+import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.tiny.TinyClass;
@@ -25,11 +26,11 @@ import ru.aritmos.service.rules.SegmentationRule;
 @Slf4j
 @Singleton
 public class VisitService {
+  @Inject public KeyCloackClient keyCloackClient;
   @Inject BranchService branchService;
   @Inject EventService eventService;
   @Inject PrinterService printerService;
   CallRule waitingTimeCallRule;
-
   CallRule lifeTimeCallRule;
   @Inject SegmentationRule segmentationRule;
 

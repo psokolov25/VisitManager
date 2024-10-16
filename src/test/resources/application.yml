@@ -35,6 +35,18 @@ micronaut:
     port: 8080
     cors:
       enabled: true
+
+  security:
+    oauth2:
+      clients:
+        keycloak: # <2>
+          techlogin: visitmanager
+          techpassword: visitmanager
+          keycloakurl: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.45:9090`}'
+          realm: Aritmos
+          client-secret: '${OAUTH_CLIENT_SECRET:UKuZgAFWxHQ8vDQ9JghzSEBqIiFHf2p8}' # <3>
+          client-id: '${OAUTH_CLIENT_ID:myclient}' # <4>
+
   application:
     rules:
       segmentation: simple  #custom|simple
