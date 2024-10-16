@@ -1218,7 +1218,7 @@ public class VisitService {
       String branchId, String servicePointId, String queueId, Visit visit, Integer index) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
-    if (visit.getQueueId().isBlank()) {
+    if (visit.getQueueId()==null || visit.getQueueId().isBlank()) {
       throw new BusinessException("Visit not in a queue!", eventService);
     }
 

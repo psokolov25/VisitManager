@@ -90,6 +90,7 @@ public class Visit {
   String poolServicePointId;
 
   /** Лимит ожидания после возвращения визита в очередь */
+  @Schema(nullable = true)
 
   Long returnTimeDelay ;
 
