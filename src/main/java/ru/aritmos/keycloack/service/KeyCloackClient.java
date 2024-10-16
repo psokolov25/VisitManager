@@ -5,10 +5,12 @@ import io.micronaut.core.io.scan.DefaultClassPathResourceLoader;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Singleton;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.keycloack.model.Credentials;
 
@@ -59,25 +61,23 @@ public class KeyCloackClient {
     Optional<InputStream> res = resourceLoader.getResourceAsStream("keycloak.json");
     if (res.isPresent()) {
       AuthzClient authzClient = AuthzClient.create(res.get());
-
       AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
-
-      // AuthorizationResponse t2 = authzClient.authorization("admin", "admin").authorize();
-      // AuthorizationResponse t3 = authzClient.authorization("admin", "admin").authorize();
       Keycloak keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
+      List<UserRepresentation> users = keycloak.realm(realm).users().search(login);
+      if (!users.isEmpty()) {
+        keycloak
+            .realm(realm)
+            .users()
+            .get(users.get(0).getId())
+            .getUserSessions()
+            .forEach(
+                f -> {
+                  log.info("{}", f);
+                  keycloak.realm(realm).deleteSession(f.getId(), false);
+                });
 
-      keycloak
-          .realm(realm)
-          .users()
-          .get(keycloak.realm(realm).users().search(login).get(0).getId())
-          .getUserSessions()
-          .forEach(
-              f -> {
-                log.info("{}", f);
-                keycloak.realm(realm).deleteSession(f.getId(), false);
-              });
-
-      log.info("{}", keycloak.serverInfo().getInfo());
+        log.info("{}", keycloak.serverInfo().getInfo());
+      }
     }
   }
 }
