@@ -141,6 +141,7 @@ public enum VisitEvent {
               RECALLED,
               List.of(
                   RECALLED,
+                  STOP_SERVING,
                   START_SERVING,
                   NO_SHOW,
                   BACK_TO_QUEUE,
@@ -171,6 +172,7 @@ public enum VisitEvent {
           Map.entry(
               STOP_SERVING,
               List.of(
+                  RECALLED,
                   BACK_TO_USER_POOL,
                   PLACED_IN_QUEUE,
                   BACK_TO_SERVICE_POINT_POOL,
