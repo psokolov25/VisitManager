@@ -42,7 +42,8 @@ public class TinyVisit {
   @JsonGetter
   public Long getWaitingTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-    waitingTime = unit.between(transferDate, ZonedDateTime.now());
+    waitingTime =
+        unit.between(transferDate != null ? transferDate : createDate, ZonedDateTime.now());
     return waitingTime;
   }
 

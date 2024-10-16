@@ -122,7 +122,12 @@ public class VisitService {
       throw new BusinessException("Queue not found in branch configuration!", eventService);
     }
     List<Visit> visits;
-    visits = queue.getVisits();
+    visits =
+        queue.getVisits().stream()
+            .filter(
+                f ->
+                    f.getReturnTimeDelay() == null || f.getReturnTimeDelay() < f.getReturningTime())
+            .toList();
     return visits.stream()
         .sorted((f1, f2) -> Long.compare(f2.getWaitingTime(), f1.getWaitingTime()))
         .toList();
@@ -2311,7 +2316,7 @@ public class VisitService {
 
     if (visit.getReturningTime() > 0 && visit.getReturningTime() < visit.getReturnTimeDelay()) {
       throw new BusinessException(
-          "You cant delete just returned visit!", eventService, HttpStatus.NOT_FOUND);
+          "You cant delete just returned visit!", eventService, HttpStatus.CONFLICT);
     }
     visit.setServicePointId(null);
     visit.setQueueId(null);

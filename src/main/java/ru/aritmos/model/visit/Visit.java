@@ -90,11 +90,10 @@ public class Visit {
   String poolServicePointId;
 
   /** Лимит ожидания после возвращения визита в очередь */
-  @Schema(nullable = true)
-  Long returnTimeDelay;
+
+  Long returnTimeDelay ;
 
   /** Массив не обслуженных услуг */
-  @JsonInclude(JsonInclude.Include.NON_NULL)
   List<Service> unservedServices;
 
   /** Обслуженные услуги */
