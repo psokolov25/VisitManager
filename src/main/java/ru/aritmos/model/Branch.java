@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
-
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -186,13 +185,14 @@ public class Branch extends BranchEntity {
    * @param servicePointId идентификатор точки обслуживания
    * @param eventService служба рассылки событий
    */
-  public void closeServicePoint(String servicePointId, EventService eventService,VisitService visitService) {
+  public void closeServicePoint(
+      String servicePointId, EventService eventService, VisitService visitService) {
 
     if (this.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
       if (servicePoint.getUser() != null) {
         if (servicePoint.getVisit() != null) {
-            visitService.visitEnd(this.getId(),servicePointId);
+          visitService.visitEnd(this.getId(), servicePointId);
         }
 
         getUsers().put(servicePoint.getUser().getName(), servicePoint.getUser());

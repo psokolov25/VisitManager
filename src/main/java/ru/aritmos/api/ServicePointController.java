@@ -222,7 +222,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
-    branchService.closeServicePoint(branchId, servicePointId,visitService);
+    branchService.closeServicePoint(branchId, servicePointId, visitService);
   }
 
   /**
@@ -1556,7 +1556,7 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Put(
       uri =
-          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visits/{visitId}/transferFromQueue",
+          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visits/{visitId}/transferFromQueueWithIndex",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1717,8 +1717,10 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Возвращение визита")
   @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}")
-  public Visit visitPostPone(String branchId, String servicePointId) {
+  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/postpone")
+  public Visit visitPostPone(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
     return visitService.visitPostPone(branchId, servicePointId);
   }
 

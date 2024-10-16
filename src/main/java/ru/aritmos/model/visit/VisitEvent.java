@@ -63,7 +63,7 @@ public enum VisitEvent {
   /** Визит переведен из очереди */
   VISIT_TRANSFER_FROM_QUEUE,
   /** Визит удален */
-  VISIT_DELETED;
+  DELETED;
 
   private static final List<VisitEvent> frontEndVisitEvents =
       List.of(
@@ -89,20 +89,24 @@ public enum VisitEvent {
           ADDED_MARK,
           DELETED_MARK,
           DELETED_DELIVERED_SERVICE_RESULT,
-          DELETED_SERVICE_RESULT);
+          DELETED_SERVICE_RESULT,
+          DELETED);
   private static final List<VisitEvent> newTransactionEvents =
       List.of(
           STOP_SERVING,
           NO_SHOW,
           PLACED_IN_QUEUE,
           TRANSFER_TO_SERVICE_POINT_POOL,
+          DELETED,
           TRANSFER_TO_USER_POOL);
 
   private static final Map<VisitEvent, TransactionCompletionStatus> transactionStatus =
       Map.ofEntries(
           Map.entry(STOP_SERVING, TransactionCompletionStatus.OK),
           Map.entry(NO_SHOW, TransactionCompletionStatus.NO_SHOW),
+          Map.entry(DELETED, TransactionCompletionStatus.REMOVED_BY_EMP),
           Map.entry(PLACED_IN_QUEUE, TransactionCompletionStatus.TRANSFER_TO_QUEUE),
+          Map.entry(BACK_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_STAFF),
           Map.entry(
               TRANSFER_TO_SERVICE_POINT_POOL,
               TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT),
@@ -116,7 +120,7 @@ public enum VisitEvent {
               List.of(
                   CALLED,
                   RECALLED,
-                  VISIT_DELETED,
+                  DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
                   TRANSFER_TO_SERVICE_POINT_POOL,
@@ -185,7 +189,7 @@ public enum VisitEvent {
                   PLACED_IN_QUEUE,
                   CALLED,
                   RECALLED,
-                  VISIT_DELETED,
+                  DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
@@ -195,7 +199,7 @@ public enum VisitEvent {
                   PLACED_IN_QUEUE,
                   CALLED,
                   RECALLED,
-                  VISIT_DELETED,
+                  DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
@@ -205,7 +209,7 @@ public enum VisitEvent {
                   PLACED_IN_QUEUE,
                   CALLED,
                   RECALLED,
-                  VISIT_DELETED,
+                  DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
@@ -215,7 +219,7 @@ public enum VisitEvent {
                   PLACED_IN_QUEUE,
                   CALLED,
                   RECALLED,
-                  VISIT_DELETED,
+                  DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
@@ -225,7 +229,7 @@ public enum VisitEvent {
                   PLACED_IN_QUEUE,
                   CALLED,
                   RECALLED,
-                  VISIT_DELETED,
+                  DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
@@ -235,7 +239,7 @@ public enum VisitEvent {
                   PLACED_IN_QUEUE,
                   CALLED,
                   RECALLED,
-                  VISIT_DELETED,
+                  DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
@@ -339,7 +343,7 @@ public enum VisitEvent {
           Map.entry(TRANSFER_TO_SERVICE_POINT_POOL, VisitState.WAITING_IN_SERVICE_POOL),
           Map.entry(TRANSFER_TO_USER_POOL, VisitState.WAITING_IN_USER_POOL),
           Map.entry(TRANSFER_TO_QUEUE, VisitState.WAITING_IN_QUEUE),
-          Map.entry(VISIT_DELETED, VisitState.END),
+          Map.entry(DELETED, VisitState.END),
           Map.entry(BACK_TO_USER_POOL, VisitState.WAITING_IN_USER_POOL),
           Map.entry(ADDED_DELIVERED_SERVICE_RESULT, VisitState.SERVING),
           Map.entry(DELETED_DELIVERED_SERVICE, VisitState.SERVING));

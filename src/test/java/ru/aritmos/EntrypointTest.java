@@ -1069,39 +1069,38 @@ class EntrypointTest {
     }
   }
 
-
   @Test
   void checkConfirmVisitWithRuleInterrupted() throws InterruptedException {
     Service service;
     service =
-            branchService.getBranch(branchId).getServices().values().stream()
-                    .filter(f -> f.getId().equals(serviceId))
-                    .findFirst()
-                    .orElse(null);
+        branchService.getBranch(branchId).getServices().values().stream()
+            .filter(f -> f.getId().equals(serviceId))
+            .findFirst()
+            .orElse(null);
     ArrayList<String> serviceIds = new ArrayList<>();
     serviceIds.add(serviceId);
     assert service != null;
 
     Visit visit =
-            entrypointController.createVisit(
-                    branchId,
-                    "1",
-                    VisitParameters.builder()
-                            .serviceIds(serviceIds)
-                            .parameters(
-                                    new HashMap<>() {
-                                      {
-                                        put("sex", "male");
-                                        put("age", "33-55");
-                                        put("level", "vip");
-                                      }
-                                    })
-                            .build(),
-                    false);
+        entrypointController.createVisit(
+            branchId,
+            "1",
+            VisitParameters.builder()
+                .serviceIds(serviceIds)
+                .parameters(
+                    new HashMap<>() {
+                      {
+                        put("sex", "male");
+                        put("age", "33-55");
+                        put("level", "vip");
+                      }
+                    })
+                .build(),
+            false);
 
     Assertions.assertEquals(visit.getQueueId(), "bd4b586e-c93e-4e07-9a76-586dd84ddea5");
     Optional<Visit> visitForConfirm =
-            visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+        visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
     if (visitForConfirm.isPresent()) {
       Long servtime = visitForConfirm.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -1111,10 +1110,8 @@ class EntrypointTest {
       visitService.visitConfirm(branchId, servicePointFcId, visit);
       Thread.sleep(200);
       Visit visit2;
-
     }
   }
-
 
   /** Проверка корректности формирования номера талона */
   @Test
@@ -1196,7 +1193,7 @@ class EntrypointTest {
 
   @AfterEach
   void deleteBranch() {
-    branchService.closeServicePoint(branchId,servicePointFcId,visitService);
+    branchService.closeServicePoint(branchId, servicePointFcId, visitService);
     branchService.delete(branchId);
   }
 

@@ -897,6 +897,7 @@ public class VisitService {
         Visit visit = servicePoint.getVisit();
         visit.setReturnDateTime(ZonedDateTime.now());
         visit.setReturnTimeDelay(returnTimeDelay);
+        visit.setStartServingDateTime(null);
         VisitEvent visitEvent = VisitEvent.STOP_SERVING;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("branchId", branchId);
@@ -954,7 +955,7 @@ public class VisitService {
         assert queue != null;
         visit.setQueueId(queue.getId());
         visit.setServicePointId(null);
-
+        visit.setStartServingDateTime(null);
         visit.setTransferDateTime(ZonedDateTime.now());
         queue.getVisits().add(visit);
         currentBranch.getQueues().put(queue.getId(), queue);
@@ -1032,7 +1033,7 @@ public class VisitService {
         visit.setTransferDateTime(ZonedDateTime.now());
         visit.setReturnDateTime(ZonedDateTime.now());
         visit.setReturnTimeDelay(returnTimeDelay);
-
+        visit.setStartServingDateTime(null);
         event = VisitEvent.BACK_TO_SERVICE_POINT_POOL;
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
@@ -1066,9 +1067,9 @@ public class VisitService {
       if (servicePoint.getVisit() != null) {
         Visit visit = servicePoint.getVisit();
         if (visit.getParameterMap().containsKey("LastPoolServicePointId")) {
-          String ppolId = visit.getParameterMap().get("LastPoolServicePointId");
+          String poolId = visit.getParameterMap().get("LastPoolServicePointId");
           // visit.getParameterMap().remove("LastPoolServicePointId");
-          return visitBackToServicePointPool(branchId, servicePointId, ppolId, returnTimeDelay);
+          return visitBackToServicePointPool(branchId, servicePointId, poolId, returnTimeDelay);
 
         } else if (visit.getParameterMap().containsKey("LastPoolUserId")) {
           String ppolId = visit.getParameterMap().get("LastPoolUserId");
@@ -1167,7 +1168,7 @@ public class VisitService {
         assert user != null;
         visit.setPoolUserId(user.getId());
         visit.setServicePointId(null);
-
+        visit.setStartServingDateTime(null);
         visit.setTransferDateTime(ZonedDateTime.now());
         visit.setReturnDateTime(ZonedDateTime.now());
         visit.setReturnTimeDelay(returnTimeDelay);
@@ -1629,23 +1630,24 @@ public class VisitService {
             "ServicePoint not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
       }
     }
-
-    queue =
-        currentBranch.getQueues().values().stream()
-            .filter(f -> f.getId().equals(visit.getQueueId()))
-            .findFirst();
-    if ((queue.isPresent())) {
-      List<Visit> visits = queue.get().getVisits();
-      visits.removeIf(f -> f.getId().equals(visit.getId()));
-      queue.get().setVisits(visits);
-      currentBranch.getQueues().put(queue.get().getId(), queue.get());
-    } else {
-      throw new BusinessException(
-          "Queue not found in branch configuration or not available for current workprofile!",
-          eventService,
-          HttpStatus.NOT_FOUND);
-    }
+    VisitEvent event = VisitEvent.CALLED;
     if (visit.getQueueId() != null) {
+      queue =
+          currentBranch.getQueues().values().stream()
+              .filter(f -> f.getId().equals(visit.getQueueId()))
+              .findFirst();
+      if ((queue.isPresent())) {
+        List<Visit> visits = queue.get().getVisits();
+        visits.removeIf(f -> f.getId().equals(visit.getId()));
+        queue.get().setVisits(visits);
+        currentBranch.getQueues().put(queue.get().getId(), queue.get());
+      } else {
+        throw new BusinessException(
+            "Queue not found in branch configuration or not available for current workProfile!",
+            eventService,
+            HttpStatus.NOT_FOUND);
+      }
+      event.getParameters().put("queueId", queue.map(BranchEntity::getId).orElse(null));
       visit.getParameterMap().put("LastQueueId", visit.getQueueId());
       visit.setQueueId(null);
     }
@@ -1657,9 +1659,9 @@ public class VisitService {
       visit.getParameterMap().put("LastPoolUserId", visit.getPoolUserId());
       visit.setPoolUserId(null);
     }
-    VisitEvent event = VisitEvent.CALLED;
+
     event.getParameters().put("servicePointId", servicePointId);
-    event.getParameters().put("queueId", queue.map(BranchEntity::getId).orElse(null));
+
     event.getParameters().put("branchID", branchId);
     event.getParameters().put("staffId", visit.getUserId());
     event.getParameters().put("staff?Name", visit.getUserName());
@@ -2312,7 +2314,7 @@ public class VisitService {
     }
     visit.setServicePointId(null);
     visit.setQueueId(null);
-    VisitEvent event = VisitEvent.VISIT_DELETED;
+    VisitEvent event = VisitEvent.DELETED;
     event.dateTime = ZonedDateTime.now();
 
     branchService.updateVisit(visit, event, this);
