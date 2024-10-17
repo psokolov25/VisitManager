@@ -927,7 +927,12 @@ public class VisitService {
                                   .get(visit.getParameterMap().get("LastQueueId"))
                                   .getName())
                           .build())
-                  .params(Map.of("queueId", visit.getParameterMap().get("LastQueueId")))
+                  .params(
+                      Map.of(
+                          "queueId",
+                          visit.getParameterMap().get("LastQueueId"),
+                          "branchId",
+                          branchId))
                   .build();
           delayedEvents.delayedEventService(
               "frontend", false, delayedEvent, returnTimeDelay, eventService);

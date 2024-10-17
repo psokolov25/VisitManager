@@ -2,10 +2,10 @@ package ru.aritmos.events.services;
 
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 
-import java.util.List;
 @Slf4j
 public class MultiserviceEventTask implements Runnable {
   private final List<String> destinationServices;

@@ -91,8 +91,7 @@ public class Visit {
 
   /** Лимит ожидания после возвращения визита в очередь */
   @Schema(nullable = true)
-
-  Long returnTimeDelay ;
+  Long returnTimeDelay;
 
   /** Массив не обслуженных услуг */
   List<Service> unservedServices;

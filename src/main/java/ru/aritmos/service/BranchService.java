@@ -151,12 +151,10 @@ public class BranchService {
       String branchId, String userName, String servicePointId, String workProfileId) {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
-      throw new BusinessException(
-          "Work profile not found!!", eventService, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new BusinessException("Work profile not found!!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(servicePointId)) {
-      throw new BusinessException(
-          "Service point not found!!", eventService, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new BusinessException("Service point not found!!", eventService, HttpStatus.NOT_FOUND);
     }
     if (branch.getUsers().containsKey(userName)) {
       User user = branch.getUsers().get(userName);

@@ -1222,7 +1222,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2")
           String poolServicePointId,
-      @QueryValue Long returnTimeDelay) {
+      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
     Branch branch;
 
     try {
@@ -1243,6 +1243,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания *
+   * @param returnTimeDelay задержка визита в секундах
    * @return визит после перевода
    */
   @Tag(name = "Зона обслуживания")
@@ -1258,7 +1259,7 @@ public class ServicePointController {
   public Visit returnVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @QueryValue(defaultValue = "3000") Long returnTimeDelay) {
+      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
 
     return visitService.visitBackToQueue(branchId, servicePointId, returnTimeDelay);
   }
@@ -1703,7 +1704,10 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}")
   public Visit visitBackToUserPool(
-      String branchId, String servicePointId, String userId, Long returnTimeDelay) {
+      @PathVariable String branchId,
+      @PathVariable String servicePointId,
+      @PathVariable String userId,
+      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
     return visitService.visitBackToUserPool(branchId, servicePointId, userId, returnTimeDelay);
   }
 

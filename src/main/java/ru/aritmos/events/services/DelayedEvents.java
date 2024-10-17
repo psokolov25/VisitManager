@@ -5,11 +5,10 @@ import io.micronaut.scheduling.TaskScheduler;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-import ru.aritmos.events.model.Event;
-
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
+import ru.aritmos.events.model.Event;
 
 @Singleton
 public class DelayedEvents {
@@ -24,15 +23,15 @@ public class DelayedEvents {
 
     }
     @ExecuteOn(TaskExecutors.IO)
-    public void delayedEventService(String destinationService, Boolean sendToOtherBus, Event event,Long delayInMills,EventService eventService){
+    public void delayedEventService(String destinationService, Boolean sendToOtherBus, Event event,Long delayInSeconds,EventService eventService){
         event.setEventDate(ZonedDateTime.now());
         EventTask eventTask=new EventTask(destinationService,sendToOtherBus,event,eventService);
-        taskScheduler.schedule(Duration.ofMillis(delayInMills),eventTask);
+        taskScheduler.schedule(Duration.ofSeconds(delayInSeconds),eventTask);
     }
     @ExecuteOn(TaskExecutors.IO)
-    public void delayedEventService(List<String> destinationServices, Boolean sendToOtherBus, Event event, Long delayInMills,EventService eventService){
+    public void delayedEventService(List<String> destinationServices, Boolean sendToOtherBus, Event event, Long delayInSeconds,EventService eventService){
         event.setEventDate(ZonedDateTime.now());
         MultiserviceEventTask eventTask=new MultiserviceEventTask(destinationServices,sendToOtherBus,event,eventService);
-        taskScheduler.schedule(Duration.ofMillis(delayInMills),eventTask);
+        taskScheduler.schedule(Duration.ofSeconds(delayInSeconds),eventTask);
     }
 }
