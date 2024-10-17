@@ -12,6 +12,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import ru.aritmos.events.model.Event;
+import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -29,6 +31,7 @@ public class VisitService {
   @Inject public KeyCloackClient keyCloackClient;
   @Inject BranchService branchService;
   @Inject EventService eventService;
+  @Inject DelayedEvents delayedEvents;
   @Inject PrinterService printerService;
   CallRule waitingTimeCallRule;
   CallRule lifeTimeCallRule;
@@ -895,6 +898,7 @@ public class VisitService {
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит
    */
+  @ExecuteOn(TaskExecutors.SCHEDULED)
   public Visit visitBackToQueue(String branchId, String servicePointId, Long returnTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -907,10 +911,26 @@ public class VisitService {
         VisitEvent visitEvent = VisitEvent.STOP_SERVING;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("branchId", branchId);
+
         branchService.updateVisit(visit, visitEvent, this);
         visit = branchService.getBranch(branchId).getAllVisits().get(visit.getId());
         if (visit.getParameterMap().containsKey("LastQueueId")) {
-
+          Event delayedEvent =
+              Event.builder()
+                  .eventType("QUEUE_REFRESHED")
+                  .body(
+                      TinyClass.builder()
+                          .id(visit.getParameterMap().get("LastQueueId"))
+                          .name(
+                              currentBranch
+                                  .getQueues()
+                                  .get(visit.getParameterMap().get("LastQueueId"))
+                                  .getName())
+                          .build())
+                  .params(Map.of("queueId", visit.getParameterMap().get("LastQueueId")))
+                  .build();
+          delayedEvents.delayedEventService(
+              "frontend", false, delayedEvent, returnTimeDelay, eventService);
           return visitTransfer(
               branchId, servicePointId, visit.getParameterMap().get("LastQueueId"));
         } else {
@@ -1218,7 +1238,7 @@ public class VisitService {
       String branchId, String servicePointId, String queueId, Visit visit, Integer index) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
-    if (visit.getQueueId()==null || visit.getQueueId().isBlank()) {
+    if (visit.getQueueId() == null || visit.getQueueId().isBlank()) {
       throw new BusinessException("Visit not in a queue!", eventService);
     }
 

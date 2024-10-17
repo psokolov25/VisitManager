@@ -647,9 +647,9 @@ class EntrypointTest {
 
       visitService.visitConfirm(branchId, servicePointFcId, visit);
       Thread.sleep(600);
-      visit = visitService.visitPutBack(branchId, servicePointFcId, 150L);
+      visit = visitService.visitPutBack(branchId, servicePointFcId, 200L);
 
-      Thread.sleep(900);
+      //Thread.sleep(150003L);
 
       Assertions.assertEquals(
           0,

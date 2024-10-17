@@ -6,6 +6,7 @@ import io.micronaut.cache.annotation.CachePut;
 import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.cache.interceptor.ParametersKey;
 import io.micronaut.context.annotation.Value;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -149,6 +150,14 @@ public class BranchService {
   public User openServicePoint(
       String branchId, String userName, String servicePointId, String workProfileId) {
     Branch branch = this.getBranch(branchId);
+    if (!branch.getWorkProfiles().containsKey(workProfileId)) {
+      throw new BusinessException(
+          "Work profile not found!!", eventService, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    if (!branch.getServicePoints().containsKey(servicePointId)) {
+      throw new BusinessException(
+          "Service point not found!!", eventService, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     if (branch.getUsers().containsKey(userName)) {
       User user = branch.getUsers().get(userName);
       user.setServicePointId(servicePointId);
