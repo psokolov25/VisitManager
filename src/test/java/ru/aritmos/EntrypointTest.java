@@ -956,6 +956,37 @@ class EntrypointTest {
     Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_USER_POOL.getState().name());
   }
 
+  @Test
+  void checkcreateVirtualVisit() throws InterruptedException {
+
+    Service service;
+    service =
+        managementController.getBranch(branchId).getServices().values().stream()
+            .filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c"))
+            .findFirst()
+            .orElse(null);
+    Service service2;
+    service2 =
+        managementController.getBranch(branchId).getServices().values().stream()
+            .filter(f -> f.getId().equals("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67"))
+            .findFirst()
+            .orElse(null);
+
+    ArrayList<String> serviceIds = new ArrayList<>();
+    assert service != null;
+    serviceIds.add(service.getId());
+
+    VisitParameters visitParameters =
+        VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+    Visit visit = visitService.createVirtualVisit(branchId, servicePointFcId, visitParameters);
+    // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
+
+    Thread.sleep(3000);
+    visit = visitService.visitEnd(branchId, servicePointFcId);
+
+    Assertions.assertEquals(visit.getStatus(), VisitEvent.END.getState().name());
+  }
+
   /**
    * Проверка завершения визита с итогом "Не пришел"
    *
@@ -1193,7 +1224,7 @@ class EntrypointTest {
 
   @AfterEach
   void deleteBranch() {
-    branchService.closeServicePoint(branchId, servicePointFcId, visitService);
+    branchService.closeServicePoint(branchId, servicePointFcId, visitService, true);
     branchService.delete(branchId);
   }
 

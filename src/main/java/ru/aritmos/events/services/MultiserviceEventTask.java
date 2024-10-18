@@ -12,18 +12,22 @@ public class MultiserviceEventTask implements Runnable {
   private final Boolean sendToOtherBus;
   private final Event event;
   private final EventService eventService;
-  public MultiserviceEventTask(List<String> destinationServices, Boolean sendToOtherBus, Event event, EventService eventService)
-  {
-    this.destinationServices=destinationServices;
-    this.sendToOtherBus=sendToOtherBus;
-    this.event=event;
-      this.eventService = eventService;
+
+  public MultiserviceEventTask(
+      List<String> destinationServices,
+      Boolean sendToOtherBus,
+      Event event,
+      EventService eventService) {
+    this.destinationServices = destinationServices;
+    this.sendToOtherBus = sendToOtherBus;
+    this.event = event;
+    this.eventService = eventService;
   }
 
   @Override
   @ExecuteOn(value = TaskExecutors.IO)
   public void run() {
-    eventService.send(destinationServices,sendToOtherBus,event);
+    eventService.send(destinationServices, sendToOtherBus, event);
     log.info("Delayed event {} sent to {}", event, destinationServices);
   }
 }

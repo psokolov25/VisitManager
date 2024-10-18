@@ -184,9 +184,13 @@ public class Branch extends BranchEntity {
    *
    * @param servicePointId идентификатор точки обслуживания
    * @param eventService служба рассылки событий
+   * @param withLogout флаг закрытия сессии сотрудника
    */
   public void closeServicePoint(
-      String servicePointId, EventService eventService, VisitService visitService) {
+      String servicePointId,
+      EventService eventService,
+      VisitService visitService,
+      Boolean withLogout) {
 
     if (this.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
@@ -214,7 +218,9 @@ public class Branch extends BranchEntity {
                 .params(new HashMap<>())
                 .body(servicePoint)
                 .build());
-        visitService.keyCloackClient.DeleteSession(servicePoint.getUser().getName());
+        if (withLogout) {
+          visitService.keyCloackClient.DeleteSession(servicePoint.getUser().getName());
+        }
         servicePoint.setUser(null);
         eventService.send(
             "*",

@@ -39,6 +39,44 @@ public class EntrypointController {
   String applicationName;
 
   /**
+   * Создани виртуального визита
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param serviceIds массив идентификаторов услуг (на пример [
+   *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ] )
+   * @return созданный визит
+   */
+  @Tag(name = "Зона ожидания")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoint/{servicePointId}/visit",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Visit createVirtualVisit(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body ArrayList<String> serviceIds) {
+    Branch branch;
+    try {
+      branch = branchService.getBranch(branchId);
+    } catch (Exception ex) {
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
+    }
+    if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
+        .containsAll(serviceIds)) {
+
+      VisitParameters visitParameters =
+          VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+      return visitService.createVirtualVisit(branchId, servicePointId, visitParameters);
+
+    } else {
+      throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  /**
    * Создание визита
    *
    * @param branchId идентификатор отделения

@@ -220,11 +220,30 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Post("/branches/{branchId}/servicePoints/{servicePointId}/close")
   @ExecuteOn(TaskExecutors.IO)
+  public void closeUser(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+
+    branchService.closeServicePoint(branchId, servicePointId, visitService, false);
+  }
+
+  /**
+   * Закрытие рабочей станции сотрудником и выход из системы Если рабочая станция уже закрыта
+   * выдается 409 ошибка (конфликт)
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Работа сотрудников")
+  @Tag(name = "Полный список")
+  @Post("/branches/{branchId}/servicePoints/{servicePointId}/logout")
+  @ExecuteOn(TaskExecutors.IO)
   public void logoutUser(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
-    branchService.closeServicePoint(branchId, servicePointId, visitService);
+    branchService.closeServicePoint(branchId, servicePointId, visitService, true);
   }
 
   /**

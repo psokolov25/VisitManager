@@ -175,10 +175,11 @@ public class BranchService {
     }
   }
 
-  public void closeServicePoint(String branchId, String servicePointId, VisitService visitService) {
+  public void closeServicePoint(
+      String branchId, String servicePointId, VisitService visitService, Boolean withlogout) {
 
     Branch branch = this.getBranch(branchId);
-    branch.closeServicePoint(servicePointId, eventService, visitService);
+    branch.closeServicePoint(servicePointId, eventService, visitService, withlogout);
     this.add(branch.getId(), branch);
   }
 
