@@ -39,7 +39,7 @@ public class EntrypointController {
   String applicationName;
 
   /**
-   * Создани виртуального визита
+   * Создани виртуального визита сотрудником
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -48,9 +48,10 @@ public class EntrypointController {
    * @return созданный визит
    */
   @Tag(name = "Зона ожидания")
+  @Tag(name = "Зона обслуживания")
   @Tag(name = "Полный список")
   @Post(
-      uri = "/branches/{branchId}/servicePoint/{servicePointId}/visit",
+      uri = "/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
