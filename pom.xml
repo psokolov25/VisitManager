@@ -6,14 +6,29 @@
     <artifactId>entrypoint</artifactId>
     <version>0.5</version>
     <packaging>${packaging}</packaging>
+    <description>
+        Целью службы управления визитамия является оптимизация логистики обслуживания клиентов.
+        Назначением службы является управление клиентским путем.
 
+    </description>
+    <scm>
+        <url>https://192.168.8.32/pavel.sokolov/entrypoint</url>
+        <developerConnection>scm:git:https://192.168.8.32/pavel.sokolov/entrypoint</developerConnection>
+        <connection>scm:git:https://192.168.8.32/pavel.sokolov/entrypoint</connection>
+    </scm>
+    <developers>
+        <developer>
+            <name>Павел Соколов</name>
+            <email>pavel.sokolov@q-systems.ru</email>
+        </developer>
+    </developers>
     <parent>
         <groupId>io.micronaut.platform</groupId>
         <artifactId>micronaut-parent</artifactId>
         <version>4.4.3</version>
     </parent>
     <properties>
-        <packaging>docker</packaging>
+        <packaging>jar</packaging>
         <jdk.version>17</jdk.version>
         <release.version>17</release.version>
         <micronaut.version>4.4.3</micronaut.version>
@@ -25,6 +40,10 @@
     </properties>
 
     <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
         <repository>
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
@@ -186,8 +205,38 @@
 
 
     </dependencies>
-    <build>
+    <reporting>
         <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.7.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.10.1</version>
+
+            </plugin>
+        </plugins>
+    </reporting>
+    <build>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.20.0</version>
+                <configuration>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <locales>ru</locales>
+                </configuration>
+            </plugin>
+
+
             <plugin>
                 <groupId>io.micronaut.maven</groupId>
                 <artifactId>micronaut-maven-plugin</artifactId>
