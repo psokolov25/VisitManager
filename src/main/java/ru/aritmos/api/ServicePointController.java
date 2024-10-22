@@ -290,6 +290,34 @@ public class ServicePointController {
   }
 
   /**
+   * Получение списка визитов в указанной очереди указанного отделения.
+   * Визиты сортируются по времени ожидания, от большего к
+   * меньшему.
+   *
+   * @param branchId идентификатор отделения
+   * @param queueId идентификатор очереди
+   * @return список визитов
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные о визитах")
+  @Tag(name = "Полный список")
+  @Get(
+          uri = "/branches/{branchId}/queues/{queueId}/visits/",
+          consumes = "application/json",
+          produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<Visit> getVisits(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+          @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId) {
+
+
+
+    return visitService
+            .getVisits(branchId, queueId);
+
+  }
+
+  /**
    * Возвращает полный список визитов в отделении учитываются визиты расположенные в очередях, пулах
    * рабочих станций и пулах сотрудников, а так же визиты обслуживаемые в данный момент
    *
