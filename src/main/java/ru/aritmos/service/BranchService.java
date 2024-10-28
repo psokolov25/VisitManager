@@ -268,7 +268,7 @@ public class BranchService {
         .getWorkProfiles()
         .get(workProfileId)
         .getQueueIds()
-        .forEach(q -> services.add(branch.getServices().get(q)));
+        .forEach(q -> services.addAll(branch.getServices().values().stream().filter(f->f.getLinkedQueueId().equals(q)).toList()));
     return services;
   }
   /**
