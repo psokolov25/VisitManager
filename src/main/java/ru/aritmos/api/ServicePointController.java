@@ -721,6 +721,42 @@ public class ServicePointController {
   }
 
   /**
+   * Отмена режима автовызова для точки обслуживания
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return точка обслуживания
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Вызов")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Полный список")
+  @Put("/branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall")
+  public Optional<ServicePoint> cancelAutoCallModeOfServicePoint(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+    return visitService.cancelAutoCallModeOfServicePoint(branchId, servicePointId);
+  }
+
+  /**
+   * Запуск режима автовызова для точки обслуживания
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return точка обслуживания
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Вызов")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Полный список")
+  @Put("/branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall")
+  public Optional<ServicePoint> startAutoCallModeOfServicePoint(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+    return visitService.startAutoCallModeOfServicePoint(branchId, servicePointId);
+  }
+
+  /**
    * Получение возможный предоставленных услуг
    *
    * @param branchId идентификатор отделения
@@ -784,18 +820,16 @@ public class ServicePointController {
   @Tag(name = "Данные об услугах")
   @Tag(name = "Полный список")
   @Get(
-          uri = "/branches/{branchId}/queue/{queueId}/services",
-          consumes = "application/json",
-          produces = "application/json")
+      uri = "/branches/{branchId}/queue/{queueId}/services",
+      consumes = "application/json",
+      produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public List<Service> getServicesByQueueId(
-          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-          @PathVariable(defaultValue = "55da9b66-c928-4d47-9811-dbbab20d3780") String queueId) {
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "55da9b66-c928-4d47-9811-dbbab20d3780") String queueId) {
 
     return branchService.getServicesByQueueId(branchId, queueId);
   }
-
-
 
   /**
    * Получение возможных итогов для услуги

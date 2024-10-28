@@ -6,8 +6,10 @@ import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import ru.aritmos.model.*;
 import ru.aritmos.service.BranchService;
+import ru.aritmos.service.VisitService;
 
 /**
  * @author Pavel Sokolov REST API управления конфигурацией отделений
@@ -15,6 +17,7 @@ import ru.aritmos.service.BranchService;
 @Controller("/configuration")
 public class ConfigurationController {
   @Inject BranchService branchService;
+  @Inject VisitService visitService;
 
   /**
    * Обновление конфигурации отделений
@@ -141,6 +144,32 @@ public class ConfigurationController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @Body List<String> servicePointIds) {
     branchService.deleteServicePoints(branchId, servicePointIds);
+  }
+
+
+  /**
+   * Включение авовызова для отделения
+   *
+   * @param branchId идентификатор отделения *
+   * @return @return отделение
+   */
+  @Tag(name = "Конфигурация отделений")
+  @Tag(name = "Полный список")
+  @Put(uri = "/branches/{branchId}/autocallModeOn")
+  public Optional<Branch> setAutoCallModeOfBranchOn(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    return visitService.setAutoCallModeOfBranch(branchId, true);
+  }
+  /**
+   * Выключение авовызова для отделения
+   *
+   * @param branchId идентификатор отделения *
+   * @return @return отделение
+   */
+  @Tag(name = "Конфигурация отделений")
+  @Tag(name = "Полный список")
+  @Put(uri = "/branches/{branchId}/autocallModeOff")
+  public Optional<Branch> setAutoCallModeOfBranchOff(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    return visitService.setAutoCallModeOfBranch(branchId, false);
   }
 
   /**
