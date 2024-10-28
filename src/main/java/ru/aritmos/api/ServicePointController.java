@@ -290,9 +290,8 @@ public class ServicePointController {
   }
 
   /**
-   * Получение списка визитов в указанной очереди указанного отделения.
-   * Визиты сортируются по времени ожидания, от большего к
-   * меньшему.
+   * Получение списка визитов в указанной очереди указанного отделения. Визиты сортируются по
+   * времени ожидания, от большего к меньшему.
    *
    * @param branchId идентификатор отделения
    * @param queueId идентификатор очереди
@@ -302,19 +301,15 @@ public class ServicePointController {
   @Tag(name = "Данные о визитах")
   @Tag(name = "Полный список")
   @Get(
-          uri = "/branches/{branchId}/queues/{queueId}/visits/",
-          consumes = "application/json",
-          produces = "application/json")
+      uri = "/branches/{branchId}/queues/{queueId}/visits/",
+      consumes = "application/json",
+      produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public List<Visit> getVisits(
-          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-          @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId) {
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId) {
 
-
-
-    return visitService
-            .getVisits(branchId, queueId);
-
+    return visitService.getVisits(branchId, queueId);
   }
 
   /**
@@ -755,6 +750,52 @@ public class ServicePointController {
           String.format("Service %s not found!", serviceId), eventService, HttpStatus.NOT_FOUND);
     }
   }
+
+  /**
+   * Получение услуг соответствующего рабочего профиля
+   *
+   * @param branchId идентификатор отделения
+   * @param workProfileId идентификатор рабочего профиля
+   * @return список услуг
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные об услугах")
+  @Tag(name = "Полный список")
+  @Get(
+      uri = "/branches/{branchId}/workProfile/{workProfileId}/services",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<Service> getServicesByWorkProfileId(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId) {
+
+    return branchService.getServicesByWorkProfileId(branchId, workProfileId);
+  }
+
+  /**
+   * Получение услуг соответствующей очереди
+   *
+   * @param branchId идентификатор отделения
+   * @param queueId идентификатор очереди
+   * @return список услуг
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные об услугах")
+  @Tag(name = "Полный список")
+  @Get(
+          uri = "/branches/{branchId}/queue/{queueId}/services",
+          consumes = "application/json",
+          produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<Service> getServicesByQueueId(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+          @PathVariable(defaultValue = "55da9b66-c928-4d47-9811-dbbab20d3780") String queueId) {
+
+    return branchService.getServicesByQueueId(branchId, queueId);
+  }
+
+
 
   /**
    * Получение возможных итогов для услуги
