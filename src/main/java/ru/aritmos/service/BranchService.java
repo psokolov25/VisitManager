@@ -11,6 +11,7 @@ import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -249,5 +250,42 @@ public class BranchService {
     Branch branch = this.getBranch(branchId);
     branch.adUpdateSegmentRules(segmentationRuleDataHashMap, eventService);
     this.add(branch.getId(), branch);
+  }
+  /**
+   * Получение услуг соответствующего рабочего профиля
+   *
+   * @param branchId идентификатор отделения
+   * @param workProfileId идентификатор рабочего профиля
+   * @return список услуг
+   */
+  public List<Service> getServicesByWorkProfileId(String branchId, String workProfileId) {
+    Branch branch = this.getBranch(branchId);
+    if (!branch.getWorkProfiles().containsKey(workProfileId)) {
+      throw new BusinessException("Work profile not found!!", eventService, HttpStatus.NOT_FOUND);
+    }
+    List<Service> services = new ArrayList<>();
+    branch
+        .getWorkProfiles()
+        .get(workProfileId)
+        .getQueueIds()
+        .forEach(q -> services.add(branch.getServices().get(q)));
+    return services;
+  }
+  /**
+   * Получение услуг соответствующей очереди
+   *
+   * @param branchId идентификатор отделения
+   * @param queueId идентификатор очереди
+   * @return список услуг
+   */
+  public List<Service> getServicesByQueueId(String branchId, String queueId) {
+    Branch branch = this.getBranch(branchId);
+    if(!branch.getQueues().containsKey(queueId)) {
+      throw new BusinessException("Queue not found!!", eventService, HttpStatus.NOT_FOUND);
+    }
+    return new ArrayList<>(
+        branch.getServices().values().stream()
+            .filter(f -> f.getLinkedQueueId().equals(queueId))
+            .toList());
   }
 }

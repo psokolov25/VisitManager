@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Introspected
+
 public class Service extends BasedService {
 
   /** Нормативное время обслуживания */
