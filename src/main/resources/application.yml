@@ -37,12 +37,12 @@ micronaut:
       callRuleApiUrl: http://localhost:8085/customcallrule
     returnTimeDelay: 8000
     name: visit_manager
-    dataBusUrl: http://192.168.8.45:8082
+    dataBusUrl: '${DATABUS_SERVER:http://192.168.8.45:8082}'
     dataBusUrlRetryPeriod: '1s'
     dataBusUrlRetryMaxPeriod: '45m'
     dataBusUrlRetryRepeat: 30
-    configurationURL: http://localhost:8081
-    printerServiceURL: http://192.168.3.33:8084
+    configurationURL: '${CONFIG_SERVER:http://localhost:8081}'
+    printerServiceURL: '${PRINTER_SERVER:http://192.168.3.33:8084}'
     printerRetryPeriod: '1s'
     printerRetryMaxPeriod: '45m'
     printerRetryRepeat: 30
@@ -56,7 +56,7 @@ micronaut:
         mapping: /swagger-ui/**
 
 redis:
-  uri: redis://192.168.8.45:6379
+  uri: '${REDIS_SERVER:redis://192.168.8.45:6379}'
   #uri: redis://192.168.8.45:7379
   #uri: ${REDIS_SERVER}
   cache:

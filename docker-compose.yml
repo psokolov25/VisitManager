@@ -16,6 +16,10 @@ services:
       - redis
     environment:
       - REDIS_SERVER=redis://redis:6379
+      - DATABUS_SERVER=http://192.168.8.45:8082
+      - CONFIG_SERVER=http://localhost:8081
+      - PRINTER_SERVER=http://192.168.3.33:8084
+      - OIDC_ISSUER_DOMAIN=http://192.168.8.45:9090/realms/Aritmos
     restart: always
   redis:
     networks:

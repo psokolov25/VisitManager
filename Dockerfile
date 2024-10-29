@@ -18,6 +18,11 @@ RUN $JAVA_HOME/bin/jlink \
 FROM alpine:3.16.2
 ENV JAVA_HOME=/opt/java-minimal
 ENV PATH="$PATH:$JAVA_HOME/bin"
+ENV REDIS_SERVER="redis://redis:6379"
+ENV DATABUS_SERVER="http://192.168.8.45:8082"
+ENV CONFIG_SERVER="http://localhost:8081"
+ENV PRINTER_SERVER="http://192.168.3.33:8084"
+ENV OIDC_ISSUER_DOMAIN="http://192.168.8.45:9090/realms/Aritmos"
 COPY --from=packager "$JAVA_HOME" "$JAVA_HOME"
 COPY --from=builder "/src/target/visitmanager.jar" "app.jar"
 EXPOSE 8080
