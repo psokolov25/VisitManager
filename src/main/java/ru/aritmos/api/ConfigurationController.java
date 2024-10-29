@@ -146,7 +146,6 @@ public class ConfigurationController {
     branchService.deleteServicePoints(branchId, servicePointIds);
   }
 
-
   /**
    * Включение авовызова для отделения
    *
@@ -156,9 +155,11 @@ public class ConfigurationController {
   @Tag(name = "Конфигурация отделений")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/autocallModeOn")
-  public Optional<Branch> setAutoCallModeOfBranchOn(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+  public Optional<Branch> setAutoCallModeOfBranchOn(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     return visitService.setAutoCallModeOfBranch(branchId, true);
   }
+
   /**
    * Выключение авовызова для отделения
    *
@@ -168,7 +169,8 @@ public class ConfigurationController {
   @Tag(name = "Конфигурация отделений")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/autocallModeOff")
-  public Optional<Branch> setAutoCallModeOfBranchOff(@PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+  public Optional<Branch> setAutoCallModeOfBranchOff(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     return visitService.setAutoCallModeOfBranch(branchId, false);
   }
 

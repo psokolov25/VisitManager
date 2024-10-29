@@ -2093,7 +2093,7 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!",eventService,HttpStatus.valueOf(102));
+      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(102));
     }
     return Optional.empty();
   }
@@ -2148,7 +2148,7 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!",eventService,HttpStatus.valueOf(102));
+      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(102));
     }
     return Optional.empty();
   }
@@ -2202,7 +2202,7 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!",eventService,HttpStatus.valueOf(102));
+      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(102));
     }
     return Optional.empty();
   }
@@ -2210,14 +2210,13 @@ public class VisitService {
   /**
    * Включение-выключение режима авовызова для отделения
    *
-   * @param branchId идентификатор отделения   *
+   * @param branchId идентификатор отделения *
    * @param isAutoCallMode режим автовызова
    * @return отделение
    */
-  public Optional<Branch> setAutoCallModeOfBranch(String branchId,Boolean isAutoCallMode) {
+  public Optional<Branch> setAutoCallModeOfBranch(String branchId, Boolean isAutoCallMode) {
     Branch currentBranch = branchService.getBranch(branchId);
     currentBranch.getParameterMap().put("autoCallMode", isAutoCallMode.toString());
-
 
     branchService.add(currentBranch.getId(), currentBranch);
     return Optional.of(currentBranch);
@@ -2236,7 +2235,9 @@ public class VisitService {
     Branch currentBranch = branchService.getBranch(branchId);
     if (!currentBranch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException(
-          String.format("Service poiunt %s not found!", servicePointId), eventService,HttpStatus.NOT_FOUND);
+          String.format("Service poiunt %s not found!", servicePointId),
+          eventService,
+          HttpStatus.NOT_FOUND);
     }
     if (currentBranch.getParameterMap().containsKey("autoCallMode")
         && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
@@ -2330,8 +2331,7 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException(
-          "Autocall mode enabled!", eventService, HttpStatus.valueOf(207));
+      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(207));
     }
   }
 

@@ -251,6 +251,7 @@ public class BranchService {
     branch.adUpdateSegmentRules(segmentationRuleDataHashMap, eventService);
     this.add(branch.getId(), branch);
   }
+
   /**
    * Получение услуг соответствующего рабочего профиля
    *
@@ -268,9 +269,15 @@ public class BranchService {
         .getWorkProfiles()
         .get(workProfileId)
         .getQueueIds()
-        .forEach(q -> services.addAll(branch.getServices().values().stream().filter(f->f.getLinkedQueueId().equals(q)).toList()));
+        .forEach(
+            q ->
+                services.addAll(
+                    branch.getServices().values().stream()
+                        .filter(f -> f.getLinkedQueueId().equals(q))
+                        .toList()));
     return services;
   }
+
   /**
    * Получение услуг соответствующей очереди
    *
@@ -280,7 +287,7 @@ public class BranchService {
    */
   public List<Service> getServicesByQueueId(String branchId, String queueId) {
     Branch branch = this.getBranch(branchId);
-    if(!branch.getQueues().containsKey(queueId)) {
+    if (!branch.getQueues().containsKey(queueId)) {
       throw new BusinessException("Queue not found!!", eventService, HttpStatus.NOT_FOUND);
     }
     return new ArrayList<>(
