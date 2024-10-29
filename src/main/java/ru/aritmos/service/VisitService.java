@@ -2320,12 +2320,19 @@ public class VisitService {
     if (currentBranch.getParameterMap().containsKey("autoCallMode")
         && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      setAutoCallMode(servicePoint, currentBranch);
+    }
+    return Optional.empty();
+  }
+
+  private void setAutoCallMode(ServicePoint servicePoint, Branch currentBranch) {
+    if (servicePoint.getVisit() == null) {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!",eventService,HttpStatus.valueOf(207));
+      throw new BusinessException(
+          "Autocall mode enabled!", eventService, HttpStatus.valueOf(207));
     }
-    return Optional.empty();
   }
 
   /**
@@ -2391,10 +2398,7 @@ public class VisitService {
     if (currentBranch.getParameterMap().containsKey("autoCallMode")
         && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-      servicePoint.setAutoCallMode(true);
-      currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
-      branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!",eventService,HttpStatus.valueOf(207));
+      setAutoCallMode(servicePoint, currentBranch);
     }
     return Optional.empty();
   }
@@ -2433,10 +2437,7 @@ public class VisitService {
     if (currentBranch.getParameterMap().containsKey("autoCallMode")
         && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-      servicePoint.setAutoCallMode(true);
-      currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
-      branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!",eventService,HttpStatus.valueOf(207));
+      setAutoCallMode(servicePoint, currentBranch);
     }
     return Optional.empty();
   }
@@ -2473,10 +2474,7 @@ public class VisitService {
     if (currentBranch.getParameterMap().containsKey("autoCallMode")
         && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-      servicePoint.setAutoCallMode(true);
-      currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
-      branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!",eventService,HttpStatus.valueOf(207));
+      setAutoCallMode(servicePoint, currentBranch);
     }
     return Optional.empty();
   }
@@ -2515,10 +2513,7 @@ public class VisitService {
     if (currentBranch.getParameterMap().containsKey("autoCallMode")
         && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
-      servicePoint.setAutoCallMode(true);
-      currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
-      branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!",eventService,HttpStatus.valueOf(207));
+      setAutoCallMode(servicePoint, currentBranch);
     }
     return Optional.empty();
   }

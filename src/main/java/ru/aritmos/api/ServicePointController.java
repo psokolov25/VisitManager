@@ -749,7 +749,7 @@ public class ServicePointController {
   @Tag(name = "Вызов")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
-  @Put("/branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall")
+  @Put("/branches/{branchId}/servicePoins/{servicePointId}/startAutoCall")
   public Optional<ServicePoint> startAutoCallModeOfServicePoint(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {

@@ -102,6 +102,9 @@ public class Configuration {
       // branchService.openServicePoint(psokolovUser, branch);
       // branchService.openServicePoint(sidorovUser, branch);
       HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
+      servicePointC.setIsConfirmRequired(false);
+      servicePointFSC.setIsConfirmRequired(false);
+      servicePointFC.setIsConfirmRequired(false);
       servicePointMap.put(servicePointFC.getId(), servicePointFC);
       servicePointMap.put(servicePointFSC.getId(), servicePointFSC);
       servicePointMap.put(servicePointC.getId(), servicePointC);
