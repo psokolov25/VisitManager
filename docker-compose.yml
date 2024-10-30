@@ -20,6 +20,9 @@ services:
       - CONFIG_SERVER=http://localhost:8081
       - PRINTER_SERVER=http://192.168.3.33:8084
       - OIDC_ISSUER_DOMAIN=http://192.168.8.45:9090/realms/Aritmos
+      - OAUTH_CLIENT_ID=myclient
+      - KEYCLOAK_TECHLOGIN=visitmanager
+      - KEYCLOAK_TECHPASSWORD=visitmanager
     restart: always
   redis:
     networks:

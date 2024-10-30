@@ -32,9 +32,9 @@ micronaut:
 
     oauth2:
       clients:
-        keycloak: # <2>
-          techlogin: visitmanager
-          techpassword: visitmanager
+        keycloak:
+          techlogin: '${KEYCLOAK_TECHLOGIN:visitmanager}'
+          techpassword: '${KEYCLOAK_TECHPASSWORD:visitmanager}'
           keycloakurl: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.45:9090`}'
           realm: Aritmos
           token:
