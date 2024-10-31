@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.aritmos</groupId>
     <artifactId>entrypoint</artifactId>
-    <version>0.5</version>
+    <version>0.6</version>
     <packaging>${packaging}</packaging>
     <description>
         Целью службы управления визитамия является оптимизация логистики обслуживания клиентов.

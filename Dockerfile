@@ -2,8 +2,12 @@
 FROM amazoncorretto:17.0.4-alpine3.15 as builder
 ADD [".\\", "/src"]
 WORKDIR /src
+COPY pom.xml .
+COPY src ./src
 RUN sed -i 's/\r$//' mvnw
-RUN ./mvnw install -DskipTests
+RUN --mount=type=cache,target=/root/.m2 ./mvnw clean package  -Dmaven.test.skip
+
+
 
 FROM amazoncorretto:17.0.4-alpine3.15 as packager
 RUN apk add --no-cache binutils
