@@ -63,6 +63,7 @@ public class KeyCloackClient {
       AuthzClient authzClient = AuthzClient.create(res.get());
       AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
       Keycloak keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
+
       List<UserRepresentation> users = keycloak.realm(realm).users().search(login);
       if (!users.isEmpty()) {
         keycloak

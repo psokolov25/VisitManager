@@ -3,6 +3,7 @@ version: '3.3'
 services:
 
   visitmanager:
+
     networks:
       - confluent
     container_name: visitmanager
@@ -11,7 +12,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: aritmos/visitmanager:0.5
+    image: aritmos/visitmanager:0.6
     depends_on:
       - redis
     environment:
