@@ -219,7 +219,7 @@ public class Branch extends BranchEntity {
                 .body(servicePoint)
                 .build());
         if (withLogout) {
-          visitService.keyCloackClient.DeleteSession(servicePoint.getUser().getName());
+          visitService.keyCloackClient.userLogout(servicePoint.getUser().getName());
         }
         servicePoint.setUser(null);
         eventService.send(

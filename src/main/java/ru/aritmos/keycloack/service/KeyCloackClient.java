@@ -5,12 +5,10 @@ import io.micronaut.core.io.scan.DefaultClassPathResourceLoader;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Singleton;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.authorization.client.AuthzClient;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.keycloack.model.Credentials;
 
@@ -53,27 +51,26 @@ public class KeyCloackClient {
   }
 
   /**
-   * Удаления сеанса сотрудника
+   * Выход сотрудника
    *
    * @param login логин сотрудника
    */
-  public void DeleteSession(@PathVariable String login) {
+  public void userLogout(@PathVariable String login) {
     Optional<InputStream> res = resourceLoader.getResourceAsStream("keycloak.json");
     if (res.isPresent()) {
       AuthzClient authzClient = AuthzClient.create(res.get());
       AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
       Keycloak keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
 
-      List<UserRepresentation> users = keycloak.realm(realm).users().search(login,true);
-      if (!users.isEmpty()) {
-        keycloak
-            .realm(realm)
-            .users()
-            .get(users.get(0).getId()).logout();
-
-
-        log.info("{}", keycloak.serverInfo().getInfo());
-      }
+      keycloak
+          .realm(realm)
+          .users()
+          .search(login, true)
+          .forEach(
+              f -> {
+                keycloak.realm(realm).users().get(f.getId()).logout();
+                log.info("{}", keycloak.serverInfo().getInfo());
+              });
     }
   }
 }

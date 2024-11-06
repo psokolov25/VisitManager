@@ -61,6 +61,6 @@ public class KeyCloakController {
       consumes = "application/json",
       produces = "application/json")
   void DeleteSession(@PathVariable String login) {
-    keyCloackClient.DeleteSession(login);
+    keyCloackClient.userLogout(login);
   }
 }
