@@ -52,6 +52,7 @@
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-authz-client -->
+
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-authz-client</artifactId>
@@ -220,6 +221,16 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.micronaut.redis</groupId>
+            <artifactId>micronaut-redis-lettuce</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut.testresources</groupId>
+            <artifactId>micronaut-test-resources-redis</artifactId>
+            <version>2.6.2</version>
+        </dependency>
 
     </dependencies>
     <reporting>
@@ -244,6 +255,24 @@
     <build>
         <finalName>visitmanager</finalName>
         <plugins>
+            <plugin>
+                <groupId>io.micronaut.maven</groupId>
+                <artifactId>micronaut-maven-plugin</artifactId>
+                <configuration>
+                    <classpathInference>false</classpathInference>
+                    <testResourcesDependencies>
+                        <dependency>
+                            <groupId>io.micronaut.testresources</groupId>
+                            <artifactId>micronaut-test-resources-redis</artifactId>
+                        </dependency>
+                        <dependency>
+                            <groupId>io.micronaut.redis</groupId>
+                            <artifactId>micronaut-redis-lettuce</artifactId>
+                            <scope>compile</scope>
+                        </dependency>
+                    </testResourcesDependencies>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>

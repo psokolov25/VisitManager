@@ -27,6 +27,7 @@ kafka:
     servers: 192.168.8.45:9094
 
 micronaut:
+
   server:
     port: 8080
     cors:
@@ -57,7 +58,7 @@ micronaut:
 
 redis:
   uri: '${REDIS_SERVER:redis://192.168.8.45:6379}'
-  #uri: redis://192.168.8.45:7379
+  #uri: redis://192.168.8.45:7379/5
   #uri: ${REDIS_SERVER}
   cache:
     key-serializer: io.micronaut.core.serialize.ObjectSerializer

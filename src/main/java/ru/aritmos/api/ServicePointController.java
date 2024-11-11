@@ -1335,7 +1335,7 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Put(
       uri =
-          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transferFromServicePoint",
+          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/return",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1359,6 +1359,47 @@ public class ServicePointController {
     return visitService.visitBackToServicePointPool(
         branchId, servicePointId, poolServicePointId, returnTimeDelay);
   }
+
+  /**
+   * Перевод визита в пул точки обслуживания из точки обслуживания
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param poolServicePointId идентификатор точки обслуживания пула   *
+   * @return визит после перевода
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Изменение визита")
+  @Tag(name = "Возвращение визита")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Полный список")
+  @Put(
+          uri =
+                  "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer",
+          consumes = "application/json",
+          produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Visit visitTransferToServicePointPool(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2")
+          String poolServicePointId
+          ) {
+    Branch branch;
+
+    try {
+      branch = branchService.getBranch(branchId);
+    } catch (Exception ex) {
+      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+    }
+    if (!branch.getServicePoints().containsKey(poolServicePointId)) {
+      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+    }
+
+    return visitService.visitTransferToServicePointPool(
+            branchId, servicePointId, poolServicePointId);
+  }
+
 
   /**
    * Возвращение визита в очередь
@@ -1811,7 +1852,7 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращение визита из сервис поинта в юзер пул
+   * Возвращение визита из точки обслуживания в пул сотрудника
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1824,13 +1865,34 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Возвращение визита")
   @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}")
+  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/return")
   public Visit visitBackToUserPool(
       @PathVariable String branchId,
       @PathVariable String servicePointId,
       @PathVariable String userId,
       @QueryValue(defaultValue = "0") Long returnTimeDelay) {
     return visitService.visitBackToUserPool(branchId, servicePointId, userId, returnTimeDelay);
+  }
+
+  /**
+   * Перевод визита из точки обслуживания в пул сотрудника
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param userId идентификатор сотрудника   *
+   * @return визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Изменение визита")
+  @Tag(name = "Перевод визита")
+  @Tag(name = "Полный список")
+  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/transfer")
+  public Visit visitTransferToUserPool(
+      @PathVariable String branchId,
+      @PathVariable String servicePointId,
+      @PathVariable String userId) {
+    return visitService.visitTransferToUserPool(branchId, servicePointId, userId);
   }
 
   /**

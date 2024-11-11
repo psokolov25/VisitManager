@@ -2539,4 +2539,128 @@ public class VisitService {
     log.info("Visit {} deleted!", visit);
     // changedVisitEventSend("DELETED", visit, null, new HashMap<>());
   }
+
+  public Visit visitTransferToUserPool(String branchId, String servicePointId, String userId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+
+    if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      if (servicePoint.getVisit() != null) {
+        Visit visit = servicePoint.getVisit();
+
+        User user;
+        if (this.getAllWorkingUsers(branchId).containsKey(userId)) {
+          user = this.getAllWorkingUsers(branchId).get(userId);
+        } else {
+
+          throw new BusinessException(
+              "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+        }
+        VisitEvent event = VisitEvent.STOP_SERVING;
+        event.dateTime = ZonedDateTime.now();
+        event.getParameters().put("branchId", branchId);
+        event.getParameters().put("staffId", visit.getUserId());
+        event.getParameters().put("staff?Name", visit.getUserName());
+        event.getParameters().put("servicePointId", servicePointId);
+        branchService.updateVisit(visit, event, this);
+        visit.setServicePointId(null);
+        currentBranch.getServicePoints().get(servicePointId);
+        visit.setServicePointId(null);
+
+        assert user != null;
+        visit.setPoolUserId(user.getId());
+        visit.setServicePointId(null);
+        visit.setStartServingDateTime(null);
+        visit.setTransferDateTime(ZonedDateTime.now());
+        visit.setTransferDateTime(ZonedDateTime.now());
+
+        visit.getParameterMap().remove("LastPoolUserId");
+        event = VisitEvent.TRANSFER_TO_USER_POOL;
+        event.dateTime = ZonedDateTime.now();
+        event.getParameters().put("branchId", branchId);
+        event.getParameters().put("userId", userId);
+        event.getParameters().put("staffId", visit.getUserId());
+        event.getParameters().put("staff?Name", visit.getUserName());
+        event.getParameters().put("servicePointId", servicePointId);
+        branchService.updateVisit(visit, event, this);
+        // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
+        log.info("Visit {} transfered!", visit);
+        return visit;
+      } else {
+        throw new BusinessException(
+            String.format("Visit in ServicePoint %s! not exist!", servicePointId),
+            eventService,
+            HttpStatus.NOT_FOUND);
+      }
+    } else {
+      throw new BusinessException(
+          String.format("ServicePoint %s! not exist!", servicePointId),
+          eventService,
+          HttpStatus.NOT_FOUND);
+    }
+  }
+
+  public Visit visitTransferToServicePointPool(
+      String branchId, String servicePointId, String poolServicePointId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+
+    if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      if (servicePoint.getVisit() != null) {
+        Visit visit = servicePoint.getVisit();
+
+        ServicePoint poolServicePoint;
+        if (currentBranch.getServicePoints().containsKey(poolServicePointId)) {
+          poolServicePoint = currentBranch.getServicePoints().get(poolServicePointId);
+        } else {
+
+          throw new BusinessException(
+              "Service point not found in branch configuration!",
+              eventService,
+              HttpStatus.NOT_FOUND);
+        }
+        VisitEvent event = VisitEvent.STOP_SERVING;
+        event.dateTime = ZonedDateTime.now();
+        event.getParameters().put("branchId", branchId);
+        event.getParameters().put("poolServicePointId", poolServicePointId);
+        event.getParameters().put("staffId", visit.getUserId());
+        event.getParameters().put("staff?Name", visit.getUserName());
+        event.getParameters().put("servicePointId", servicePointId);
+        branchService.updateVisit(visit, event, this);
+        visit.setServicePointId(null);
+        currentBranch.getServicePoints().get(servicePointId);
+        visit.setServicePointId(null);
+        visit.getParameterMap().remove("LastPoolServicePointId");
+        assert poolServicePoint != null;
+        visit.setPoolServicePointId(poolServicePointId);
+        visit.setServicePointId(null);
+
+        visit.setTransferDateTime(ZonedDateTime.now());
+        visit.setTransferDateTime(ZonedDateTime.now());
+
+        visit.setStartServingDateTime(null);
+        event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
+        event.dateTime = ZonedDateTime.now();
+        event.getParameters().put("branchId", branchId);
+        event.getParameters().put("poolServicePointId", poolServicePointId);
+        event.getParameters().put("staffId", visit.getUserId());
+        event.getParameters().put("staff?Name", visit.getUserName());
+        event.getParameters().put("servicePointId", servicePointId);
+        branchService.updateVisit(visit, event, this);
+        // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
+        log.info("Visit {} transfered!", visit);
+        return visit;
+      } else {
+        throw new BusinessException(
+            String.format("Visit in ServicePoint %s! not exist!", servicePointId),
+            eventService,
+            HttpStatus.NOT_FOUND);
+      }
+    } else {
+      throw new BusinessException(
+          String.format("ServicePoint %s! not exist!", servicePointId),
+          eventService,
+          HttpStatus.NOT_FOUND);
+    }
+  }
 }

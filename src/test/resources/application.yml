@@ -74,8 +74,8 @@ micronaut:
 redis:
   #uri: redis://192.168.8.45:6379
   #uri: redis://localhost:6379
-  uri: redis://192.168.8.45:7379
-  #uri: ${REDIS_SERVER:`http://localhost:8080/`}
+  #uri: redis://192.168.8.45:7379/5
+  uri: '${REDIS_SERVER_TEST}'
   cache:
     key-serializer: io.micronaut.core.serialize.ObjectSerializer
     value-serializer: io.micronaut.core.serialize.ObjectSerializer
