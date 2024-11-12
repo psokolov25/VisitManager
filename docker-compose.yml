@@ -1,4 +1,4 @@
-version: '3.3'
+
 
 services:
 
@@ -14,7 +14,8 @@ services:
       dockerfile: Dockerfile
     image: aritmos/visitmanager:0.6
     depends_on:
-      - redis
+       redis:
+         condition: service_healthy
     environment:
       - REDIS_SERVER=redis://redis:6379/6
       - DATABUS_SERVER=http://192.168.8.45:8082
@@ -26,6 +27,11 @@ services:
       - KEYCLOAK_TECHPASSWORD=visitmanager
     restart: always
   redis:
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
     networks:
       - confluent
     image: redis:latest

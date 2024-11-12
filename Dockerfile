@@ -1,5 +1,5 @@
 #Перед этим нужно поменять версию в pom.xml на 17
-FROM amazoncorretto:17.0.4-alpine3.15 as builder
+FROM amazoncorretto:17.0.4-alpine3.15 AS builder
 ADD [".\\", "/src"]
 WORKDIR /src
 COPY pom.xml .
@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/root/.m2 ./mvnw clean package -Dmaven.test.skip=t
 
 
 
-FROM amazoncorretto:17.0.4-alpine3.15 as packager
+FROM amazoncorretto:17.0.4-alpine3.15 AS packager
 RUN apk add --no-cache binutils
 ENV JAVA_MINIMAL="/opt/java-minimal"
 RUN $JAVA_HOME/bin/jlink \
