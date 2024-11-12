@@ -14,18 +14,19 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
 import ru.aritmos.api.EntrypointController;
 import ru.aritmos.api.ManagementController;
 import ru.aritmos.api.ServicePointController;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
+import ru.aritmos.model.Queue;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.service.BranchService;
@@ -58,9 +59,11 @@ class EntrypointTest {
     Assertions.assertTrue(application.isRunning());
   }
 
+
   /** Создание отделения для проведения юнит теста */
   @BeforeEach
   void CreateBranch() {
+
     if (!branchService.getBranches().containsKey("bc08b7d2-c731-438d-9785-eba2078b2089")) {
       branch = new Branch("bc08b7d2-c731-438d-9785-eba2078b2089", "Отделение на Тверской");
       branch
@@ -1226,6 +1229,7 @@ class EntrypointTest {
   void deleteBranch() {
     branchService.closeServicePoint(branchId, servicePointFcId, visitService, true);
     branchService.delete(branchId);
+
   }
 
   /** Проверка сохранения изменения состояния отделения в кэше редис */
