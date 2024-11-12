@@ -56,7 +56,6 @@ class EntrypointTest {
     Assertions.assertTrue(application.isRunning());
   }
 
-
   /** Создание отделения для проведения юнит теста */
   @BeforeEach
   void CreateBranch() {
@@ -187,11 +186,6 @@ class EntrypointTest {
       workProfileFC.getQueueIds().add(queueCredit.getId());
       WorkProfile workProfileFSC = new WorkProfile("Старший финансовый консультант");
       workProfileFSC.getQueueIds().add(queueBigCredit.getId());
-      // User psokolovUser = new User("2198423c-760e-4d39-8930-12602552b1a9", "psokolov");
-      // psokolovUser.setBranchId(branch.getId());
-
-      // psokolovUser.setCurrentWorkProfileId(workProfileFC.getId());
-      // servicePointFSC.setUser(psokolovUser);
 
       HashMap<String, Queue> queueMap = new HashMap<>();
       queueMap.put(queueCredit.getId(), queueCredit);
@@ -353,9 +347,9 @@ class EntrypointTest {
             .orElse(null);
 
     ArrayList<String> serviceIds = new ArrayList<>();
-    assert service2 != null;
+
     serviceIds.add(service.getId());
-    assert service != null;
+
     serviceIds.add(service2.getId());
 
     VisitParameters visitParameters = new VisitParameters();
@@ -1226,7 +1220,6 @@ class EntrypointTest {
   void deleteBranch() {
     branchService.closeServicePoint(branchId, servicePointFcId, visitService, true);
     branchService.delete(branchId);
-
   }
 
   /** Проверка сохранения изменения состояния отделения в кэше редис */
