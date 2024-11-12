@@ -15,7 +15,7 @@ public class KeyCloackTest {
   DefaultClassPathResourceLoader resourceLoader =
       new DefaultClassPathResourceLoader(this.getClass().getClassLoader());
 
-  //@Test
+  @Test
   public void test() {
 
     Optional<InputStream> res = resourceLoader.getResourceAsStream("keycloak.json");

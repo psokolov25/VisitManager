@@ -1365,7 +1365,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания пула   *
+   * @param poolServicePointId идентификатор точки обслуживания пула *
    * @return визит после перевода
    */
   @Tag(name = "Зона обслуживания")
@@ -1374,17 +1374,16 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
   @Put(
-          uri =
-                  "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer",
-          consumes = "application/json",
-          produces = "application/json")
+      uri =
+          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer",
+      consumes = "application/json",
+      produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public Visit visitTransferToServicePointPool(
-          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2")
-          String poolServicePointId
-          ) {
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2")
+          String poolServicePointId) {
     Branch branch;
 
     try {
@@ -1397,9 +1396,8 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferToServicePointPool(
-            branchId, servicePointId, poolServicePointId);
+        branchId, servicePointId, poolServicePointId);
   }
-
 
   /**
    * Возвращение визита в очередь
@@ -1879,7 +1877,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param userId идентификатор сотрудника   *
+   * @param userId идентификатор сотрудника *
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
