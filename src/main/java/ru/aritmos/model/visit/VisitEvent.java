@@ -102,15 +102,16 @@ public enum VisitEvent {
 
   private static final Map<VisitEvent, TransactionCompletionStatus> transactionStatus =
       Map.ofEntries(
-          Map.entry(STOP_SERVING, TransactionCompletionStatus.OK),
+          Map.entry(STOP_SERVING, TransactionCompletionStatus.STOP_SERVING),
           Map.entry(NO_SHOW, TransactionCompletionStatus.NO_SHOW),
           Map.entry(DELETED, TransactionCompletionStatus.REMOVED_BY_EMP),
           Map.entry(PLACED_IN_QUEUE, TransactionCompletionStatus.TRANSFER_TO_QUEUE),
+          Map.entry(TRANSFER_TO_QUEUE, TransactionCompletionStatus.TRANSFER_TO_QUEUE),
           Map.entry(BACK_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_STAFF),
           Map.entry(
               TRANSFER_TO_SERVICE_POINT_POOL,
-              TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT),
-          Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_STAFF));
+              TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT_POOL),
+          Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_USER_POOL));
   private static final List<VisitEvent> notSendToStat = List.of(RECALLED);
   private static final Map<VisitEvent, List<VisitEvent>> nextEvents =
       Map.ofEntries(
@@ -176,6 +177,8 @@ public enum VisitEvent {
                   BACK_TO_USER_POOL,
                   PLACED_IN_QUEUE,
                   BACK_TO_SERVICE_POINT_POOL,
+                  TRANSFER_TO_SERVICE_POINT_POOL,
+                  TRANSFER_TO_USER_POOL,
                   ADDED_MARK,
                   DELETED_MARK,
                   END,

@@ -15,11 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.*;
-
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.DockerImageName;
 import ru.aritmos.api.EntrypointController;
 import ru.aritmos.api.ManagementController;
 import ru.aritmos.api.ServicePointController;
