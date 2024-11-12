@@ -452,7 +452,8 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов наиболее ожидающего визита с ожиданием подтверждения из списка очередей
+   * Вызов наиболее ожидающего визита с ожиданием подтверждения из списка очередей,
+   * чьи идентификаторы перечислены в теле запроса
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -460,7 +461,7 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues",
@@ -498,7 +499,8 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов с максимальным временем жизни визита с ожиданием подтверждения из списка очередей
+   * Вызов с максимальным временем жизни визита с ожиданием подтверждения из списка очередей, чьи идентификаторы
+   * в теле запроса
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -506,7 +508,7 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
   @Post(
       uri =
@@ -1136,7 +1138,8 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов визита с наибольшим временем ожидания
+   * Вызов визита с наибольшим временем ожидания из списка очередей,
+   * чьи идентификаторы в теле запроса
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1145,7 +1148,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues",
@@ -1184,16 +1187,17 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов визита с наибольшим временем жизни визита
+   * Вызов визита с наибольшим временем жизни визита из указанных
+   * очередей, чьи идентификаторы указаны в теле запроса
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param queueIds идентификаторы очередей
+   * @param queueIds идентификаторы очередей из которых производится вызов
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues/maxLifeTime",
