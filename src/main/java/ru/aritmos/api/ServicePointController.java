@@ -1335,7 +1335,7 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Put(
       uri =
-          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/return",
+          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/put_back",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1370,7 +1370,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Изменение визита")
-  @Tag(name = "Возвращение визита")
+  @Tag(name = "Перевод визита")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
   @Put(
@@ -1413,7 +1413,7 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Полный список")
   @Put(
-      uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/return",
+      uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/put_back",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1863,7 +1863,7 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Возвращение визита")
   @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/return")
+  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/put_back")
   public Visit visitBackToUserPool(
       @PathVariable String branchId,
       @PathVariable String servicePointId,

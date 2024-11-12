@@ -7,7 +7,7 @@ COPY src ./src
 
 
 ENV REDIS_SERVER="redis://redis:6379"
-ENV REDIS_SERVER_TEST="redis://redis:6379"
+ENV REDIS_SERVER_TEST="redis://localhost:6379"
 ENV DATABUS_SERVER="http://192.168.8.45:8082"
 ENV CONFIG_SERVER="http://localhost:8081"
 ENV PRINTER_SERVER="http://192.168.3.33:8084"
@@ -34,7 +34,7 @@ FROM alpine:3.16.2
 ENV JAVA_HOME=/opt/java-minimal
 ENV PATH="$PATH:$JAVA_HOME/bin"
 ENV REDIS_SERVER="redis://redis:6379"
-ENV REDIS_SERVER_TEST="redis://redis:6379"
+ENV REDIS_SERVER_TEST="redis://localhost:6379"
 ENV DATABUS_SERVER="http://192.168.8.45:8082"
 ENV CONFIG_SERVER="http://localhost:8081"
 ENV PRINTER_SERVER="http://192.168.3.33:8084"

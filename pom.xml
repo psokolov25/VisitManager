@@ -227,6 +227,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.26.0</version>
+        </dependency>
+        <dependency>
             <groupId>io.micronaut.testresources</groupId>
             <artifactId>micronaut-test-resources-redis</artifactId>
             <version>2.6.2</version>
@@ -255,24 +260,7 @@
     <build>
         <finalName>visitmanager</finalName>
         <plugins>
-            <plugin>
-                <groupId>io.micronaut.maven</groupId>
-                <artifactId>micronaut-maven-plugin</artifactId>
-                <configuration>
-                    <classpathInference>false</classpathInference>
-                    <testResourcesDependencies>
-                        <dependency>
-                            <groupId>io.micronaut.testresources</groupId>
-                            <artifactId>micronaut-test-resources-redis</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>io.micronaut.redis</groupId>
-                            <artifactId>micronaut-redis-lettuce</artifactId>
-                            <scope>compile</scope>
-                        </dependency>
-                    </testResourcesDependencies>
-                </configuration>
-            </plugin>
+
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
@@ -303,7 +291,17 @@
                     </aotDependencies>
                     <shared>true</shared>
                     <configFile>aot-${packaging}.properties</configFile>
-
+                                        <testResourcesDependencies>
+                                            <dependency>
+                                                <groupId>io.micronaut.testresources</groupId>
+                                                <artifactId>micronaut-test-resources-redis</artifactId>
+                                            </dependency>
+                                            <dependency>
+                                                <groupId>io.micronaut.redis</groupId>
+                                                <artifactId>micronaut-redis-lettuce</artifactId>
+                                                <scope>compile</scope>
+                                            </dependency>
+                                        </testResourcesDependencies>
                 </configuration>
             </plugin>
             <plugin>
