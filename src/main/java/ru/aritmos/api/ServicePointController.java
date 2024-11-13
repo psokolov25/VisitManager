@@ -414,7 +414,7 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}/call",
@@ -437,7 +437,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call",
@@ -452,8 +453,8 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов наиболее ожидающего визита с ожиданием подтверждения из списка очередей,
-   * чьи идентификаторы перечислены в теле запроса
+   * Вызов наиболее ожидающего визита с ожиданием подтверждения из списка очередей, чьи
+   * идентификаторы перечислены в теле запроса
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -462,6 +463,8 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов из перечня очередей")
+  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues",
@@ -477,6 +480,108 @@ public class ServicePointController {
   }
 
   /**
+   * Вызов визита с наибольшим временем ожидания
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/call",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCallWithMaximalWaitingTime(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+
+    return visitService.visitCallWithMaximalWaitingTime(branchId, servicePointId);
+  }
+
+  /**
+   * Вызов визита с наибольшим временем ожидания из списка очередей, чьи идентификаторы в теле
+   * запроса
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param queueIds идентификаторы очередей
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Ожидание подтверждения прихода")
+  @Tag(name = "Вызов из перечня очередей")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCall(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body List<String> queueIds) {
+
+    return visitService.visitCallWithMaximalWaitingTime(branchId, servicePointId, queueIds);
+  }
+
+  /**
+   * Вызов визита с наибольшим временем жизни визита
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Вызов c максимальным временем жизни визита")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/call/maxLifeTime",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCallMaxLifeTime(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+
+    return visitService.visitCallWithMaxLifeTime(branchId, servicePointId);
+  }
+
+  /**
+   * Вызов визита с наибольшим временем жизни визита из указанных очередей, чьи идентификаторы
+   * указаны в теле запроса
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param queueIds идентификаторы очередей из которых производится вызов
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Вызов c максимальным временем жизни визита")
+  @Tag(name = "Ожидание подтверждения прихода")
+  @Tag(name = "Вызов из перечня очередей")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues/maxLifeTime",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCallMaxLifeTime(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body List<String> queueIds) {
+
+    return visitService.visitCallWithMaxLifeTime(branchId, servicePointId, queueIds);
+  }
+
+  /**
    * Вызов с максимальным временем жизни визита с ожиданием подтверждения
    *
    * @param branchId идентификатор отделения
@@ -484,7 +589,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов c максимальным временем жизни визита")
+  @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call/maxLifeTime",
@@ -499,8 +605,8 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов с максимальным временем жизни визита с ожиданием подтверждения из списка очередей, чьи идентификаторы
-   * в теле запроса
+   * Вызов с максимальным временем жизни визита с ожиданием подтверждения из списка очередей, чьи
+   * идентификаторы в теле запроса
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -508,7 +614,9 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
+  @Tag(name = "Вызов c максимальным временем жизни визита")
   @Tag(name = "Вызов из перечня очередей")
+  @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
       uri =
@@ -533,7 +641,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов определенного визита (cherry-peak)")
+  @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit",
@@ -557,7 +666,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов определенного визита (cherry-peak)")
+  @Tag(name = "Ожидание подтверждения прихода")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}",
       consumes = "application/json",
@@ -581,7 +691,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Завершение вызова")
+  @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow",
@@ -605,7 +716,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Завершение вызова")
+  @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow/{visitId}",
@@ -630,7 +742,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов определенного визита (cherry-peak)")
+  @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall",
@@ -654,7 +767,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Вызов определенного визита (cherry-peak)")
+  @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}",
@@ -680,7 +794,8 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов")
+  @Tag(name = "Ожидание подтверждения прихода")
+  @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm",
@@ -704,7 +819,8 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Ожидание подтверждения прихода")
+  @Tag(name = "Результат вызова")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
   @Post(
@@ -730,7 +846,8 @@ public class ServicePointController {
    * @return точка обслуживания
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Настройка точки обслуживания")
+  @Tag(name = "Автоматический вызов")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
   @Put("/branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall")
@@ -748,7 +865,7 @@ public class ServicePointController {
    * @return точка обслуживания
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов")
+  @Tag(name = "Автоматический вызов")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
   @Put("/branches/{branchId}/servicePoins/{servicePointId}/startAutoCall")
@@ -1115,104 +1232,6 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов визита с наибольшим временем ожидания
-   *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @return вызванный визит
-   */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов")
-  @Tag(name = "Полный список")
-  @Post(
-      uri = "/branches/{branchId}/servicePoints/{servicePointId}/call",
-      consumes = "application/json",
-      produces = "application/json")
-  @ExecuteOn(TaskExecutors.IO)
-  public Optional<Visit> visitCall(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
-
-    return visitService.visitCallWith(branchId, servicePointId);
-  }
-
-  /**
-   * Вызов визита с наибольшим временем ожидания из списка очередей,
-   * чьи идентификаторы в теле запроса
-   *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param queueIds идентификаторы очередей
-   * @return вызванный визит
-   */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов из перечня очередей")
-  @Tag(name = "Полный список")
-  @Post(
-      uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues",
-      consumes = "application/json",
-      produces = "application/json")
-  @ExecuteOn(TaskExecutors.IO)
-  public Optional<Visit> visitCall(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @Body List<String> queueIds) {
-
-    return visitService.visitCallWith(branchId, servicePointId, queueIds);
-  }
-
-  /**
-   * Вызов визита с наибольшим временем жизни визита
-   *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @return вызванный визит
-   */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов")
-  @Tag(name = "Полный список")
-  @Post(
-      uri = "/branches/{branchId}/servicePoints/{servicePointId}/call/maxLifeTime",
-      consumes = "application/json",
-      produces = "application/json")
-  @ExecuteOn(TaskExecutors.IO)
-  public Optional<Visit> visitCallMaxLifeTime(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
-
-    return visitService.visitCallWithMaxLifeTime(branchId, servicePointId);
-  }
-
-  /**
-   * Вызов визита с наибольшим временем жизни визита из указанных
-   * очередей, чьи идентификаторы указаны в теле запроса
-   *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param queueIds идентификаторы очередей из которых производится вызов
-   * @return вызванный визит
-   */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов из перечня очередей")
-  @Tag(name = "Полный список")
-  @Post(
-      uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues/maxLifeTime",
-      consumes = "application/json",
-      produces = "application/json")
-  @ExecuteOn(TaskExecutors.IO)
-  public Optional<Visit> visitCallMaxLifeTime(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @Body List<String> queueIds) {
-
-    return visitService.visitCallWithMaxLifeTime(branchId, servicePointId, queueIds);
-  }
-
-  /**
    * Возвращает список доступных точек обслуживания очередей (в зависимости от сотрудников,
    * расположенных в точке обслуживания и имеющих соответсвующий рабочий профиль) (то есть имеющего
    * возможность вызывать из выводимой очереди)
@@ -1335,6 +1354,7 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Изменение визита")
   @Tag(name = "Возвращение визита")
+  @Tag(name = "Завершение вызова")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
   @Put(
@@ -1375,6 +1395,7 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
+  @Tag(name = "Завершение вызова")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
   @Put(
@@ -1456,6 +1477,7 @@ public class ServicePointController {
   @Tag(name = "Возвращение визита")
   @Tag(name = "Изменение визита")
   @Tag(name = "Полный список")
+  @Tag(name = "Завершение вызова")
   @Put(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/put_back",
       consumes = "application/json",
@@ -1835,6 +1857,7 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
+  @Tag(name = "Завершение вызова")
   @Put(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end",
       consumes = "application/json",
@@ -1949,6 +1972,7 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Изменение визита")
+  @Tag(name = "Завершение вызова")
   @Tag(name = "Возвращение визита")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/put_back")
@@ -1971,6 +1995,7 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Изменение визита")
+  @Tag(name = "Завершение вызова")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/transfer")
@@ -1992,6 +2017,7 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Изменение визита")
+  @Tag(name = "Завершение вызова")
   @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/service/transfer")
@@ -2013,6 +2039,7 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Изменение визита")
+  @Tag(name = "Завершение вызова")
   @Tag(name = "Возвращение визита")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/postpone")
@@ -2033,6 +2060,7 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Изменение визита")
+  @Tag(name = "Завершение вызова")
   @Tag(name = "Возвращение визита")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back")

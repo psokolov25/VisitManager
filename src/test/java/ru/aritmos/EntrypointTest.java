@@ -1032,7 +1032,8 @@ class EntrypointTest {
     VisitParameters visitParameters =
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     visit = visitService.createVisit(branchId, "1", visitParameters, false);
-    Optional<Visit> visits = visitService.visitCallWith(branchId, servicePointFcId);
+    Optional<Visit> visits =
+        visitService.visitCallWithMaximalWaitingTime(branchId, servicePointFcId);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);

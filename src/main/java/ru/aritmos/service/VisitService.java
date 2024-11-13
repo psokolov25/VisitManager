@@ -1662,8 +1662,6 @@ public class VisitService {
     return visit;
   }
 
-
-
   /**
    * Перевод визита из очереди в пул сотрудника в определенную позицию
    *
@@ -2425,7 +2423,7 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Optional<Visit> visitCallWith(String branchId, String servicePointId) {
+  public Optional<Visit> visitCallWithMaximalWaitingTime(String branchId, String servicePointId) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -2463,7 +2461,7 @@ public class VisitService {
    * @param queueIds идентификаторы очередей
    * @return визит
    */
-  public Optional<Visit> visitCallWith(
+  public Optional<Visit> visitCallWithMaximalWaitingTime(
       String branchId, String servicePointId, List<String> queueIds) {
     Branch currentBranch = branchService.getBranch(branchId);
 
