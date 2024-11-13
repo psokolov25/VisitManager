@@ -881,8 +881,8 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Данные об услугах (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные об услугах")
   @Tag(name = "Полный список")
   @Get(
       uri = "/branches/{branchId}/services/{serviceId}/deliveredServices",
@@ -957,8 +957,8 @@ public class ServicePointController {
    * @param serviceId идентификатор услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Данные об итогах (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные об итогах")
   @Tag(name = "Полный список")
   @Get(
       uri = "/branches/{branchId}/services/{serviceId}/outcomes",
@@ -986,9 +986,9 @@ public class ServicePointController {
    * @param deliveredServiceId идентификатор предоставленной услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Обслуживание (в разработке!)")
-  @Tag(name = "Предоставленные услуги (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Предоставленные услуги")
   @Tag(name = "Полный список")
   @Post(
       uri =
@@ -1081,9 +1081,9 @@ public class ServicePointController {
    * @param outcomeId идентификатор итога оказания услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Обслуживание (в разработке!)")
-  @Tag(name = "Итоги услуги (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Итоги услуги")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}",
@@ -1106,9 +1106,9 @@ public class ServicePointController {
    * @param serviceId идентификатор услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Обслуживание (в разработке!)")
-  @Tag(name = "Изменение визита (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Изменение визита")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/services/{serviceId}",
@@ -1132,9 +1132,9 @@ public class ServicePointController {
    * @param outcomeId идентификатор итога оказания услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Обслуживание (в разработке!)")
-  @Tag(name = "Итоги услуги (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Итоги услуги")
   @Tag(name = "Полный список")
   @Post(
       uri =
@@ -1160,9 +1160,9 @@ public class ServicePointController {
    * @param deliveredServiceId идентификатор предоставленной услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Обслуживание (в разработке!)")
-  @Tag(name = "Итоги услуги (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Итоги услуги")
   @Tag(name = "Полный список")
   @Delete(
       uri =
@@ -1186,9 +1186,9 @@ public class ServicePointController {
    * @param serviceId идентификатор итога оказания услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Обслуживание (в разработке!)")
-  @Tag(name = "Итоги услуги (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Итоги услуги")
   @Tag(name = "Полный список")
   @Delete(
       uri =
@@ -1212,9 +1212,9 @@ public class ServicePointController {
    * @param deliveredServiceId идентификатор предоставленной услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания (в разработке!)")
-  @Tag(name = "Обслуживание (в разработке!)")
-  @Tag(name = "Предоставленные услуги (в разработке!)")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Предоставленные услуги")
   @Tag(name = "Полный список")
   @Delete(
       uri =
