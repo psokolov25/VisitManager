@@ -488,7 +488,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Вызов визита c наибольшим временем ожидания ")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/call",
@@ -510,7 +510,7 @@ public class ServicePointController {
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Вызов визита c наибольшим временем ожидания ")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
@@ -536,7 +536,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Вызов визита c наибольшим временем ожидания ")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
@@ -564,7 +564,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов из перечня очередей")
-  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Вызов визита c наибольшим временем ожидания ")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
