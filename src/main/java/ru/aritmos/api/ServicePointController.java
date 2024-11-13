@@ -430,53 +430,53 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов наиболее ожидающего визита с ожиданием подтверждения
+   * Вызов визита с ожиданием подтверждения
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
+   * @param visit визит
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Post(
-      uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call",
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
-  public Optional<Visit> visitCallForConfirmMaxWaitingTime(
+  public Optional<Visit> visitCallForConfirm(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body Visit visit) {
 
-    return visitService.visitCallForConfirm(branchId, servicePointId);
+    return visitService.visitCallForConfirm(branchId, servicePointId, visit);
   }
 
   /**
-   * Вызов наиболее ожидающего визита с ожиданием подтверждения из списка очередей, чьи
-   * идентификаторы перечислены в теле запроса
+   * Вызов визита с ожиданием подтверждения по идентификатору
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param queueIds идентификаторы очередей
+   * @param visitId идентификатор визита
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов из перечня очередей")
-  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
   @Post(
-      uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues",
+      uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
-  public Optional<Visit> visitCallForConfirmMaxWaitingTime(
+  public Optional<Visit> visitCallForConfirmByVisitId(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @Body List<String> queueIds) {
+      @PathVariable String visitId) {
 
-    return visitService.visitCallForConfirm(branchId, servicePointId, queueIds);
+    Visit visit = visitService.getVisit(branchId, visitId);
+    return visitService.visitCallForConfirm(branchId, servicePointId, visit);
   }
 
   /**
@@ -500,6 +500,29 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
     return visitService.visitCallWithMaximalWaitingTime(branchId, servicePointId);
+  }
+
+  /**
+   * Вызов визита с наибольшим временем ожидания с ожиданием подтверждения
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Ожидание подтверждения прихода")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCallForConfirmMaxWaitingTime(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+
+    return visitService.visitCallForConfirm(branchId, servicePointId);
   }
 
   /**
@@ -528,6 +551,33 @@ public class ServicePointController {
       @Body List<String> queueIds) {
 
     return visitService.visitCallWithMaximalWaitingTime(branchId, servicePointId, queueIds);
+  }
+
+  /**
+   * Вызов наиболее ожидающего визита с ожиданием подтверждения из списка очередей, чьи
+   * идентификаторы перечислены в теле запроса
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param queueIds идентификаторы очередей
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Вызов из перечня очередей")
+  @Tag(name = "Вызов c наибольшим временем ожидания")
+  @Tag(name = "Ожидание подтверждения прихода")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<Visit> visitCallForConfirmMaxWaitingTime(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body List<String> queueIds) {
+
+    return visitService.visitCallForConfirm(branchId, servicePointId, queueIds);
   }
 
   /**
@@ -630,56 +680,6 @@ public class ServicePointController {
       @Body List<String> queueIds) {
 
     return visitService.visitCallForConfirmWithMaxLifeTime(branchId, servicePointId, queueIds);
-  }
-
-  /**
-   * Вызов визита с ожиданием подтверждения
-   *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param visit визит
-   * @return вызванный визит
-   */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов определенного визита (cherry-peak)")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
-  @Post(
-      uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit",
-      consumes = "application/json",
-      produces = "application/json")
-  @ExecuteOn(TaskExecutors.IO)
-  public Optional<Visit> visitCallForConfirm(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @Body Visit visit) {
-
-    return visitService.visitCallForConfirm(branchId, servicePointId, visit);
-  }
-
-  /**
-   * Вызов визита с ожиданием подтверждения по идентификатору
-   *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param visitId идентификатор визита
-   * @return вызванный визит
-   */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов определенного визита (cherry-peak)")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Post(
-      uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}",
-      consumes = "application/json",
-      produces = "application/json")
-  @ExecuteOn(TaskExecutors.IO)
-  public Optional<Visit> visitCallForConfirmByVisitId(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @PathVariable String visitId) {
-
-    Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitCallForConfirm(branchId, servicePointId, visit);
   }
 
   /**
@@ -1347,7 +1347,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания пула
+   * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит после перевода
    */
@@ -1389,7 +1389,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания пула *
+   * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @return визит после перевода
    */
   @Tag(name = "Зона обслуживания")
@@ -1429,7 +1429,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания пула *
+   * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @return визит после перевода
    */
   @Tag(name = "Зона обслуживания")
@@ -1468,7 +1468,7 @@ public class ServicePointController {
    * Возвращение визита в очередь
    *
    * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания *
+   * @param servicePointId идентификатор точки обслуживания
    * @param returnTimeDelay задержка визита в секундах
    * @return визит после перевода
    */
@@ -1495,7 +1495,7 @@ public class ServicePointController {
    * Перевод визита из очереди в очередь
    *
    * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания *
+   * @param servicePointId идентификатор точки обслуживания
    * @param queueId идентификатор очереди
    * @param visitId идентификатор визита
    * @param index позиция визита в списке
@@ -1574,10 +1574,10 @@ public class ServicePointController {
   }
 
   /**
-   * Перевод визита из очереди в очередь с помощью внешней службы (Ресепшен ,MI и т д)
+   * Перевод визита из очереди в очередь с помощью внешней службы (Ресепшен, MI и т д)
    *
    * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания *
+   * @param servicePointId идентификатор точки обслуживания
    * @param queueId идентификатор очереди
    * @param visitId идентификатор визита
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
@@ -1621,7 +1621,7 @@ public class ServicePointController {
    * Перевод визита из очереди в очередь
    *
    * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания *
+   * @param servicePointId идентификатор точки обслуживания
    * @param queueId идентификатор очереди
    * @param visit переводимый визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
@@ -1658,7 +1658,7 @@ public class ServicePointController {
   }
 
   /**
-   * Перевод визита из очереди в очередь в указанную позцицию
+   * Перевод визита из очереди в очередь в указанную позицию
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания *
@@ -1702,7 +1702,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания пула
+   * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param visit переводимый визит
    * @param index позиция визита в списке
    * @return итоговый визит
@@ -1744,7 +1744,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания пула
+   * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param visit переводимый визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
    * @return итоговый визит
@@ -1786,7 +1786,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания пула
+   * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param visitId переводимый визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
    * @return итоговый визит
@@ -1819,7 +1819,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания пула
+   * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param visitId переводимый визит
    * @param index позиция визита в списке
    * @return итоговый визит
@@ -1871,7 +1871,7 @@ public class ServicePointController {
   }
 
   /**
-   * Перевод визита из очереди в юзерпул
+   * Перевод визита из очереди в пул сотрудника
    *
    * @param branchId идентификатор отделения
    * @param userId идентификатор сотрудника
@@ -1893,7 +1893,7 @@ public class ServicePointController {
   }
 
   /**
-   * Перевод визита из очереди в юзерпул
+   * Перевод визита из очереди в пул сотрудника
    *
    * @param branchId идентификатор отделения
    * @param userId идентификатор сотрудника
@@ -1915,7 +1915,7 @@ public class ServicePointController {
   }
 
   /**
-   * Перевод визита из очереди в юзерпул
+   * Перевод визита из очереди в пул сотрудника
    *
    * @param branchId идентификатор отделения
    * @param userId идентификатор сотрудника
@@ -1938,7 +1938,7 @@ public class ServicePointController {
   }
 
   /**
-   * Перевод визита из очереди в юзерпул
+   * Перевод визита из очереди в пул сотрудника
    *
    * @param branchId идентификатор отделения
    * @param userId идентификатор сотрудника
@@ -2007,7 +2007,8 @@ public class ServicePointController {
   }
 
   /**
-   * Перевод визита из точки обслуживания в пул сотрудника внешней службы
+   * Перевод визита из точки обслуживания в пул сотрудника с помощью внешней службы
+   * (Ресепшен, MI и т д)
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -2050,7 +2051,7 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращение визита из сервиса поинта
+   * Возвращение визита из точки обслуживания
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания *
