@@ -4,7 +4,6 @@ import io.micronaut.context.annotation.Context;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
 import ru.aritmos.keycloack.service.KeyCloackClient;

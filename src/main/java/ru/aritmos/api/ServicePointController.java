@@ -116,14 +116,14 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Данные о сртрудника")
+  @Tag(name = "Данные о сотрудниках")
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
   @Get("/branches/{branchId}/users")
   @ExecuteOn(TaskExecutors.IO)
-  public HashMap<String, User> getUsersOfBranch(
+  public List<User> getUsersOfBranch(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
-    return branchService.getUsers(branchId);
+    return branchService.getUsers(branchId).values().stream().toList();
   }
 
   /**
