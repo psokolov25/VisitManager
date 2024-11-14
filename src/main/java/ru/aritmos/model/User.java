@@ -1,5 +1,6 @@
 package ru.aritmos.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
@@ -10,11 +11,14 @@ import lombok.EqualsAndHashCode;
 @Data
 @Serdeable
 @Introspected
+@SuppressWarnings({"unused", "RedundantSuppression"})
 public class User extends BranchEntityWithVisits {
   /** Имя */
+  @JsonInclude(JsonInclude.Include.ALWAYS)
   String firstName;
 
   /** Фамилия */
+  @JsonInclude(JsonInclude.Include.ALWAYS)
   String lastName;
 
   /** Электронная почта */
