@@ -5,10 +5,12 @@ import io.micronaut.core.io.scan.DefaultClassPathResourceLoader;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Singleton;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.keycloack.model.Credentials;
 
@@ -46,6 +48,22 @@ public class KeyCloackClient {
 
       return Optional.of(
           authzClient.authorization(credentials.getLogin(), credentials.getPassword()).authorize());
+    }
+    return Optional.empty();
+  }
+
+  public Optional<UserRepresentation> getUserInfo(String userName) {
+
+    Optional<InputStream> res = resourceLoader.getResourceAsStream("keycloak.json");
+    if (res.isPresent()) {
+      AuthzClient authzClient = AuthzClient.create(res.get());
+      AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
+      Keycloak keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
+      List<UserRepresentation> userRepresentationList =
+          keycloak.realm(realm).users().search(userName, true);
+      if (!userRepresentationList.isEmpty()) {
+        return Optional.of(userRepresentationList.get(0));
+      }
     }
     return Optional.empty();
   }

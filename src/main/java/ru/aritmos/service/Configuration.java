@@ -3,13 +3,18 @@ package ru.aritmos.service;
 import io.micronaut.context.annotation.Context;
 import jakarta.inject.Inject;
 import java.util.HashMap;
+import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.representations.idm.UserRepresentation;
+import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 
 @Slf4j
 @Context
 public class Configuration {
   @Inject BranchService branchService;
+  @Inject KeyCloackClient keyCloackClient;
 
   public void getConfiguration() {
 
@@ -97,7 +102,11 @@ public class Configuration {
       workProfileFSC.getQueueIds().add(queueCredit.getId());
 
       User psokolovUser = new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov");
-
+      Optional<UserRepresentation> userInfo=keyCloackClient.getUserInfo(psokolovUser.getName());
+      if(userInfo.isPresent()) {
+        psokolovUser.setFirstName(userInfo.get().getFirstName());
+        psokolovUser.setLastName(userInfo.get().getLastName());
+      }
       HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
       servicePointC.setIsConfirmRequired(false);
       servicePointFSC.setIsConfirmRequired(false);

@@ -23,6 +23,7 @@ services:
       - OAUTH_CLIENT_ID=myclient
       - KEYCLOAK_TECHLOGIN=visitmanager
       - KEYCLOAK_TECHPASSWORD=visitmanager
+      - OIDC_ISSUER_URL=http://192.168.8.45:9090
     restart: always
   redis:
     healthcheck:

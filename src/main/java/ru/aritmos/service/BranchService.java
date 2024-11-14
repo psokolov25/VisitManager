@@ -14,9 +14,13 @@ import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.representations.idm.UserRepresentation;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
+import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
@@ -31,7 +35,8 @@ public class BranchService {
 
   HashMap<String, Branch> branches = new HashMap<>();
   @Inject EventService eventService;
-
+  @Inject
+  KeyCloackClient keyCloackClient;
   @Value("${micronaut.application.name}")
   String applicationName;
 
@@ -157,15 +162,25 @@ public class BranchService {
     if (!branch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException("Service point not found!!", eventService, HttpStatus.NOT_FOUND);
     }
+    Optional<UserRepresentation> userInfo=keyCloackClient.getUserInfo(userName);
     if (branch.getUsers().containsKey(userName)) {
       User user = branch.getUsers().get(userName);
+      if(userInfo.isPresent()) {
+        user.setFirstName(userInfo.get().getFirstName());
+        user.setLastName(userInfo.get().getLastName());
+      }
       user.setServicePointId(servicePointId);
       user.setCurrentWorkProfileId(workProfileId);
       branch.openServicePoint(user, eventService);
       this.add(branch.getId(), branch);
       return branch.getUsers().get(userName);
     } else {
+
       User user = new User(userName);
+      if(userInfo.isPresent()) {
+        user.setFirstName(userInfo.get().getFirstName());
+        user.setLastName(userInfo.get().getLastName());
+      }
       user.setBranchId(branchId);
       user.setServicePointId(servicePointId);
       user.setCurrentWorkProfileId(workProfileId);
