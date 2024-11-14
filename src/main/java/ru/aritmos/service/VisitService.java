@@ -1444,10 +1444,9 @@ public class VisitService {
   }
 
   /**
-   * Перевод визита в очередь внешней службой
+   * Перевод визита из очереди в очередь внешней службой
    *
    * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
    * @param queueId идентификатор очереди
    * @param visit визит
    * @param isToStart флаг вставки визита в начало или в конец (по умолчанию в начало)
@@ -1455,7 +1454,6 @@ public class VisitService {
    */
   public Visit visitTransfer(
       String branchId,
-      String servicePointId,
       String queueId,
       Visit visit,
       Boolean isToStart,
@@ -1472,8 +1470,6 @@ public class VisitService {
           "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
 
-    currentBranch.getServicePoints().get(servicePointId);
-    visit.setServicePointId(null);
     if (visit.getServicePointId() != null) {
       visit.setReturnDateTime(ZonedDateTime.now());
     }
@@ -1488,7 +1484,7 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("oldQueueID", oldQueueID);
     event.getParameters().put("newQueueID", queueId);
-    event.getParameters().put("servicePointId", servicePointId);
+
     event.getParameters().put("branchID", branchId);
     event.getParameters().put("staffId", visit.getUserId());
     event.getParameters().put("staff?Name", visit.getUserName());

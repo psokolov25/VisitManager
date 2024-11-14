@@ -1577,7 +1577,6 @@ public class ServicePointController {
    * Перевод визита из очереди в очередь с помощью внешней службы (Ресепшен, MI и т д)
    *
    * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
    * @param queueId идентификатор очереди
    * @param visitId идентификатор визита
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
@@ -1589,14 +1588,12 @@ public class ServicePointController {
   @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
   @Tag(name = "Полный список")
   @Put(
-      uri =
-          "/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueueToStartOrToEnd/{visitId}",
+      uri = "/branches/{branchId}/visits/{visitId}/queue/{queueId}/service/transfer",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public Visit visitTransferFromQueue(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
       @PathVariable String visitId,
       @Body HashMap<String, String> serviceInfo,
@@ -1613,8 +1610,7 @@ public class ServicePointController {
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransfer(
-        branchId, servicePointId, queueId, visit, isAppend, serviceInfo);
+    return visitService.visitTransfer(branchId, queueId, visit, isAppend, serviceInfo);
   }
 
   /**
@@ -2007,8 +2003,8 @@ public class ServicePointController {
   }
 
   /**
-   * Перевод визита из точки обслуживания в пул сотрудника с помощью внешней службы
-   * (Ресепшен, MI и т д)
+   * Перевод визита из точки обслуживания в пул сотрудника с помощью внешней службы (Ресепшен, MI и
+   * т д)
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
