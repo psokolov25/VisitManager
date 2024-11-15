@@ -325,6 +325,7 @@ public class Branch extends BranchEntity {
     visit.setStatus(visitEvent.getState().name());
     this.servicePoints.forEach(
         (key, value) -> {
+          value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
           if (value.getId().equals(visit.getServicePointId())) {
             if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
               value.setVisit(visit);
