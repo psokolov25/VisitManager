@@ -34,8 +34,8 @@ public class BranchService {
 
   HashMap<String, Branch> branches = new HashMap<>();
   @Inject EventService eventService;
-  @Inject
-  KeyCloackClient keyCloackClient;
+  @Inject KeyCloackClient keyCloackClient;
+
   @Value("${micronaut.application.name}")
   String applicationName;
 
@@ -161,10 +161,10 @@ public class BranchService {
     if (!branch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException("Service point not found!!", eventService, HttpStatus.NOT_FOUND);
     }
-    Optional<UserRepresentation> userInfo=keyCloackClient.getUserInfo(userName);
+    Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(userName);
     if (branch.getUsers().containsKey(userName)) {
       User user = branch.getUsers().get(userName);
-      if(userInfo.isPresent()) {
+      if (userInfo.isPresent()) {
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
       }
@@ -176,7 +176,7 @@ public class BranchService {
     } else {
 
       User user = new User(userName);
-      if(userInfo.isPresent()) {
+      if (userInfo.isPresent()) {
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
       }

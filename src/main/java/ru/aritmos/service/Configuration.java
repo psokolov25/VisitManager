@@ -101,8 +101,8 @@ public class Configuration {
       workProfileFSC.getQueueIds().add(queueCredit.getId());
 
       User psokolovUser = new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov");
-      Optional<UserRepresentation> userInfo=keyCloackClient.getUserInfo(psokolovUser.getName());
-      if(userInfo.isPresent()) {
+      Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(psokolovUser.getName());
+      if (userInfo.isPresent()) {
         psokolovUser.setFirstName(userInfo.get().getFirstName());
         psokolovUser.setLastName(userInfo.get().getLastName());
       }

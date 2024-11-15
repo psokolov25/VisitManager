@@ -361,6 +361,7 @@ public class Branch extends BranchEntity {
             }
           }
         });
+
     this.getServicePoints()
         .forEach(
             (key, value) -> {
@@ -383,6 +384,7 @@ public class Branch extends BranchEntity {
                 }
               }
               if (value.getUser() != null) {
+                value.getUser().getVisits().removeIf(f -> f.getId().equals(visit.getId()));
                 getUsers().put(value.getUser().getName(), value.getUser());
                 if (value.getUser().getId().equals(visit.getPoolUserId())) {
 
