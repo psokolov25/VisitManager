@@ -64,7 +64,7 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Get("/branches/{branchId}/queues")
   @ExecuteOn(TaskExecutors.IO)
-  public HashMap<String, Queue> getQueues(
+  public List<Entity> getQueues(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     return visitService.getQueus(branchId);
   }

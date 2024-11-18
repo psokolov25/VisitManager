@@ -2877,8 +2877,10 @@ public class VisitService {
     }
   }
 
-  public HashMap<String, Queue> getQueus(String branchId) {
+  public List<Entity> getQueus(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
-    return currentBranch.getQueues();
+    return currentBranch.getQueues().values().stream()
+        .map(m -> Entity.builder().id(m.getId()).name(m.getName()).build())
+        .toList();
   }
 }
