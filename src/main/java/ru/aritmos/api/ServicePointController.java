@@ -1588,10 +1588,10 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
   @Tag(name = "Полный список")
-  //  @Put(
-  //      uri = "/branches/{branchId}/visits/{visitId}/queue/{queueId}/service/transfer",
-  //      consumes = "application/json",
-  //      produces = "application/json")
+  @Put(
+      uri = "/branches/{branchId}/visits/{visitId}/queue/{queueId}/service/transfer",
+      consumes = "application/json",
+      produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public Visit visitTransferFromQueue(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -1817,7 +1817,7 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId,  poolServicePointId, visit, true, serviceInfo);
+        branchId, poolServicePointId, visit, true, serviceInfo);
   }
 
   /**
@@ -2068,8 +2068,6 @@ public class ServicePointController {
       @PathVariable String userId) {
     return visitService.visitTransferToUserPool(branchId, servicePointId, userId);
   }
-
-
 
   /**
    * Отложить визит

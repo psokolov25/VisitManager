@@ -366,10 +366,9 @@ public class Branch extends BranchEntity {
     this.getServicePoints()
         .forEach(
             (key, value) -> {
-              value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
               if (value.getId().equals(visit.getPoolServicePointId())) {
                 try {
-
+                  value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
                   if (!index.equals(-1)) {
                     value.getVisits().add(index, visit);
                   } else {

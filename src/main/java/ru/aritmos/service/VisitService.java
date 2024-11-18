@@ -1598,7 +1598,7 @@ public class VisitService {
   /**
    * Перевод визита из очереди в пул точки обслуживания внешней службой (MI, Ресепшен и т д)
    *
-   * @param branchId идентификатор отделения   *
+   * @param branchId идентификатор отделения
    * @param poolServicePointId идентификатор очереди
    * @param visit визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
@@ -2743,8 +2743,6 @@ public class VisitService {
           HttpStatus.NOT_FOUND);
     }
   }
-
-
 
   public Visit visitTransferToServicePointPool(
       String branchId, String servicePointId, String poolServicePointId) {
