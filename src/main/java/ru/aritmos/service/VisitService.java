@@ -1449,14 +1449,14 @@ public class VisitService {
    * @param branchId идентификатор отделения
    * @param queueId идентификатор очереди
    * @param visit визит
-   * @param isToStart флаг вставки визита в начало или в конец (по умолчанию в начало)
+   * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
    * @return визит
    */
   public Visit visitTransfer(
       String branchId,
       String queueId,
       Visit visit,
-      Boolean isToStart,
+      Boolean isAppend,
       HashMap<String, String> serviceInfo) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
@@ -1474,8 +1474,8 @@ public class VisitService {
       visit.setReturnDateTime(ZonedDateTime.now());
     }
 
-    if (isToStart) {
-      visit.getParameterMap().put("isTransfereedToStart", "true");
+    if (!isAppend) {
+      visit.getParameterMap().put("isTransferredToStart", "true");
     }
     assert queue != null;
     visit.setQueueId(queue.getId());
@@ -1489,9 +1489,9 @@ public class VisitService {
     event.getParameters().put("staffId", visit.getUserId());
     event.getParameters().put("staff?Name", visit.getUserName());
     event.getParameters().putAll(serviceInfo);
-    branchService.updateVisit(visit, event, this, isToStart);
+    branchService.updateVisit(visit, event, this, !isAppend);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
-    log.info("Visit {} transfered!", visit);
+    log.info("Visit {} transferred!", visit);
     return visit;
   }
 
