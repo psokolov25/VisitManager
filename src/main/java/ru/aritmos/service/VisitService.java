@@ -2876,4 +2876,9 @@ public class VisitService {
           HttpStatus.NOT_FOUND);
     }
   }
+
+  public HashMap<String, Queue> getQueus(String branchId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    return currentBranch.getQueues();
+  }
 }
