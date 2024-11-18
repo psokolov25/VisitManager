@@ -1589,7 +1589,7 @@ public class ServicePointController {
   @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
   @Tag(name = "Полный список")
   @Put(
-      uri = "/branches/{branchId}/visits/{visitId}/queue/{queueId}/service/transfer",
+      uri = "/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1783,8 +1783,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
-   * @param visit переводимый визит
+   * @param visitId идентификатор визита
    * @param serviceInfo данные о внешней службе
    * @return итоговый визит
    */
@@ -1794,30 +1793,28 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Put(
       uri =
-          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transferFromQueue",
+          "/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public Visit visitTransferFromQueueToServicePointPool(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e")
-          String poolServicePointId,
-      @Body Visit visit,
+      @PathVariable String visitId,
       HashMap<String, String> serviceInfo) {
     Branch branch;
-
+    Visit visit = visitService.getVisit(branchId, visitId);
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
     }
-    if (!branch.getServicePoints().containsKey(poolServicePointId)) {
+    if (!branch.getServicePoints().containsKey(servicePointId)) {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId, poolServicePointId, visit, true, serviceInfo);
+        branchId, servicePointId, visit, true, serviceInfo);
   }
 
   /**
@@ -1989,7 +1986,7 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
   @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}")
+  @Put(uri = "/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer")
   public Visit visitTransferFromQueueToUserPool(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
