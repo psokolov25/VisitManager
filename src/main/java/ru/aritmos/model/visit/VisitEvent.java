@@ -227,6 +227,8 @@ public enum VisitEvent {
                   DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
+                  TRANSFER_TO_USER_POOL,
+                  TRANSFER_TO_QUEUE,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
           Map.entry(
               TRANSFER_TO_USER_POOL,
@@ -237,6 +239,8 @@ public enum VisitEvent {
                   DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
+                  TRANSFER_TO_USER_POOL,
+                  TRANSFER_TO_QUEUE,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
           Map.entry(
               TRANSFER_TO_QUEUE,
@@ -247,6 +251,8 @@ public enum VisitEvent {
                   DELETED,
                   ADDED_MARK,
                   DELETED_MARK,
+                  TRANSFER_TO_USER_POOL,
+                  TRANSFER_TO_QUEUE,
                   TRANSFER_TO_SERVICE_POINT_POOL)),
           Map.entry(VISIT_END_TRANSACTION, List.of(PLACED_IN_QUEUE, ADDED_MARK, DELETED_MARK)),
           Map.entry(VISIT_TRANSFER_FROM_QUEUE, List.of(CALLED, ADDED_MARK, DELETED_MARK)),
