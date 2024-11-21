@@ -1219,7 +1219,7 @@ class EntrypointTest {
 
   @AfterEach
   void deleteBranch() {
-    branchService.closeServicePoint(branchId, servicePointFcId, visitService, true);
+    branchService.closeServicePoint(branchId, servicePointFcId, visitService, true, false, "");
     branchService.delete(branchId);
   }
 

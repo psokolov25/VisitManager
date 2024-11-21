@@ -26,7 +26,9 @@ import ru.aritmos.service.VisitService;
 /**
  * @author Pavel Sokolov REST API управления зоной ожидания
  */
+@SuppressWarnings({"unused", "RedundantSuppression","RedundantDefaultParameter"})
 @Controller("/servicepoint")
+
 public class ServicePointController {
   @Inject Services services;
   @Inject BranchService branchService;
@@ -230,6 +232,9 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
+   * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на
+   *     перерыв
+   * @param breakReason причина перерыва
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
@@ -238,9 +243,12 @@ public class ServicePointController {
   @ExecuteOn(TaskExecutors.IO)
   public void closeUser(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @QueryValue(defaultValue = "false") Boolean isBreak,
+      @QueryValue() String breakReason) {
 
-    branchService.closeServicePoint(branchId, servicePointId, visitService, false);
+    branchService.closeServicePoint(
+        branchId, servicePointId, visitService, false, isBreak, breakReason);
   }
 
   /**
@@ -249,6 +257,9 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
+   * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на
+   *     перерыв
+   * @param breakReason причина перерыва
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
@@ -257,9 +268,12 @@ public class ServicePointController {
   @ExecuteOn(TaskExecutors.IO)
   public void logoutUser(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @QueryValue(defaultValue = "false") Boolean isBreak,
+      @QueryValue(defaultValue = " ") String breakReason) {
 
-    branchService.closeServicePoint(branchId, servicePointId, visitService, true);
+    branchService.closeServicePoint(
+        branchId, servicePointId, visitService, true, isBreak, breakReason);
   }
 
   /**

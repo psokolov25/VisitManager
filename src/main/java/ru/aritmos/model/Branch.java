@@ -190,7 +190,9 @@ public class Branch extends BranchEntity {
       String servicePointId,
       EventService eventService,
       VisitService visitService,
-      Boolean withLogout) {
+      Boolean withLogout,
+      Boolean isBreak,
+      String breakReason) {
 
     if (this.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
@@ -198,8 +200,43 @@ public class Branch extends BranchEntity {
         if (servicePoint.getVisit() != null) {
           visitService.visitEnd(this.getId(), servicePointId);
         }
+        User user = servicePoint.getUser();
+        if (isBreak) {
+          user.setLastBreakStartTime(ZonedDateTime.now());
+          user.setLastServicePointId(servicePointId);
+          user.setLastBranchId(branchId);
+          user.setLastBreakReason(breakReason);
 
-        getUsers().put(servicePoint.getUser().getName(), servicePoint.getUser());
+          eventService.send(
+              "*",
+              false,
+              Event.builder()
+                  .eventDate(ZonedDateTime.now())
+                  .eventType("STAFF_START_BREAK")
+                  .params(new HashMap<>())
+                  .body(user)
+                  .build());
+          eventService.send(
+              "frontend",
+              false,
+              Event.builder()
+                  .eventDate(ZonedDateTime.now())
+                  .eventType("STAFF_START_BREAK")
+                  .params(new HashMap<>())
+                  .body(user)
+                  .build());
+
+          eventService.send(
+              "stat",
+              false,
+              Event.builder()
+                  .eventDate(ZonedDateTime.now())
+                  .eventType("STAFF_START_BREAK")
+                  .params(new HashMap<>())
+                  .body(user)
+                  .build());
+        }
+        getUsers().put(user.getName(), user);
         eventService.send(
             "*",
             false,
@@ -209,6 +246,16 @@ public class Branch extends BranchEntity {
                 .params(new HashMap<>())
                 .body(servicePoint)
                 .build());
+        eventService.send(
+            "frontend",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("SERVICE_POINT_CLOSING")
+                .params(new HashMap<>())
+                .body(servicePoint)
+                .build());
+
         eventService.send(
             "stat",
             false,
@@ -224,6 +271,15 @@ public class Branch extends BranchEntity {
         servicePoint.setUser(null);
         eventService.send(
             "*",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("SERVICE_POINT_CLOSED")
+                .params(new HashMap<>())
+                .body(servicePoint)
+                .build());
+        eventService.send(
+            "frontend",
             false,
             Event.builder()
                 .eventDate(ZonedDateTime.now())

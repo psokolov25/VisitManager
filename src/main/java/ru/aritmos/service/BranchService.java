@@ -11,12 +11,14 @@ import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
+import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -168,6 +170,38 @@ public class BranchService {
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
       }
+      if (user.getLastBreakStartTime() != null && user.getLastBreakEndTime() == null) {
+
+        user.setLastBreakEndTime(ZonedDateTime.now());
+        eventService.send(
+            "*",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("STAFF_END_BREAK")
+                .params(new HashMap<>())
+                .body(user)
+                .build());
+        eventService.send(
+            "frontend",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("STAFF_END_BREAK")
+                .params(new HashMap<>())
+                .body(user)
+                .build());
+
+        eventService.send(
+            "stat",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("STAFF_END_BREAK")
+                .params(new HashMap<>())
+                .body(user)
+                .build());
+      }
       user.setServicePointId(servicePointId);
       user.setCurrentWorkProfileId(workProfileId);
       branch.openServicePoint(user, eventService);
@@ -191,10 +225,16 @@ public class BranchService {
   }
 
   public void closeServicePoint(
-      String branchId, String servicePointId, VisitService visitService, Boolean withlogout) {
+      String branchId,
+      String servicePointId,
+      VisitService visitService,
+      Boolean withlogout,
+      Boolean isBreak,
+      String breakReason) {
 
     Branch branch = this.getBranch(branchId);
-    branch.closeServicePoint(servicePointId, eventService, visitService, withlogout);
+    branch.closeServicePoint(
+        servicePointId, eventService, visitService, withlogout, isBreak, breakReason);
     this.add(branch.getId(), branch);
   }
 
