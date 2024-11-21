@@ -1,6 +1,7 @@
 package ru.aritmos.api;
 
 import io.micronaut.context.annotation.Value;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -245,7 +246,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @QueryValue(defaultValue = "false") Boolean isBreak,
-      @QueryValue(defaultValue = " ") String breakReason) {
+      @Nullable @QueryValue(defaultValue = " ") String breakReason) {
 
     branchService.closeServicePoint(
         branchId, servicePointId, visitService, false, isBreak, breakReason);
@@ -270,7 +271,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @QueryValue(defaultValue = "false") Boolean isBreak,
-      @QueryValue(defaultValue = " ") String breakReason) {
+      @Nullable @QueryValue(defaultValue = " ") String breakReason) {
 
     branchService.closeServicePoint(
         branchId, servicePointId, visitService, true, isBreak, breakReason);
