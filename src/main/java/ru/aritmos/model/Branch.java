@@ -211,6 +211,34 @@ public class Branch extends BranchEntity {
           visitService.visitEnd(this.getId(), servicePointId);
         }
         User user = servicePoint.getUser();
+        eventService.send(
+                "*",
+                false,
+                Event.builder()
+                        .eventDate(ZonedDateTime.now())
+                        .eventType("SERVICE_POINT_CLOSING")
+                        .params(new HashMap<>())
+                        .body(servicePoint)
+                        .build());
+        eventService.send(
+                "frontend",
+                false,
+                Event.builder()
+                        .eventDate(ZonedDateTime.now())
+                        .eventType("SERVICE_POINT_CLOSING")
+                        .params(new HashMap<>())
+                        .body(servicePoint)
+                        .build());
+
+        eventService.send(
+                "stat",
+                false,
+                Event.builder()
+                        .eventDate(ZonedDateTime.now())
+                        .eventType("SERVICE_POINT_CLOSING")
+                        .params(new HashMap<>())
+                        .body(servicePoint)
+                        .build());
         if (isBreak) {
           user.setLastBreakStartTime(ZonedDateTime.now());
           user.setLastServicePointId(servicePointId);
@@ -247,34 +275,7 @@ public class Branch extends BranchEntity {
                   .build());
         }
         getUsers().put(user.getName(), user);
-        eventService.send(
-            "*",
-            false,
-            Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("SERVICE_POINT_CLOSING")
-                .params(new HashMap<>())
-                .body(servicePoint)
-                .build());
-        eventService.send(
-            "frontend",
-            false,
-            Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("SERVICE_POINT_CLOSING")
-                .params(new HashMap<>())
-                .body(servicePoint)
-                .build());
 
-        eventService.send(
-            "stat",
-            false,
-            Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("SERVICE_POINT_CLOSING")
-                .params(new HashMap<>())
-                .body(servicePoint)
-                .build());
         if (withLogout) {
           visitService.keyCloackClient.userLogout(servicePoint.getUser().getName());
         }
