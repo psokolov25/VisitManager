@@ -149,7 +149,7 @@ public class Branch extends BranchEntity {
               false,
               Event.builder()
                   .eventDate(ZonedDateTime.now())
-                  .eventType("SERVICE_POINT_OPENED")
+                  .eventType("ЫERVICE_POINT_OPENED")
                   .params(new HashMap<>())
                   .body(servicePoint)
                   .build());
@@ -162,6 +162,16 @@ public class Branch extends BranchEntity {
                   .params(new HashMap<>())
                   .body(servicePoint)
                   .build());
+          eventService.send(
+              "frontend",
+              false,
+              Event.builder()
+                  .eventDate(ZonedDateTime.now())
+                  .eventType("SERVICE_POINT_OPENED")
+                  .params(new HashMap<>())
+                  .body(servicePoint)
+                  .build());
+
         } else {
           throw new BusinessException(
               String.format(
