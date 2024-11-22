@@ -37,7 +37,7 @@ public class Configuration {
                   .id("d75076be-d3e0-4323-b7db-b32ea6b30817")
                   .value("Клиент не доволен")
                   .build());
-      branch.getParameterMap().put("autoCallMode", true);
+      branch.getParameterMap().put("autoCallMode", false);
       EntryPoint entryPoint = new EntryPoint();
       entryPoint.setPrinterId("2");
       entryPoint.setId("2");

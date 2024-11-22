@@ -41,15 +41,15 @@ public class BranchService {
   @Value("${micronaut.application.name}")
   String applicationName;
 
-  @Cacheable(parameters = {"key"})
+  @Cacheable(parameters = {"key"},value = {"branch"})
   public Branch getBranch(String key) throws BusinessException {
 
-    Branch result = branches.get(key);
-    if (result == null) {
+    Branch branch = branches.get(key);
+    if (branch == null) {
       throw new BusinessException("Branch not found!!", eventService);
     }
-    log.info("Getting branchInfo {}", result);
-    return result;
+    log.info("Getting branchInfo {}", branch);
+    return branch;
   }
 
   // @Cacheable(parameters = {"id"}, value = {"branches"})
@@ -79,7 +79,7 @@ public class BranchService {
     return result;
   }
 
-  @CachePut(parameters = {"key"})
+  @CachePut(parameters = {"key"},value = {"branch"})
   public Branch add(String key, Branch branch) {
 
     Branch oldBranch;

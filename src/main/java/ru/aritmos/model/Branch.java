@@ -8,6 +8,7 @@ import io.micronaut.serde.annotation.Serdeable;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.*;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -205,11 +206,9 @@ public class Branch extends BranchEntity {
       String breakReason) {
 
     if (this.getServicePoints().containsKey(servicePointId)) {
-      ServicePoint servicePoint = this.getServicePoints().get(servicePointId);
+      ServicePoint servicePoint = visitService.getServicePointHashMap(this.getId()).get(servicePointId);
       if (servicePoint.getUser() != null) {
-        if (servicePoint.getVisit() != null) {
-          visitService.visitEnd(this.getId(), servicePointId);
-        }
+
         User user = servicePoint.getUser();
         eventService.send(
                 "*",
@@ -321,6 +320,10 @@ public class Branch extends BranchEntity {
           eventService,
           HttpStatus.NOT_FOUND);
     }
+    ServicePoint servicePoint = visitService.getServicePointHashMap(this.getId()).get(servicePointId);
+    if (servicePoint.getVisit() != null) {
+      visitService.visitEnd(this.getId(), servicePointId);
+    }
   }
 
   public void updateVisit(Visit visit, EventService eventService, String action) {
@@ -390,90 +393,92 @@ public class Branch extends BranchEntity {
       Integer index) {
     visitService.addEvent(visit, visitEvent, eventService);
     visit.setStatus(visitEvent.getState().name());
-    this.servicePoints.forEach(
-        (key, value) -> {
-          value.setVisit(null);
-          value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
-          if (value.getId().equals(visit.getServicePointId())) {
-            if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
-              value.setVisit(visit);
-            } else {
-              throw new BusinessException(
-                  String.format(
-                      "In ServicePoint %s already exists visit %s",
-                      value.getId(), value.getVisit().getId()),
-                  eventService,
-                  HttpStatus.CONFLICT);
-            }
-          } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
-            value.setVisit(null);
-          }
-        });
-    this.queues.forEach(
-        (key, value) -> {
-          value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
-          if (value.getId().equals(visit.getQueueId())) {
 
-            try {
-              if (!index.equals(-1)) {
-                value.getVisits().add(index, visit);
-              } else {
-                value.getVisits().add(visit);
+      for (Map.Entry<String, Queue> entry : this.queues.entrySet()) {
+
+          Queue v = entry.getValue();
+          v.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+          if (v.getId().equals(visit.getQueueId())) {
+
+              try {
+                  if (!index.equals(-1)) {
+                      v.getVisits().add(index, visit);
+                  } else {
+                      v.getVisits().add(visit);
+                  }
+              } catch (IndexOutOfBoundsException e) {
+                  throw new BusinessException(
+                          String.format(
+                                  "Visit position %s out of range of list range %s!",
+                                  index, v.getVisits().size()),
+                          eventService,
+                          HttpStatus.CONFLICT);
               }
-            } catch (IndexOutOfBoundsException e) {
-              throw new BusinessException(
-                  String.format(
-                      "Visit position %s out of range of list range %s!",
-                      index, value.getVisits().size()),
-                  eventService,
-                  HttpStatus.CONFLICT);
-            }
           }
-        });
+          entry.setValue(v);
+      }
 
-    this.getServicePoints()
-        .forEach(
-            (key, value) -> {
-              if (value.getId().equals(visit.getPoolServicePointId())) {
-                try {
+      for (Map.Entry<String, ServicePoint> entry : this.getServicePoints().entrySet()) {
+
+          ServicePoint value = entry.getValue();
+          value.setVisit(null);
+
+          if (value.getId().equals(visit.getServicePointId())) {
+              if (value.getVisit() == null) {
+                  value.setVisit(visit);
+              } else {
+                  throw new BusinessException(
+                          String.format(
+                                  "In ServicePoint %s already exists visit %s",
+                                  value.getId(), value.getVisit().getId()),
+                          eventService,
+                          HttpStatus.CONFLICT);
+              }
+          } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
+              value.setVisit(null);
+          }
+
+          if (value.getId().equals(visit.getPoolServicePointId())) {
+              try {
                   value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
                   if (!index.equals(-1)) {
-                    value.getVisits().add(index, visit);
+                      value.getVisits().add(index, visit);
                   } else {
-                    value.getVisits().add(visit);
+                      value.getVisits().add(visit);
                   }
-                } catch (IndexOutOfBoundsException e) {
+              } catch (IndexOutOfBoundsException e) {
                   throw new BusinessException(
-                      String.format(
-                          "Visit position %s out of range of list range %s!",
-                          index, value.getVisits().size()),
-                      eventService,
-                      HttpStatus.CONFLICT);
-                }
+                          String.format(
+                                  "Visit position %s out of range of list range %s!",
+                                  index, value.getVisits().size()),
+                          eventService,
+                          HttpStatus.CONFLICT);
               }
-              if (value.getUser() != null) {
-                value.getUser().getVisits().removeIf(f -> f.getId().equals(visit.getId()));
-                getUsers().put(value.getUser().getName(), value.getUser());
-                if (value.getUser().getId().equals(visit.getPoolUserId())) {
+          }
+          if (value.getUser() != null) {
+              value.getUser().getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+              getUsers().put(value.getUser().getName(), value.getUser());
+              if (value.getUser().getId().equals(visit.getPoolUserId())) {
 
                   try {
-                    if (!index.equals(-1)) {
-                      value.getUser().getVisits().add(index, visit);
-                    } else {
-                      value.getUser().getVisits().add(visit);
-                    }
+                      if (!index.equals(-1)) {
+                          value.getUser().getVisits().add(index, visit);
+                      } else {
+                          value.getUser().getVisits().add(visit);
+                      }
                   } catch (IndexOutOfBoundsException e) {
-                    throw new BusinessException(
-                        String.format(
-                            "Visit position %s out of range of list range %s!",
-                            index, value.getUser().getVisits().size()),
-                        eventService,
-                        HttpStatus.CONFLICT);
+                      throw new BusinessException(
+                              String.format(
+                                      "Visit position %s out of range of list range %s!",
+                                      index, value.getUser().getVisits().size()),
+                              eventService,
+                              HttpStatus.CONFLICT);
                   }
-                }
               }
-            });
-    eventService.send(
+          }
+          entry.setValue(value);
+      }
+      eventService.send(
         "*",
         false,
         Event.builder()
@@ -504,6 +509,7 @@ public class Branch extends BranchEntity {
               .body(visit.toBuilder().build())
               .build());
     }
+    visitService.getBranchService().add(this.getId(),this);
   }
 
   public void updateVisit(
