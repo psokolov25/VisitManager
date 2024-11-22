@@ -61,6 +61,21 @@ public class ConfigurationController {
   }
 
   /**
+   * Список причин перерыва
+   *
+   * @param branchId идентификатор подразделения
+   * @return список причин перерыва
+   */
+  @Tag(name = "Конфигурация отделений")
+  @Tag(name = "Перерывы")
+  @Tag(name = "Полный список")
+  @Get(uri = "/branches/{branchId}/break/reasons")
+  public HashMap<String, String> getBreakReasons(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    return branchService.getBranch(branchId).getBreakReasons();
+  }
+
+  /**
    * Удаление услуг
    *
    * @param branchId идентификатор подразделения
