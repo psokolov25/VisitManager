@@ -41,7 +41,9 @@ public class BranchService {
   @Value("${micronaut.application.name}")
   String applicationName;
 
-  @Cacheable(parameters = {"key"},value = {"branch"})
+  @Cacheable(
+      parameters = {"key"},
+      value = {"branch"})
   public Branch getBranch(String key) throws BusinessException {
 
     Branch branch = branches.get(key);
@@ -79,7 +81,9 @@ public class BranchService {
     return result;
   }
 
-  @CachePut(parameters = {"key"},value = {"branch"})
+  @CachePut(
+      parameters = {"key"},
+      value = {"branch"})
   public Branch add(String key, Branch branch) {
 
     Branch oldBranch;
@@ -124,18 +128,16 @@ public class BranchService {
     branches.remove(key);
   }
 
-  public void updateVisit(Visit visit, String action) {
+  public void updateVisit(Visit visit, String action, VisitService visitService) {
 
     Branch branch = this.getBranch(visit.getBranchId());
-    branch.updateVisit(visit, eventService, action);
-    this.add(branch.getId(), branch);
+    branch.updateVisit(visit, eventService, action, visitService);
   }
 
   public void updateVisit(Visit visit, VisitEvent visitEvent, VisitService visitService) {
 
     Branch branch = this.getBranch(visit.getBranchId());
     branch.updateVisit(visit, eventService, visitEvent, visitService);
-    this.add(branch.getId(), branch);
   }
 
   public void updateVisit(
@@ -143,7 +145,6 @@ public class BranchService {
 
     Branch branch = this.getBranch(visit.getBranchId());
     branch.updateVisit(visit, eventService, visitEvent, visitService, isToStart);
-    this.add(branch.getId(), branch);
   }
 
   public void updateVisit(
@@ -151,7 +152,6 @@ public class BranchService {
 
     Branch branch = this.getBranch(visit.getBranchId());
     branch.updateVisit(visit, eventService, visitEvent, visitService, index);
-    this.add(branch.getId(), branch);
   }
 
   public User openServicePoint(
@@ -252,15 +252,19 @@ public class BranchService {
   }
 
   public void addUpdateService(
-      String branchId, HashMap<String, Service> serviceHashMap, Boolean checkVisits) {
+      String branchId,
+      HashMap<String, Service> serviceHashMap,
+      Boolean checkVisits,
+      VisitService visitService) {
     Branch branch = this.getBranch(branchId);
-    branch.addUpdateService(serviceHashMap, eventService, checkVisits);
+    branch.addUpdateService(serviceHashMap, eventService, checkVisits, visitService);
     this.add(branch.getId(), branch);
   }
 
-  public void deleteServices(String branchId, List<String> serviceIds, Boolean checkVisits) {
+  public void deleteServices(
+      String branchId, List<String> serviceIds, Boolean checkVisits, VisitService visitService) {
     Branch branch = this.getBranch(branchId);
-    branch.deleteServices(serviceIds, eventService, checkVisits);
+    branch.deleteServices(serviceIds, eventService, checkVisits, visitService);
   }
 
   public void addUpdateServicePoint(

@@ -178,7 +178,7 @@ public class EntrypointController {
     Visit visit = visitService.getVisit(branchId, visitId);
     visit.setParameterMap(parameterMap);
 
-    branchService.updateVisit(visit, "VISIT_SET_PARAMETER_MAP");
+    branchService.updateVisit(visit, "VISIT_SET_PARAMETER_MAP", visitService);
     return visit;
   }
 

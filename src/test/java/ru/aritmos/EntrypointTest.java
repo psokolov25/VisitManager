@@ -236,7 +236,7 @@ class EntrypointTest {
     Assertions.assertEquals(
         branchService.getBranch(branchId).getQueues().get(queue2.getId()).getVisits().size(), 0);
 
-    branchService.updateVisit(visit, "TESTED_VISIT_UPDATE_METHOD");
+    branchService.updateVisit(visit, "TESTED_VISIT_UPDATE_METHOD", visitService);
     Assertions.assertEquals(
         branchService.getBranch(branchId).getQueues().get(queue.getId()).getVisits().size(), 0);
     Assertions.assertEquals(

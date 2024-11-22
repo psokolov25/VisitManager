@@ -10,7 +10,6 @@ import jakarta.inject.Singleton;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -31,8 +30,7 @@ import ru.aritmos.service.rules.SegmentationRule;
 @Singleton
 public class VisitService {
   @Inject public KeyCloackClient keyCloackClient;
-  @Getter
-  @Inject BranchService branchService;
+  @Getter @Inject BranchService branchService;
   @Inject EventService eventService;
   @Inject DelayedEvents delayedEvents;
   @Inject PrinterService printerService;
@@ -53,7 +51,7 @@ public class VisitService {
     this.lifeTimeCallRule = callRule;
   }
 
-    /**
+  /**
    * Возвращает визит по его отделению и идентификатору
    *
    * @param branchId идентификатор отделения
@@ -1817,7 +1815,6 @@ public class VisitService {
 
         visit.setServicePointId(servicePoint.getId());
         visit.setTransferDateTime(ZonedDateTime.now());
-
 
         VisitEvent event;
 

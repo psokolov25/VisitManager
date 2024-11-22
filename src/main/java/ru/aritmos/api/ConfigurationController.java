@@ -57,7 +57,7 @@ public class ConfigurationController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @Body HashMap<String, Service> serviceHashMap,
       @QueryValue Boolean checkVisits) {
-    branchService.addUpdateService(branchId, serviceHashMap, checkVisits);
+    branchService.addUpdateService(branchId, serviceHashMap, checkVisits, visitService);
   }
 
   /**
@@ -75,7 +75,7 @@ public class ConfigurationController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @Body List<String> serviceIds,
       @QueryValue Boolean checkVisits) {
-    branchService.deleteServices(branchId, serviceIds, checkVisits);
+    branchService.deleteServices(branchId, serviceIds, checkVisits, visitService);
   }
 
   /**

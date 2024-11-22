@@ -1,5 +1,7 @@
 package ru.aritmos.model;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
@@ -10,14 +12,12 @@ import java.util.Objects;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS;
-
 /** Пользователь */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Serdeable
 @Introspected
-@SuppressWarnings({"unused", "RedundantSuppression","RedundantDefaultParameter"})
+@SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 public class User extends BranchEntityWithVisits {
   /** Имя */
   @JsonInclude(value = ALWAYS)
