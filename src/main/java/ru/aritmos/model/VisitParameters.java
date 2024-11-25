@@ -18,8 +18,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VisitParameters {
   @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Builder.Default
   ArrayList<String> serviceIds = new ArrayList<>();
 
+  @Builder.Default
   @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, String> parameters = new HashMap<>();
 }

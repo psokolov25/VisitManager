@@ -56,7 +56,7 @@ public class EventService {
                 applicationName,
                 event.getEventType(),
                 event.getBody()))
-        .subscribe(s -> log.debug("Event {} sent!", s));
+        .subscribe(s -> log.debug("Event {} sent!", s), e -> log.error(e.getMessage()));
   }
 
   /**

@@ -74,8 +74,8 @@ public class Branch extends BranchEntity {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   HashMap<String, ServiceGroup> serviceGroups = new HashMap<>();
 
-  /** Список  **/
-  HashMap<String,String> breakReasons=new HashMap<>();
+  /** Список * */
+  HashMap<String, String> breakReasons = new HashMap<>();
 
   public Branch(String key, String name) {
     super(key, name);

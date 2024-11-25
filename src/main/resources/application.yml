@@ -37,13 +37,14 @@ micronaut:
       segmentation: simple  #custom|simple
       callRuleApiUrl: http://localhost:8085/customcallrule
     returnTimeDelay: 8000
-    name: visit_manager
-    dataBusUrl: '${DATABUS_SERVER:http://192.168.8.45:8082}'
+    name: visitmanager
+    dataBusUrl: '${DATABUS_SERVER:`http://192.168.8.45:8082`}'
+    #dataBusUrl: '${DATABUS_SERVER}'
     dataBusUrlRetryPeriod: '1s'
     dataBusUrlRetryMaxPeriod: '45m'
-    dataBusUrlRetryRepeat: 30
-    configurationURL: '${CONFIG_SERVER:http://localhost:8081}'
-    printerServiceURL: '${PRINTER_SERVER:http://192.168.3.33:8084}'
+    dataBusUrlRetryRepeat: 3000
+    configurationURL: '${CONFIG_SERVER:`http://localhost:8081`}'
+    printerServiceURL: '${PRINTER_SERVER:`http://192.168.3.33:8084`}'
     printerRetryPeriod: '1s'
     printerRetryMaxPeriod: '45m'
     printerRetryRepeat: 30

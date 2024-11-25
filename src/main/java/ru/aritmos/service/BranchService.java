@@ -240,6 +240,7 @@ public class BranchService {
 
   public HashMap<String, User> getUsers(String branchId) {
     Branch branch = this.getBranch(branchId);
+
     return branch.getUsers();
   }
 

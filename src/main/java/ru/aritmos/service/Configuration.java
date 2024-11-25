@@ -38,8 +38,8 @@ public class Configuration {
                   .value("Клиент не доволен")
                   .build());
       branch.getParameterMap().put("autoCallMode", false);
-      branch.getBreakReasons().put("5454e87a-9ace-46fd-be30-b00f7bb88688","Вышел покурить");
-      branch.getBreakReasons().put("75caee17-d8f3-49b1-b298-96bbb6ba19f3","Вышел на обед");
+      branch.getBreakReasons().put("5454e87a-9ace-46fd-be30-b00f7bb88688", "Вышел покурить");
+      branch.getBreakReasons().put("75caee17-d8f3-49b1-b298-96bbb6ba19f3", "Вышел на обед");
       EntryPoint entryPoint = new EntryPoint();
       entryPoint.setPrinterId("2");
       entryPoint.setId("2");
