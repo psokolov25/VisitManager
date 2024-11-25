@@ -121,9 +121,28 @@ public class ServicePointController {
   public Optional<ServicePoint> getServicePointsByUserName(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable String userName) {
-    return visitService.getServicePointHashMap(branchId).values().stream()
-        .filter(f -> f.getUser() != null && f.getUser().getName().equals(userName))
-        .findFirst();
+    Optional<ServicePoint> result =
+        visitService.getServicePointHashMap(branchId).values().stream()
+            .filter(f -> f.getUser() != null && f.getUser().getName().equals(userName))
+            .findFirst();
+    if (result.isEmpty()) {
+      Optional<User> user =
+          visitService.getUsers(branchId).stream()
+              .filter(f -> f.getName().equals(userName))
+              .findFirst();
+      if (user.isPresent() && user.get().isOnBreak()) {
+        String servicePointId = user.get().getLastServicePointId();
+        if (visitService.getServicePointHashMap(branchId).containsKey(servicePointId)) {
+          ServicePoint servicePoint =
+              visitService.getServicePointHashMap(branchId).get(servicePointId);
+          if (servicePoint.getUser() == null) {
+            servicePoint.setUser(user.get());
+            return Optional.of(servicePoint);
+          }
+        }
+      }
+    }
+    return result;
   }
 
   /**

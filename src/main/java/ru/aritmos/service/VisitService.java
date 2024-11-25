@@ -107,6 +107,19 @@ public class VisitService {
         .map(m -> new TinyClass(m.getId(), m.getName()))
         .toList();
   }
+  /**
+   * Возвращает рабочие профили
+   *
+   * @param branchId идентификатор отделения
+   * @return перечень рабочих профилей
+   */
+  public @NotNull List<User> getUsers(String branchId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+
+    return currentBranch.getUsers().values().stream()
+            .toList();
+  }
+
 
   /**
    * Возвращает визиты содержащиеся в очереди визиты сортируются по времени ожидания, от большего к

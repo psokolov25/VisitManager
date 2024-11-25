@@ -4,6 +4,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import java.time.ZonedDateTime;
@@ -60,6 +61,11 @@ public class User extends BranchEntityWithVisits {
 
   public User(String name) {
     super(name);
+  }
+
+  @JsonProperty
+  public Boolean isOnBreak() {
+    return this.lastBreakStartTime != null && this.lastBreakEndTime == null;
   }
 
   /**
