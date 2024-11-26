@@ -344,6 +344,7 @@ public enum VisitEvent {
           Map.entry(START_SERVING, VisitState.SERVING),
           Map.entry(ADDED_DELIVERED_SERVICE, VisitState.SERVING),
           Map.entry(ADDED_SERVICE_RESULT, VisitState.SERVING),
+          Map.entry(ADD_SERVICE, VisitState.SERVING),
           Map.entry(ADDED_MARK, VisitState.SERVING),
           Map.entry(DELETED_MARK, VisitState.SERVING),
           Map.entry(STOP_SERVING, VisitState.CREATED),
