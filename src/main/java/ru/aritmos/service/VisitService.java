@@ -107,6 +107,7 @@ public class VisitService {
         .map(m -> new TinyClass(m.getId(), m.getName()))
         .toList();
   }
+
   /**
    * Возвращает рабочие профили
    *
@@ -116,10 +117,8 @@ public class VisitService {
   public @NotNull List<User> getUsers(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
 
-    return currentBranch.getUsers().values().stream()
-            .toList();
+    return currentBranch.getUsers().values().stream().toList();
   }
-
 
   /**
    * Возвращает визиты содержащиеся в очереди визиты сортируются по времени ожидания, от большего к
@@ -640,11 +639,6 @@ public class VisitService {
       if (servicePoint.getVisit() != null) {
         Visit visit = servicePoint.getVisit();
 
-        if (visit.getCurrentService().getId().equals(serviceId)
-            || visit.getUnservedServices().stream().anyMatch(f -> f.getId().equals(serviceId))
-            || visit.getServedServices().stream().anyMatch(f -> f.getId().equals(serviceId))) {
-          throw new BusinessException("Service already added!", eventService, HttpStatus.NOT_FOUND);
-        }
         if (currentBranch.getServices().keySet().stream().noneMatch(f -> f.contains(serviceId))) {
           throw new BusinessException(
               String.format("Current visit cant add  service with id %s", serviceId), eventService);
