@@ -156,8 +156,8 @@ public class Visit {
   @JsonGetter
   public Long getReturningTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
-    if (this.returnDateTime != null) {
-      returningTime = unit.between(this.returnDateTime, ZonedDateTime.now());
+    if (this.getReturnDateTime() != null) {
+      returningTime = unit.between(this.getReturnDateTime(), ZonedDateTime.now());
       return returningTime;
     }
     return 0L;

@@ -244,6 +244,7 @@ public class Branch extends BranchEntity {
                 .build());
         if (isBreak) {
           user.setLastBreakStartTime(ZonedDateTime.now());
+          user.setLastBreakEndTime(null);
           user.setLastServicePointId(servicePointId);
           user.setLastBranchId(branchId);
           user.setLastBreakReason(breakReason);
