@@ -1173,6 +1173,35 @@ public class ServicePointController {
   }
 
   /**
+   * Добавление услуг в визит
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param serviceIds идентификатор услуги
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Изменение визита")
+  @Tag(name = "Полный список")
+  @Post(
+      uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/services",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Visit addServices(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body List<String> serviceIds) {
+    Visit visit = null;
+    for (String serviceId : serviceIds) {
+
+      visit = visitService.addService(branchId, servicePointId, serviceId);
+    }
+    return visit;
+  }
+
+  /**
    * Добавление итога предоставленной услуги текущей услуги
    *
    * @param branchId идентификатор отделения
