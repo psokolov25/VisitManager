@@ -44,6 +44,8 @@ ENV OIDC_ISSUER_URL="http://192.168.8.45:9090"
 ENV OAUTH_CLIENT_ID="myclient"
 ENV KEYCLOAK_TECHLOGIN="visitmanager"
 ENV KEYCLOAK_TECHPASSWORD="visitmanager"
+ENV KAFKA_SERVER="192.168.8.45:9094"
+ENV LOKI_SERVER="http://192.168.3.13:3100/loki/api/v1/push"
 COPY --from=packager "$JAVA_HOME" "$JAVA_HOME"
 COPY --from=builder "/src/target/visitmanager.jar" "app.jar"
 EXPOSE 8080

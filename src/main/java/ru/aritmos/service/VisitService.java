@@ -1960,7 +1960,7 @@ public class VisitService {
 
     event.getParameters().put("branchID", branchId);
     event.getParameters().put("staffId", visit.getUserId());
-    event.getParameters().put("staff?Name", visit.getUserName());
+    event.getParameters().put("staffName", visit.getUserName());
     event.dateTime = ZonedDateTime.now();
     branchService.updateVisit(visit, event, this);
 
