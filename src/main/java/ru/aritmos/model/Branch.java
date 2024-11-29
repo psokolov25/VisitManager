@@ -153,7 +153,7 @@ public class Branch extends BranchEntity {
               false,
               Event.builder()
                   .eventDate(ZonedDateTime.now())
-                  .eventType("ЫERVICE_POINT_OPENED")
+                  .eventType("SERVICE_POINT_OPENED")
                   .params(new HashMap<>())
                   .body(servicePoint)
                   .build());
