@@ -1310,6 +1310,42 @@ public class ServicePointController {
   }
 
   /**
+   * Возвращает данные о точке обслуживания если в данный момент она не действует - ищется
+   * сотрудник, который на перерыве и сидел за этой рабочей станцией и возвращаем данные с этим
+   * сотрудником
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return доступные очереди
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные о точках обслуживания")
+  @Tag(name = "Полный список")
+  @Get(
+      uri = "/branches/{branchId}/servicePoints/{servicePointId}",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Optional<ServicePoint> getServicePoint(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+    Optional<ServicePoint> servicePoint =
+        visitService.getServicePointHashMap(branchId).containsKey(servicePointId)
+            ? Optional.of(visitService.getServicePointHashMap(branchId).get(servicePointId))
+            : Optional.empty();
+    if (servicePoint.isPresent()) {
+      Optional<User> user =
+          visitService.getUsers(branchId).stream()
+              .filter(f -> f.isOnBreak() && f.getLastServicePointId().equals(servicePointId))
+              .findFirst();
+      if (servicePoint.get().getUser() == null && user.isPresent()) {
+        servicePoint.get().setUser(user.get());
+      }
+    }
+    return servicePoint;
+  }
+
+  /**
    * Возвращает список доступных точек обслуживания очередей (в зависимости от сотрудников,
    * расположенных в точке обслуживания и имеющих соответсвующий рабочий профиль) (то есть имеющего
    * возможность вызывать из выводимой очереди)
