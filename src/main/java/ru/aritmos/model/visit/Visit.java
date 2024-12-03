@@ -88,55 +88,41 @@ public class Visit {
   /** Id точка обслуживания, в пуле которого располагается визит */
   @Schema(nullable = true)
   String poolServicePointId;
-
-  /** Лимит ожидания после возвращения визита в очередь */
-  @Schema(nullable = true)
-  Long returnTimeDelay;
-
   /** Массив не обслуженных услуг */
   List<Service> unservedServices;
-
   /** Обслуженные услуги */
   @JsonInclude(JsonInclude.Include.NON_NULL)
   List<Service> servedServices;
-
   /** Заметки визита */
   @JsonInclude(JsonInclude.Include.NON_NULL)
   List<Mark> visitMarks;
-
   /** Время ожидания в последней очереди в секундах */
   Long waitingTime;
-
   /** Время прошедшее от возвращения в очередь */
   @Schema(nullable = true)
   Long returningTime;
-
   /** Общее время с создания визита в секундах */
   @Schema(nullable = true)
   Long visitLifeTime;
-
   /** Время обслуживания в секундах */
   @Schema(nullable = true)
   Long servingTime;
-
   /** Текущая услуга */
   Service currentService;
-
   /** Дополнительные параметры визита */
   @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, String> parameterMap;
-
   /** Признак печати талона */
   Boolean printTicket;
-
   /** Точка создания визита талона */
   EntryPoint entryPoint;
-
   /** Идентификатор очереди */
   @Schema(nullable = true)
   String queueId;
-
   List<VisitEvent> visitEvents;
+  /** Лимит ожидания после возвращения визита в очередь */
+
+  private Long returnTimeDelay;
 
   @JsonGetter
   public Long getWaitingTime() {
