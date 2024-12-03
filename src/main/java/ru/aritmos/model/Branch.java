@@ -102,20 +102,20 @@ public class Branch extends BranchEntity {
         .forEach(
             (k, v) -> {
               if (v.getUser() != null) {
-                v.getUser().getVisits().forEach(f -> visits.put(f.getId(), f));
+                v.getUser().getVisits().forEach(visit -> visits.put(visit.getId(), visit));
               }
               if (v.getVisit() != null) {
                 visits.put(v.getVisit().getId(), v.getVisit());
               }
               if (v.getVisits() != null) {
-                v.getVisits().forEach(f -> visits.put(f.getId(), f));
+                v.getVisits().forEach(visit -> visits.put(visit.getId(), visit));
               }
             });
     this.getQueues()
         .forEach(
             (k, v) -> {
               if (v.getVisits() != null) {
-                v.getVisits().forEach(f -> visits.put(f.getId(), f));
+                v.getVisits().forEach(visit -> visits.put(visit.getId(), visit));
               }
             });
     return visits;
@@ -131,8 +131,8 @@ public class Branch extends BranchEntity {
   public HashMap<String, Visit> getVisitsByStatus(List<String> statuses) {
     HashMap<String, Visit> visits = new HashMap<>();
     this.getAllVisits().values().stream()
-        .filter(f -> statuses.contains(f.getStatus()))
-        .forEach(f -> visits.put(f.getId(), f));
+        .filter(visit -> statuses.contains(visit.getStatus()))
+        .forEach(visit -> visits.put(visit.getId(), visit));
     return visits;
   }
 
