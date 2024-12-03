@@ -107,6 +107,9 @@ public class Branch extends BranchEntity {
               if (v.getVisit() != null) {
                 visits.put(v.getVisit().getId(), v.getVisit());
               }
+              if (v.getVisits() != null) {
+                v.getVisits().forEach(f -> visits.put(f.getId(), f));
+              }
             });
     this.getQueues()
         .forEach(
