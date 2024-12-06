@@ -259,7 +259,6 @@
             <artifactId>micronaut-test-resources-redis</artifactId>
             <version>2.6.2</version>
         </dependency>
-
     </dependencies>
     <reporting>
         <plugins>
