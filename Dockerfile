@@ -17,8 +17,8 @@ ENV OAUTH_CLIENT_ID="myclient"
 ENV KEYCLOAK_TECHLOGIN="visitmanager"
 ENV KEYCLOAK_TECHPASSWORD="visitmanager"
 RUN sed -i 's/\r$//' mvnw
-#RUN --mount=type=cache,target=/root/.m2 ./mvnw clean package -Dmaven.test.skip=true
-RUN ./mvnw clean package -Dmaven.test.skip=true
+RUN --mount=type=cache,target=/root/.m2 ./mvnw clean package -Dmaven.test.skip=true
+#RUN ./mvnw clean package -Dmaven.test.skip=true
 
 
 

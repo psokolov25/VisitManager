@@ -197,7 +197,33 @@ public class EntrypointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     try {
 
-      return services.getAllAvilableServies(branchId);
+      return services.getAllAvailableServices(branchId);
+
+    } catch (BusinessException ex) {
+      if (ex.getMessage().contains("not found")) {
+        throw new HttpStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+      } else {
+        throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+      }
+    }
+  }
+
+  /**
+   * Получение списка всех услуг
+   *
+   * @param branchId идентификатор отделения
+   * @return список услуг
+   */
+  @Tag(name = "Зона ожидания")
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Полный список")
+  @Get(uri = "/branches/{branchId}/services/all", produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<Service> getAllServices(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    try {
+
+      return services.getAllServices(branchId);
 
     } catch (BusinessException ex) {
       if (ex.getMessage().contains("not found")) {

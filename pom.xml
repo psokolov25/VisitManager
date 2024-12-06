@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.aritmos</groupId>
     <artifactId>visitmanager</artifactId>
-    <version>0.6</version>
+    <version>0.7</version>
     <packaging>${packaging}</packaging>
     <description>
         Целью службы управления визитамия является оптимизация логистики обслуживания клиентов.
@@ -41,12 +41,19 @@
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>https://repo1.maven.org/maven2/</id>
+            <url>https://repo1.maven.org/maven2/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -94,7 +101,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-common</artifactId>
-            <version>4.1.113.Final</version>
+            <version>4.1.115.Final</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
@@ -235,6 +242,12 @@
             <groupId>io.micronaut.redis</groupId>
             <artifactId>micronaut-redis-lettuce</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <scope>compile</scope>
+            <version>6.5.1.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

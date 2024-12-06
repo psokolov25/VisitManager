@@ -52,7 +52,7 @@ public class Services {
    * @param branchId идентификатор отделения
    * @return список доступных услуг
    */
-  public List<Service> getAllAvilableServies(String branchId) {
+  public List<Service> getAllAvailableServices(String branchId) {
 
     return this.getAllServices(branchId).stream().filter(Service::getIsAvailable).toList();
   }

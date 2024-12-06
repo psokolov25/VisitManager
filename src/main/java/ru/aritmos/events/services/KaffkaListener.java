@@ -15,7 +15,7 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
 
 @Slf4j
-@KafkaListener(offsetReset = OffsetReset.EARLIEST)
+@KafkaListener(offsetReset = OffsetReset.LATEST)
 public class KaffkaListener {
   private static final HashMap<String, EventHandler> allHandlers = new HashMap<>();
   private static final HashMap<String, EventHandler> serviceHandlers = new HashMap<>();
