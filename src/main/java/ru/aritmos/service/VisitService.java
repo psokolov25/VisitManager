@@ -1,6 +1,5 @@
 package ru.aritmos.service;
 
-import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
@@ -37,9 +36,6 @@ public class VisitService {
   CallRule waitingTimeCallRule;
   CallRule lifeTimeCallRule;
   @Inject SegmentationRule segmentationRule;
-
-  @Value("${micronaut.application.name}")
-  String applicationName;
 
   @Inject
   public void setWaitingTimeCallRule(@Named("MaxWaitingTimeCallRule") CallRule callRule) {
@@ -2890,5 +2886,9 @@ public class VisitService {
     return currentBranch.getQueues().values().stream()
         .map(m -> Entity.builder().id(m.getId()).name(m.getName()).build())
         .toList();
+  }
+  public List<Queue> getFullQueus(String branchId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    return currentBranch.getQueues().values().stream().toList();
   }
 }

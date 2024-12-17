@@ -1,45 +1,54 @@
 services:
 
   visitmanager:
-
+    expose:
+      - '8080'
+      - '9094'
+      - '9092'
+      - '9093'
+      - '8082'
     networks:
-      - confluent
+      - aritmosplatform-backend
     container_name: visitmanager
     ports:
       - 8080:8080
     build:
       context: ./
       dockerfile: Dockerfile
-    image: aritmos/visitmanager:0.6
+    image: aritmos/visitmanager:0.7
     depends_on:
-      redis:
+      visitmanager-redis:
         condition: service_healthy
     environment:
-      - REDIS_SERVER=redis://redis:6379/6
-      - DATABUS_SERVER=http://192.168.8.45:8082
+      - REDIS_SERVER=redis://visitmanager-redis:6379/6
+      - DATABUS_SERVER=http://databus:8080
       - CONFIG_SERVER=http://localhost:8081
-      - PRINTER_SERVER=http://192.168.3.33:8084
-      - OIDC_ISSUER_DOMAIN=http://192.168.8.45:9090/realms/Aritmos
+      - PRINTER_SERVER=http://printerservice:8084
+      - OIDC_ISSUER_DOMAIN=http://keycloak:8080/realms/Aritmos
       - OAUTH_CLIENT_ID=myclient
       - KEYCLOAK_TECHLOGIN=visitmanager
       - KEYCLOAK_TECHPASSWORD=visitmanager
-      - OIDC_ISSUER_URL=http://192.168.8.45:9090
-      - KAFKA_SERVER=192.168.8.45:9094
-      - LOKI_SERVER=http://192.168.3.13:3100/loki/api/v1/push
+      - OIDC_ISSUER_URL=http://keycloak:8080
+      - KAFKA_SERVER=kafka:9092
+      - LOKI_SERVER=http://loki:3100/loki/api/v1/push
+      - OAUTH_CLIENT_SECRET=tmB6aNdjdAfFdhYQitChR5fWCd59sLqK
     restart: always
-  redis:
+  visitmanager-redis:
+    expose:
+      - '6379'
+      - '9092'
     healthcheck:
       interval: 10s
       timeout: 5s
       retries: 5
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
     networks:
-      - confluent
+      - aritmosplatform-backend
     image: redis:latest
-    container_name: redis
+    container_name: visitmanager-redis
     restart: always
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
     volumes:
       - /path/to/local/dаta:/root/redis
       - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
@@ -48,5 +57,6 @@ services:
       - REDIS_PORT=6379
       - REDIS_DATABASES=16
 networks:
-  confluent:
-    driver: bridge
+  aritmosplatform-backend:
+    external:
+      name: aritmosplatform-backend

@@ -103,11 +103,21 @@ public class Configuration {
       workProfileFSC.getQueueIds().add(queueCredit.getId());
 
       User psokolovUser = new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov");
+     try{
       Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(psokolovUser.getName());
+
+
       if (userInfo.isPresent()) {
         psokolovUser.setFirstName(userInfo.get().getFirstName());
         psokolovUser.setLastName(userInfo.get().getLastName());
       }
+      }
+     catch (Exception ex)
+     {
+       log.warn("Error {}",ex.getLocalizedMessage());
+       psokolovUser.setFirstName("Pavel");
+       psokolovUser.setLastName("Sokolov");
+     }
       HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
       servicePointC.setIsConfirmRequired(false);
       servicePointFSC.setIsConfirmRequired(false);

@@ -5,7 +5,6 @@ import io.micronaut.cache.annotation.CacheInvalidate;
 import io.micronaut.cache.annotation.CachePut;
 import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.cache.interceptor.ParametersKey;
-import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.inject.Inject;
@@ -37,9 +36,6 @@ public class BranchService {
   HashMap<String, Branch> branches = new HashMap<>();
   @Inject EventService eventService;
   @Inject KeyCloackClient keyCloackClient;
-
-  @Value("${micronaut.application.name}")
-  String applicationName;
 
   @Cacheable(
       parameters = {"key"},
@@ -163,7 +159,14 @@ public class BranchService {
     if (!branch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException("Service point not found!!", eventService, HttpStatus.NOT_FOUND);
     }
-    Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(userName);
+    Optional<UserRepresentation> userInfo=Optional.empty();
+    try{
+    userInfo = keyCloackClient.getUserInfo(userName);
+    }catch (Exception ex)
+    {
+      log.warn("User not found!!", ex);
+    }
+
     if (branch.getUsers().containsKey(userName)) {
       User user = branch.getUsers().get(userName);
       if (userInfo.isPresent()) {
@@ -213,6 +216,11 @@ public class BranchService {
       if (userInfo.isPresent()) {
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
+      }
+      else
+      {
+        user.setFirstName("Отсутствует");
+        user.setLastName("Отсутствует");
       }
       user.setBranchId(branchId);
       user.setServicePointId(servicePointId);

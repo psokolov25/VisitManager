@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 @Serdeable
+@SuppressWarnings("unused")
 public class Credentials {
-  String login;
+  String username;
   String password;
 }

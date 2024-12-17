@@ -56,7 +56,7 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает все очереди отделения (идентификатор и название очереди)
+   * Возвращает все  очереди отделения (только идентификатор и название очереди)
    *
    * @param branchId идентификатор отделения
    * @return список очередей
@@ -69,6 +69,21 @@ public class ServicePointController {
   public List<Entity> getQueues(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     return visitService.getQueus(branchId);
+  }
+  /**
+   * Возвращает все очереди отделения
+   *
+   * @param branchId идентификатор отделения
+   * @return список очередей
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные об очередях")
+  @Tag(name = "Полный список")
+  @Get("/branches/{branchId}/queues/full")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<Queue> getFullQueues(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    return visitService.getFullQueus(branchId);
   }
 
   /**
