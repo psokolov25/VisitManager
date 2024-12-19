@@ -42,7 +42,10 @@ public class Configuration {
       branch.getBreakReasons().put("5454e87a-9ace-46fd-be30-b00f7bb88688", "Вышел покурить");
       branch.getBreakReasons().put("75caee17-d8f3-49b1-b298-96bbb6ba19f3", "Вышел на обед");
       EntryPoint entryPoint = new EntryPoint();
-      entryPoint.setPrinterId("2");
+      entryPoint.setPrinter(Entity.builder()
+              .id("eb7ea46d-c995-4ca0-ba92-c92151473214")
+              .name("Intro18")
+              .build());
       entryPoint.setId("2");
       HashMap<String, EntryPoint> entryPoints = new HashMap<>();
       entryPoints.put(entryPoint.getId(), entryPoint);
@@ -139,7 +142,18 @@ public class Configuration {
       branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
       branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
       branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
-      branch.getReception().setPrinterIds(List.of("3", "4"));
+      branch
+          .getReception()
+          .setPrinters(
+              List.of(
+                  Entity.builder()
+                      .id("eb7ea46d-c995-4ca0-ba92-c92151473614")
+                      .name("Intro17")
+                      .build(),
+                  Entity.builder()
+                      .id("eb7ea46d-c995-4ca0-ba92-c92151473612")
+                      .name("Intro8")
+                      .build()));
       branchService.add(branch.getId(), branch);
       branchService.openServicePoint(
           branch.getId(), psokolovUser.getName(), servicePointFC.getId(), workProfileFC.getId());

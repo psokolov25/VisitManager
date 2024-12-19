@@ -369,8 +369,8 @@ public class VisitService {
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             visit.setQueueId(serviceQueue.getId());
 
-            if (printTicket && entryPoint.getPrinterId() != null) {
-              printerService.print(entryPoint.getPrinterId(), visit);
+            if (printTicket && entryPoint.getPrinter() != null &&  entryPoint.getPrinter().getId()!=null) {
+              printerService.print(entryPoint.getPrinter().getId(), visit);
             }
 
             // changedVisitEventSend("CREATED", null, visit, new HashMap<>());
@@ -2891,5 +2891,12 @@ public class VisitService {
   public List<Queue> getFullQueus(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
     return currentBranch.getQueues().values().stream().toList();
+  }
+
+  public List<Entity> getPrinters(String branchId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+      List<Entity> printers = new ArrayList<>(currentBranch.getEntryPoints().values().stream().map(EntryPoint::getPrinter).toList());
+      printers.addAll(currentBranch.getReception().getPrinters());
+      return printers.stream().distinct().toList();
   }
 }

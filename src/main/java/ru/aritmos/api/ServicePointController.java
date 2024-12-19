@@ -56,6 +56,22 @@ public class ServicePointController {
   }
 
   /**
+   * Возвращает все принтеры, используемые в отделении
+   *
+   * @param branchId идентификатор отделения
+   * @return свободные точки обслуживания
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные о принтерах")
+  @Tag(name = "Полный список")
+  @Get("/branches/{branchId}/printers")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<Entity> getPrinters(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    return visitService.getPrinters(branchId);
+  }
+
+  /**
    * Возвращает все очереди отделения (только идентификатор и название очереди)
    *
    * @param branchId идентификатор отделения

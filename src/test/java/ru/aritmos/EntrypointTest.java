@@ -79,7 +79,8 @@ class EntrypointTest {
                   .value("Клиент не доволен")
                   .build());
       EntryPoint entryPoint = new EntryPoint();
-      entryPoint.setPrinterId("2");
+      entryPoint.setPrinter(
+          Entity.builder().id("f1ee6a43-6584-4f16-b010-d773849f1f04").name("Intro 19").build());
       entryPoint.setId("1");
       HashMap<String, EntryPoint> entryPoints = new HashMap<>();
       entryPoints.put(entryPoint.getId(), entryPoint);
