@@ -11,7 +11,7 @@ services:
       - aritmosplatform-backend
     container_name: visitmanager
     ports:
-      - 8080:8080
+      - "8080:8080"
     build:
       context: ./
       dockerfile: Dockerfile

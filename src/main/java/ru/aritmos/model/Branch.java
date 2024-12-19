@@ -25,6 +25,7 @@ import ru.aritmos.service.VisitService;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("unused")
 public class Branch extends BranchEntity {
 
   /** Перечень настроек отделения */
@@ -34,6 +35,10 @@ public class Branch extends BranchEntity {
   /** Точки входа */
   @JsonInclude(JsonInclude.Include.NON_NULL)
   HashMap<String, EntryPoint> entryPoints = new HashMap<>();
+
+  /** Приемная */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  Reception reception = new Reception();
 
   /** Очереди */
   @JsonInclude(JsonInclude.Include.NON_NULL)

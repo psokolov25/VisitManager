@@ -2887,6 +2887,7 @@ public class VisitService {
         .map(m -> Entity.builder().id(m.getId()).name(m.getName()).build())
         .toList();
   }
+
   public List<Queue> getFullQueus(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
     return currentBranch.getQueues().values().stream().toList();

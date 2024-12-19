@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Serdeable
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("unused")
 public class BasedService extends BranchEntity {
   HashMap<String, Outcome> possibleOutcomes = new HashMap<>();
 

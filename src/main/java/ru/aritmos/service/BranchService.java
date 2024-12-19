@@ -101,7 +101,7 @@ public class BranchService {
     branch.getServices().forEach((key1, value) -> value.setBranchId(key));
     branch.getWorkProfiles().forEach((key1, value) -> value.setBranchId(key));
     branch.getServiceGroups().forEach((key1, value) -> value.setBranchId(key));
-
+    branch.getReception().setBranchId(key);
     branches.put(key, branch);
 
     log.info("Putting branchInfo {}", branch);
@@ -159,11 +159,10 @@ public class BranchService {
     if (!branch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException("Service point not found!!", eventService, HttpStatus.NOT_FOUND);
     }
-    Optional<UserRepresentation> userInfo=Optional.empty();
-    try{
-    userInfo = keyCloackClient.getUserInfo(userName);
-    }catch (Exception ex)
-    {
+    Optional<UserRepresentation> userInfo = Optional.empty();
+    try {
+      userInfo = keyCloackClient.getUserInfo(userName);
+    } catch (Exception ex) {
       log.warn("User not found!!", ex);
     }
 
@@ -216,9 +215,7 @@ public class BranchService {
       if (userInfo.isPresent()) {
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
-      }
-      else
-      {
+      } else {
         user.setFirstName("Отсутствует");
         user.setLastName("Отсутствует");
       }

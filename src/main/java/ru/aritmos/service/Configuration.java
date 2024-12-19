@@ -3,6 +3,7 @@ package ru.aritmos.service;
 import io.micronaut.context.annotation.Context;
 import jakarta.inject.Inject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -47,6 +48,7 @@ public class Configuration {
       entryPoints.put(entryPoint.getId(), entryPoint);
       branch.setEntryPoints(entryPoints);
       Queue queueCredit = new Queue("55da9b66-c928-4d47-9811-dbbab20d3780", "Кредиты", "F");
+      queueCredit.setWaitingSL(200);
       Service creditService =
           new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "Кредит", 9000, queueCredit.getId());
       Outcome creditAccepted = new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Одобрен");
@@ -103,21 +105,18 @@ public class Configuration {
       workProfileFSC.getQueueIds().add(queueCredit.getId());
 
       User psokolovUser = new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov");
-     try{
-      Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(psokolovUser.getName());
+      try {
+        Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(psokolovUser.getName());
 
-
-      if (userInfo.isPresent()) {
-        psokolovUser.setFirstName(userInfo.get().getFirstName());
-        psokolovUser.setLastName(userInfo.get().getLastName());
+        if (userInfo.isPresent()) {
+          psokolovUser.setFirstName(userInfo.get().getFirstName());
+          psokolovUser.setLastName(userInfo.get().getLastName());
+        }
+      } catch (Exception ex) {
+        log.warn("Error {}", ex.getLocalizedMessage());
+        psokolovUser.setFirstName("Pavel");
+        psokolovUser.setLastName("Sokolov");
       }
-      }
-     catch (Exception ex)
-     {
-       log.warn("Error {}",ex.getLocalizedMessage());
-       psokolovUser.setFirstName("Pavel");
-       psokolovUser.setLastName("Sokolov");
-     }
       HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
       servicePointC.setIsConfirmRequired(false);
       servicePointFSC.setIsConfirmRequired(false);
@@ -140,7 +139,7 @@ public class Configuration {
       branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
       branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
       branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
-
+      branch.getReception().setPrinterIds(List.of("3", "4"));
       branchService.add(branch.getId(), branch);
       branchService.openServicePoint(
           branch.getId(), psokolovUser.getName(), servicePointFC.getId(), workProfileFC.getId());

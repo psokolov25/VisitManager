@@ -17,6 +17,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 @Slf4j
 @Controller
 @SerdeImport(AuthorizationResponse.class)
+@SuppressWarnings("unused")
 public class KeyCloakController {
   @Property(name = "micronaut.security.oauth2.clients.keycloak.techlogin")
   String techlogin;
