@@ -24,14 +24,15 @@ services:
       - DATABUS_SERVER=http://databus:8080
       - CONFIG_SERVER=http://localhost:8081
       - PRINTER_SERVER=http://printerservice:8084
-      - OIDC_ISSUER_DOMAIN=http://keycloak:8080/realms/Aritmos
+      - OIDC_ISSUER_DOMAIN=http://keycloak:8080/realms/aritmos_platform
       - OAUTH_CLIENT_ID=myclient
-      - KEYCLOAK_TECHLOGIN=visitmanager
-      - KEYCLOAK_TECHPASSWORD=visitmanager
+      - KEYCLOAK_TECHLOGIN=admin
+      - KEYCLOAK_TECHPASSWORD=LtlVjhjp!23
       - OIDC_ISSUER_URL=http://keycloak:8080
       - KAFKA_SERVER=kafka:9092
       - LOKI_SERVER=http://loki:3100/loki/api/v1/push
-      - OAUTH_CLIENT_SECRET=Z1s7zHauY29ZLyhPS2fKvvoWFOSjfPYG
+      - OAUTH_CLIENT_SECRET=FqTLoxIQpLfejP925XPB2K5besestFQJ
+      - KEYCLOAK_REALM=aritmos_platform
     restart: always
   visitmanager-redis:
     expose:
