@@ -22,6 +22,8 @@ public class Configuration {
       //        if (branchService.getBranches().isEmpty()) {
 
       Branch branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b4", "Отделение на Тверской");
+      branch.setAddress("Москва, ул. Тверская 13");
+      branch.setDescription("Главное отделение");
       branch
           .getMarks()
           .put(
