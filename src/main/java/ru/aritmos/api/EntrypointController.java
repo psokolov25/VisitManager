@@ -1,6 +1,5 @@
 package ru.aritmos.api;
 
-import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -34,9 +33,7 @@ public class EntrypointController {
   /** Служба по отправке событий на шину данных */
   @Inject EventService eventService;
 
-  /** Название службы из файла настроек */
-  @Value("${micronaut.application.name}")
-  String applicationName;
+
 
   /**
    * Создани виртуального визита сотрудником
@@ -150,6 +147,45 @@ public class EntrypointController {
         .containsAll(parameters.getServiceIds())) {
 
       return visitService.createVisit(branchId, entryPointId, parameters, printTicket);
+
+    } else {
+      throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  /**
+   * Создание визита с передачей параметров визита и перечня услуг из приемной
+   *
+   * @param branchId идентификатор отделения
+   * @param printerId идентификатор принтера
+   * @param printTicket флаг печати талона
+   * @param parameters услуги и параметры визита (пример { "serviceIds": [
+   *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ],
+   *     "parameters": { "description": "Визит на получение кредита", "age": "48" } }
+   * @return визит
+   */
+  @Tag(name = "Зона ожидания")
+  @Tag(name = "Полный список")
+  @Post(
+          uri = "/branches/{branchId}/printer/{printerId}/visitWithParameters",
+          consumes = "application/json",
+          produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Visit createVisitFromReception(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+          @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
+          @Body VisitParameters parameters,
+          @QueryValue Boolean printTicket) {
+    Branch branch;
+    try {
+      branch = branchService.getBranch(branchId);
+    } catch (Exception ex) {
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
+    }
+    if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
+            .containsAll(parameters.getServiceIds())) {
+
+      return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket);
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
