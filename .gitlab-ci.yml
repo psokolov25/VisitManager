@@ -1,0 +1,71 @@
+stages:
+  - build
+  - deploy
+
+Build images:
+  variables:
+    ENVIRONMENT: "dev"
+  stage: build
+  image: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/docker:19.03.12
+  services:
+    - name: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/docker:19.03.12-dind
+      alias: docker
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build --pull -t $CI_REGISTRY_IMAGE:$ENVIRONMENT -f ./Dockerfile .
+    - docker push $CI_REGISTRY_IMAGE:$ENVIRONMENT
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "develop" && $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_COMMIT_REF_NAME == "test" && $CI_PIPELINE_SOURCE == "push"
+      variables:
+        ENVIRONMENT: "test"
+
+Deploy_Services:
+  variables:
+    ENVIRONMENT: "dev"
+    SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_DEV
+    SSH_HOST: $SSH_HOST_DEV
+    SSH_USER: $SSH_USER
+  stage: deploy
+  image: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/deploy:latest
+  script:
+    - ssh-keyscan -t rsa $SSH_HOST  >> ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | base64 -d - | tr -d '\r' | ssh-add -
+    - ssh "$SSH_USER@$SSH_HOST" "mkdir -p /tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
+    - scp ./docker-compose.$ENVIRONMENT.yml ./.env.$ENVIRONMENT "linux@$SSH_HOST:/tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
+    - > 
+        ssh "$SSH_USER@$SSH_HOST" \
+        "cd /tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME && \
+
+
+         mv ./.env.$ENVIRONMENT ./.env && \
+
+
+         export \$(cat ./.env) > /dev/null 2>&1 && \
+
+
+         docker login -u registry-token -p $REGISTRY_TOKEN $CI_REGISTRY && \
+
+
+         CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE \
+
+
+         ENVIRONMENT=$ENVIRONMENT \
+
+
+         CI_PROJECT_NAMESPACE=$CI_PROJECT_NAMESPACE \
+
+
+         CI_PROJECT_NAME=$CI_PROJECT_NAME \
+
+
+         docker stack deploy -c docker-compose.$ENVIRONMENT.yml --with-registry-auth --resolve-image always $CI_PROJECT_NAME"
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "develop" && $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_COMMIT_REF_NAME == "test" && $CI_PIPELINE_SOURCE == "push"
+      variables:
+        ENVIRONMENT: "test"
+        SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_QA
+        SSH_HOST: $SSH_HOST_QA
+        SSH_USER: $SSH_USER

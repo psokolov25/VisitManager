@@ -187,6 +187,33 @@ public class VisitService {
       throw new BusinessException("Services not found!", eventService);
     }
   }
+  /**
+   * Создание визита из приемной
+   *
+   * @param branchId идентификатор отделения
+   * @param printerId идентификатор энтри поинта
+   * @param visitParameters передаваемые список услуг и дополнительные параметры визита
+   * @param printTicket флаг печати талона
+   * @return созданный визит
+   */
+  public Visit createVisitFromReception(
+          String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    if (currentBranch.getServices().keySet().stream()
+            .anyMatch(visitParameters.getServiceIds()::contains)) {
+      ArrayList<Service> services = new ArrayList<>();
+      visitParameters
+              .getServiceIds()
+              .forEach(f -> services.add(currentBranch.getServices().get(f)));
+
+      return visitAutoCall(
+              createVisit2FromReception(
+                      branchId, printerId, services, visitParameters.getParameters(), printTicket));
+
+    } else {
+      throw new BusinessException("Services not found!", eventService);
+    }
+  }
 
   public Visit createVirtualVisit(
       String branchId, String servicePointId, VisitParameters visitParameters) {
@@ -392,6 +419,106 @@ public class VisitService {
 
     throw new BusinessException("Queue  not found in branch configuration!", eventService);
   }
+
+  /**
+   * Создание визита из приемной
+   *
+   * @param branchId идентификатор отделения
+   * @param printerId идентификатор принтера
+   * @param services список услуг
+   * @param printTicket флаг печати талона
+   * @return визит
+   */
+  public Visit createVisit2FromReception(
+          String branchId,
+          String printerId,
+          ArrayList<Service> services,
+          HashMap<String, String> parametersMap,
+          Boolean printTicket) {
+    Branch currentBranch = branchService.getBranch(branchId);
+
+    if (!services.isEmpty()) {
+      if (currentBranch.getServices().containsKey(services.get(0).getId())) {
+        Service currentService = currentBranch.getServices().get(services.get(0).getId());
+        List<Service> unServedServices = new ArrayList<>();
+        services.stream()
+                .skip(1)
+                .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId())));
+
+
+
+
+
+        Visit visit =
+                Visit.builder()
+                        .id(UUID.randomUUID().toString())
+                        .status("WAITING")
+                        .printTicket(printTicket)
+                        .branchId(branchId)
+                        .branchName(currentBranch.getName())
+                        .currentService(currentService)
+                        .unservedServices(unServedServices)
+                        .createDateTime(ZonedDateTime.now())
+                        .visitMarks(new ArrayList<>())
+                        .visitEvents(new ArrayList<>())
+                        .returnTimeDelay(0L)
+                        // .updateDateTime(ZonedDateTime.now())
+                        // .transferDateTime(ZonedDateTime.now())
+                        // .endDateTime(ZonedDateTime.now())
+                        .servicePointId(null)
+                        .servedServices(new ArrayList<>())
+                        .parameterMap(parametersMap)
+                        .build();
+        Queue serviceQueue;
+        if (segmentationRule.getQueue(visit, currentBranch).isPresent()) {
+          serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
+
+          serviceQueue.setTicketCounter(
+                  branchService.incrementTicetCounter(branchId, serviceQueue));
+          visit.setQueueId(serviceQueue.getId());
+          visit.setTicket(
+                  (serviceQueue.getTicketPrefix()
+                          + String.format("%03d", serviceQueue.getTicketCounter())));
+          VisitEvent event = VisitEvent.CREATED;
+          event
+                  .getParameters()
+                  .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          event.dateTime = ZonedDateTime.now();
+
+          branchService.updateVisit(visit, event, this);
+          if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
+            VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
+            queueEvent.dateTime = ZonedDateTime.now();
+            queueEvent
+                    .getParameters()
+                    .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+            queueEvent.getParameters().put("queueId", serviceQueue.getId());
+            visit.setQueueId(serviceQueue.getId());
+
+            if (printTicket && currentBranch.getReception().getPrinters().stream().anyMatch(f->f.getId().equals(printerId))) {
+              printerService.print(printerId, visit);
+            }
+
+            // changedVisitEventSend("CREATED", null, visit, new HashMap<>());
+            branchService.updateVisit(visit, queueEvent, this);
+            log.info("Visit {} created!", visit);
+
+            return visit;
+          } else {
+            throw new BusinessException("Queue not found in branch configuration!", eventService);
+          }
+
+        } else {
+          throw new BusinessException("Services can not be empty!", eventService);
+        }
+      } else {
+        throw new BusinessException("Service  not found in branch configuration!", eventService);
+      }
+    }
+
+    throw new BusinessException("Queue  not found in branch configuration!", eventService);
+  }
+
 
   /**
    * Создание визита

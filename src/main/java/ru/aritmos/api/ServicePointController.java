@@ -1931,6 +1931,7 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @param visitId идентификатор визита
    * @param serviceInfo данные о внешней службе
+   * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -1947,7 +1948,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable String visitId,
-      HashMap<String, String> serviceInfo) {
+      HashMap<String, String> serviceInfo,
+      @QueryValue(defaultValue = "true") Boolean isAppend) {
     Branch branch;
     Visit visit = visitService.getVisit(branchId, visitId);
     try {
@@ -1960,7 +1962,7 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointId, visit, true, serviceInfo);
+        branchId, servicePointId, visit, isAppend, serviceInfo);
   }
 
   /**
@@ -2137,10 +2139,11 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
       @PathVariable String visitId,
-      HashMap<String, String> serviceInfo) {
+      HashMap<String, String> serviceInfo,
+      @QueryValue(defaultValue = "true") Boolean isAppend) {
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransferFromQueueToUserPool(
-        branchId, userId, visit, true, serviceInfo);
+        branchId, userId, visit, isAppend, serviceInfo);
   }
 
   /**

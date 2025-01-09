@@ -22,6 +22,8 @@ public class Configuration {
       //        if (branchService.getBranches().isEmpty()) {
 
       Branch branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b4", "Отделение на Тверской");
+      branch.setAddress("Москва, ул. Тверская 13");
+      branch.setDescription("Главное отделение");
       branch
           .getMarks()
           .put(
@@ -83,7 +85,7 @@ public class Configuration {
           new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
       ServicePoint servicePointFC =
           new ServicePoint("a66ff6f4-4f4a-4009-8602-0dc278024cf2", "Финансовый консультант");
-      servicePointFC.setIsConfirmRequired(true);
+
       HashMap<String, Service> serviceList = new HashMap<>();
       serviceList.put(kassaService.getId(), kassaService);
       serviceList.put(creditService.getId(), creditService);
@@ -93,6 +95,10 @@ public class Configuration {
       ServicePoint servicePointFSC =
           new ServicePoint(
               "099c43c1-40b5-4b80-928a-1d4b363152a8", "Старший финансовый консультант");
+
+      ServicePoint servicePointBFSC =
+              new ServicePoint(
+                      "090bd53d-96ba-466b-9845-d64e81894964", "Самый старший финансовый консультант");
 
       ServicePoint servicePointC =
           new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");
@@ -124,8 +130,10 @@ public class Configuration {
       servicePointC.setIsConfirmRequired(false);
       servicePointFSC.setIsConfirmRequired(false);
       servicePointFC.setIsConfirmRequired(false);
+      servicePointBFSC.setIsConfirmRequired(true);
       servicePointMap.put(servicePointFC.getId(), servicePointFC);
       servicePointMap.put(servicePointFSC.getId(), servicePointFSC);
+      servicePointMap.put(servicePointBFSC.getId(), servicePointBFSC);
       servicePointMap.put(servicePointC.getId(), servicePointC);
       HashMap<String, Queue> queueMap = new HashMap<>();
       queueMap.put(queueCredit.getId(), queueCredit);
