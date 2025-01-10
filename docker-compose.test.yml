@@ -1,7 +1,7 @@
 services:
 
   visitmanager:
-    image: registry.aritmosplatform.ru/aritmosplatform/visitmanager:dev
+    image: registry.aritmosplatform.ru/aritmosplatform/visitmanager:test
     hostname: visitmanager
     environment:
       - REDIS_SERVER=redis://visitmanager-redis:6379/6
