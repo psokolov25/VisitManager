@@ -2189,7 +2189,7 @@ public class ServicePointController {
       @PathVariable String branchId,
       @PathVariable String servicePointId,
       @PathVariable String userId,
-      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
+      @QueryValue(defaultValue = "60") Long returnTimeDelay) {
     return visitService.visitBackToUserPool(branchId, servicePointId, userId, returnTimeDelay);
   }
 
