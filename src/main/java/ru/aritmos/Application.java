@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
-    info = @Info(title = "VisitManagement", version = "0.7"),
+    info = @Info(title = "VisitManagement", version = "0.8"),
     servers = {
       @Server(url = "http://192.168.8.45:8080"),
       @Server(url = "http://192.168.1.8:8080"),

@@ -15,7 +15,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: aritmos/visitmanager:0.7
+    image: aritmos/visitmanager:0.8
     depends_on:
       visitmanager-redis:
         condition: service_healthy
