@@ -142,6 +142,7 @@ public enum VisitEvent {
               RECALLED,
               List.of(
                   RECALLED,
+                  CALLED,
                   STOP_SERVING,
                   START_SERVING,
                   NO_SHOW,

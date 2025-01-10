@@ -7,17 +7,12 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
-import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
     info = @Info(title = "VisitManagement", version = "0.8"),
-    servers = {
-      @Server(url = "http://192.168.8.45:8080"),
-      @Server(url = "http://192.168.1.8:8080"),
-      @Server(url = "http://localhost:8080")
-    },
+   
     tags = {
       @Tag(name = "Зона обслуживания"),
       @Tag(name = "Зона ожидания"),
