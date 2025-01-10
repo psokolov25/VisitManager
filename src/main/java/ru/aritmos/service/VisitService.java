@@ -1141,6 +1141,41 @@ public class VisitService {
     }
   }
 
+  /** Возвращение вызванного визита в очередь */
+  public Visit backCalledVisit(String branchId, String visitId, Long returnTimeDelay) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    if (currentBranch.getAllVisits().containsKey(visitId)) {
+      Visit visit = currentBranch.getAllVisits().get(visitId);
+
+      visit.setReturnDateTime(ZonedDateTime.now());
+      visit.setReturnTimeDelay(returnTimeDelay);
+      visit.setStartServingDateTime(null);
+      Optional<VisitEvent> event =
+          visit.getVisitEvents().stream().max(Comparator.comparing(VisitEvent::getDateTime));
+
+
+      if (event.isPresent() && event.get().getParameters().containsKey("servicePointId")) {
+        VisitEvent visitEvent =
+            visit.getQueueId() != null
+                ? VisitEvent.BACK_TO_QUEUE
+                : visit.getPoolUserId() != null
+                    ? VisitEvent.BACK_TO_USER_POOL
+                    : VisitEvent.BACK_TO_SERVICE_POINT_POOL;
+
+        visitEvent
+            .getParameters()
+            .put("servicePointId", event.get().getParameters().get("servicePointId"));
+
+        visitEvent.getParameters().put("branchId", branchId);
+        branchService.updateVisit(visit, visitEvent, this);
+      }
+      visit = branchService.getBranch(branchId).getAllVisits().get(visit.getId());
+      return visit;
+    } else {
+      throw new BusinessException("Visit not fount!", eventService, HttpStatus.NOT_FOUND);
+    }
+  }
+
   /**
    * Возвращение визита в очередь с задержкой
    *
@@ -1378,8 +1413,6 @@ public class VisitService {
         eventService,
         HttpStatus.NOT_FOUND);
   }
-
-
 
   /**
    * Отложить визит в указанной точке обслуживания

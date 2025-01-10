@@ -1514,7 +1514,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2")
           String poolServicePointId,
-      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
+      @QueryValue(defaultValue = "60") Long returnTimeDelay) {
     Branch branch;
 
     try {
@@ -1633,7 +1633,7 @@ public class ServicePointController {
   public Visit returnVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
+      @QueryValue(defaultValue = "60") Long returnTimeDelay) {
 
     return visitService.visitBackToQueue(branchId, servicePointId, returnTimeDelay);
   }
@@ -2253,7 +2253,29 @@ public class ServicePointController {
   public Visit visitPutBack(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
+      @QueryValue(defaultValue = "60") Long returnTimeDelay) {
     return visitService.visitPutBack(branchId, servicePointId, returnTimeDelay);
+  }
+
+  /**
+   * Возвращение вызванного визита
+   *
+   * @param branchId идентификатор отделения
+   * @param visitId идентификатор визита
+   * @param returnTimeDelay задержка возвращения в секундах
+   * @return визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Изменение визита")
+  @Tag(name = "Завершение вызова")
+  @Tag(name = "Возвращение визита")
+  @Tag(name = "Полный список")
+  @Put(uri = "/branches/{branchId}/visits/{visitId}/put_back")
+  public Visit calledVisitPutBack(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable String visitId,
+      @QueryValue(defaultValue = "60") Long returnTimeDelay) {
+    return visitService.backCalledVisit(branchId, visitId, returnTimeDelay);
   }
 }
