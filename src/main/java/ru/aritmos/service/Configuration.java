@@ -99,6 +99,9 @@ public class Configuration {
       ServicePoint servicePointBFSC =
               new ServicePoint(
                       "090bd53d-96ba-466b-9845-d64e81894964", "Самый старший финансовый консультант");
+      ServicePoint servicePointBBFSC =
+              new ServicePoint(
+                      "f9e60eaf-b4af-4bf8-8d64-e70d2e949829", "Самый самый старший финансовый консультант");
 
       ServicePoint servicePointC =
           new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");
@@ -131,9 +134,11 @@ public class Configuration {
       servicePointFSC.setIsConfirmRequired(false);
       servicePointFC.setIsConfirmRequired(false);
       servicePointBFSC.setIsConfirmRequired(true);
+      servicePointBBFSC.setIsConfirmRequired(true);
       servicePointMap.put(servicePointFC.getId(), servicePointFC);
       servicePointMap.put(servicePointFSC.getId(), servicePointFSC);
       servicePointMap.put(servicePointBFSC.getId(), servicePointBFSC);
+      servicePointMap.put(servicePointBBFSC.getId(), servicePointBBFSC);
       servicePointMap.put(servicePointC.getId(), servicePointC);
       HashMap<String, Queue> queueMap = new HashMap<>();
       queueMap.put(queueCredit.getId(), queueCredit);
