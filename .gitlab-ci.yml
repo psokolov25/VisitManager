@@ -34,33 +34,33 @@ Deploy_Services:
     - echo "$SSH_PRIVATE_KEY" | base64 -d - | tr -d '\r' | ssh-add -
     - ssh "$SSH_USER@$SSH_HOST" "mkdir -p /tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
     - scp ./docker-compose.$ENVIRONMENT.yml ./.env.$ENVIRONMENT "linux@$SSH_HOST:/tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
-    - > 
-        ssh "$SSH_USER@$SSH_HOST" \
-        "cd /tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME && \
-
-
-         mv ./.env.$ENVIRONMENT ./.env && \
-
-
-         export \$(cat ./.env) > /dev/null 2>&1 && \
-
-
-         docker login -u registry-token -p $REGISTRY_TOKEN $CI_REGISTRY && \
-
-
-         CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE \
-
-
-         ENVIRONMENT=$ENVIRONMENT \
-
-
-         CI_PROJECT_NAMESPACE=$CI_PROJECT_NAMESPACE \
-
-
-         CI_PROJECT_NAME=$CI_PROJECT_NAME \
-
-
-         docker stack deploy -c docker-compose.$ENVIRONMENT.yml --with-registry-auth --resolve-image always $CI_PROJECT_NAME"
+    - >
+      ssh "$SSH_USER@$SSH_HOST" \
+      "cd /tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME && \
+      
+      
+       mv ./.env.$ENVIRONMENT ./.env && \
+      
+      
+       export \$(cat ./.env) > /dev/null 2>&1 && \
+      
+      
+       docker login -u registry-token -p $REGISTRY_TOKEN $CI_REGISTRY && \
+      
+      
+       CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE \
+      
+      
+       ENVIRONMENT=$ENVIRONMENT \
+      
+      
+       CI_PROJECT_NAMESPACE=$CI_PROJECT_NAMESPACE \
+      
+      
+       CI_PROJECT_NAME=$CI_PROJECT_NAME \
+      
+      
+       docker stack deploy -c docker-compose.$ENVIRONMENT.yml --with-registry-auth --resolve-image always $CI_PROJECT_NAME"
   rules:
     - if: $CI_COMMIT_REF_NAME == "develop" && $CI_PIPELINE_SOURCE == "push"
     - if: $CI_COMMIT_REF_NAME == "test" && $CI_PIPELINE_SOURCE == "push"

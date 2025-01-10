@@ -12,7 +12,6 @@ import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
     info = @Info(title = "VisitManagement", version = "0.8"),
-   
     tags = {
       @Tag(name = "Зона обслуживания"),
       @Tag(name = "Зона ожидания"),

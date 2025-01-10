@@ -135,6 +135,8 @@ public enum VisitEvent {
                   START_SERVING,
                   NO_SHOW,
                   BACK_TO_QUEUE,
+                  BACK_TO_USER_POOL,
+                  BACK_TO_SERVICE_POINT_POOL,
                   ADDED_MARK,
                   DELETED_MARK,
                   PLACED_IN_QUEUE)),

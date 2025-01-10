@@ -33,8 +33,6 @@ public class EntrypointController {
   /** Служба по отправке событий на шину данных */
   @Inject EventService eventService;
 
-
-
   /**
    * Создани виртуального визита сотрудником
    *
@@ -167,15 +165,15 @@ public class EntrypointController {
   @Tag(name = "Зона ожидания")
   @Tag(name = "Полный список")
   @Post(
-          uri = "/branches/{branchId}/printer/{printerId}/visitWithParameters",
-          consumes = "application/json",
-          produces = "application/json")
+      uri = "/branches/{branchId}/printer/{printerId}/visitWithParameters",
+      consumes = "application/json",
+      produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public Visit createVisitFromReception(
-          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-          @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
-          @Body VisitParameters parameters,
-          @QueryValue Boolean printTicket) {
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
+      @Body VisitParameters parameters,
+      @QueryValue Boolean printTicket) {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -183,7 +181,7 @@ public class EntrypointController {
       throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
-            .containsAll(parameters.getServiceIds())) {
+        .containsAll(parameters.getServiceIds())) {
 
       return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket);
 

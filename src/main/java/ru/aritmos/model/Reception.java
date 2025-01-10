@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /* Приемная */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +21,7 @@ public class Reception {
   String branchId;
   /* Перечень идентификаторов принтера */
   List<Entity> printers;
+
   /* Перечень сеансов работы сотрудника */
   @JsonInclude(JsonInclude.Include.NON_NULL)
   List<ReceptionSession> receptionSessions = new ArrayList<>();

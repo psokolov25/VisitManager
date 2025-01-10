@@ -67,7 +67,7 @@ public class ServicePointController {
   @Get("/branches/{branchId}/printers")
   @ExecuteOn(TaskExecutors.IO)
   public List<Entity> getPrinters(
-          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     return visitService.getPrinters(branchId);
   }
 

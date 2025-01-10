@@ -1153,7 +1153,6 @@ public class VisitService {
       Optional<VisitEvent> event =
           visit.getVisitEvents().stream().max(Comparator.comparing(VisitEvent::getDateTime));
 
-
       if (event.isPresent() && event.get().getParameters().containsKey("servicePointId")) {
         VisitEvent visitEvent =
             visit.getQueueId() != null

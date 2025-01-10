@@ -28,8 +28,8 @@ services:
       - aritmosplatform-backend
     depends_on:
       - visitmanager-redis
-#      visitmanager-redis:
-#        condition: service_healthy
+    #      visitmanager-redis:
+    #        condition: service_healthy
     restart: always
 
   visitmanager-redis:

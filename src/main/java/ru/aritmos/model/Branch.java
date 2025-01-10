@@ -27,10 +27,12 @@ import ru.aritmos.service.VisitService;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @SuppressWarnings("unused")
 public class Branch extends BranchEntity {
-  /** Адрес отделения*/
-  String address="";
-  /** Описание отделения **/
-  String description="";
+  /** Адрес отделения */
+  String address = "";
+
+  /** Описание отделения * */
+  String description = "";
+
   /** Перечень настроек отделения */
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   HashMap<String, Object> parameterMap = new HashMap<>();

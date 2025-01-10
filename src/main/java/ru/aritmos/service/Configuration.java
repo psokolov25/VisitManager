@@ -44,10 +44,8 @@ public class Configuration {
       branch.getBreakReasons().put("5454e87a-9ace-46fd-be30-b00f7bb88688", "Вышел покурить");
       branch.getBreakReasons().put("75caee17-d8f3-49b1-b298-96bbb6ba19f3", "Вышел на обед");
       EntryPoint entryPoint = new EntryPoint();
-      entryPoint.setPrinter(Entity.builder()
-              .id("eb7ea46d-c995-4ca0-ba92-c92151473214")
-              .name("Intro18")
-              .build());
+      entryPoint.setPrinter(
+          Entity.builder().id("eb7ea46d-c995-4ca0-ba92-c92151473214").name("Intro18").build());
       entryPoint.setId("2");
       HashMap<String, EntryPoint> entryPoints = new HashMap<>();
       entryPoints.put(entryPoint.getId(), entryPoint);
@@ -97,11 +95,11 @@ public class Configuration {
               "099c43c1-40b5-4b80-928a-1d4b363152a8", "Старший финансовый консультант");
 
       ServicePoint servicePointBFSC =
-              new ServicePoint(
-                      "090bd53d-96ba-466b-9845-d64e81894964", "Самый старший финансовый консультант");
+          new ServicePoint(
+              "090bd53d-96ba-466b-9845-d64e81894964", "Самый старший финансовый консультант");
       ServicePoint servicePointBBFSC =
-              new ServicePoint(
-                      "f9e60eaf-b4af-4bf8-8d64-e70d2e949829", "Самый самый старший финансовый консультант");
+          new ServicePoint(
+              "f9e60eaf-b4af-4bf8-8d64-e70d2e949829", "Самый самый старший финансовый консультант");
 
       ServicePoint servicePointC =
           new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");

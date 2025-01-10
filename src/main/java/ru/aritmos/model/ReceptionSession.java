@@ -4,6 +4,7 @@ import io.micronaut.serde.annotation.Serdeable;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Data;
+
 /* Сеанс работы приемной */
 @Data
 @Builder
