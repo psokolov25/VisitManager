@@ -359,4 +359,9 @@ public class BranchService {
             .filter(f -> f.getLinkedQueueId().equals(queueId))
             .toList());
   }
+
+  public List<DeliveredService> getDeliveredServicesByBranchId(String branchId) {
+    Branch branch = this.getBranch(branchId);
+    return branch.getPossibleDeliveredServices().values().stream().toList();
+  }
 }

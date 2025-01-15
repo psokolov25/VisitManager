@@ -957,7 +957,7 @@ public class ServicePointController {
   }
 
   /**
-   * Получение возможный предоставленных услуг
+   * Получение возможный фактических услуг
    *
    * @param branchId идентификатор отделения
    * @return вызванный визит
@@ -1030,6 +1030,27 @@ public class ServicePointController {
 
     return branchService.getServicesByQueueId(branchId, queueId);
   }
+  /**
+   * Получение возможных оказанных услуг в отделении
+   *
+   * @param branchId идентификатор отделения   *
+   * @return список услуг
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные об услугах")
+  @Tag(name = "Фактические услуги")
+  @Tag(name = "Полный список")
+  @Get(
+          uri = "/branches/{branchId}/possibleDeliveredServices",
+          consumes = "application/json",
+          produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<DeliveredService> getDeliveredServicesByBranchId(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId
+          ) {
+
+    return branchService.getDeliveredServicesByBranchId(branchId);
+  }
 
   /**
    * Получение возможных итогов для услуги
@@ -1060,16 +1081,16 @@ public class ServicePointController {
   }
 
   /**
-   * Добавление предоставленной услуги
+   * Добавление фактической услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param deliveredServiceId идентификатор предоставленной услуги
+   * @param deliveredServiceId идентификатор фактической услуги
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Предоставленные услуги")
+  @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
   @Post(
       uri =
@@ -1128,6 +1149,7 @@ public class ServicePointController {
     Branch branch = branchService.getBranch(branchId);
     return branch.getMarks();
   }
+
 
   /**
    * Добавление пометки в формате объекта
@@ -1234,11 +1256,11 @@ public class ServicePointController {
   }
 
   /**
-   * Добавление итога предоставленной услуги текущей услуги
+   * Добавление итога фактической услуги текущей услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param deliveredServiceId идентификатор предоставленной услуги
+   * @param deliveredServiceId идентификатор фактической услуги
    * @param outcomeId идентификатор итога оказания услуги
    * @return вызванный визит
    */
@@ -1263,11 +1285,11 @@ public class ServicePointController {
   }
 
   /**
-   * Удаление итога предоставленной услуги текущей услуги
+   * Удаление итога фактической услуги текущей услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param deliveredServiceId идентификатор предоставленной услуги
+   * @param deliveredServiceId идентификатор фактической услуги
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
@@ -1289,7 +1311,7 @@ public class ServicePointController {
   }
 
   /**
-   * Удаление итога предоставленной услуги
+   * Удаление итога фактической услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1315,16 +1337,16 @@ public class ServicePointController {
   }
 
   /**
-   * Удаление предоставленной услуги
+   * Удаление фактической услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param deliveredServiceId идентификатор предоставленной услуги
+   * @param deliveredServiceId идентификатор фактической услуги
    * @return вызванный визит
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Предоставленные услуги")
+  @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
   @Delete(
       uri =

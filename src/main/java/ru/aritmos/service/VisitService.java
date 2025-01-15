@@ -622,11 +622,11 @@ public class VisitService {
   }
 
   /**
-   * Добавление оказанной услуги
+   * Добавление фактической услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param deliveredServiceId идентификатор оказанной услуги
+   * @param deliveredServiceId идентификатор фактической услуги
    * @return визит
    */
   public Visit addDeliveredService(
@@ -688,11 +688,11 @@ public class VisitService {
   }
 
   /**
-   * Удаление оказанной услуги
+   * Удаление фактической услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param deliveredServiceId идентификатор оказанной услуги
+   * @param deliveredServiceId идентификатор фактической услуги
    * @return визит
    */
   public Visit deleteDeliveredService(
@@ -969,11 +969,11 @@ public class VisitService {
   }
 
   /**
-   * Добавление итога оказанной услуги
+   * Добавление итога фактической услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param deliveredServiceId идентификатор оказанной услуги
+   * @param deliveredServiceId идентификатор фактической услуги
    * @param outcomeId идентификатор итога услуги
    * @return визит
    */
@@ -1044,11 +1044,11 @@ public class VisitService {
   }
 
   /**
-   * Удаление итога оказанной услуги
+   * Удаление итога фактической услуги
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param deliveredServiceId идентификатор оказанной услуги
+   * @param deliveredServiceId идентификатор фактической услуги
    * @return визит
    */
   public Visit deleteOutcomeDeliveredService(
