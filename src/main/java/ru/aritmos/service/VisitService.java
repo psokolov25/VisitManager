@@ -1379,8 +1379,6 @@ public class VisitService {
         HttpStatus.NOT_FOUND);
   }
 
-
-
   /**
    * Отложить визит в указанной точке обслуживания
    *
@@ -2522,8 +2520,17 @@ public class VisitService {
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
       return Optional.of(servicePoint);
+    } else if (isAutoCallMode) {
+      throw new BusinessException(
+          String.format(
+              "Service point %s cannot be turn on because auto call mode turned off in current branch!",
+              servicePointId),
+          eventService,
+          HttpStatus.CONFLICT);
+    } else {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      return Optional.of(servicePoint);
     }
-    return Optional.empty();
   }
 
   /**
