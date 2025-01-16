@@ -182,6 +182,7 @@ public enum VisitEvent {
                   BACK_TO_SERVICE_POINT_POOL,
                   TRANSFER_TO_SERVICE_POINT_POOL,
                   TRANSFER_TO_USER_POOL,
+                  TRANSFER_TO_QUEUE,
                   ADDED_MARK,
                   DELETED_MARK,
                   END,
