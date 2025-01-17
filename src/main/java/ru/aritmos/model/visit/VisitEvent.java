@@ -371,7 +371,9 @@ public enum VisitEvent {
           Map.entry(DELETED, VisitState.END),
           Map.entry(BACK_TO_USER_POOL, VisitState.WAITING_IN_USER_POOL),
           Map.entry(ADDED_DELIVERED_SERVICE_RESULT, VisitState.SERVING),
-          Map.entry(DELETED_DELIVERED_SERVICE, VisitState.SERVING));
+          Map.entry(DELETED_DELIVERED_SERVICE, VisitState.SERVING),
+          Map.entry(DELETED_DELIVERED_SERVICE_RESULT, VisitState.SERVING),
+          Map.entry(DELETED_SERVICE_RESULT, VisitState.SERVING));
   @Getter final Map<String, String> parameters = new HashMap<>();
   @JsonFormat public ZonedDateTime dateTime;
   VisitState visitState;
