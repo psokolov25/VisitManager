@@ -172,6 +172,7 @@ public enum VisitEvent {
                   TRANSFER_TO_QUEUE,
                   ADD_SERVICE,
                   ADDED_DELIVERED_SERVICE,
+                  ADDED_DELIVERED_SERVICE_RESULT,
                   ADDED_SERVICE_RESULT,
                   ADDED_MARK)),
           Map.entry(
@@ -188,14 +189,19 @@ public enum VisitEvent {
                   TRANSFER_TO_SERVICE_POINT_POOL,
                   TRANSFER_TO_USER_POOL,
                   TRANSFER_TO_QUEUE,
-                  ADDED_MARK,
                   END,
                   VISIT_END_TRANSACTION,
                   BACK_TO_QUEUE,
+                  ADDED_DELIVERED_SERVICE,
+                  ADDED_DELIVERED_SERVICE_RESULT,
+                  ADDED_SERVICE_RESULT,
                   ADDED_MARK)),
           Map.entry(
               NO_SHOW,
               List.of(
+                  ADDED_DELIVERED_SERVICE,
+                  ADDED_DELIVERED_SERVICE_RESULT,
+                  ADDED_SERVICE_RESULT,
                   ADDED_MARK,
                   DELETED_DELIVERED_SERVICE,
                   DELETED_MARK,
@@ -204,6 +210,9 @@ public enum VisitEvent {
           Map.entry(
               END,
               List.of(
+                  ADDED_DELIVERED_SERVICE,
+                  ADDED_DELIVERED_SERVICE_RESULT,
+                  ADDED_SERVICE_RESULT,
                   ADDED_MARK,
                   DELETED,
                   DELETED_DELIVERED_SERVICE,
@@ -336,6 +345,7 @@ public enum VisitEvent {
                   DELETED_SERVICE_RESULT,
                   STOP_SERVING,
                   ADDED_SERVICE_RESULT,
+                  ADDED_DELIVERED_SERVICE_RESULT,
                   ADDED_DELIVERED_SERVICE)),
           Map.entry(
               ADDED_MARK,
@@ -345,6 +355,7 @@ public enum VisitEvent {
                   STOP_SERVING,
                   ADDED_SERVICE_RESULT,
                   ADDED_DELIVERED_SERVICE,
+                  ADDED_DELIVERED_SERVICE_RESULT,
                   ADDED_MARK,
                   DELETED_DELIVERED_SERVICE,
                   DELETED_MARK,
@@ -374,6 +385,8 @@ public enum VisitEvent {
                   ADDED_SERVICE_RESULT,
                   ADDED_DELIVERED_SERVICE,
                   ADDED_MARK,
+                  ADDED_SERVICE_RESULT,
+                  ADDED_DELIVERED_SERVICE_RESULT,
                   DELETED_DELIVERED_SERVICE,
                   DELETED_MARK,
                   DELETED_DELIVERED_SERVICE_RESULT,

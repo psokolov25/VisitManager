@@ -1075,7 +1075,7 @@ public class VisitService {
 
         visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).setOutcome(null);
 
-        VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE_RESULT;
+        VisitEvent visitEvent = VisitEvent.DELETED_DELIVERED_SERVICE_RESULT;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
         visitEvent.getParameters().put("outcomeId", "");
