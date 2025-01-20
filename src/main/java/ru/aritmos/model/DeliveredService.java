@@ -11,11 +11,22 @@ import lombok.EqualsAndHashCode;
 @Data
 @Serdeable
 @SuppressWarnings("unused")
-public class DeliveredService extends BasedService {
+public class DeliveredService extends BasedService implements Cloneable {
   /** Идентификаторы подходящих услуг */
   List<String> serviceIds = new ArrayList<>();
 
   public DeliveredService(String id, String name) {
     super(id, name);
+  }
+
+  @Override
+  public DeliveredService clone() {
+    DeliveredService clone = (DeliveredService) super.clone();
+
+    clone.serviceIds = new ArrayList<>();
+    if (this.outcome != null) {
+      clone.outcome = this.outcome.clone();
+    }
+    return clone;
   }
 }

@@ -3,15 +3,17 @@ package ru.aritmos.model;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.HashMap;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 /** Услуга */
 @Serdeable
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Introspected
-public class Service extends BasedService {
+@AllArgsConstructor
+@NoArgsConstructor
+@SuppressWarnings("unused")
+public class Service extends BasedService implements Cloneable {
 
   /** Нормативное время обслуживания */
   Integer servingSL;
@@ -33,5 +35,19 @@ public class Service extends BasedService {
     this.servingSL = servingSL;
     this.linkedQueueId = linkedQueueId;
     this.isAvailable = true;
+  }
+
+  @Override
+  public Service clone() {
+    Service clone = (Service) super.clone();
+    clone.servingSL = this.servingSL;
+    clone.linkedQueueId = this.linkedQueueId;
+    clone.isAvailable = this.isAvailable;
+    clone.deliveredServices = new HashMap<>(deliveredServices);
+    if (this.outcome != null) {
+      clone.outcome = this.outcome;
+    }
+
+    return clone;
   }
 }

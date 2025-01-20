@@ -85,9 +85,9 @@ public class Configuration {
           new ServicePoint("a66ff6f4-4f4a-4009-8602-0dc278024cf2", "Финансовый консультант");
 
       HashMap<String, Service> serviceList = new HashMap<>();
-      serviceList.put(kassaService.getId(), kassaService);
-      serviceList.put(creditService.getId(), creditService);
-      serviceList.put(bigCreditService.getId(), bigCreditService);
+      serviceList.put(kassaService.getId(), kassaService.clone());
+      serviceList.put(creditService.getId(), creditService.clone());
+      serviceList.put(bigCreditService.getId(), bigCreditService.clone());
       branch.setServices(serviceList);
 
       ServicePoint servicePointFSC =

@@ -555,18 +555,18 @@ public class Branch extends BranchEntity {
                       (k2, v2) -> {
                         if (v2.getCurrentService() != null
                             && v2.getCurrentService().getId().equals(k)) {
-                          v2.setCurrentService(v);
+                          v2.setCurrentService(v.clone());
                         }
 
                         List<Service> unservedServices =
                             v2.getUnservedServices().stream()
-                                .map(m -> m.getId().equals(k) ? v : m)
+                                .map(m -> m.getId().equals(k) ? v.clone() : m)
                                 .toList();
                         v2.setUnservedServices(unservedServices);
 
                         List<Service> servedServices =
                             v2.getServedServices().stream()
-                                .map(m -> m.getId().equals(k) ? v : m)
+                                .map(m -> m.getId().equals(k) ? v.clone() : m)
                                 .toList();
                         v2.setServedServices(servedServices);
 
@@ -588,9 +588,9 @@ public class Branch extends BranchEntity {
                       });
             }
             eventService.sendChangedEvent(
-                "config", false, this.getServices().get(k), v, new HashMap<>(), "Update service");
+                "config", false, this.getServices().get(k), v.clone(), new HashMap<>(), "Update service");
           } else {
-            eventService.sendChangedEvent("config", false, null, v, new HashMap<>(), "Add service");
+            eventService.sendChangedEvent("config", false, null, v.clone(), new HashMap<>(), "Add service");
           }
           this.getServices().put(k, v);
         });

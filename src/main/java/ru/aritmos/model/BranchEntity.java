@@ -6,6 +6,7 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.NonFinal;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
@@ -13,11 +14,12 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Introspected
 @Jacksonized
-@SuperBuilder
+@SuperBuilder(builderMethodName = "baseBuilder")
+@NonFinal
 @AllArgsConstructor
 @NoArgsConstructor
 @Serdeable
-public class BranchEntity {
+public class BranchEntity implements Cloneable {
   /** Идентификатор */
   String id;
 
@@ -36,4 +38,19 @@ public class BranchEntity {
     this.id = id;
     this.name = name;
   }
+
+
+    @Override
+    public BranchEntity clone() {
+        try {
+            BranchEntity clone = (BranchEntity) super.clone();
+            clone.id = this.getId();
+            clone.name = this.getName();
+            clone.branchId = this.getBranchId();
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

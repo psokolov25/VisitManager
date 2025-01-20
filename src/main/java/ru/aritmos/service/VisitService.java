@@ -177,7 +177,7 @@ public class VisitService {
       ArrayList<Service> services = new ArrayList<>();
       visitParameters
           .getServiceIds()
-          .forEach(f -> services.add(currentBranch.getServices().get(f)));
+          .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
 
       return visitAutoCall(
           createVisit2(
@@ -205,7 +205,7 @@ public class VisitService {
       ArrayList<Service> services = new ArrayList<>();
       visitParameters
           .getServiceIds()
-          .forEach(f -> services.add(currentBranch.getServices().get(f)));
+          .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
 
       return visitAutoCall(
           createVisit2FromReception(
@@ -335,11 +335,12 @@ public class VisitService {
 
     if (!services.isEmpty()) {
       if (currentBranch.getServices().containsKey(services.get(0).getId())) {
-        Service currentService = currentBranch.getServices().get(services.get(0).getId());
+        Service currentService =
+            currentBranch.getServices().get(services.get(0).getId()).clone();
         List<Service> unServedServices = new ArrayList<>();
         services.stream()
             .skip(1)
-            .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId())));
+            .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId()).clone()));
 
         EntryPoint entryPoint;
 
@@ -442,11 +443,12 @@ public class VisitService {
 
     if (!services.isEmpty()) {
       if (currentBranch.getServices().containsKey(services.get(0).getId())) {
-        Service currentService = currentBranch.getServices().get(services.get(0).getId());
+        Service currentService =
+            currentBranch.getServices().get(services.get(0).getId()).clone();
         List<Service> unServedServices = new ArrayList<>();
         services.stream()
             .skip(1)
-            .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId())));
+            .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId()).clone()));
 
         Visit visit =
             Visit.builder()
@@ -655,7 +657,7 @@ public class VisitService {
               HttpStatus.CONFLICT);
         }
         DeliveredService deliveredService =
-            currentBranch.getPossibleDeliveredServices().get(deliveredServiceId);
+            currentBranch.getPossibleDeliveredServices().get(deliveredServiceId).clone();
         visit
             .getCurrentService()
             .getDeliveredServices()

@@ -2,10 +2,8 @@ package ru.aritmos.model;
 
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.HashMap;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 /** Базовая услуга */
 @EqualsAndHashCode(callSuper = false)
@@ -13,8 +11,9 @@ import lombok.NoArgsConstructor;
 @Serdeable
 @NoArgsConstructor
 @AllArgsConstructor
+
 @SuppressWarnings("unused")
-public class BasedService extends BranchEntity {
+public class BasedService extends BranchEntity implements Cloneable {
   HashMap<String, Outcome> possibleOutcomes = new HashMap<>();
 
   /** Итог обслуживания */
@@ -23,4 +22,13 @@ public class BasedService extends BranchEntity {
   public BasedService(String id, String name) {
     super(id, name);
   }
+
+    @Override
+    public BasedService clone() {
+        BasedService clone = (BasedService) super.clone();
+        clone.possibleOutcomes = this.possibleOutcomes;
+        clone.outcome = this.outcome;
+
+        return clone;
+    }
 }
