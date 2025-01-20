@@ -6,6 +6,7 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.service.VisitService;
+import ru.aritmos.service.rules.Rule;
 
 /** Отделение */
 @Data
@@ -30,9 +32,11 @@ public class Branch extends BranchEntity {
   /** Адрес отделения */
   String address = "";
 
-  /** Описание отделения * */
+  /** Описание отделения  */
   String description = "";
 
+  /** Правила вызова */
+  List<Rule> callRules = new ArrayList<>();
   /** Перечень настроек отделения */
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   HashMap<String, Object> parameterMap = new HashMap<>();

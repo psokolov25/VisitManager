@@ -16,11 +16,11 @@ public enum VisitEvent {
   CREATED,
   /** Визит размещен в очередь после создания */
   PLACED_IN_QUEUE,
-  /** Визит вызыве */
+  /** Визит вызове */
   CALLED,
   /** Визит повторно вызван */
   RECALLED,
-  /** Визит натат обслуживаться (текущая услуга) */
+  /** Визит начал обслуживаться (текущая услуга) */
   START_SERVING,
   /** Визит завершен обслуживаться (текущая услуга) */
   STOP_SERVING,
@@ -58,7 +58,7 @@ public enum VisitEvent {
   DELETED_DELIVERED_SERVICE_RESULT,
   /** В визит удален итог услуги */
   DELETED_SERVICE_RESULT,
-  /** У визита закночена транзакция */
+  /** У визита закончена транзакция */
   VISIT_END_TRANSACTION,
   /** Визит переведен из очереди */
   VISIT_TRANSFER_FROM_QUEUE,
@@ -409,7 +409,10 @@ public enum VisitEvent {
   // );
 
   public boolean canBeNext(VisitEvent next) {
-    return nextEvents.get(this).stream().anyMatch(e -> e.equals(next));
+    if (nextEvents.containsKey(this)) {
+      return nextEvents.get(this).stream().anyMatch(e -> e.equals(next));
+    }
+    return true;
   }
 
   public VisitState getState() {
