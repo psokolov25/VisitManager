@@ -647,7 +647,7 @@ public class VisitService {
               HttpStatus.NOT_FOUND);
         }
         if (currentBranch.getPossibleDeliveredServices().values().stream()
-            .noneMatch(f -> f.getServviceIds().contains(visit.getCurrentService().getId()))) {
+            .noneMatch(f -> f.getServiceIds().contains(visit.getCurrentService().getId()))) {
           throw new BusinessException(
               String.format(
                   "Current service cant add delivered service with id %s", deliveredServiceId),
@@ -713,7 +713,7 @@ public class VisitService {
               HttpStatus.NOT_FOUND);
         }
         if (currentBranch.getPossibleDeliveredServices().values().stream()
-            .noneMatch(f -> f.getServviceIds().contains(visit.getCurrentService().getId()))) {
+            .noneMatch(f -> f.getServiceIds().contains(visit.getCurrentService().getId()))) {
           throw new BusinessException(
               String.format(
                   "Current service cant delete delivered service with id %s", deliveredServiceId),
@@ -977,7 +977,7 @@ public class VisitService {
    * @param outcomeId идентификатор итога услуги
    * @return визит
    */
-  public Visit addOutcomeDeliveredService(
+  public Visit addOutcomeOfDeliveredService(
       String branchId, String servicePointId, String deliveredServiceId, String outcomeId) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -1011,7 +1011,7 @@ public class VisitService {
               eventService,
               HttpStatus.NOT_FOUND);
         } else {
-          Outcome outcome = visit.getCurrentService().getPossibleOutcomes().get(outcomeId);
+          Outcome outcome = visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).getPossibleOutcomes().get(outcomeId);
           visit
               .getCurrentService()
               .getDeliveredServices()

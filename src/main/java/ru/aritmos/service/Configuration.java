@@ -59,14 +59,14 @@ public class Configuration {
       creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
       DeliveredService creditCard =
           new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Кредитная карта");
-      creditCard.getServviceIds().add(creditService.getId());
+      creditCard.getServiceIds().add(creditService.getId());
       Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Выдана");
       creditCard.getPossibleOutcomes().put(creditCardGiven.getId(), creditCardGiven);
       branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
 
       DeliveredService insurance =
           new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Страховка");
-      insurance.getServviceIds().add(creditService.getId());
+      insurance.getServiceIds().add(creditService.getId());
       branch.getPossibleDeliveredServices().put(insurance.getId(), insurance);
 
       Queue queueBigCredit =

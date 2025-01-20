@@ -10,9 +10,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Serdeable
+@SuppressWarnings("unused")
 public class DeliveredService extends BasedService {
   /** Идентификаторы подходящих услуг */
-  List<String> servviceIds = new ArrayList<>();
+  List<String> serviceIds = new ArrayList<>();
 
   public DeliveredService(String id, String name) {
     super(id, name);

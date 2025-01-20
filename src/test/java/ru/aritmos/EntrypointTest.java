@@ -114,10 +114,10 @@ class EntrypointTest {
       serviceList.put(kassaService.getId(), kassaService);
       serviceList.put(creditService.getId(), creditService);
       serviceList.put(bigCreditService.getId(), bigCreditService);
-      creditCard.getServviceIds().add(creditService.getId());
-      creditCard.getServviceIds().add(bigCreditService.getId());
-      insurance.getServviceIds().add(creditService.getId());
-      insurance.getServviceIds().add(bigCreditService.getId());
+      creditCard.getServiceIds().add(creditService.getId());
+      creditCard.getServiceIds().add(bigCreditService.getId());
+      insurance.getServiceIds().add(creditService.getId());
+      insurance.getServiceIds().add(bigCreditService.getId());
 
       branch.setServices(serviceList);
       ServiceGroup creditServiceGroup =
@@ -304,7 +304,7 @@ class EntrypointTest {
       visitService.addDeliveredService(
           branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId);
 
-      visitService.addOutcomeDeliveredService(
+      visitService.addOutcomeOfDeliveredService(
           branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", creditCardId, creditCardGivenId);
       visitService.addOutcomeService(
           branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", acceptedOutcomeID);
