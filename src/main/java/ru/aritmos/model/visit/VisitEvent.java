@@ -64,7 +64,8 @@ public enum VisitEvent {
   VISIT_TRANSFER_FROM_QUEUE,
   /** Визит удален */
   DELETED;
-
+  /** Список событий, которые оповещают фронт енд
+   */
   private static final List<VisitEvent> frontEndVisitEvents =
       List.of(
           CREATED,
@@ -91,6 +92,7 @@ public enum VisitEvent {
           DELETED_DELIVERED_SERVICE_RESULT,
           DELETED_SERVICE_RESULT,
           DELETED);
+  /* Список событий, после которых начинается новая транзакция */
   private static final List<VisitEvent> newTransactionEvents =
       List.of(
           STOP_SERVING,
@@ -99,7 +101,7 @@ public enum VisitEvent {
           TRANSFER_TO_SERVICE_POINT_POOL,
           DELETED,
           TRANSFER_TO_USER_POOL);
-
+  /* Список событий завершающих транзакцию, с указанием статуса завершенной транзакции */
   private static final Map<VisitEvent, TransactionCompletionStatus> transactionStatus =
       Map.ofEntries(
           Map.entry(STOP_SERVING, TransactionCompletionStatus.STOP_SERVING),
@@ -112,7 +114,11 @@ public enum VisitEvent {
               TRANSFER_TO_SERVICE_POINT_POOL,
               TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT_POOL),
           Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_USER_POOL));
+  /* Список событий, которые не должны отправляться в топик статистики */
   private static final List<VisitEvent> notSendToStat = List.of(RECALLED);
+  /** Список запрещенных следующих событий, где ключ - событие, значение - список событий запрещенных быть следующими
+   * после события в ключе.
+   */
   private static final Map<VisitEvent, List<VisitEvent>> nextEvents =
       Map.ofEntries(/*
           Map.entry(CREATED, List.of(PLACED_IN_QUEUE, CALLED, RECALLED, ADDED_MARK, DELETED_MARK)),
@@ -411,6 +417,7 @@ public enum VisitEvent {
                   DELETED_MARK,
                   DELETED_DELIVERED_SERVICE_RESULT,
                   DELETED_SERVICE_RESULT))*/);
+  /* Список событий, с указанием, какое состояние визита наступает после него */
   private static final Map<VisitEvent, VisitState> visitStateMap =
       Map.ofEntries(
           Map.entry(CREATED, VisitState.CREATED),
@@ -440,19 +447,19 @@ public enum VisitEvent {
   @Getter final Map<String, String> parameters = new HashMap<>();
   @JsonFormat public ZonedDateTime dateTime;
   VisitState visitState;
-
+  /* Проверка на начало новой транзакции */
   public static Boolean isNewOfTransaction(VisitEvent visitEvent) {
     return VisitEvent.newTransactionEvents.stream().anyMatch(am -> am.equals(visitEvent));
   }
-
+  /* Проверка на необходимость не отправлять в статистику */
   public static Boolean isIgnoredInStat(VisitEvent visitEvent) {
     return notSendToStat.contains(visitEvent);
   }
-
+  /* Проверка на необходимость отправки на фронт */
   public static Boolean isFrontEndEvent(VisitEvent visitEvent) {
     return frontEndVisitEvents.contains(visitEvent);
   }
-
+  /* Получение статуса визита соответствующего событию */
   public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {
     if (transactionStatus.containsKey(visitEvent)) {
       return transactionStatus.get(visitEvent);
@@ -470,14 +477,14 @@ public enum VisitEvent {
   // TRANSFER_TO_QUEUE, List.of(VisitState.WAITING_IN_QUEUE),
   //  ADD_SERVICE, List.of()
   // );
-
+  /* Проверка на возможность следующего события после текущего */
   public boolean canBeNext(VisitEvent next) {
     if (nextEvents.containsKey(this)) {
       return nextEvents.get(this).stream().noneMatch(e -> e.equals(next));
     }
     return true;
   }
-
+  /* Получение статуса визита соответствующего событию */
   public VisitState getState() {
     visitState = visitStateMap.get(this);
     return visitState;
