@@ -16,12 +16,12 @@ public class Outcome extends BranchEntity implements Cloneable {
     super(id, name);
   }
 
-    @Override
-    public Outcome clone() {
-        Outcome clone = (Outcome) super.clone();
-        clone.code = this.code;
-        clone.name = this.name;
+  @Override
+  public Outcome clone() {
+    Outcome clone = (Outcome) super.clone();
+    clone.code = this.code;
+    clone.name = this.name;
 
-        return clone;
-    }
+    return clone;
+  }
 }

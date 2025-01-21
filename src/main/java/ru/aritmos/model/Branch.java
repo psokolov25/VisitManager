@@ -32,11 +32,12 @@ public class Branch extends BranchEntity {
   /** Адрес отделения */
   String address = "";
 
-  /** Описание отделения  */
+  /** Описание отделения */
   String description = "";
 
   /** Правила вызова */
   List<Rule> callRules = new ArrayList<>();
+
   /** Перечень настроек отделения */
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   HashMap<String, Object> parameterMap = new HashMap<>();
@@ -588,9 +589,15 @@ public class Branch extends BranchEntity {
                       });
             }
             eventService.sendChangedEvent(
-                "config", false, this.getServices().get(k), v.clone(), new HashMap<>(), "Update service");
+                "config",
+                false,
+                this.getServices().get(k),
+                v.clone(),
+                new HashMap<>(),
+                "Update service");
           } else {
-            eventService.sendChangedEvent("config", false, null, v.clone(), new HashMap<>(), "Add service");
+            eventService.sendChangedEvent(
+                "config", false, null, v.clone(), new HashMap<>(), "Add service");
           }
           this.getServices().put(k, v);
         });

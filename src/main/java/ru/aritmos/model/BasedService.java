@@ -2,7 +2,6 @@ package ru.aritmos.model;
 
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.HashMap;
-
 import lombok.*;
 
 /** Базовая услуга */

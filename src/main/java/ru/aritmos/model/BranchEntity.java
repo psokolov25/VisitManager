@@ -39,18 +39,17 @@ public class BranchEntity implements Cloneable {
     this.name = name;
   }
 
+  @Override
+  public BranchEntity clone() {
+    try {
+      BranchEntity clone = (BranchEntity) super.clone();
+      clone.id = this.getId();
+      clone.name = this.getName();
+      clone.branchId = this.getBranchId();
 
-    @Override
-    public BranchEntity clone() {
-        try {
-            BranchEntity clone = (BranchEntity) super.clone();
-            clone.id = this.getId();
-            clone.name = this.getName();
-            clone.branchId = this.getBranchId();
-
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
+      return clone;
+    } catch (CloneNotSupportedException e) {
+      throw new AssertionError();
     }
+  }
 }

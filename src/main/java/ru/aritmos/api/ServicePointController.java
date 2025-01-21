@@ -1030,10 +1030,11 @@ public class ServicePointController {
 
     return branchService.getServicesByQueueId(branchId, queueId);
   }
+
   /**
    * Получение возможных оказанных услуг в отделении
    *
-   * @param branchId идентификатор отделения   *
+   * @param branchId идентификатор отделения *
    * @return список услуг
    */
   @Tag(name = "Зона обслуживания")
@@ -1041,13 +1042,12 @@ public class ServicePointController {
   @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
   @Get(
-          uri = "/branches/{branchId}/possibleDeliveredServices",
-          consumes = "application/json",
-          produces = "application/json")
+      uri = "/branches/{branchId}/possibleDeliveredServices",
+      consumes = "application/json",
+      produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public List<DeliveredService> getDeliveredServicesByBranchId(
-          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId
-          ) {
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
 
     return branchService.getDeliveredServicesByBranchId(branchId);
   }
@@ -1149,7 +1149,6 @@ public class ServicePointController {
     Branch branch = branchService.getBranch(branchId);
     return branch.getMarks();
   }
-
 
   /**
    * Добавление пометки в формате объекта
