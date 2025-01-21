@@ -43,8 +43,8 @@ micronaut:
           techlogin: visitmanager
           techpassword: visitmanager
           keycloakurl: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.45:9090`}'
-          realm: Aritmos
-          client-secret: '${OAUTH_CLIENT_SECRET:UKuZgAFWxHQ8vDQ9JghzSEBqIiFHf2p8}' # <3>
+          realm: aritmos_platform
+          client-secret: '${OAUTH_CLIENT_SECRET:FqTLoxIQpLfejP925XPB2K5besestFQJ}' # <3>
           client-id: '${OAUTH_CLIENT_ID:myclient}' # <4>
 
   application:

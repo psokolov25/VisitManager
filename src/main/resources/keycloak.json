@@ -1,9 +1,9 @@
 {
-  "realm": "Aritmos",
+  "realm": "aritmos_platform",
   "auth-server-url": "http://keycloak:8080",
   "resource": "myclient",
   "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArHhyJ+eSka6FTNUK0/bXE/Os2WMs6jKz5+t5NlOn12uJ4f6UhJy8t6Uc5YfrSmfDcqEp5dEI7GWP7jcELW+FbA0yEIHoCgNo22SS8UYraBapm8xbJ3r+SbtL7oQvsSDqUASmBNtpOZI3QOAJJOTCHnCs/LyahuKhovYJKGT3snxQckAX/LmEJikNYnV6d85/5LeKi4wa2N2EG3m0UGA0Jfvg7PU7kQrMlp4Ap2DXbfNUP/jwhkB5+k1UvyXh2ofI76UaItOKN2RugnYRUCIvDbtR7N26BTsvicGlAHSRyxAj9ZXISVnfggDBw0/uCDWeAIN/fqci274VKlGZbNfG/wIDAQAB",
   "credentials": {
-    "secret": "tmB6aNdjdAfFdhYQitChR5fWCd59sLqK"
+    "secret": "FqTLoxIQpLfejP925XPB2K5besestFQJ"
   }
 }

@@ -114,7 +114,7 @@ public enum VisitEvent {
           Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_USER_POOL));
   private static final List<VisitEvent> notSendToStat = List.of(RECALLED);
   private static final Map<VisitEvent, List<VisitEvent>> nextEvents =
-      Map.ofEntries(
+      Map.ofEntries(/*
           Map.entry(CREATED, List.of(PLACED_IN_QUEUE, CALLED, RECALLED, ADDED_MARK, DELETED_MARK)),
           Map.entry(
               PLACED_IN_QUEUE,
@@ -410,7 +410,7 @@ public enum VisitEvent {
                   DELETED_DELIVERED_SERVICE,
                   DELETED_MARK,
                   DELETED_DELIVERED_SERVICE_RESULT,
-                  DELETED_SERVICE_RESULT)));
+                  DELETED_SERVICE_RESULT))*/);
   private static final Map<VisitEvent, VisitState> visitStateMap =
       Map.ofEntries(
           Map.entry(CREATED, VisitState.CREATED),
@@ -473,7 +473,7 @@ public enum VisitEvent {
 
   public boolean canBeNext(VisitEvent next) {
     if (nextEvents.containsKey(this)) {
-      return nextEvents.get(this).stream().anyMatch(e -> e.equals(next));
+      return nextEvents.get(this).stream().noneMatch(e -> e.equals(next));
     }
     return true;
   }

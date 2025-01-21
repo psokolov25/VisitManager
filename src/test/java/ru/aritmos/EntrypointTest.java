@@ -376,7 +376,7 @@ class EntrypointTest {
 
       Visit visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
 
-      Assertions.assertEquals(visit2.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
+      Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.getState().name());
     }
   }
 
