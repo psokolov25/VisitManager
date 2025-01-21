@@ -420,9 +420,10 @@ public enum VisitEvent {
                   DELETED_MARK,
                   DELETED_DELIVERED_SERVICE_RESULT,
                   DELETED_SERVICE_RESULT))*/ );
+
   /**
-   * Список разрешенных следующих состояний, где ключ - состояние, значение - список разрешенных состояний
-   * быть следующими после состояния в ключе.
+   * Список разрешенных следующих состояний, где ключ - состояние, значение - список разрешенных
+   * состояний быть следующими после состояния в ключе.
    */
   private static final Map<VisitState, List<VisitState>> nextStates =
       Map.ofEntries(
@@ -514,6 +515,7 @@ public enum VisitEvent {
                   VisitState.WAITING_IN_SERVICE_POOL,
                   VisitState.WAITING_IN_SP_POOL,
                   VisitState.END)));
+
   /* Список событий, с указанием, какое состояние визита наступает после него */
   private static final Map<VisitEvent, VisitState> visitStateMap =
       Map.ofEntries(
@@ -581,7 +583,8 @@ public enum VisitEvent {
   /* Проверка на возможность следующего события после текущего */
   public boolean canBeNext(VisitEvent next) {
     if (nextStates.containsKey(this.visitState)) {
-      return nextStates.get(this.getState()).stream().anyMatch(e -> e.equals(next.getState()));
+      return nextStates.get(this.getState()).stream().anyMatch(e -> e.equals(next.getState()))
+          || this.getState().equals(next.getState());
     }
     return true;
   }
