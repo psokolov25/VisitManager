@@ -1,7 +1,7 @@
 package ru.aritmos.model.visit;
 
 import io.micronaut.serde.annotation.Serdeable;
-
+/* Перечень возможных состояний */
 @Serdeable
 public enum VisitState {
   CREATED,

@@ -3,6 +3,7 @@ package ru.aritmos.model.visit;
 import io.micronaut.serde.annotation.Serdeable;
 
 @Serdeable
+/* Перечень состояний окончания транзакции */
 public enum TransactionCompletionStatus {
   OK,
   NO_SHOW,
