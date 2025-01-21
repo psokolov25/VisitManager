@@ -11,7 +11,6 @@ public enum VisitState {
   SERVING,
   WAITING_IN_USER_POOL,
   WAITING_IN_SERVICE_POOL,
-  WAITING_IN_SP_POOL,
   END
 
 
