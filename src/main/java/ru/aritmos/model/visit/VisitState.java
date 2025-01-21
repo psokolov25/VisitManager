@@ -1,6 +1,7 @@
 package ru.aritmos.model.visit;
 
 import io.micronaut.serde.annotation.Serdeable;
+
 /* Перечень возможных состояний */
 @Serdeable
 public enum VisitState {
@@ -12,4 +13,7 @@ public enum VisitState {
   WAITING_IN_SERVICE_POOL,
   WAITING_IN_SP_POOL,
   END
+
+
+
 }

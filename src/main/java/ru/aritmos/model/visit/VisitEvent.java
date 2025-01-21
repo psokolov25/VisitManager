@@ -11,6 +11,7 @@ import lombok.Getter;
 
 @Serdeable
 @JsonFormat
+@SuppressWarnings("unused")
 public enum VisitEvent {
   /** Визит создан */
   CREATED,
@@ -64,8 +65,8 @@ public enum VisitEvent {
   VISIT_TRANSFER_FROM_QUEUE,
   /** Визит удален */
   DELETED;
-  /** Список событий, которые оповещают фронт енд
-   */
+
+  /** Список событий, которые оповещают фронт енд */
   private static final List<VisitEvent> frontEndVisitEvents =
       List.of(
           CREATED,
@@ -92,6 +93,7 @@ public enum VisitEvent {
           DELETED_DELIVERED_SERVICE_RESULT,
           DELETED_SERVICE_RESULT,
           DELETED);
+
   /* Список событий, после которых начинается новая транзакция */
   private static final List<VisitEvent> newTransactionEvents =
       List.of(
@@ -114,13 +116,14 @@ public enum VisitEvent {
               TRANSFER_TO_SERVICE_POINT_POOL,
               TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT_POOL),
           Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_USER_POOL));
-  /* Список событий, которые не должны отправляться в топик статистики */
+  /* Список событий, которые не должны отправляться в топики статистики */
   private static final List<VisitEvent> notSendToStat = List.of(RECALLED);
-  /** Список запрещенных следующих событий, где ключ - событие, значение - список событий запрещенных быть следующими
-   * после события в ключе.
+
+  /**
+   * Список запрещенных следующих событий, где ключ - событие, значение - список событий запрещенных
+   * быть следующими после события в ключе.
    */
-  private static final Map<VisitEvent, List<VisitEvent>> nextEvents =
-      Map.ofEntries(/*
+  private static final Map<VisitEvent, List<VisitEvent>> nextEvents = Map.ofEntries(/*
           Map.entry(CREATED, List.of(PLACED_IN_QUEUE, CALLED, RECALLED, ADDED_MARK, DELETED_MARK)),
           Map.entry(
               PLACED_IN_QUEUE,
@@ -416,7 +419,101 @@ public enum VisitEvent {
                   DELETED_DELIVERED_SERVICE,
                   DELETED_MARK,
                   DELETED_DELIVERED_SERVICE_RESULT,
-                  DELETED_SERVICE_RESULT))*/);
+                  DELETED_SERVICE_RESULT))*/ );
+  /**
+   * Список разрешенных следующих состояний, где ключ - состояние, значение - список разрешенных состояний
+   * быть следующими после состояния в ключе.
+   */
+  private static final Map<VisitState, List<VisitState>> nextStates =
+      Map.ofEntries(
+          Map.entry(
+              VisitState.CREATED,
+              List.of(
+                  VisitState.CREATED,
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.CALLED,
+                  VisitState.SERVING,
+                  VisitState.WAITING_IN_USER_POOL,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_SP_POOL,
+                  VisitState.END)),
+          Map.entry(
+              VisitState.WAITING_IN_QUEUE,
+              List.of(
+                  VisitState.CREATED,
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.CALLED,
+                  VisitState.SERVING,
+                  VisitState.WAITING_IN_USER_POOL,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_SP_POOL,
+                  VisitState.END)),
+          Map.entry(
+              VisitState.CALLED,
+              List.of(
+                  VisitState.CREATED,
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.CALLED,
+                  VisitState.SERVING,
+                  VisitState.WAITING_IN_USER_POOL,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_SP_POOL,
+                  VisitState.END)),
+          Map.entry(
+              VisitState.SERVING,
+              List.of(
+                  VisitState.CREATED,
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.CALLED,
+                  VisitState.SERVING,
+                  VisitState.WAITING_IN_USER_POOL,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_SP_POOL,
+                  VisitState.END)),
+          Map.entry(
+              VisitState.WAITING_IN_USER_POOL,
+              List.of(
+                  VisitState.CREATED,
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.CALLED,
+                  VisitState.SERVING,
+                  VisitState.WAITING_IN_USER_POOL,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_SP_POOL,
+                  VisitState.END)),
+          Map.entry(
+              VisitState.WAITING_IN_SERVICE_POOL,
+              List.of(
+                  VisitState.CREATED,
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.CALLED,
+                  VisitState.SERVING,
+                  VisitState.WAITING_IN_USER_POOL,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_SP_POOL,
+                  VisitState.END)),
+          Map.entry(
+              VisitState.WAITING_IN_SP_POOL,
+              List.of(
+                  VisitState.CREATED,
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.CALLED,
+                  VisitState.SERVING,
+                  VisitState.WAITING_IN_USER_POOL,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_SP_POOL,
+                  VisitState.END)),
+          Map.entry(
+              VisitState.END,
+              List.of(
+                  VisitState.CREATED,
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.CALLED,
+                  VisitState.SERVING,
+                  VisitState.WAITING_IN_USER_POOL,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_SP_POOL,
+                  VisitState.END)));
   /* Список событий, с указанием, какое состояние визита наступает после него */
   private static final Map<VisitEvent, VisitState> visitStateMap =
       Map.ofEntries(
@@ -447,18 +544,22 @@ public enum VisitEvent {
   @Getter final Map<String, String> parameters = new HashMap<>();
   @JsonFormat public ZonedDateTime dateTime;
   VisitState visitState;
+
   /* Проверка на начало новой транзакции */
   public static Boolean isNewOfTransaction(VisitEvent visitEvent) {
     return VisitEvent.newTransactionEvents.stream().anyMatch(am -> am.equals(visitEvent));
   }
+
   /* Проверка на необходимость не отправлять в статистику */
   public static Boolean isIgnoredInStat(VisitEvent visitEvent) {
     return notSendToStat.contains(visitEvent);
   }
+
   /* Проверка на необходимость отправки на фронт */
   public static Boolean isFrontEndEvent(VisitEvent visitEvent) {
     return frontEndVisitEvents.contains(visitEvent);
   }
+
   /* Получение статуса визита соответствующего событию */
   public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {
     if (transactionStatus.containsKey(visitEvent)) {
@@ -479,11 +580,12 @@ public enum VisitEvent {
   // );
   /* Проверка на возможность следующего события после текущего */
   public boolean canBeNext(VisitEvent next) {
-    if (nextEvents.containsKey(this)) {
-      return nextEvents.get(this).stream().noneMatch(e -> e.equals(next));
+    if (nextStates.containsKey(this.visitState)) {
+      return nextStates.get(this.getState()).stream().anyMatch(e -> e.equals(next.getState()));
     }
     return true;
   }
+
   /* Получение статуса визита соответствующего событию */
   public VisitState getState() {
     visitState = visitStateMap.get(this);

@@ -335,8 +335,7 @@ public class VisitService {
 
     if (!services.isEmpty()) {
       if (currentBranch.getServices().containsKey(services.get(0).getId())) {
-        Service currentService =
-            currentBranch.getServices().get(services.get(0).getId()).clone();
+        Service currentService = currentBranch.getServices().get(services.get(0).getId()).clone();
         List<Service> unServedServices = new ArrayList<>();
         services.stream()
             .skip(1)
@@ -443,8 +442,7 @@ public class VisitService {
 
     if (!services.isEmpty()) {
       if (currentBranch.getServices().containsKey(services.get(0).getId())) {
-        Service currentService =
-            currentBranch.getServices().get(services.get(0).getId()).clone();
+        Service currentService = currentBranch.getServices().get(services.get(0).getId()).clone();
         List<Service> unServedServices = new ArrayList<>();
         services.stream()
             .skip(1)
@@ -661,7 +659,19 @@ public class VisitService {
         visit
             .getCurrentService()
             .getDeliveredServices()
-            .put(deliveredService.getId(), deliveredService);
+            .put(
+                !visit
+                        .getCurrentService()
+                        .getDeliveredServices()
+                        .containsKey(deliveredService.getId())
+                    ? deliveredService.getId()
+                    : deliveredService.getId()
+                        + "_"
+                        + (visit.getCurrentService().getDeliveredServices().keySet().stream()
+                                .filter(f -> f.contains(deliveredService.getId()))
+                                .count()
+                            + 1),
+                deliveredService);
 
         VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
@@ -1013,7 +1023,13 @@ public class VisitService {
               eventService,
               HttpStatus.NOT_FOUND);
         } else {
-          Outcome outcome = visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).getPossibleOutcomes().get(outcomeId);
+          Outcome outcome =
+              visit
+                  .getCurrentService()
+                  .getDeliveredServices()
+                  .get(deliveredServiceId)
+                  .getPossibleOutcomes()
+                  .get(outcomeId);
           visit
               .getCurrentService()
               .getDeliveredServices()
