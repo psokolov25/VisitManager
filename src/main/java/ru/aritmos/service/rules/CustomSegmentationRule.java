@@ -31,7 +31,7 @@ public class CustomSegmentationRule extends Entity implements SegmentationRule {
   CustomSegmentationRule(String branchId, String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getSegmentationRules().containsKey(segmentationRuleId)) {
-      groovyScript = currentBranch.getCustomSegmentationRules().get(segmentationRuleId);
+      groovyScript = currentBranch.getCustomSegmentationRules().get(segmentationRuleId).toBuilder().build();
     } else {
       throw new BusinessException(
           "Segmentation rule not found!", eventService, HttpStatus.NOT_FOUND);
