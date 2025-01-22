@@ -1029,12 +1029,12 @@ public class VisitService {
                   .getDeliveredServices()
                   .get(deliveredServiceId)
                   .getPossibleOutcomes()
-                  .get(outcomeId);
+                  .get(outcomeId).clone();
           visit
               .getCurrentService()
               .getDeliveredServices()
               .get(deliveredServiceId)
-              .setOutcome(outcome);
+              .setOutcome(outcome.clone());
 
           VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE_RESULT;
           visitEvent.getParameters().put("servicePointId", servicePoint.getId());

@@ -1276,8 +1276,8 @@ public class ServicePointController {
   public Visit addOutcomeOfDeliveredService(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @PathVariable() String deliveredServiceId,
-      @PathVariable(defaultValue = "462bac1a-568a-4f1f-9548-1c7b61792b4b") String outcomeId) {
+      @PathVariable(defaultValue = "35d73fdd-1597-4d94-a087-fd8a99c9d1ed") String deliveredServiceId,
+      @PathVariable(defaultValue = "8dc29622-cd87-4384-85a7-04b66b28dd0f") String outcomeId) {
 
     return visitService.addOutcomeOfDeliveredService(
         branchId, servicePointId, deliveredServiceId, outcomeId);
