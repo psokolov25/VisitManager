@@ -85,6 +85,18 @@ public class Branch extends BranchEntity {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   HashMap<String, SegmentationRuleData> segmentationRules = new HashMap<>();
 
+  /**
+   * Перечень запрограммированных скриптом Groovy правил сегментации
+   */
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  HashMap<String, GroovyScript> customSegmentationRules = new HashMap<>();
+
+  /**
+   * Перечень запрограммированных скриптом Groovy правил вызова
+   */
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  HashMap<String, GroovyScript> customCallRules = new HashMap<>();
+
   /** Группы услуг */
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   HashMap<String, ServiceGroup> serviceGroups = new HashMap<>();

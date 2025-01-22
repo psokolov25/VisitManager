@@ -1,10 +1,7 @@
 package ru.aritmos.model;
 
 import io.micronaut.serde.annotation.Serdeable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 @SuppressWarnings("unused")
 @Data
@@ -12,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode
+@NoArgsConstructor
 public class Entity {
   String id;
   String name;
