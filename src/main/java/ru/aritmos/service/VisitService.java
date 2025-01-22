@@ -952,7 +952,7 @@ public class VisitService {
               eventService,
               HttpStatus.CONFLICT);
         else {
-          Outcome outcome = visit.getCurrentService().getPossibleOutcomes().get(outcomeId);
+          Outcome outcome = visit.getCurrentService().getPossibleOutcomes().get(outcomeId).clone();
           visit.getCurrentService().setOutcome(outcome);
 
           VisitEvent visitEvent = VisitEvent.ADDED_SERVICE_RESULT;
