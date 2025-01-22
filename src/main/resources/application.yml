@@ -34,7 +34,7 @@ micronaut:
       enabled: true
   application:
     rules:
-      segmentation: simple  #custom|simple
+
       callRuleApiUrl: http://localhost:8085/customcallrule
     returnTimeDelay: 8000
     name: visitmanager

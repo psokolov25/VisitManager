@@ -1,5 +1,6 @@
 package ru.aritmos.api;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -8,6 +9,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
+
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.*;
@@ -93,7 +95,8 @@ public class EntrypointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "2") String entryPointId,
       @Body ArrayList<String> serviceIds,
-      @QueryValue Boolean printTicket) {
+      @QueryValue(defaultValue = "false") Boolean printTicket,
+      @Nullable @QueryValue String segmentationRuleId) {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -105,7 +108,12 @@ public class EntrypointController {
 
       VisitParameters visitParameters =
           VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
-      return visitService.createVisit(branchId, entryPointId, visitParameters, printTicket);
+      if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
+        return visitService.createVisit(branchId, entryPointId, visitParameters, printTicket);
+      } else {
+        return visitService.createVisit(
+            branchId, entryPointId, visitParameters, printTicket, segmentationRuleId);
+      }
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -134,7 +142,8 @@ public class EntrypointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "2") String entryPointId,
       @Body VisitParameters parameters,
-      @QueryValue Boolean printTicket) {
+      @QueryValue Boolean printTicket,
+      @Nullable @QueryValue String segmentationRuleId) {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -143,8 +152,12 @@ public class EntrypointController {
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(parameters.getServiceIds())) {
-
-      return visitService.createVisit(branchId, entryPointId, parameters, printTicket);
+      if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
+        return visitService.createVisit(branchId, entryPointId, parameters, printTicket);
+      } else {
+        return visitService.createVisit(
+            branchId, entryPointId, parameters, printTicket, segmentationRuleId);
+      }
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -173,7 +186,9 @@ public class EntrypointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
       @Body VisitParameters parameters,
-      @QueryValue Boolean printTicket) {
+      @QueryValue Boolean printTicket,
+      @Nullable @QueryValue String segmentationRuleId
+      ) {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -182,8 +197,13 @@ public class EntrypointController {
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(parameters.getServiceIds())) {
-
-      return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket);
+      if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
+        return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket);
+      }
+      else
+      {
+        return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket,segmentationRuleId);
+      }
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
