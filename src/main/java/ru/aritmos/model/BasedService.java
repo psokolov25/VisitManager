@@ -10,7 +10,6 @@ import lombok.*;
 @Serdeable
 @NoArgsConstructor
 @AllArgsConstructor
-
 @SuppressWarnings("unused")
 public class BasedService extends BranchEntity implements Cloneable {
   HashMap<String, Outcome> possibleOutcomes = new HashMap<>();
@@ -22,12 +21,12 @@ public class BasedService extends BranchEntity implements Cloneable {
     super(id, name);
   }
 
-    @Override
-    public BasedService clone() {
-        BasedService clone = (BasedService) super.clone();
-        clone.possibleOutcomes = this.possibleOutcomes;
-        clone.outcome = this.outcome;
+  @Override
+  public BasedService clone() {
+    BasedService clone = (BasedService) super.clone();
+    clone.possibleOutcomes = this.possibleOutcomes;
+    clone.outcome = this.outcome;
 
-        return clone;
-    }
+    return clone;
+  }
 }

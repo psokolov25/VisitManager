@@ -5,5 +5,5 @@ import ru.aritmos.service.rules.Rule;
 
 @SuppressWarnings("unused")
 public interface GroovyRule extends Rule {
-    GroovyScript getScript();
+  GroovyScript getScript();
 }

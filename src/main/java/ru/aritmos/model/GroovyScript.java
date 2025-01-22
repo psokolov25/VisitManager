@@ -26,7 +26,6 @@ public class GroovyScript {
     inputParameters.forEach(binding::setVariable);
     script.run();
     // Передача двух тестовых визитов
-      outputParameters.putAll(binding
-              .getVariables());
+    outputParameters.putAll(binding.getVariables());
   }
 }

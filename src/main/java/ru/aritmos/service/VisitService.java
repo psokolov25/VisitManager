@@ -1029,7 +1029,8 @@ public class VisitService {
                   .getDeliveredServices()
                   .get(deliveredServiceId)
                   .getPossibleOutcomes()
-                  .get(outcomeId).clone();
+                  .get(outcomeId)
+                  .clone();
           visit
               .getCurrentService()
               .getDeliveredServices()
