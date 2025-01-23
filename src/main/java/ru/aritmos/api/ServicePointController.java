@@ -1106,9 +1106,30 @@ public class ServicePointController {
 
     return visitService.addDeliveredService(branchId, servicePointId, deliveredServiceId);
   }
+  /**
+   * Получение текстовых заметок в визите
+   *
+   * @param branchId идентификатор отделения
+   * @param visitId идентификатор точки обслуживания   *
+   * @return визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Заметки")
+  @Tag(name = "Полный список")
+  @Get(
+          uri = "/branches/{branchId}/visits/{visitId}/marks",
+          produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<Mark> getMarks(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+          @PathVariable String visitId) {
+
+    return visitService.getMarks(branchId, visitId);
+  }
 
   /**
-   * Удаление текстовой пометки в визит
+   * Удаление текстовой заметки в визите
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1117,7 +1138,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Пометки")
+  @Tag(name = "Заметки")
   @Tag(name = "Полный список")
   @Delete(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}",
@@ -1130,16 +1151,16 @@ public class ServicePointController {
 
     return visitService.deleteMark(branchId, servicePointId, markId);
   }
-
+  
   /**
-   * Возвращение списка возможных меток отделения
+   * Возвращение списка возможных заметок отделения
    *
    * @param branchId идентификатор отделения
    * @return список меток
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Пометки")
+  @Tag(name = "Заметки")
   @Tag(name = "Полный список")
   @Get(uri = "/branches/{branchId}/marks/", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1151,7 +1172,7 @@ public class ServicePointController {
   }
 
   /**
-   * Добавление пометки в формате объекта
+   * Добавление заметки в формате объекта
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1160,7 +1181,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Пометки")
+  @Tag(name = "Заметки")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}",

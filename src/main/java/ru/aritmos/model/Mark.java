@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+@SuppressWarnings("unused")
 public class Mark {
   /** Идентификатор пометки */
   String id;
@@ -20,4 +21,6 @@ public class Mark {
 
   /** Дата и время пометки */
   ZonedDateTime markDate;
+
+  User author;
 }

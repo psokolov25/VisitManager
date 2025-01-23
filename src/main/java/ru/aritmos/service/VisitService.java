@@ -35,10 +35,7 @@ public class VisitService {
   @Inject PrinterService printerService;
   CallRule waitingTimeCallRule;
   CallRule lifeTimeCallRule;
-  @Inject
-  SegmentationRule segmentationRule;
-
-
+  @Inject SegmentationRule segmentationRule;
 
   @Inject
   public void setWaitingTimeCallRule(@Named("MaxWaitingTimeCallRule") CallRule callRule) {
@@ -190,6 +187,7 @@ public class VisitService {
       throw new BusinessException("Services not found!", eventService);
     }
   }
+
   /**
    * Создание визита с указанием правила сегментации
    *
@@ -201,18 +199,27 @@ public class VisitService {
    * @return созданный визит
    */
   public Visit createVisit(
-          String branchId, String entryPointId, VisitParameters visitParameters, Boolean printTicket,String segmentationRuleId) {
+      String branchId,
+      String entryPointId,
+      VisitParameters visitParameters,
+      Boolean printTicket,
+      String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
-            .anyMatch(visitParameters.getServiceIds()::contains)) {
+        .anyMatch(visitParameters.getServiceIds()::contains)) {
       ArrayList<Service> services = new ArrayList<>();
       visitParameters
-              .getServiceIds()
-              .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
+          .getServiceIds()
+          .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
 
       return visitAutoCall(
-              createVisit2(
-                      branchId, entryPointId, services, visitParameters.getParameters(), printTicket,segmentationRuleId));
+          createVisit2(
+              branchId,
+              entryPointId,
+              services,
+              visitParameters.getParameters(),
+              printTicket,
+              segmentationRuleId));
 
     } else {
       throw new BusinessException("Services not found!", eventService);
@@ -246,6 +253,7 @@ public class VisitService {
       throw new BusinessException("Services not found!", eventService);
     }
   }
+
   /**
    * Создание визита из приемной
    *
@@ -256,18 +264,27 @@ public class VisitService {
    * @return созданный визит
    */
   public Visit createVisitFromReception(
-          String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket,String segmentationRuleId) {
+      String branchId,
+      String printerId,
+      VisitParameters visitParameters,
+      Boolean printTicket,
+      String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
-            .anyMatch(visitParameters.getServiceIds()::contains)) {
+        .anyMatch(visitParameters.getServiceIds()::contains)) {
       ArrayList<Service> services = new ArrayList<>();
       visitParameters
-              .getServiceIds()
-              .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
+          .getServiceIds()
+          .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
 
       return visitAutoCall(
-              createVisit2FromReception(
-                      branchId, printerId, services, visitParameters.getParameters(), printTicket,segmentationRuleId));
+          createVisit2FromReception(
+              branchId,
+              printerId,
+              services,
+              visitParameters.getParameters(),
+              printTicket,
+              segmentationRuleId));
 
     } else {
       throw new BusinessException("Services not found!", eventService);
@@ -491,12 +508,12 @@ public class VisitService {
    * @return визит
    */
   public Visit createVisit2(
-          String branchId,
-          String entryPointId,
-          ArrayList<Service> services,
-          HashMap<String, String> parametersMap,
-          Boolean printTicket,
-          String segmentationRuleId) {
+      String branchId,
+      String entryPointId,
+      ArrayList<Service> services,
+      HashMap<String, String> parametersMap,
+      Boolean printTicket,
+      String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -504,54 +521,54 @@ public class VisitService {
         Service currentService = currentBranch.getServices().get(services.get(0).getId()).clone();
         List<Service> unServedServices = new ArrayList<>();
         services.stream()
-                .skip(1)
-                .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId()).clone()));
+            .skip(1)
+            .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId()).clone()));
 
         EntryPoint entryPoint;
 
         if (!currentBranch.getEntryPoints().containsKey(entryPointId)) {
           throw new BusinessException(
-                  "EntryPoint not found in branch configuration!", eventService);
+              "EntryPoint not found in branch configuration!", eventService);
         } else {
           entryPoint = currentBranch.getEntryPoints().get(entryPointId);
         }
 
         Visit visit =
-                Visit.builder()
-                        .id(UUID.randomUUID().toString())
-                        .status("WAITING")
-                        .entryPoint(entryPoint)
-                        .printTicket(printTicket)
-                        .branchId(branchId)
-                        .branchName(currentBranch.getName())
-                        .currentService(currentService)
-                        .unservedServices(unServedServices)
-                        .createDateTime(ZonedDateTime.now())
-                        .visitMarks(new ArrayList<>())
-                        .visitEvents(new ArrayList<>())
-                        .returnTimeDelay(0L)
-                        // .updateDateTime(ZonedDateTime.now())
-                        // .transferDateTime(ZonedDateTime.now())
-                        // .endDateTime(ZonedDateTime.now())
-                        .servicePointId(null)
-                        .servedServices(new ArrayList<>())
-                        .parameterMap(parametersMap)
-                        .build();
+            Visit.builder()
+                .id(UUID.randomUUID().toString())
+                .status("WAITING")
+                .entryPoint(entryPoint)
+                .printTicket(printTicket)
+                .branchId(branchId)
+                .branchName(currentBranch.getName())
+                .currentService(currentService)
+                .unservedServices(unServedServices)
+                .createDateTime(ZonedDateTime.now())
+                .visitMarks(new ArrayList<>())
+                .visitEvents(new ArrayList<>())
+                .returnTimeDelay(0L)
+                // .updateDateTime(ZonedDateTime.now())
+                // .transferDateTime(ZonedDateTime.now())
+                // .endDateTime(ZonedDateTime.now())
+                .servicePointId(null)
+                .servedServices(new ArrayList<>())
+                .parameterMap(parametersMap)
+                .build();
         Queue serviceQueue;
-        Optional<Queue> queue=segmentationRule.getQueue(visit, currentBranch,segmentationRuleId);
+        Optional<Queue> queue = segmentationRule.getQueue(visit, currentBranch, segmentationRuleId);
         if (queue.isPresent()) {
           serviceQueue = queue.get();
 
           serviceQueue.setTicketCounter(
-                  branchService.incrementTicetCounter(branchId, serviceQueue));
+              branchService.incrementTicetCounter(branchId, serviceQueue));
           visit.setQueueId(serviceQueue.getId());
           visit.setTicket(
-                  (serviceQueue.getTicketPrefix()
-                          + String.format("%03d", serviceQueue.getTicketCounter())));
+              (serviceQueue.getTicketPrefix()
+                  + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event
-                  .getParameters()
-                  .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+              .getParameters()
+              .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
           event.dateTime = ZonedDateTime.now();
 
           branchService.updateVisit(visit, event, this);
@@ -559,14 +576,14 @@ public class VisitService {
             VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
             queueEvent.dateTime = ZonedDateTime.now();
             queueEvent
-                    .getParameters()
-                    .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+                .getParameters()
+                .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             visit.setQueueId(serviceQueue.getId());
 
             if (printTicket
-                    && entryPoint.getPrinter() != null
-                    && entryPoint.getPrinter().getId() != null) {
+                && entryPoint.getPrinter() != null
+                && entryPoint.getPrinter().getId() != null) {
               printerService.print(entryPoint.getPrinter().getId(), visit);
             }
 
@@ -590,7 +607,6 @@ public class VisitService {
     throw new BusinessException("Queue  not found in branch configuration!", eventService);
   }
 
-
   /**
    * Создание визита из приемной
    *
@@ -601,11 +617,12 @@ public class VisitService {
    * @return визит
    */
   public Visit createVisit2FromReception(
-          String branchId,
-          String printerId,
-          ArrayList<Service> services,
-          HashMap<String, String> parametersMap,
-          Boolean printTicket,String segmentationRuleId) {
+      String branchId,
+      String printerId,
+      ArrayList<Service> services,
+      HashMap<String, String> parametersMap,
+      Boolean printTicket,
+      String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -613,45 +630,45 @@ public class VisitService {
         Service currentService = currentBranch.getServices().get(services.get(0).getId()).clone();
         List<Service> unServedServices = new ArrayList<>();
         services.stream()
-                .skip(1)
-                .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId()).clone()));
+            .skip(1)
+            .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId()).clone()));
 
         Visit visit =
-                Visit.builder()
-                        .id(UUID.randomUUID().toString())
-                        .status("WAITING")
-                        .printTicket(printTicket)
-                        .branchId(branchId)
-                        .branchName(currentBranch.getName())
-                        .currentService(currentService)
-                        .unservedServices(unServedServices)
-                        .createDateTime(ZonedDateTime.now())
-                        .visitMarks(new ArrayList<>())
-                        .visitEvents(new ArrayList<>())
-                        .returnTimeDelay(0L)
-                        // .updateDateTime(ZonedDateTime.now())
-                        // .transferDateTime(ZonedDateTime.now())
-                        // .endDateTime(ZonedDateTime.now())
-                        .servicePointId(null)
-                        .servedServices(new ArrayList<>())
-                        .parameterMap(parametersMap)
-                        .build();
+            Visit.builder()
+                .id(UUID.randomUUID().toString())
+                .status("WAITING")
+                .printTicket(printTicket)
+                .branchId(branchId)
+                .branchName(currentBranch.getName())
+                .currentService(currentService)
+                .unservedServices(unServedServices)
+                .createDateTime(ZonedDateTime.now())
+                .visitMarks(new ArrayList<>())
+                .visitEvents(new ArrayList<>())
+                .returnTimeDelay(0L)
+                // .updateDateTime(ZonedDateTime.now())
+                // .transferDateTime(ZonedDateTime.now())
+                // .endDateTime(ZonedDateTime.now())
+                .servicePointId(null)
+                .servedServices(new ArrayList<>())
+                .parameterMap(parametersMap)
+                .build();
         Queue serviceQueue;
 
-        Optional<Queue> queue=segmentationRule.getQueue(visit, currentBranch,segmentationRuleId);
+        Optional<Queue> queue = segmentationRule.getQueue(visit, currentBranch, segmentationRuleId);
         if (queue.isPresent()) {
           serviceQueue = queue.get();
 
           serviceQueue.setTicketCounter(
-                  branchService.incrementTicetCounter(branchId, serviceQueue));
+              branchService.incrementTicetCounter(branchId, serviceQueue));
           visit.setQueueId(serviceQueue.getId());
           visit.setTicket(
-                  (serviceQueue.getTicketPrefix()
-                          + String.format("%03d", serviceQueue.getTicketCounter())));
+              (serviceQueue.getTicketPrefix()
+                  + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event
-                  .getParameters()
-                  .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+              .getParameters()
+              .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
           event.dateTime = ZonedDateTime.now();
 
           branchService.updateVisit(visit, event, this);
@@ -659,13 +676,13 @@ public class VisitService {
             VisitEvent queueEvent = VisitEvent.PLACED_IN_QUEUE;
             queueEvent.dateTime = ZonedDateTime.now();
             queueEvent
-                    .getParameters()
-                    .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+                .getParameters()
+                .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             visit.setQueueId(serviceQueue.getId());
 
             if (printTicket
-                    && currentBranch.getReception().getPrinters().stream()
+                && currentBranch.getReception().getPrinters().stream()
                     .anyMatch(f -> f.getId().equals(printerId))) {
               printerService.print(printerId, visit);
             }
@@ -1094,6 +1111,12 @@ public class VisitService {
           throw new BusinessException(
               "Current service is null!", eventService, HttpStatus.NOT_FOUND);
         mark.setMarkDate(ZonedDateTime.now());
+        if (servicePoint.getUser() != null) {
+          User user=servicePoint.getUser().toBuilder().build();
+          user.setName(servicePoint.getUser().getName());
+          user.setId(servicePoint.getUser().getId());
+          mark.setAuthor(user);
+        }
         visit.getVisitMarks().add(mark);
         VisitEvent visitEvent = VisitEvent.ADDED_MARK;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
@@ -1160,11 +1183,11 @@ public class VisitService {
   }
 
   /**
-   * Удаление пометки в визите
+   * Удаление заметки в визите
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param markId идентификатор пометки
+   * @param markId идентификатор заметки
    * @return визит
    */
   public Visit deleteMark(String branchId, String servicePointId, String markId) {
@@ -1178,11 +1201,30 @@ public class VisitService {
   }
 
   /**
-   * Добавление пометки в визите
+   * Просмотр заметок в визите
+   *
+   * @param branchId идентификатор отделения
+   * @param visitId идентификатор точки обслуживания   *
+   * @return визит
+   */
+  public List<Mark> getMarks(String branchId, String visitId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    if (currentBranch.getAllVisits().containsKey(visitId)) {
+      Visit visit = currentBranch.getAllVisits().get(visitId);
+      return visit.getVisitMarks();
+      } else {
+        throw new BusinessException(
+            String.format("Visit %s not found!", visitId), eventService, HttpStatus.NOT_FOUND);
+      }
+    }
+
+
+  /**
+   * Добавление заметки в визите
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param markId идентификатор пометки
+   * @param markId идентификатор заметки
    * @return визит
    */
   public Visit addMark(String branchId, String servicePointId, String markId) {
