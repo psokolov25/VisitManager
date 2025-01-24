@@ -7,10 +7,16 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Serdeable
 @JsonFormat
+
+@AllArgsConstructor
+@NoArgsConstructor
 @SuppressWarnings("unused")
 public enum VisitEvent {
   /** Визит создан */
@@ -51,8 +57,10 @@ public enum VisitEvent {
   ADDED_DELIVERED_SERVICE_RESULT,
   /** В визит добавлен итог услуги */
   ADDED_SERVICE_RESULT,
-  /** В визит добавлена пометка */
+  /** В визит добавлена марки */
   ADDED_MARK,
+  /** В визит добавлена заметки */
+  ADDED_NOTE,
   /** В визит удалена пометка */
   DELETED_MARK,
   /** В визит удален итог фактической услуги */
@@ -461,6 +469,7 @@ public enum VisitEvent {
           Map.entry(ADDED_SERVICE_RESULT, VisitState.SERVING),
           Map.entry(ADD_SERVICE, VisitState.SERVING),
           Map.entry(ADDED_MARK, VisitState.SERVING),
+          Map.entry(ADDED_NOTE, VisitState.SERVING),
           Map.entry(DELETED_MARK, VisitState.SERVING),
           Map.entry(STOP_SERVING, VisitState.SERVING),
           Map.entry(NO_SHOW, VisitState.END),

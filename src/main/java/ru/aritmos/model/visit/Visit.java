@@ -25,6 +25,7 @@ import ru.aritmos.model.Service;
 @Introspected
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("unused")
 public class Visit {
   /** Идентификатор визита */
   String id;
@@ -96,9 +97,13 @@ public class Visit {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   List<Service> servedServices;
 
-  /** Заметки визита */
+  /** Марки визита */
   @JsonInclude(JsonInclude.Include.NON_NULL)
   List<Mark> visitMarks;
+
+  /** Заметки визита */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  List<Mark> visitNotes;
 
   /** Время ожидания в последней очереди в секундах */
   Long waitingTime;

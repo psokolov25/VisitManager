@@ -1108,7 +1108,7 @@ public class ServicePointController {
   }
 
   /**
-   * Получение текстовых заметок в визите
+   * Получение  марков в визите
    *
    * @param branchId идентификатор отделения
    * @param visitId идентификатор точки обслуживания *
@@ -1116,7 +1116,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Заметки")
+  @Tag(name = "Марки")
   @Tag(name = "Полный список")
   @Get(uri = "/branches/{branchId}/visits/{visitId}/marks", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1128,7 +1128,7 @@ public class ServicePointController {
   }
 
   /**
-   * Удаление текстовой заметки в визите
+   * Удаление марки в визите
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1137,7 +1137,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Заметки")
+  @Tag(name = "Марки")
   @Tag(name = "Полный список")
   @Delete(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}",
@@ -1152,14 +1152,14 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращение списка возможных заметок отделения
+   * Возвращение списка возможных марков отделения
    *
    * @param branchId идентификатор отделения
    * @return список меток
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Заметки")
+  @Tag(name = "Марки")
   @Tag(name = "Полный список")
   @Get(uri = "/branches/{branchId}/marks/", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1171,7 +1171,7 @@ public class ServicePointController {
   }
 
   /**
-   * Добавление заметки в формате объекта
+   * Добавление марки в формате объекта
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1180,7 +1180,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
-  @Tag(name = "Заметки")
+  @Tag(name = "Марки")
   @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}",
@@ -1194,6 +1194,51 @@ public class ServicePointController {
 
     return visitService.addMark(branchId, servicePointId, markId);
   }
+  /**
+   * Добавление заметки в виде текста
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param noteText текст заметки
+   * @return визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Заметки")
+  @Tag(name = "Полный список")
+  @Post(
+          uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/notes",
+          consumes = "application/json",
+          produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Visit addNoteAsText(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+          @Body String noteText ) {
+
+    return visitService.addNote(branchId, servicePointId, noteText);
+  }
+
+  /**
+   * Получение текстовых заметок в визите
+   *
+   * @param branchId идентификатор отделения
+   * @param visitId идентификатор точки обслуживания *
+   * @return визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Обслуживание")
+  @Tag(name = "Заметки")
+  @Tag(name = "Полный список")
+  @Get(uri = "/branches/{branchId}/visits/{visitId}/notes", produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public List<Mark> getNotes(
+          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+          @PathVariable String visitId) {
+
+    return visitService.getNotes(branchId, visitId);
+  }
+
 
   /**
    * Добавление итога текущей услуги
