@@ -10,7 +10,6 @@ import io.micronaut.serde.annotation.Serdeable;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -60,19 +59,19 @@ public class User extends BranchEntityWithVisits {
   /** Отделение, в которой сотрудник работал до перерыва */
   String lastBranchId;
 
-  @Override
-  @JsonProperty("username")
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  public String getName() {
-    return this.name;
-  }
-
   public User(String id, String name) {
     super(id, name);
   }
 
   public User(String name) {
     super(name);
+  }
+
+  @Override
+  @JsonProperty("username")
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  public String getName() {
+    return this.name;
   }
 
   @JsonProperty

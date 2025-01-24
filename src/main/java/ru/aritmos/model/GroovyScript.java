@@ -5,7 +5,6 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

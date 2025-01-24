@@ -3,11 +3,9 @@ package ru.aritmos.service.rules;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Branch;
@@ -17,15 +15,13 @@ import ru.aritmos.model.SegmentationRuleData;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
 
-
 @Singleton
 @SuppressWarnings("unchecked")
 public class SegmentationRule {
-  @Inject
-  BranchService branchService;
-  @Inject
-  EventService eventService;
+  @Inject BranchService branchService;
+  @Inject EventService eventService;
   GroovyScript groovyScript;
+
   /**
    * Возвращает очередь согласно текущей услуги визита, если у услуги предусмотрено правило -
    * выполняется оно, если нет - берется очередь с указанной для очереди услугой
@@ -34,7 +30,6 @@ public class SegmentationRule {
    * @param branch отделение
    * @return Очередь
    */
-
   public Optional<Queue> getQueue(Visit visit, Branch branch) {
     if (visit.getCurrentService() != null) {
       Optional<String> queueId =
@@ -50,18 +45,17 @@ public class SegmentationRule {
     return Optional.empty();
   }
 
-  public Optional<Queue> getQueue(Visit visit, Branch branch,String segmentationRuleId) {
+  public Optional<Queue> getQueue(Visit visit, Branch branch, String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branch.getId());
     if (currentBranch.getSegmentationRules().containsKey(segmentationRuleId)) {
       groovyScript =
-              currentBranch.getCustomSegmentationRules().get(segmentationRuleId).toBuilder().build();
+          currentBranch.getCustomSegmentationRules().get(segmentationRuleId).toBuilder().build();
     } else {
       throw new BusinessException(
-              "Segmentation rule not found!", eventService, HttpStatus.NOT_FOUND);
+          "Segmentation rule not found!", eventService, HttpStatus.NOT_FOUND);
     }
-    Map<String,Object> inputParameters=groovyScript.getInputParameters();
-    if (inputParameters.containsKey("visit")
-            && inputParameters.containsKey("branch")) {
+    Map<String, Object> inputParameters = groovyScript.getInputParameters();
+    if (inputParameters.containsKey("visit") && inputParameters.containsKey("branch")) {
       inputParameters.put("visit", visit);
       inputParameters.put("branch", branch);
       groovyScript.Execute();
@@ -72,9 +66,10 @@ public class SegmentationRule {
       } else return Optional.empty();
     } else {
       throw new BusinessException(
-              "Input parameter visit or branch not found!", eventService, HttpStatus.NOT_FOUND);
+          "Input parameter visit or branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
   }
+
   /**
    * Поиск идентификатора очереди в правиле сегментации
    *

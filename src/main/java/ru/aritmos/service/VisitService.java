@@ -1112,7 +1112,7 @@ public class VisitService {
               "Current service is null!", eventService, HttpStatus.NOT_FOUND);
         mark.setMarkDate(ZonedDateTime.now());
         if (servicePoint.getUser() != null) {
-          User user=servicePoint.getUser().toBuilder().build();
+          User user = servicePoint.getUser().toBuilder().build();
           user.setName(servicePoint.getUser().getName());
           user.setId(servicePoint.getUser().getId());
           mark.setAuthor(user);
@@ -1204,7 +1204,7 @@ public class VisitService {
    * Просмотр заметок в визите
    *
    * @param branchId идентификатор отделения
-   * @param visitId идентификатор точки обслуживания   *
+   * @param visitId идентификатор точки обслуживания *
    * @return визит
    */
   public List<Mark> getMarks(String branchId, String visitId) {
@@ -1212,12 +1212,11 @@ public class VisitService {
     if (currentBranch.getAllVisits().containsKey(visitId)) {
       Visit visit = currentBranch.getAllVisits().get(visitId);
       return visit.getVisitMarks();
-      } else {
-        throw new BusinessException(
-            String.format("Visit %s not found!", visitId), eventService, HttpStatus.NOT_FOUND);
-      }
+    } else {
+      throw new BusinessException(
+          String.format("Visit %s not found!", visitId), eventService, HttpStatus.NOT_FOUND);
     }
-
+  }
 
   /**
    * Добавление заметки в визите

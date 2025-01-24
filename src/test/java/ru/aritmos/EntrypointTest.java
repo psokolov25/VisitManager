@@ -357,7 +357,7 @@ class EntrypointTest {
     visitParameters.getParameters().put("sex", "male");
     visitParameters.getParameters().put("age", "33-55");
     visitParameters.setServiceIds(serviceIds);
-    Visit visit = entrypointController.createVisit(branchId, "1", visitParameters, false,null);
+    Visit visit = entrypointController.createVisit(branchId, "1", visitParameters, false, null);
     // Visit visit=visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -406,7 +406,7 @@ class EntrypointTest {
     visitParameters.getParameters().put("sex", "male");
     visitParameters.getParameters().put("age", "33-55");
     visitParameters.setServiceIds(serviceIds);
-    Visit visit = entrypointController.createVisit(branchId, "1", visitParameters, false,null);
+    Visit visit = entrypointController.createVisit(branchId, "1", visitParameters, false, null);
     // Visit visit=visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -1077,7 +1077,8 @@ class EntrypointTest {
                       }
                     })
                 .build(),
-            false,null);
+            false,
+            null);
 
     Assertions.assertEquals(visit.getQueueId(), "bd4b586e-c93e-4e07-9a76-586dd84ddea5");
     Optional<Visit> visitForConfirm =
@@ -1123,7 +1124,8 @@ class EntrypointTest {
                       }
                     })
                 .build(),
-            false,null);
+            false,
+            null);
 
     Assertions.assertEquals(visit.getQueueId(), "bd4b586e-c93e-4e07-9a76-586dd84ddea5");
     Optional<Visit> visitForConfirm =
