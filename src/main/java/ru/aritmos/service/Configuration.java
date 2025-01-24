@@ -119,6 +119,7 @@ public class Configuration {
         Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(psokolovUser.getName());
 
         if (userInfo.isPresent()) {
+          psokolovUser.setId(userInfo.get().getId());
           psokolovUser.setFirstName(userInfo.get().getFirstName());
           psokolovUser.setLastName(userInfo.get().getLastName());
         }
