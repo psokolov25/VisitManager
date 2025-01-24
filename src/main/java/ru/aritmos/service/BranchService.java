@@ -170,6 +170,7 @@ public class BranchService {
       User user = branch.getUsers().get(userName);
       if (userInfo.isPresent()) {
         user.setId(userInfo.get().getId());
+        user.setEmail(userInfo.get().getEmail());
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
       }
@@ -215,6 +216,7 @@ public class BranchService {
       User user = new User(userName);
       if (userInfo.isPresent()) {
         user.setId(userInfo.get().getId());
+        user.setEmail(userInfo.get().getEmail());
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
       } else {

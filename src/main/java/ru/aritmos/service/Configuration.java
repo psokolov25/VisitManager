@@ -120,6 +120,7 @@ public class Configuration {
 
         if (userInfo.isPresent()) {
           psokolovUser.setId(userInfo.get().getId());
+          psokolovUser.setEmail(userInfo.get().getEmail());
           psokolovUser.setFirstName(userInfo.get().getFirstName());
           psokolovUser.setLastName(userInfo.get().getLastName());
         }
