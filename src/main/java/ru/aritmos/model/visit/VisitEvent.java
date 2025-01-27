@@ -7,14 +7,12 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Serdeable
 @JsonFormat
-
 @AllArgsConstructor
 @NoArgsConstructor
 @SuppressWarnings("unused")
@@ -119,7 +117,6 @@ public enum VisitEvent {
           Map.entry(DELETED, TransactionCompletionStatus.REMOVED_BY_EMP),
           Map.entry(PLACED_IN_QUEUE, TransactionCompletionStatus.TRANSFER_TO_QUEUE),
           Map.entry(TRANSFER_TO_QUEUE, TransactionCompletionStatus.TRANSFER_TO_QUEUE),
-          Map.entry(BACK_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_STAFF),
           Map.entry(
               TRANSFER_TO_SERVICE_POINT_POOL,
               TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT_POOL),
