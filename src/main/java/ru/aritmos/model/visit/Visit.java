@@ -136,8 +136,11 @@ public class Visit {
   /** Идентификатор очереди */
   @Schema(nullable = true)
   String queueId;
-
+  /** Массив событий **/
   List<VisitEvent> visitEvents;
+
+  @JsonIgnore
+  List<VisitEventInformation> visitEventInformationList;
 
   /** Лимит ожидания после возвращения визита в очередь */
   private Long returnTimeDelay;
@@ -197,18 +200,18 @@ public class Visit {
     ArrayList<ArrayList<VisitEventInformation>> result = new ArrayList<>();
     ArrayList<VisitEventInformation> subresult = new ArrayList<>();
     result.add(subresult);
-    for (VisitEvent f : this.visitEvents) {
+    for (VisitEventInformation f : this.getVisitEventInformationList()) {
 
       VisitEventInformation visitEventDateTime =
           VisitEventInformation.builder()
-              .visitEvent(f)
-              .eventDateTime(f.dateTime)
+              .visitEvent(f.visitEvent)
+              .eventDateTime(f.getEventDateTime())
               .parameters(f.getParameters())
               .transactionCompletionStatus(
-                  VisitEvent.isNewOfTransaction(f) ? VisitEvent.getStatus(f) : null)
+                  VisitEvent.isNewOfTransaction(f.visitEvent) ? VisitEvent.getStatus(f.visitEvent) : null)
               .build();
       subresult.add(visitEventDateTime);
-      if (VisitEvent.isNewOfTransaction(f)) {
+      if (VisitEvent.isNewOfTransaction(f.visitEvent)) {
         subresult = new ArrayList<>();
         result.add(subresult);
       }

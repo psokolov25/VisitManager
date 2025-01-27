@@ -22,6 +22,7 @@ import ru.aritmos.model.Queue;
 import ru.aritmos.model.tiny.TinyClass;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
+import ru.aritmos.model.visit.VisitEventInformation;
 import ru.aritmos.service.rules.CallRule;
 import ru.aritmos.service.rules.SegmentationRule;
 
@@ -320,11 +321,29 @@ public class VisitService {
     if (visit.getVisitEvents().isEmpty()) {
       if (!event.equals(VisitEvent.CREATED))
         throw new BusinessException("wasn't early created", eventService, HttpStatus.CONFLICT);
-      else visit.getVisitEvents().add(event);
+      else {
+        visit
+            .getVisitEventInformationList()
+            .add(
+                VisitEventInformation.builder()
+                    .visitEvent(event)
+                    .parameters(new HashMap<>(event.getParameters()))
+                    .eventDateTime(event.dateTime != null ? event.dateTime : ZonedDateTime.now())
+                    .build());
+        visit.getVisitEvents().add(event);
+      }
 
     } else {
       VisitEvent prevEvent = visit.getVisitEvents().get(visit.getVisitEvents().size() - 1);
       if (prevEvent.canBeNext(event)) {
+        visit
+            .getVisitEventInformationList()
+            .add(
+                VisitEventInformation.builder()
+                    .visitEvent(event)
+                    .parameters(new HashMap<>(event.getParameters()))
+                    .eventDateTime(event.dateTime != null ? event.dateTime : ZonedDateTime.now())
+                    .build());
         visit.getVisitEvents().add(event);
 
       } else
@@ -439,6 +458,7 @@ public class VisitService {
                 .visitMarks(new ArrayList<>())
                 .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
+                .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
@@ -546,8 +566,9 @@ public class VisitService {
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
                 .visitMarks(new ArrayList<>())
-                    .visitNotes(new ArrayList<>())
+                .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
+                .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
@@ -646,8 +667,9 @@ public class VisitService {
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
                 .visitMarks(new ArrayList<>())
-                    .visitNotes(new ArrayList<>())
+                .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
+                .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
@@ -748,6 +770,7 @@ public class VisitService {
                 .visitMarks(new ArrayList<>())
                 .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
+                .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
@@ -844,8 +867,9 @@ public class VisitService {
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
                 .visitMarks(new ArrayList<>())
-                    .visitNotes(new ArrayList<>())
+                .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
+                .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
@@ -3467,5 +3491,4 @@ public class VisitService {
           String.format("Visit %s not found!", visitId), eventService, HttpStatus.NOT_FOUND);
     }
   }
-
 }
