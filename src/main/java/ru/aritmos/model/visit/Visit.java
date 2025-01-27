@@ -136,11 +136,11 @@ public class Visit {
   /** Идентификатор очереди */
   @Schema(nullable = true)
   String queueId;
-  /** Массив событий **/
+
+  /** Массив событий * */
   List<VisitEvent> visitEvents;
 
-  @JsonIgnore
-  List<VisitEventInformation> visitEventInformationList;
+  @JsonIgnore List<VisitEventInformation> visitEventInformationList;
 
   /** Лимит ожидания после возвращения визита в очередь */
   private Long returnTimeDelay;
@@ -208,7 +208,9 @@ public class Visit {
               .eventDateTime(f.getEventDateTime())
               .parameters(f.getParameters())
               .transactionCompletionStatus(
-                  VisitEvent.isNewOfTransaction(f.visitEvent) ? VisitEvent.getStatus(f.visitEvent) : null)
+                  VisitEvent.isNewOfTransaction(f.visitEvent)
+                      ? VisitEvent.getStatus(f.visitEvent)
+                      : null)
               .build();
       subresult.add(visitEventDateTime);
       if (VisitEvent.isNewOfTransaction(f.visitEvent)) {
