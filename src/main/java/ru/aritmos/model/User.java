@@ -68,7 +68,7 @@ public class User extends BranchEntityWithVisits {
   }
 
   @Override
-  @JsonProperty("username")
+  @JsonProperty("name")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   public String getName() {
     return this.name;
