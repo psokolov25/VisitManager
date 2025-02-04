@@ -32,33 +32,38 @@ public class SegmentationRule {
     if (visit.getCurrentService() != null
         && visit.getCurrentService().getServiceGroupId() != null) {
       Service service = visit.getCurrentService();
-      ServiceGroup serviceGroup = branch.getServiceGroups().get(service.getServiceGroupId());
-      try {
-        if (serviceGroup.getServiceIds().contains(visit.getCurrentService().getId())) {
-          Optional<String> queueId =
-              checkSegmentationRules(
-                  visit,
-                  branch.getSegmentationRules().values().stream()
-                      .filter(
-                          segmentationRuleData ->
-                              segmentationRuleData.getServiceGroupId().equals(serviceGroup.getId()))
-                      .toList());
-          if (queueId.isPresent()) {
-            return Optional.of(branch.getQueues().get(queueId.get()));
-          }
-          Optional<Queue> queueByGroovy =
-              getQueue(visit, branch, serviceGroup.getSegmentationRuleId());
-          if (queueByGroovy.isPresent()) {
-            return queueByGroovy;
-          }
-        }
-      } catch (Exception ex) {
-        throw new SystemException(ex.getMessage(), eventService);
-      }
+      if (branch.getServiceGroups().containsKey(service.getServiceGroupId())) {
+        ServiceGroup serviceGroup = branch.getServiceGroups().get(service.getServiceGroupId());
+        try {
 
-      if (branch.getQueues().containsKey(visit.getCurrentService().getLinkedQueueId())) {
-        return Optional.of(branch.getQueues().get(visit.getCurrentService().getLinkedQueueId()));
+          if (serviceGroup.getServiceIds().contains(visit.getCurrentService().getId())) {
+            Optional<String> queueId =
+                checkSegmentationRules(
+                    visit,
+                    branch.getSegmentationRules().values().stream()
+                        .filter(
+                            segmentationRuleData ->
+                                segmentationRuleData
+                                    .getServiceGroupId()
+                                    .equals(serviceGroup.getId()))
+                        .toList());
+            if (queueId.isPresent()) {
+              return Optional.of(branch.getQueues().get(queueId.get()));
+            }
+            Optional<Queue> queueByGroovy =
+                getQueue(visit, branch, serviceGroup.getSegmentationRuleId());
+            if (queueByGroovy.isPresent()) {
+              return queueByGroovy;
+            }
+          }
+        } catch (Exception ex) {
+          throw new SystemException(ex.getMessage(), eventService);
+        }
       }
+    }
+      assert visit.getCurrentService() != null;
+      if (branch.getQueues().containsKey(visit.getCurrentService().getLinkedQueueId())) {
+      return Optional.of(branch.getQueues().get(visit.getCurrentService().getLinkedQueueId()));
     }
 
     return Optional.empty();
