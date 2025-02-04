@@ -137,7 +137,7 @@ public class Visit {
   @Schema(nullable = true)
   String queueId;
 
-  /** Массив событий * */
+  /** Массив событий */
   List<VisitEvent> visitEvents;
 
   @JsonIgnore List<VisitEventInformation> visitEventInformationList;

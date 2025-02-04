@@ -186,8 +186,7 @@ public class EntrypointController {
       @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
       @Body VisitParameters parameters,
       @QueryValue Boolean printTicket,
-      @Nullable @QueryValue String segmentationRuleId
-      ) {
+      @Nullable @QueryValue String segmentationRuleId) {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -198,10 +197,9 @@ public class EntrypointController {
         .containsAll(parameters.getServiceIds())) {
       if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
         return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket);
-      }
-      else
-      {
-        return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket,segmentationRuleId);
+      } else {
+        return visitService.createVisitFromReception(
+            branchId, printerId, parameters, printTicket, segmentationRuleId);
       }
 
     } else {

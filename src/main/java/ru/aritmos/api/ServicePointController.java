@@ -1108,7 +1108,7 @@ public class ServicePointController {
   }
 
   /**
-   * Получение  марков в визите
+   * Получение марков в визите
    *
    * @param branchId идентификатор отделения
    * @param visitId идентификатор точки обслуживания *
@@ -1194,6 +1194,7 @@ public class ServicePointController {
 
     return visitService.addMark(branchId, servicePointId, markId);
   }
+
   /**
    * Добавление заметки в виде текста
    *
@@ -1207,14 +1208,14 @@ public class ServicePointController {
   @Tag(name = "Заметки")
   @Tag(name = "Полный список")
   @Post(
-          uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/notes",
-          consumes = "application/json",
-          produces = "application/json")
+      uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/notes",
+      consumes = "application/json",
+      produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public Visit addNoteAsText(
-          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-          @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-          @Body String noteText ) {
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @Body String noteText) {
 
     return visitService.addNote(branchId, servicePointId, noteText);
   }
@@ -1233,12 +1234,11 @@ public class ServicePointController {
   @Get(uri = "/branches/{branchId}/visits/{visitId}/notes", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public List<Mark> getNotes(
-          @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-          @PathVariable String visitId) {
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable String visitId) {
 
     return visitService.getNotes(branchId, visitId);
   }
-
 
   /**
    * Добавление итога текущей услуги
