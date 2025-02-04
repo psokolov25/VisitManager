@@ -8,10 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
-import ru.aritmos.model.Branch;
-import ru.aritmos.model.GroovyScript;
-import ru.aritmos.model.Queue;
-import ru.aritmos.model.SegmentationRuleData;
+import ru.aritmos.exceptions.SystemException;
+import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
 
@@ -30,13 +28,34 @@ public class SegmentationRule {
    * @param branch отделение
    * @return Очередь
    */
-  public Optional<Queue> getQueue(Visit visit, Branch branch) {
-    if (visit.getCurrentService() != null) {
-      Optional<String> queueId =
-          checkSegmentationRules(visit, branch.getSegmentationRules().values().stream().toList());
-      if (queueId.isPresent()) {
-        return Optional.of(branch.getQueues().get(queueId.get()));
+  public Optional<Queue> getQueue(Visit visit, Branch branch) throws SystemException {
+    if (visit.getCurrentService() != null
+        && visit.getCurrentService().getServiceGroupId() != null) {
+      Service service = visit.getCurrentService();
+      ServiceGroup serviceGroup = branch.getServiceGroups().get(service.getServiceGroupId());
+      try {
+        if (serviceGroup.getServiceIds().contains(visit.getCurrentService().getId())) {
+          Optional<String> queueId =
+              checkSegmentationRules(
+                  visit,
+                  branch.getSegmentationRules().values().stream()
+                      .filter(
+                          segmentationRuleData ->
+                              segmentationRuleData.getServiceGroupId().equals(serviceGroup.getId()))
+                      .toList());
+          if (queueId.isPresent()) {
+            return Optional.of(branch.getQueues().get(queueId.get()));
+          }
+          Optional<Queue> queueByGroovy =
+              getQueue(visit, branch, serviceGroup.getSegmentationRuleId());
+          if (queueByGroovy.isPresent()) {
+            return queueByGroovy;
+          }
+        }
+      } catch (Exception ex) {
+        throw new SystemException(ex.getMessage(), eventService);
       }
+
       if (branch.getQueues().containsKey(visit.getCurrentService().getLinkedQueueId())) {
         return Optional.of(branch.getQueues().get(visit.getCurrentService().getLinkedQueueId()));
       }
@@ -47,6 +66,9 @@ public class SegmentationRule {
 
   public Optional<Queue> getQueue(Visit visit, Branch branch, String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branch.getId());
+    if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
+      return Optional.empty();
+    }
     if (currentBranch.getSegmentationRules().containsKey(segmentationRuleId)) {
       groovyScript =
           currentBranch.getCustomSegmentationRules().get(segmentationRuleId).toBuilder().build();

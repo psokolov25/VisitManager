@@ -22,6 +22,7 @@ import ru.aritmos.api.ManagementController;
 import ru.aritmos.api.ServicePointController;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
+import ru.aritmos.exceptions.SystemException;
 import ru.aritmos.model.*;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.visit.Visit;
@@ -210,7 +211,7 @@ class EntrypointTest {
 
   /** Проверка правильности формаирования номера талона */
   @Test
-  void checkUpdateVisit() {
+  void checkUpdateVisit() throws SystemException {
     Service service;
     service =
         managementController.getBranch(branchId).getServices().values().stream()
@@ -245,7 +246,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkConfirmVisit() throws InterruptedException {
+  void checkConfirmVisit() throws InterruptedException, SystemException {
     Service service;
     service =
         branchService.getBranch(branchId).getServices().values().stream()
@@ -275,7 +276,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkConfirmVisitWithCallRule() throws InterruptedException {
+  void checkConfirmVisitWithCallRule() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -332,7 +333,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkConfirmVisitWithCallRuleTwoServices() throws InterruptedException {
+  void checkConfirmVisitWithCallRuleTwoServices() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -381,7 +382,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkConfirmVisitWithCallRuleMaxLifeTimeTwoServices() throws InterruptedException {
+  void checkConfirmVisitWithCallRuleMaxLifeTimeTwoServices() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -431,7 +432,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkBackUserToPoolVisit() throws InterruptedException {
+  void checkBackUserToPoolVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -492,7 +493,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkPostPoneVisit() throws InterruptedException {
+  void checkPostPoneVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -550,7 +551,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkBackServicePointPoolVisit() throws InterruptedException {
+  void checkBackServicePointPoolVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -610,7 +611,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkBackQueueVisit() throws InterruptedException {
+  void checkBackQueueVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -668,7 +669,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkBackToUserPoolVisit() throws InterruptedException {
+  void checkBackToUserPoolVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -726,7 +727,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkTransferToServicePoolVisit() throws InterruptedException {
+  void checkTransferToServicePoolVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -774,7 +775,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkTransferToUserPoolVisit() throws InterruptedException {
+  void checkTransferToUserPoolVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -821,7 +822,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkTransferToQueueVisit() throws InterruptedException {
+  void checkTransferToQueueVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -868,7 +869,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkTransferToPoolVisitWithCallRuleFromQueue() throws InterruptedException {
+  void checkTransferToPoolVisitWithCallRuleFromQueue() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -910,7 +911,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkTransferToUserPoolVisitWithCallRuleFromQueue() throws InterruptedException {
+  void checkTransferToUserPoolVisitWithCallRuleFromQueue() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -952,7 +953,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkcreateVirtualVisit() throws InterruptedException {
+  void checkcreateVirtualVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -988,7 +989,7 @@ class EntrypointTest {
    * @throws InterruptedException исключение вызываемое прерыванием потока
    */
   @Test
-  void checkNoShowVisit() throws InterruptedException {
+  void checkNoShowVisit() throws InterruptedException, SystemException {
     Service service;
     service =
         managementController.getBranch(branchId).getServices().values().stream()
@@ -1019,7 +1020,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkNoShowVisitWithoutConfirm() throws InterruptedException {
+  void checkNoShowVisitWithoutConfirm() throws InterruptedException, SystemException {
     Service service;
     service =
         managementController.getBranch(branchId).getServices().values().stream()
@@ -1051,7 +1052,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkConfirmVisitWithRule() throws InterruptedException {
+  void checkConfirmVisitWithRule() throws InterruptedException, SystemException {
     Service service;
     service =
         branchService.getBranch(branchId).getServices().values().stream()
@@ -1098,7 +1099,7 @@ class EntrypointTest {
   }
 
   @Test
-  void checkConfirmVisitWithRuleInterrupted() throws InterruptedException {
+  void checkConfirmVisitWithRuleInterrupted() throws InterruptedException, SystemException {
     Service service;
     service =
         branchService.getBranch(branchId).getServices().values().stream()
@@ -1144,7 +1145,7 @@ class EntrypointTest {
 
   /** Проверка корректности формирования номера талона */
   @Test
-  void checkTicetNumberlogic() {
+  void checkTicetNumberlogic() throws SystemException {
 
     Service service;
     service =
@@ -1171,7 +1172,7 @@ class EntrypointTest {
 
   /** Проверка правильности работы счетчика визитов */
   @Test
-  void checkVisitCounter() {
+  void checkVisitCounter() throws SystemException {
     Service service;
     service =
         managementController.getBranch(branchId).getServices().values().stream()
@@ -1201,7 +1202,7 @@ class EntrypointTest {
 
   /** Проверка наличия созданного визита в очереди */
   @Test
-  void checkVisitInQueue() {
+  void checkVisitInQueue() throws SystemException {
     Service service;
     service =
         managementController.getBranch(branchId).getServices().values().stream()

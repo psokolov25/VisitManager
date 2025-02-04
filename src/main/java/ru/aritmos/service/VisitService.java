@@ -16,6 +16,7 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
+import ru.aritmos.exceptions.SystemException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 import ru.aritmos.model.Queue;
@@ -171,7 +172,7 @@ public class VisitService {
    * @return созданный визит
    */
   public Visit createVisit(
-      String branchId, String entryPointId, VisitParameters visitParameters, Boolean printTicket) {
+      String branchId, String entryPointId, VisitParameters visitParameters, Boolean printTicket) throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -237,7 +238,7 @@ public class VisitService {
    * @return созданный визит
    */
   public Visit createVisitFromReception(
-      String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket) {
+      String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket) throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -293,7 +294,7 @@ public class VisitService {
   }
 
   public Visit createVirtualVisit(
-      String branchId, String servicePointId, VisitParameters visitParameters) {
+      String branchId, String servicePointId, VisitParameters visitParameters) throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -424,7 +425,7 @@ public class VisitService {
       String entryPointId,
       ArrayList<Service> services,
       HashMap<String, String> parametersMap,
-      Boolean printTicket) {
+      Boolean printTicket) throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -746,7 +747,7 @@ public class VisitService {
       String printerId,
       ArrayList<Service> services,
       HashMap<String, String> parametersMap,
-      Boolean printTicket) {
+      Boolean printTicket) throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -844,7 +845,7 @@ public class VisitService {
       String branchId,
       String servicePointId,
       ArrayList<Service> services,
-      HashMap<String, String> parametersMap) {
+      HashMap<String, String> parametersMap) throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {

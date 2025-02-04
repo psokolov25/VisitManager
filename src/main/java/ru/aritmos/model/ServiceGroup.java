@@ -16,7 +16,7 @@ public class ServiceGroup extends BranchEntity {
   List<String> serviceIds;
 
   String segmentationRuleId;
-
+  String segmentationParameterRuleId;
   public ServiceGroup(String id, String name, List<String> serviceIds, String branchId) {
     super(id, name, branchId);
     this.serviceIds = serviceIds;
