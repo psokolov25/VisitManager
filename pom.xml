@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.aritmos</groupId>
     <artifactId>visitmanager</artifactId>
-    <version>0.8</version>
+    <version>alpha_0.1.25</version>
     <packaging>${packaging}</packaging>
     <description>
         Целью службы управления визитамия является оптимизация логистики обслуживания клиентов.
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>
-            <version>26.0.2</version>
+            <version>26.0.6</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
