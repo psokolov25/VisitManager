@@ -54,6 +54,7 @@ public class Configuration {
       queueCredit.setWaitingSL(200);
       Service creditService =
           new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "Кредит", 9000, queueCredit.getId());
+
       Outcome creditAccepted = new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Одобрен");
       creditAccepted.setCode(1L);
       creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
@@ -77,7 +78,8 @@ public class Configuration {
               "Очень большой кредит",
               9000,
               queueBigCredit.getId());
-
+      Service longCreditService =
+              new Service("856e8e77-aa8e-4feb-b947-566f6164e46f", "Кредит на покупку персонального самолета и бла  бла  бла  бла  бла  бла  бла  бла  бла   бла  бла  б", 9000, queueCredit.getId());
       Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C");
       Service kassaService =
           new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
@@ -88,6 +90,7 @@ public class Configuration {
       serviceList.put(kassaService.getId(), kassaService.clone());
       serviceList.put(creditService.getId(), creditService.clone());
       serviceList.put(bigCreditService.getId(), bigCreditService.clone());
+      serviceList.put(longCreditService.getId(),longCreditService.clone());
       branch.setServices(serviceList);
 
       ServicePoint servicePointFSC =
