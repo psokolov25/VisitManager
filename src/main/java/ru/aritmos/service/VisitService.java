@@ -1833,9 +1833,7 @@ public class VisitService {
         event.getParameters().put("servicePointId", servicePointId);
         branchService.updateVisit(visit, event, this);
         visit.setServicePointId(null);
-        currentBranch.getServicePoints().get(servicePointId);
-        visit.setServicePointId(null);
-
+        visit.setQueueId(null);
         assert user != null;
         visit.setPoolUserId(user.getId());
         visit.setServicePointId(null);
