@@ -1697,10 +1697,11 @@ public class VisitService {
 
         visit.getParameterMap().remove("LastPoolServicePointId");
         assert poolServicePoint != null;
-        visit.setPoolServicePointId(poolServicePointId);
+
         visit.setServicePointId(null);
         visit.setPoolUserId(null);
         visit.setQueueId(null);
+        visit.setPoolServicePointId(poolServicePointId);
         visit.setTransferDateTime(ZonedDateTime.now());
         visit.setReturnDateTime(ZonedDateTime.now());
         visit.setReturnTimeDelay(returnTimeDelay);
@@ -1835,8 +1836,10 @@ public class VisitService {
         visit.setServicePointId(null);
         visit.setQueueId(null);
         assert user != null;
-        visit.setPoolUserId(user.getId());
         visit.setServicePointId(null);
+        visit.setPoolServicePointId(null);
+        visit.setPoolUserId(user.getId());
+
         visit.setStartServingDateTime(null);
         visit.setTransferDateTime(ZonedDateTime.now());
         visit.setReturnDateTime(ZonedDateTime.now());
@@ -1999,11 +2002,12 @@ public class VisitService {
     if (!isAppend) {
       visit.getParameterMap().put("isTransferredToStart", "true");
     }
-    assert queue != null;
-    visit.setQueueId(queue.getId());
+
     visit.setPoolServicePointId(null);
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
+    assert queue != null;
+    visit.setQueueId(queue.getId());
     VisitEvent event = VisitEvent.TRANSFER_TO_QUEUE;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("oldQueueID", oldQueueID);
@@ -2051,11 +2055,10 @@ public class VisitService {
     }
 
     visit.setQueueId(null);
-
     assert poolServicePoint != null;
-    visit.setPoolServicePointId(poolServicePoint.getId());
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
+    visit.setPoolServicePointId(poolServicePoint.getId());
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("oldQueueID", oldQueueID);
@@ -2101,11 +2104,13 @@ public class VisitService {
           "Service Point not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
 
-    assert poolServicePoint != null;
-    visit.setPoolServicePointId(poolServicePoint.getId());
+
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
     visit.setQueueId(null);
+    assert poolServicePoint != null;
+
+    visit.setPoolServicePointId(poolServicePoint.getId());
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("oldQueueID", oldQueueID);
@@ -3242,16 +3247,18 @@ public class VisitService {
         event.getParameters().put("staffName", visit.getUserName());
         event.getParameters().put("servicePointId", servicePointId);
         branchService.updateVisit(visit, event, this);
-        visit.setServicePointId(null);
-        currentBranch.getServicePoints().get(servicePointId);
-        visit.setServicePointId(null);
+
 
         assert user != null;
-        visit.setPoolUserId(user.getId());
+
+        visit.setQueueId(null);
+        visit.setPoolServicePointId(null);
         visit.setServicePointId(null);
         visit.setStartServingDateTime(null);
+        visit.setPoolUserId(user.getId());
         visit.setTransferDateTime(ZonedDateTime.now());
-        visit.setTransferDateTime(ZonedDateTime.now());
+
+
 
         visit.getParameterMap().remove("LastPoolUserId");
         event = VisitEvent.TRANSFER_TO_USER_POOL;
@@ -3306,15 +3313,15 @@ public class VisitService {
         event.getParameters().put("staffName", visit.getUserName());
         event.getParameters().put("servicePointId", servicePointId);
         branchService.updateVisit(visit, event, this);
-        visit.setServicePointId(null);
-        currentBranch.getServicePoints().get(servicePointId);
-        visit.setServicePointId(null);
+
+
         visit.getParameterMap().remove("LastPoolServicePointId");
         assert poolServicePoint != null;
-        visit.setPoolServicePointId(poolServicePointId);
-        visit.setServicePointId(null);
 
-        visit.setTransferDateTime(ZonedDateTime.now());
+        visit.setServicePointId(null);
+        visit.setQueueId(null);
+        visit.setPoolUserId(null);
+        visit.setPoolServicePointId(poolServicePointId);
         visit.setTransferDateTime(ZonedDateTime.now());
 
         visit.setStartServingDateTime(null);
@@ -3374,15 +3381,16 @@ public class VisitService {
         event.getParameters().put("servicePointId", servicePointId);
         event.getParameters().putAll(serviceInfo);
         branchService.updateVisit(visit, event, this);
-        visit.setServicePointId(null);
-        currentBranch.getServicePoints().get(servicePointId);
+
         visit.setServicePointId(null);
         visit.getParameterMap().remove("LastPoolServicePointId");
+        visit.setQueueId(null);
+        visit.setPoolUserId(null);
         assert poolServicePoint != null;
         visit.setPoolServicePointId(poolServicePointId);
-        visit.setServicePointId(null);
 
-        visit.setTransferDateTime(ZonedDateTime.now());
+
+
         visit.setTransferDateTime(ZonedDateTime.now());
 
         visit.setStartServingDateTime(null);
