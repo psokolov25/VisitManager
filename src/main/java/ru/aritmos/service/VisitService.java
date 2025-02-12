@@ -2223,7 +2223,6 @@ public class VisitService {
     visit.setServicePointId(null);
     visit.setPoolServicePointId(null);
     visit.setPoolUserId(userId);
-
     VisitEvent event = VisitEvent.TRANSFER_TO_USER_POOL;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("oldQueueID", oldQueueID);

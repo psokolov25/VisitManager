@@ -488,6 +488,24 @@ public class Branch extends BranchEntity {
               HttpStatus.CONFLICT);
         }
       }
+
+      if (value.getId().equals(visit.getPoolUserId())) {
+        try {
+          value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+          if (!index.equals(-1)) {
+            value.getVisits().add(index, visit);
+          } else {
+            value.getVisits().add(visit);
+          }
+        } catch (IndexOutOfBoundsException e) {
+          throw new BusinessException(
+                  String.format(
+                          "Visit position %s out of range of list range %s!",
+                          index, value.getVisits().size()),
+                  eventService,
+                  HttpStatus.CONFLICT);
+        }
+      }
       if (value.getUser() != null) {
         value.getUser().getVisits().removeIf(f -> f.getId().equals(visit.getId()));
         getUsers().put(value.getUser().getName(), value.getUser());

@@ -792,12 +792,15 @@ class EntrypointTest {
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
-
+    Queue queue=managementController.getBranch(branchId).getQueues().get(visit.getQueueId());
     Thread.sleep(1000);
 
     visit =
         visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true);
 
+    String visitId=visit.getId();
+    Assertions.assertEquals(queue.getVisits().stream().filter(f->f.getId().equals(visitId)).count(),0);
+    //if(queue.getVisits().stream().filter(f->f.getId().equals(visit.getId())).count()>0)
     Thread.sleep(900);
 
     Assertions.assertEquals(
