@@ -393,6 +393,11 @@ public class Branch extends BranchEntity {
 
     this.servicePoints.forEach(
         (key, value) -> {
+          value.setVisit(null);
+          value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+          if (value.getUser() != null) {
+            value.getUser().visits.removeIf(r -> r.getId().equals(visit.getId()));
+          }
           if (value.getId().equals(visit.getServicePointId())) {
             if (value.getVisit() == null || value.getVisit().getId().equals(visit.getId())) {
               value.setVisit(visit);
@@ -404,8 +409,15 @@ public class Branch extends BranchEntity {
                   eventService,
                   HttpStatus.CONFLICT);
             }
-          } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
-            value.setVisit(null);
+          }
+          if (value.getId().equals(visit.getPoolServicePointId())) {
+
+              assert value.getUser() != null;
+              value.getUser().getVisits().add(visit);
+          }
+          if (value.getUser() != null && value.getUser().getId().equals(visit.getPoolUserId())) {
+
+            value.getUser().getVisits().add(visit);
           }
         });
     this.queues.forEach(
@@ -485,7 +497,10 @@ public class Branch extends BranchEntity {
 
       ServicePoint value = entry.getValue();
       value.setVisit(null);
-
+      value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
+      if (value.getUser() != null) {
+        value.getUser().visits.removeIf(r -> r.getId().equals(visit.getId()));
+      }
       if (value.getId().equals(visit.getServicePointId())) {
         if (value.getVisit() == null) {
           value.setVisit(visit);
@@ -497,8 +512,6 @@ public class Branch extends BranchEntity {
               eventService,
               HttpStatus.CONFLICT);
         }
-      } else if (value.getVisit() != null && value.getVisit().getId().equals(visit.getId())) {
-        value.setVisit(null);
       }
 
       if (value.getId().equals(visit.getPoolServicePointId())) {
@@ -517,8 +530,6 @@ public class Branch extends BranchEntity {
               eventService,
               HttpStatus.CONFLICT);
         }
-      } else if (value.getVisits() != null && !value.getVisits().isEmpty()) {
-        value.getVisits().removeIf(r -> r.getId().equals(visit.getId()));
       }
 
       if (value.getUser() != null) {
