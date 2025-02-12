@@ -433,13 +433,12 @@ public enum VisitEvent {
   private static final Map<VisitState, List<VisitState>> nextStates =
       Map.ofEntries(
           Map.entry(VisitState.CREATED, List.of(VisitState.WAITING_IN_QUEUE, VisitState.CALLED)),
-
           Map.entry(
               VisitState.WAITING_IN_QUEUE,
               List.of(
                   VisitState.CALLED,
                   VisitState.WAITING_IN_USER_POOL,
-                  VisitState.WAITING_IN_SERVICE_POOL)),
+                  VisitState.WAITING_IN_SERVICE_POOL,VisitState.END)),
           Map.entry(
               VisitState.CALLED,
               List.of(VisitState.WAITING_IN_QUEUE, VisitState.SERVING, VisitState.END)),
@@ -451,8 +450,12 @@ public enum VisitEvent {
                   VisitState.WAITING_IN_USER_POOL,
                   VisitState.WAITING_IN_SERVICE_POOL,
                   VisitState.END)),
-          Map.entry(VisitState.WAITING_IN_USER_POOL, List.of(VisitState.CALLED,VisitState.WAITING_IN_SERVICE_POOL)),
-          Map.entry(VisitState.WAITING_IN_SERVICE_POOL, List.of(VisitState.CALLED,VisitState.WAITING_IN_USER_POOL)),
+          Map.entry(
+              VisitState.WAITING_IN_USER_POOL,
+              List.of(VisitState.CALLED, VisitState.WAITING_IN_SERVICE_POOL,VisitState.END)),
+          Map.entry(
+              VisitState.WAITING_IN_SERVICE_POOL,
+              List.of(VisitState.CALLED, VisitState.WAITING_IN_USER_POOL,VisitState.END)),
           Map.entry(VisitState.END, List.of()));
 
   /* Список событий, с указанием, какое состояние визита наступает после него */

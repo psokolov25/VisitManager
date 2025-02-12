@@ -382,7 +382,8 @@ class EntrypointTest {
   }
 
   @Test
-  void checkConfirmVisitWithCallRuleMaxLifeTimeTwoServices() throws InterruptedException, SystemException {
+  void checkConfirmVisitWithCallRuleMaxLifeTimeTwoServices()
+      throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -792,30 +793,36 @@ class EntrypointTest {
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
-    Queue queue=managementController.getBranch(branchId).getQueues().get(visit.getQueueId());
+    Queue queue = managementController.getBranch(branchId).getQueues().get(visit.getQueueId());
     Thread.sleep(1000);
 
     visit =
         visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true);
 
-    String visitId=visit.getId();
-    Assertions.assertEquals(queue.getVisits().stream().filter(f->f.getId().equals(visitId)).count(),0);
+    String visitId = visit.getId();
     Assertions.assertEquals(
-            1,
-            branchService
-                    .getBranch(branchId)
-                    .getServicePoints()
-                    .get(servicePointFcId)
-                    .getUser()
-                    .getVisits()
-                    .size());
+        queue.getVisits().stream().filter(f -> f.getId().equals(visitId)).count(), 0);
+    Assertions.assertEquals(
+        1,
+        branchService
+            .getBranch(branchId)
+            .getServicePoints()
+            .get(servicePointFcId)
+            .getUser()
+            .getVisits()
+            .size());
     Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_USER_POOL.getState().name());
-    visit=visitService.visitTransferFromQueueToServicePointPool(branchId,servicePointFcId,servicePointFcId,visit,true);
-    Assertions.assertEquals(managementController.getBranch(branchId).getAllVisitsList().stream().filter(f->f.getId().equals(visitId)).count(),1);
+    visit =
+        visitService.visitTransferFromQueueToServicePointPool(
+            branchId, servicePointFcId, servicePointFcId, visit, true);
+    Assertions.assertEquals(
+        managementController.getBranch(branchId).getAllVisitsList().stream()
+            .filter(f -> f.getId().equals(visitId))
+            .count(),
+        1);
 
-    //if(queue.getVisits().stream().filter(f->f.getId().equals(visit.getId())).count()>0)
+    // if(queue.getVisits().stream().filter(f->f.getId().equals(visit.getId())).count()>0)
     Thread.sleep(900);
-
 
     Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
@@ -824,18 +831,31 @@ class EntrypointTest {
       visitService.visitConfirm(branchId, servicePointFcId, visits.get());
       Thread.sleep(900);
       visit =
-              visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true);
-      visit=visitService.visitTransferFromQueueToServicePointPool(branchId,servicePointFcId,servicePointFcId,visit,true);
+          visitService.visitTransferFromQueueToUserPool(
+              branchId, psokolovUser.getId(), visit, true);
+      visit =
+          visitService.visitTransferFromQueueToServicePointPool(
+              branchId, servicePointFcId, servicePointFcId, visit, true);
       visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
 
         visitService.visitConfirm(branchId, servicePointFcId, visits.get());
         Thread.sleep(900);
-        Assertions.assertEquals(managementController.getBranch(branchId).getAllVisitsList().stream().filter(f->f.getId().equals(visitId)).count(),1);
-      visit = visitService.visitEnd(branchId, servicePointFcId);
-      Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
+        Assertions.assertEquals(
+            managementController.getBranch(branchId).getAllVisitsList().stream()
+                .filter(f -> f.getId().equals(visitId))
+                .count(),
+            1);
+        visit = visitService.visitEnd(branchId, servicePointFcId);
+        Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
+        Assertions.assertEquals(
+            managementController.getBranch(branchId).getAllVisitsList().stream()
+                .filter(f -> f.getId().equals(visitId))
+                .count(),
+            0);
+      }
     }
-  }}
+  }
 
   @Test
   void checkTransferToQueueVisit() throws InterruptedException, SystemException {
@@ -885,7 +905,8 @@ class EntrypointTest {
   }
 
   @Test
-  void checkTransferToPoolVisitWithCallRuleFromQueue() throws InterruptedException, SystemException {
+  void checkTransferToPoolVisitWithCallRuleFromQueue()
+      throws InterruptedException, SystemException {
 
     Service service;
     service =
@@ -927,7 +948,8 @@ class EntrypointTest {
   }
 
   @Test
-  void checkTransferToUserPoolVisitWithCallRuleFromQueue() throws InterruptedException, SystemException {
+  void checkTransferToUserPoolVisitWithCallRuleFromQueue()
+      throws InterruptedException, SystemException {
 
     Service service;
     service =

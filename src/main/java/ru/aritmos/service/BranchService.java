@@ -44,7 +44,7 @@ public class BranchService {
 
     Branch branch = branches.get(key);
     if (branch == null) {
-      throw new BusinessException("Branch not found!!", eventService,HttpStatus.NOT_FOUND);
+      throw new BusinessException("Branch not found!!", eventService, HttpStatus.NOT_FOUND);
     }
     log.info("Getting branchInfo {}", branch);
     return branch;
@@ -118,7 +118,7 @@ public class BranchService {
       // eventService.sendChangedEvent("*", true, oldBranch, null, new HashMap<>(), "DELETED");
 
     } else {
-      throw new BusinessException("Branch not found!!", eventService,HttpStatus.NOT_FOUND);
+      throw new BusinessException("Branch not found!!", eventService, HttpStatus.NOT_FOUND);
     }
     log.info("Deleting branchInfo {}", key);
     branches.remove(key);

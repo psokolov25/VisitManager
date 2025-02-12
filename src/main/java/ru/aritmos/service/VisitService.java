@@ -133,7 +133,8 @@ public class VisitService {
     if (currentBranch.getQueues().containsKey(queueId)) {
       queue = currentBranch.getQueues().get(queueId);
     } else {
-      throw new BusinessException("Queue not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
     List<Visit> visits;
     visits =
@@ -172,7 +173,8 @@ public class VisitService {
    * @return созданный визит
    */
   public Visit createVisit(
-      String branchId, String entryPointId, VisitParameters visitParameters, Boolean printTicket) throws SystemException {
+      String branchId, String entryPointId, VisitParameters visitParameters, Boolean printTicket)
+      throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -186,7 +188,7 @@ public class VisitService {
               branchId, entryPointId, services, visitParameters.getParameters(), printTicket));
 
     } else {
-      throw new BusinessException("Services not found!", eventService,HttpStatus.NOT_FOUND);
+      throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -224,7 +226,7 @@ public class VisitService {
               segmentationRuleId));
 
     } else {
-      throw new BusinessException("Services not found!", eventService,HttpStatus.NOT_FOUND);
+      throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -238,7 +240,8 @@ public class VisitService {
    * @return созданный визит
    */
   public Visit createVisitFromReception(
-      String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket) throws SystemException {
+      String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket)
+      throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -252,7 +255,7 @@ public class VisitService {
               branchId, printerId, services, visitParameters.getParameters(), printTicket));
 
     } else {
-      throw new BusinessException("Services not found!", eventService,HttpStatus.NOT_FOUND);
+      throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -289,12 +292,13 @@ public class VisitService {
               segmentationRuleId));
 
     } else {
-      throw new BusinessException("Services not found!", eventService,HttpStatus.NOT_FOUND);
+      throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
   public Visit createVirtualVisit(
-      String branchId, String servicePointId, VisitParameters visitParameters) throws SystemException {
+      String branchId, String servicePointId, VisitParameters visitParameters)
+      throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -425,7 +429,8 @@ public class VisitService {
       String entryPointId,
       ArrayList<Service> services,
       HashMap<String, String> parametersMap,
-      Boolean printTicket) throws SystemException {
+      Boolean printTicket)
+      throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -440,7 +445,7 @@ public class VisitService {
 
         if (!currentBranch.getEntryPoints().containsKey(entryPointId)) {
           throw new BusinessException(
-              "EntryPoint not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
+              "EntryPoint not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         } else {
           entryPoint = currentBranch.getEntryPoints().get(entryPointId);
         }
@@ -506,18 +511,22 @@ public class VisitService {
 
             return visit;
           } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
+            throw new BusinessException(
+                "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
           }
 
         } else {
-          throw new BusinessException("Services can not be empty!", eventService,HttpStatus.BAD_REQUEST);
+          throw new BusinessException(
+              "Services can not be empty!", eventService, HttpStatus.BAD_REQUEST);
         }
       } else {
-        throw new BusinessException("Service  not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
+        throw new BusinessException(
+            "Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
       }
     }
 
-    throw new BusinessException("Queue not found in branch configuration!", eventService,HttpStatus.NOT_FOUND);
+    throw new BusinessException(
+        "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
@@ -617,18 +626,22 @@ public class VisitService {
 
             return visit;
           } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+            throw new BusinessException(
+                "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
           }
 
         } else {
-          throw new BusinessException("Services can not be empty!", eventService,HttpStatus.BAD_REQUEST);
+          throw new BusinessException(
+              "Services can not be empty!", eventService, HttpStatus.BAD_REQUEST);
         }
       } else {
-        throw new BusinessException("Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+        throw new BusinessException(
+            "Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
       }
     }
 
-    throw new BusinessException("Queue  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+    throw new BusinessException(
+        "Queue  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
@@ -719,18 +732,22 @@ public class VisitService {
 
             return visit;
           } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+            throw new BusinessException(
+                "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
           }
 
         } else {
-          throw new BusinessException("Services can not be empty!", eventService, HttpStatus.BAD_REQUEST);
+          throw new BusinessException(
+              "Services can not be empty!", eventService, HttpStatus.BAD_REQUEST);
         }
       } else {
-        throw new BusinessException("Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+        throw new BusinessException(
+            "Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
       }
     }
 
-    throw new BusinessException("Queue  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+    throw new BusinessException(
+        "Queue  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
@@ -747,7 +764,8 @@ public class VisitService {
       String printerId,
       ArrayList<Service> services,
       HashMap<String, String> parametersMap,
-      Boolean printTicket) throws SystemException {
+      Boolean printTicket)
+      throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -818,18 +836,22 @@ public class VisitService {
 
             return visit;
           } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+            throw new BusinessException(
+                "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
           }
 
         } else {
-          throw new BusinessException("Services can not be empty!", eventService,  HttpStatus.BAD_REQUEST);
+          throw new BusinessException(
+              "Services can not be empty!", eventService, HttpStatus.BAD_REQUEST);
         }
       } else {
-        throw new BusinessException("Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+        throw new BusinessException(
+            "Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
       }
     }
 
-    throw new BusinessException("Queue  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+    throw new BusinessException(
+        "Queue  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
@@ -845,7 +867,8 @@ public class VisitService {
       String branchId,
       String servicePointId,
       ArrayList<Service> services,
-      HashMap<String, String> parametersMap) throws SystemException {
+      HashMap<String, String> parametersMap)
+      throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -921,18 +944,22 @@ public class VisitService {
 
             return visit;
           } else {
-            throw new BusinessException("Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+            throw new BusinessException(
+                "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
           }
 
         } else {
-          throw new BusinessException("Services can not be empty!", eventService,  HttpStatus.BAD_REQUEST);
+          throw new BusinessException(
+              "Services can not be empty!", eventService, HttpStatus.BAD_REQUEST);
         }
       } else {
-        throw new BusinessException("Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+        throw new BusinessException(
+            "Service  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
       }
     }
 
-    throw new BusinessException("Queue  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+    throw new BusinessException(
+        "Queue  not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
@@ -1093,7 +1120,9 @@ public class VisitService {
 
         if (currentBranch.getServices().keySet().stream().noneMatch(f -> f.contains(serviceId))) {
           throw new BusinessException(
-              String.format("Current visit cant add service with id %s", serviceId), eventService,HttpStatus.CONFLICT);
+              String.format("Current visit cant add service with id %s", serviceId),
+              eventService,
+              HttpStatus.CONFLICT);
         }
         Service service = currentBranch.getServices().get(serviceId);
         visit.getUnservedServices().add(service);
@@ -1470,7 +1499,9 @@ public class VisitService {
         Visit visit = servicePoint.getVisit();
         if (!visit.getCurrentService().getId().equals(serviceId)) {
           throw new BusinessException(
-              String.format("Current service ID is not %s@", serviceId), eventService,HttpStatus.BAD_REQUEST);
+              String.format("Current service ID is not %s@", serviceId),
+              eventService,
+              HttpStatus.BAD_REQUEST);
         }
 
         visit.getCurrentService().setOutcome(null);
@@ -1581,7 +1612,7 @@ public class VisitService {
           return visitTransfer(
               branchId, servicePointId, visit.getParameterMap().get("LastQueueId"));
         } else {
-          throw new BusinessException("Visit cant be transfer!", eventService,HttpStatus.CONFLICT);
+          throw new BusinessException("Visit cant be transfer!", eventService, HttpStatus.CONFLICT);
         }
       } else {
         throw new BusinessException(
@@ -1619,7 +1650,8 @@ public class VisitService {
           queue = currentBranch.getQueues().get(queueId);
         } else {
 
-          throw new BusinessException("Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+          throw new BusinessException(
+              "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
 
         assert queue != null;
@@ -1885,7 +1917,6 @@ public class VisitService {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
-
     Queue queue;
     if (currentBranch.getQueues().containsKey(queueId)) {
       queue = currentBranch.getQueues().get(queueId);
@@ -2040,7 +2071,6 @@ public class VisitService {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
-
     ServicePoint poolServicePoint;
     if (currentBranch.getServicePoints().containsKey(poolServicePointId)) {
       poolServicePoint = currentBranch.getServicePoints().get(poolServicePointId);
@@ -2087,9 +2117,9 @@ public class VisitService {
       Boolean isAppend) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
-//    if (visit.getQueueId().isBlank()) {
-//      throw new BusinessException("Visit not in a queue!", eventService);
-//    }
+    //    if (visit.getQueueId().isBlank()) {
+    //      throw new BusinessException("Visit not in a queue!", eventService);
+    //    }
 
     ServicePoint poolServicePoint;
     if (currentBranch.getServicePoints().containsKey(poolServicePointId)) {
@@ -2099,7 +2129,6 @@ public class VisitService {
       throw new BusinessException(
           "Service Point not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
-
 
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
@@ -2139,7 +2168,6 @@ public class VisitService {
       HashMap<String, String> serviceInfo) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
-
 
     ServicePoint poolServicePoint;
     if (currentBranch.getServicePoints().containsKey(poolServicePointId)) {
@@ -2290,7 +2318,6 @@ public class VisitService {
       String branchId, String userId, Visit visit, Integer index) {
 
     String oldQueueID = visit.getQueueId();
-
 
     if (!this.getAllWorkingUsers(branchId).containsKey(userId)) {
 
@@ -3239,7 +3266,6 @@ public class VisitService {
         event.getParameters().put("servicePointId", servicePointId);
         branchService.updateVisit(visit, event, this);
 
-
         assert user != null;
 
         visit.setQueueId(null);
@@ -3248,8 +3274,6 @@ public class VisitService {
         visit.setStartServingDateTime(null);
         visit.setPoolUserId(user.getId());
         visit.setTransferDateTime(ZonedDateTime.now());
-
-
 
         visit.getParameterMap().remove("LastPoolUserId");
         event = VisitEvent.TRANSFER_TO_USER_POOL;
@@ -3304,7 +3328,6 @@ public class VisitService {
         event.getParameters().put("staffName", visit.getUserName());
         event.getParameters().put("servicePointId", servicePointId);
         branchService.updateVisit(visit, event, this);
-
 
         visit.getParameterMap().remove("LastPoolServicePointId");
         assert poolServicePoint != null;
@@ -3379,8 +3402,6 @@ public class VisitService {
         visit.setPoolUserId(null);
         assert poolServicePoint != null;
         visit.setPoolServicePointId(poolServicePointId);
-
-
 
         visit.setTransferDateTime(ZonedDateTime.now());
 

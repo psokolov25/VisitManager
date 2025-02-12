@@ -79,7 +79,11 @@ public class Configuration {
               9000,
               queueBigCredit.getId());
       Service longCreditService =
-              new Service("856e8e77-aa8e-4feb-b947-566f6164e46f", "Кредит на покупку персонального самолета и бла  бла  бла  бла  бла  бла  бла  бла  бла   бла  бла  б", 9000, queueCredit.getId());
+          new Service(
+              "856e8e77-aa8e-4feb-b947-566f6164e46f",
+              "Кредит на покупку персонального самолета и бла  бла  бла  бла  бла  бла  бла  бла  бла   бла  бла  б",
+              9000,
+              queueCredit.getId());
       Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C");
       Service kassaService =
           new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
@@ -90,7 +94,7 @@ public class Configuration {
       serviceList.put(kassaService.getId(), kassaService.clone());
       serviceList.put(creditService.getId(), creditService.clone());
       serviceList.put(bigCreditService.getId(), bigCreditService.clone());
-      serviceList.put(longCreditService.getId(),longCreditService.clone());
+      serviceList.put(longCreditService.getId(), longCreditService.clone());
       branch.setServices(serviceList);
 
       ServicePoint servicePointFSC =

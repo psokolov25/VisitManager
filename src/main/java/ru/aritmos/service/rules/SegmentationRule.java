@@ -61,8 +61,8 @@ public class SegmentationRule {
         }
       }
     }
-      assert visit.getCurrentService() != null;
-      if (branch.getQueues().containsKey(visit.getCurrentService().getLinkedQueueId())) {
+    assert visit.getCurrentService() != null;
+    if (branch.getQueues().containsKey(visit.getCurrentService().getLinkedQueueId())) {
       return Optional.of(branch.getQueues().get(visit.getCurrentService().getLinkedQueueId()));
     }
 

@@ -55,7 +55,8 @@ public class EntrypointController {
   public Visit createVirtualVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @Body ArrayList<String> serviceIds) throws SystemException {
+      @Body ArrayList<String> serviceIds)
+      throws SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -96,7 +97,8 @@ public class EntrypointController {
       @PathVariable(defaultValue = "2") String entryPointId,
       @Body ArrayList<String> serviceIds,
       @QueryValue(defaultValue = "false") Boolean printTicket,
-      @Nullable @QueryValue String segmentationRuleId) throws SystemException {
+      @Nullable @QueryValue String segmentationRuleId)
+      throws SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -143,7 +145,8 @@ public class EntrypointController {
       @PathVariable(defaultValue = "2") String entryPointId,
       @Body VisitParameters parameters,
       @QueryValue Boolean printTicket,
-      @Nullable @QueryValue String segmentationRuleId) throws SystemException {
+      @Nullable @QueryValue String segmentationRuleId)
+      throws SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -187,7 +190,8 @@ public class EntrypointController {
       @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
       @Body VisitParameters parameters,
       @QueryValue Boolean printTicket,
-      @Nullable @QueryValue String segmentationRuleId) throws SystemException {
+      @Nullable @QueryValue String segmentationRuleId)
+      throws SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);

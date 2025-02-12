@@ -18,7 +18,6 @@ import jakarta.annotation.PostConstruct;
       @Tag(name = "Информация об отделении"),
       @Tag(name = "Конфигурация отделений")
     })
-
 public class Application {
 
   public static void main(String[] args) {
