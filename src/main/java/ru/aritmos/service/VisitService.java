@@ -2622,6 +2622,7 @@ public class VisitService {
             "Visit alredey called in the ServicePoint! ", eventService, HttpStatus.CONFLICT);
       }
       visit.setServicePointId(servicePointId);
+
       visit.setUserName(servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
       visit.setUserId(servicePoint.getUser() != null ? servicePoint.getUser().getId() : "");
 
@@ -2648,7 +2649,10 @@ public class VisitService {
       visit.getParameterMap().put("LastPoolUserId", visit.getPoolUserId());
       visit.setPoolUserId(null);
     }
-
+    if (visit.getUserId() != null) {
+      visit.getParameterMap().put("LastUserId", visit.getPoolUserId());
+      visit.setUserId(null);
+    }
     VisitEvent event = VisitEvent.START_SERVING;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("ServicePointId", servicePointId);

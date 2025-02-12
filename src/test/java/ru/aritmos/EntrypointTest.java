@@ -831,6 +831,7 @@ class EntrypointTest {
 
         visitService.visitConfirm(branchId, servicePointFcId, visits.get());
         Thread.sleep(900);
+        Assertions.assertEquals(managementController.getBranch(branchId).getAllVisitsList().stream().filter(f->f.getId().equals(visitId)).count(),1);
       visit = visitService.visitEnd(branchId, servicePointFcId);
       Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
     }

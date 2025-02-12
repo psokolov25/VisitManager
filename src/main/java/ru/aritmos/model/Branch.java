@@ -152,28 +152,27 @@ public class Branch extends BranchEntity {
   public List<Visit> getAllVisitsList() {
     List<Visit> visits = new ArrayList<>();
     this.getServicePoints()
-            .forEach(
-                    (k, v) -> {
-                      if (v.getUser() != null) {
-                          visits.addAll(v.getUser().getVisits());
-                      }
-                      if (v.getVisit() != null) {
-                        visits.add(v.getVisit());
-                      }
-                      if (v.getVisits() != null) {
-                          visits.addAll(v.getVisits());
-                      }
-                    });
+        .forEach(
+            (k, v) -> {
+              if (v.getUser() != null) {
+                visits.addAll(v.getUser().getVisits());
+              }
+              if (v.getVisit() != null) {
+                visits.add(v.getVisit());
+              }
+              if (v.getVisits() != null) {
+                visits.addAll(v.getVisits());
+              }
+            });
     this.getQueues()
-            .forEach(
-                    (k, v) -> {
-                      if (v.getVisits() != null) {
-                          visits.addAll(v.getVisits());
-                      }
-                    });
+        .forEach(
+            (k, v) -> {
+              if (v.getVisits() != null) {
+                visits.addAll(v.getVisits());
+              }
+            });
     return visits;
   }
-
 
   /**
    * Получение перечня всех визитов отделение, с ключем - идентификатором визита с фильтрацией по
@@ -518,25 +517,10 @@ public class Branch extends BranchEntity {
               eventService,
               HttpStatus.CONFLICT);
         }
+      } else if (value.getVisits() != null && !value.getVisits().isEmpty()) {
+        value.getVisits().removeIf(r -> r.getId().equals(visit.getId()));
       }
 
-      if (value.getId().equals(visit.getPoolUserId())) {
-        try {
-          value.getVisits().removeIf(f -> f.getId().equals(visit.getId()));
-          if (!index.equals(-1)) {
-            value.getVisits().add(index, visit);
-          } else {
-            value.getVisits().add(visit);
-          }
-        } catch (IndexOutOfBoundsException e) {
-          throw new BusinessException(
-                  String.format(
-                          "Visit position %s out of range of list range %s!",
-                          index, value.getVisits().size()),
-                  eventService,
-                  HttpStatus.CONFLICT);
-        }
-      }
       if (value.getUser() != null) {
         value.getUser().getVisits().removeIf(f -> f.getId().equals(visit.getId()));
         getUsers().put(value.getUser().getName(), value.getUser());
@@ -558,6 +542,7 @@ public class Branch extends BranchEntity {
           }
         }
       }
+
       entry.setValue(value);
     }
     eventService.send(
