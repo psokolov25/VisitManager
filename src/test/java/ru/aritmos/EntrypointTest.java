@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.security.utils.SecurityService;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -21,7 +22,6 @@ import ru.aritmos.api.EntrypointController;
 import ru.aritmos.api.ManagementController;
 import ru.aritmos.api.ServicePointController;
 import ru.aritmos.events.services.EventService;
-import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.exceptions.SystemException;
 import ru.aritmos.model.*;
 import ru.aritmos.model.Queue;
@@ -800,29 +800,41 @@ class EntrypointTest {
 
     String visitId=visit.getId();
     Assertions.assertEquals(queue.getVisits().stream().filter(f->f.getId().equals(visitId)).count(),0);
+    Assertions.assertEquals(
+            1,
+            branchService
+                    .getBranch(branchId)
+                    .getServicePoints()
+                    .get(servicePointFcId)
+                    .getUser()
+                    .getVisits()
+                    .size());
+    Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_USER_POOL.getState().name());
+    visit=visitService.visitTransferFromQueueToServicePointPool(branchId,servicePointFcId,servicePointFcId,visit,true);
+    Assertions.assertEquals(managementController.getBranch(branchId).getAllVisitsList().stream().filter(f->f.getId().equals(visitId)).count(),1);
+
     //if(queue.getVisits().stream().filter(f->f.getId().equals(visit.getId())).count()>0)
     Thread.sleep(900);
 
-    Assertions.assertEquals(
-        1,
-        branchService
-            .getBranch(branchId)
-            .getServicePoints()
-            .get(servicePointFcId)
-            .getUser()
-            .getVisits()
-            .size());
-    Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_USER_POOL.getState().name());
+
     Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Thread.sleep(900);
 
       visitService.visitConfirm(branchId, servicePointFcId, visits.get());
       Thread.sleep(900);
+      visit =
+              visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true);
+      visit=visitService.visitTransferFromQueueToServicePointPool(branchId,servicePointFcId,servicePointFcId,visit,true);
+      visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      if (visits.isPresent()) {
+
+        visitService.visitConfirm(branchId, servicePointFcId, visits.get());
+        Thread.sleep(900);
       visit = visitService.visitEnd(branchId, servicePointFcId);
       Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
     }
-  }
+  }}
 
   @Test
   void checkTransferToQueueVisit() throws InterruptedException, SystemException {
@@ -1248,7 +1260,7 @@ class EntrypointTest {
   @Test
   void getNotExistBranch() {
     Exception exception =
-        assertThrows(BusinessException.class, () -> branchService.getBranch("not exist"));
+        assertThrows(HttpStatusException.class, () -> branchService.getBranch("not exist"));
     Assertions.assertEquals(exception.getMessage(), "Branch not found!!");
   }
 

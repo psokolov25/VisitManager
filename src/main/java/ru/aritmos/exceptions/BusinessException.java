@@ -14,22 +14,6 @@ public class BusinessException extends RuntimeException {
 
   final EventService eventService;
 
-  public BusinessException(String errorMessage, EventService eventService) {
-    super(errorMessage);
-    BusinessError businessError = new BusinessError();
-    businessError.setMessage(errorMessage);
-    this.eventService = eventService;
-    eventService.send(
-        "*",
-        false,
-        Event.builder()
-            .eventDate(ZonedDateTime.now())
-            .eventType("BUSINESS_ERROR")
-            .body(businessError)
-            .build());
-    log.error(errorMessage);
-  }
-
   public BusinessException(String errorMessage, EventService eventService, HttpStatus status) {
     super(errorMessage);
     BusinessError businessError = new BusinessError();
@@ -49,6 +33,7 @@ public class BusinessException extends RuntimeException {
 
   @Data
   @Serdeable
+  @SuppressWarnings("unused")
   static class BusinessError {
     String message;
   }

@@ -145,6 +145,37 @@ public class Branch extends BranchEntity {
   }
 
   /**
+   * Получение перечня всех визитов отделение, с ключем - идентификатором визита
+   *
+   * @return перечень визитов с ключем - идентификатором визита
+   */
+  public List<Visit> getAllVisitsList() {
+    List<Visit> visits = new ArrayList<>();
+    this.getServicePoints()
+            .forEach(
+                    (k, v) -> {
+                      if (v.getUser() != null) {
+                          visits.addAll(v.getUser().getVisits());
+                      }
+                      if (v.getVisit() != null) {
+                        visits.add(v.getVisit());
+                      }
+                      if (v.getVisits() != null) {
+                          visits.addAll(v.getVisits());
+                      }
+                    });
+    this.getQueues()
+            .forEach(
+                    (k, v) -> {
+                      if (v.getVisits() != null) {
+                          visits.addAll(v.getVisits());
+                      }
+                    });
+    return visits;
+  }
+
+
+  /**
    * Получение перечня всех визитов отделение, с ключем - идентификатором визита с фильтрацией по
    * статусам визита
    *
