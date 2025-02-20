@@ -36,6 +36,8 @@ public class KeyCloackClient {
   @Property(name = "micronaut.security.oauth2.clients.keycloak.keycloakurl")
   String keycloakUrl;
 
+  Keycloak keycloak;
+
   /**
    * Авторизация пользователя в Keycloak
    *
@@ -70,13 +72,16 @@ public class KeyCloackClient {
 
     AuthzClient authzClient = AuthzClient.create(configuration);
     AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
-    Keycloak keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
+    if (keycloak == null || keycloak.isClosed()) {
+      keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
+    }
     List<UserRepresentation> userRepresentationList =
         keycloak.realm(realm).users().search(userName, true);
     if (!userRepresentationList.isEmpty()) {
+      keycloak.close();
       return Optional.of(userRepresentationList.get(0));
     }
-
+    keycloak.close();
     return Optional.empty();
   }
 
@@ -96,8 +101,9 @@ public class KeyCloackClient {
     AuthzClient authzClient = AuthzClient.create(configuration);
 
     AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
-    Keycloak keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
-
+    if (keycloak == null || keycloak.isClosed()) {
+      keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
+    }
     keycloak
         .realm(realm)
         .users()
@@ -107,5 +113,6 @@ public class KeyCloackClient {
               keycloak.realm(realm).users().get(f.getId()).logout();
               log.info("{}", keycloak.serverInfo().getInfo());
             });
+    keycloak.close();
   }
 }

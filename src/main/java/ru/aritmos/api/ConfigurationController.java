@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import ru.aritmos.model.*;
 import ru.aritmos.service.BranchService;
+import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
 
 /**
@@ -17,6 +18,7 @@ import ru.aritmos.service.VisitService;
 @Controller("/configuration")
 public class ConfigurationController {
   @Inject BranchService branchService;
+  @Inject Configuration configuration;
   @Inject VisitService visitService;
 
   /**
@@ -39,6 +41,20 @@ public class ConfigurationController {
               }
             });
     branchHashMap.forEach((key, value) -> branchService.add(key, value));
+    return branchService.getBranches();
+  }
+
+  /**
+   * Обновление "захардкоженной" конфигурации отделений
+   *
+   * @return список отделений
+   */
+  @Tag(name = "Конфигурация отделений")
+  @Tag(name = "Полный список")
+  @Post(uri = "/branches/hardcode")
+  public Map<String, Branch> update() {
+
+    configuration.getCleanedConfiguration();
     return branchService.getBranches();
   }
 
