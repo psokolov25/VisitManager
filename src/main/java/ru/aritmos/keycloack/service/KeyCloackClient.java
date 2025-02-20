@@ -81,6 +81,7 @@ public class KeyCloackClient {
       keycloak.close();
       return Optional.of(userRepresentationList.get(0));
     }
+    keycloak.tokenManager().logout();
     keycloak.close();
     return Optional.empty();
   }
@@ -113,6 +114,7 @@ public class KeyCloackClient {
               keycloak.realm(realm).users().get(f.getId()).logout();
               log.info("{}", keycloak.serverInfo().getInfo());
             });
+    keycloak.tokenManager().logout();
     keycloak.close();
   }
 }
