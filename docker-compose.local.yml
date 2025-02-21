@@ -31,7 +31,7 @@ services:
       - OIDC_ISSUER_URL=http://keycloak:8080
       - KAFKA_SERVER=kafka:9092
       - LOKI_SERVER=http://loki:3100/loki/api/v1/push
-      - OAUTH_CLIENT_SECRET=FqTLoxIQpLfejP925XPB2K5besestFQJ
+      - OAUTH_CLIENT_SECRET=HKdkHNfaMWWsDqFa6a4q3kcNVkRjN0Wv
       - KEYCLOAK_REALM=aritmos_platform
     restart: always
   visitmanager-redis:
