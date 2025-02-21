@@ -78,10 +78,15 @@ public class KeyCloackClient {
     List<UserRepresentation> userRepresentationList =
         keycloak.realm(realm).users().search(userName, true);
     if (!userRepresentationList.isEmpty()) {
+      if (keycloak.tokenManager() != null) {
+        keycloak.tokenManager().logout();
+      }
       keycloak.close();
       return Optional.of(userRepresentationList.get(0));
     }
-    keycloak.tokenManager().logout();
+    if (keycloak.tokenManager() != null) {
+      keycloak.tokenManager().logout();
+    }
     keycloak.close();
     return Optional.empty();
   }
@@ -114,7 +119,9 @@ public class KeyCloackClient {
               keycloak.realm(realm).users().get(f.getId()).logout();
               log.info("{}", keycloak.serverInfo().getInfo());
             });
-    keycloak.tokenManager().logout();
+    if (keycloak.tokenManager() != null) {
+      keycloak.tokenManager().logout();
+    }
     keycloak.close();
   }
 }

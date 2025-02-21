@@ -41,8 +41,8 @@ micronaut:
     oauth2:
       clients:
         keycloak:
-          techlogin: '${KEYCLOAK_TECHLOGIN:visitmanager}'
-          techpassword: '${KEYCLOAK_TECHPASSWORD:visitmanager}'
+          techlogin: '${KEYCLOAK_TECHLOGIN:admin}'
+          techpassword: '${KEYCLOAK_TECHPASSWORD:LtlVjhjp!23}'
           keycloakurl: '${OIDC_ISSUER_URL:`http://192.168.8.45:9090`}'
           realm: aritmos_platform
           token:
