@@ -153,7 +153,11 @@ public class Visit {
         unit.between(
             this.getReturnDateTime() != null
                 ? this.getReturnDateTime()
-                : this.getCreateDateTime() != null ? this.getCreateDateTime() : ZonedDateTime.now(),
+                : this.transferDateTime != null
+                    ? this.transferDateTime
+                    : this.getCreateDateTime() != null
+                        ? this.getCreateDateTime()
+                        : ZonedDateTime.now(),
             this.getStartServingDateTime() != null
                 ? this.getStartServingDateTime()
                 : ZonedDateTime.now());

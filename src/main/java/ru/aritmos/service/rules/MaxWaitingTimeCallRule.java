@@ -4,7 +4,11 @@ import io.micronaut.http.HttpStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import ru.aritmos.events.services.EventService;
@@ -23,17 +27,34 @@ public class MaxWaitingTimeCallRule implements CallRule {
   private Integer visitComparer(Visit visit1, Visit visit2) {
     if (visit1.getParameterMap().containsKey("isTransfereedToStart")) {
       if (visit2.getParameterMap().containsKey("isTransfereedToStart")) {
-        return Long.compare(visit1.getWaitingTime(), visit2.getWaitingTime());
+        return getDateNyString(visit2.getParameterMap().get("isTransfereedToStart"))
+            .compareTo(getDateNyString(visit1.getParameterMap().get("isTransfereedToStart")));
+
       } else {
         return 1;
       }
     } else {
       if (visit2.getParameterMap().containsKey("isTransfereedToStart")) {
-        return 1;
+        return -1;
       }
     }
 
     return Long.compare(visit1.getWaitingTime(), visit2.getWaitingTime());
+  }
+
+
+
+  /**
+   * Конвертация даты типа {@link ZonedDateTime} в строку формата EEE, dd MMM yyyy HH:mm:ss zzz
+   *
+   * @param date дата типа {@link ZonedDateTime}
+   * @return строка даты формата EEE, dd MMM yyyy HH:mm:ss zzz
+   */
+  ZonedDateTime getDateNyString(String date) {
+
+    DateTimeFormatter format =
+        DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+    return ZonedDateTime.parse(date, format);
   }
 
   @Override
@@ -94,6 +115,7 @@ public class MaxWaitingTimeCallRule implements CallRule {
                     .max(this::visitComparer);
             result.ifPresent(visit -> visit.getParameterMap().remove("isTransfereedToStart"));
             result.ifPresent(visit -> visit.setReturnDateTime(null));
+            result.ifPresent(visit -> visit.setTransferDateTime(null));
 
             return result;
           }

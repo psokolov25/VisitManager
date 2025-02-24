@@ -873,19 +873,26 @@ class EntrypointTest {
 
     VisitParameters visitParameters =
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+    VisitParameters visitParameters2 =
+            VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
+    Visit visit2 = visitService.createVisit(branchId, "1", visitParameters2, false);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
-    Thread.sleep(1000);
+
 
     visit =
         visitService.visitTransfer(
             branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true);
+    Thread.sleep(10000);
+    visit2 =
+            visitService.visitTransfer(
+                    branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true);
 
     Thread.sleep(900);
 
     Assertions.assertEquals(
-        1,
+        2,
         branchService
             .getBranch(branchId)
             .getQueues()
@@ -903,6 +910,62 @@ class EntrypointTest {
       Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
     }
   }
+
+
+  @Test
+  void checkTransferToQueueVisitWithoutConfirm() throws InterruptedException, SystemException {
+
+    Service service;
+    service =
+            managementController.getBranch(branchId).getServices().values().stream()
+                    .filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c"))
+                    .findFirst()
+                    .orElse(null);
+
+    ArrayList<String> serviceIds = new ArrayList<>();
+    assert service != null;
+    serviceIds.add(service.getId());
+
+    VisitParameters visitParameters =
+            VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+    VisitParameters visitParameters2 =
+            VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+    Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
+    Visit visit2 = visitService.createVisit(branchId, "1", visitParameters2, false);
+    // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
+
+
+
+    visit =
+            visitService.visitTransfer(
+                    branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true);
+    Thread.sleep(1000);
+    visit2 =
+            visitService.visitTransfer(
+                    branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true);
+
+    Thread.sleep(900);
+
+    Assertions.assertEquals(
+            2,
+            branchService
+                    .getBranch(branchId)
+                    .getQueues()
+                    .get("bd4b586e-c93e-4e07-9a76-586dd84ddea5")
+                    .getVisits()
+                    .size());
+    Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_QUEUE.getState().name());
+    Optional<Visit> visits = visitService.visitCallWithMaximalWaitingTime(branchId, servicePointFcId,List.of("bd4b586e-c93e-4e07-9a76-586dd84ddea5"));
+    if (visits.isPresent()) {
+      Thread.sleep(900);
+
+
+      Thread.sleep(900);
+      visit = visitService.visitEnd(branchId, servicePointFcId);
+      Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
+    }
+  }
+
 
   @Test
   void checkTransferToPoolVisitWithCallRuleFromQueue()

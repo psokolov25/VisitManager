@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -1969,7 +1970,7 @@ public class VisitService {
       throw new BusinessException(
           "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
-
+    visit.setTransferDateTime(ZonedDateTime.now());
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
     visit.setPoolServicePointId(null);
@@ -1978,8 +1979,11 @@ public class VisitService {
     }
 
     if (isToStart) {
-      visit.getParameterMap().put("isTransfereedToStart", "true");
+      DateTimeFormatter format =
+          DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+      visit.getParameterMap().put("isTransfereedToStart", ZonedDateTime.now().format(format));
     }
+
     assert queue != null;
     visit.setQueueId(queue.getId());
 
@@ -2448,6 +2452,8 @@ public class VisitService {
     visit.setStatus("CALLED");
     visit.setCallDateTime(ZonedDateTime.now());
     visit.getParameterMap().remove("isTransfereedToStart");
+    visit.setTransferDateTime(null);
+    visit.setReturnDateTime(null);
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
       if (servicePoint.getVisit() != null) {
@@ -2559,6 +2565,7 @@ public class VisitService {
     visit.setCallDateTime(ZonedDateTime.now());
     visit.getParameterMap().put("LastQueueId", visit.getQueueId());
     visit.getParameterMap().remove("isTransfereedToStart");
+
     VisitEvent event = VisitEvent.CALLED;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("servicePointId", servicePointId);
@@ -2652,7 +2659,8 @@ public class VisitService {
 
       visit.setUserName(servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
       visit.setUserId(servicePoint.getUser() != null ? servicePoint.getUser().getId() : "");
-
+      visit.setTransferDateTime(null);
+      visit.setReturnDateTime(null);
     } else {
       if (!servicePointId.isEmpty()
           && !currentBranch.getServicePoints().containsKey(servicePointId)) {
