@@ -1930,6 +1930,7 @@ public class VisitService {
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
     visit.setPoolServicePointId(null);
+    visit.setStartServingDateTime(null);
     assert queue != null;
     visit.setQueueId(queue.getId());
 
@@ -1974,6 +1975,7 @@ public class VisitService {
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
     visit.setPoolServicePointId(null);
+    visit.setStartServingDateTime(null);
     if (visit.getServicePointId() != null) {
       visit.setReturnDateTime(ZonedDateTime.now());
     }
@@ -2039,6 +2041,7 @@ public class VisitService {
     visit.setPoolServicePointId(null);
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
+    visit.setStartServingDateTime(null);
     assert queue != null;
     visit.setQueueId(queue.getId());
     VisitEvent event = VisitEvent.TRANSFER_TO_QUEUE;
@@ -2088,6 +2091,7 @@ public class VisitService {
     assert poolServicePoint != null;
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
+    visit.setStartServingDateTime(null);
     visit.setPoolServicePointId(poolServicePoint.getId());
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
     event.dateTime = ZonedDateTime.now();
@@ -2137,6 +2141,7 @@ public class VisitService {
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
     visit.setQueueId(null);
+    visit.setStartServingDateTime(null);
     assert poolServicePoint != null;
 
     visit.setPoolServicePointId(poolServicePoint.getId());
@@ -2186,6 +2191,7 @@ public class VisitService {
     visit.setPoolUserId(null);
     visit.setServicePointId(null);
     assert poolServicePoint != null;
+    visit.setStartServingDateTime(null);
     visit.setPoolServicePointId(poolServicePoint.getId());
 
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
@@ -3257,6 +3263,7 @@ public class VisitService {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
       if (servicePoint.getVisit() != null) {
         Visit visit = servicePoint.getVisit();
+
 
         User user;
         if (this.getAllWorkingUsers(branchId).containsKey(userId)) {
