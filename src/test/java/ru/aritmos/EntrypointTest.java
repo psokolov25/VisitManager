@@ -940,9 +940,13 @@ class EntrypointTest {
             visitService.visitTransfer(
                     branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true);
     Thread.sleep(1000);
+    Assertions.assertEquals(visit.getWaitingTime()>=0,true);
+
     visit2 =
             visitService.visitTransfer(
                     branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true);
+    Thread.sleep(1000);
+    Assertions.assertEquals(visit2.getWaitingTime()>=0,true);
 
     Thread.sleep(900);
 
@@ -963,6 +967,17 @@ class EntrypointTest {
       Thread.sleep(900);
       visit = visitService.visitEnd(branchId, servicePointFcId);
       Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
+    }
+    Optional<Visit> visits2 = visitService.visitCallWithMaximalWaitingTime(branchId, servicePointFcId,List.of("bd4b586e-c93e-4e07-9a76-586dd84ddea5"));
+    if (visits2.isPresent()) {
+      Thread.sleep(900);
+
+
+      Thread.sleep(900);
+      Visit visit3 =
+              visitService.visitTransfer(
+                      branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visits2.get(), true);
+      Assertions.assertEquals(visit2.getWaitingTime()>=0,true);
     }
   }
 
