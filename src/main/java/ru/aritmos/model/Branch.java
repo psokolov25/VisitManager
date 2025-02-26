@@ -412,8 +412,8 @@ public class Branch extends BranchEntity {
           }
           if (value.getId().equals(visit.getPoolServicePointId())) {
 
-              assert value.getUser() != null;
-              value.getUser().getVisits().add(visit);
+            assert value.getUser() != null;
+            value.getUser().getVisits().add(visit);
           }
           if (value.getUser() != null && value.getUser().getId().equals(visit.getPoolUserId())) {
 

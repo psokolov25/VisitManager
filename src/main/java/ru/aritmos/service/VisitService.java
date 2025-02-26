@@ -3264,7 +3264,6 @@ public class VisitService {
       if (servicePoint.getVisit() != null) {
         Visit visit = servicePoint.getVisit();
 
-
         User user;
         if (this.getAllWorkingUsers(branchId).containsKey(userId)) {
           user = this.getAllWorkingUsers(branchId).get(userId);

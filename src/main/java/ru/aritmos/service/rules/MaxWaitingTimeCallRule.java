@@ -4,7 +4,6 @@ import io.micronaut.http.HttpStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -41,8 +40,6 @@ public class MaxWaitingTimeCallRule implements CallRule {
 
     return Long.compare(visit1.getWaitingTime(), visit2.getWaitingTime());
   }
-
-
 
   /**
    * Конвертация даты типа {@link ZonedDateTime} в строку формата EEE, dd MMM yyyy HH:mm:ss zzz
