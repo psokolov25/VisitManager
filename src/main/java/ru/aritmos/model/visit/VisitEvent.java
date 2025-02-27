@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @JsonFormat
 @AllArgsConstructor
 @NoArgsConstructor
-
 public enum VisitEvent {
   /** Визит создан */
   CREATED,
@@ -99,7 +98,7 @@ public enum VisitEvent {
           DELETED_SERVICE_RESULT,
           DELETED);
 
-  /* Список событий, после которых начинается новая транзакция */
+  /** Список событий, после которых начинается новая транзакция */
   private static final List<VisitEvent> newTransactionEvents =
       List.of(
           STOP_SERVING,
@@ -108,7 +107,8 @@ public enum VisitEvent {
           TRANSFER_TO_SERVICE_POINT_POOL,
           DELETED,
           TRANSFER_TO_USER_POOL);
-  /* Список событий завершающих транзакцию, с указанием статуса завершенной транзакции */
+
+  /** Список событий завершающих транзакцию, с указанием статуса завершенной транзакции */
   private static final Map<VisitEvent, TransactionCompletionStatus> transactionStatus =
       Map.ofEntries(
           Map.entry(STOP_SERVING, TransactionCompletionStatus.STOP_SERVING),
@@ -120,9 +120,9 @@ public enum VisitEvent {
               TRANSFER_TO_SERVICE_POINT_POOL,
               TransactionCompletionStatus.TRANSFER_TO_SERVICE_POINT_POOL),
           Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_USER_POOL));
+
   /* Список событий, которые не должны отправляться в топики статистики */
   private static final List<VisitEvent> notSendToStat = List.of(RECALLED);
-
 
   /**
    * Список разрешенных следующих состояний, где ключ - состояние, значение - список разрешенных
@@ -140,7 +140,12 @@ public enum VisitEvent {
                   VisitState.END)),
           Map.entry(
               VisitState.CALLED,
-              List.of(VisitState.WAITING_IN_QUEUE, VisitState.SERVING, VisitState.END,VisitState.WAITING_IN_SERVICE_POOL,VisitState.WAITING_IN_USER_POOL)),
+              List.of(
+                  VisitState.WAITING_IN_QUEUE,
+                  VisitState.SERVING,
+                  VisitState.END,
+                  VisitState.WAITING_IN_SERVICE_POOL,
+                  VisitState.WAITING_IN_USER_POOL)),
           Map.entry(
               VisitState.SERVING,
               List.of(
@@ -157,7 +162,7 @@ public enum VisitEvent {
               List.of(VisitState.CALLED, VisitState.WAITING_IN_USER_POOL, VisitState.END)),
           Map.entry(VisitState.END, List.of()));
 
-  /* Список событий, с указанием, какое состояние визита наступает после него */
+  /** Список событий, с указанием, какое состояние визита наступает после него */
   private static final Map<VisitEvent, VisitState> visitStateMap =
       Map.ofEntries(
           Map.entry(CREATED, VisitState.CREATED),
@@ -185,26 +190,27 @@ public enum VisitEvent {
           Map.entry(DELETED_DELIVERED_SERVICE, VisitState.SERVING),
           Map.entry(DELETED_DELIVERED_SERVICE_RESULT, VisitState.SERVING),
           Map.entry(DELETED_SERVICE_RESULT, VisitState.SERVING));
+
   @Getter final Map<String, String> parameters = new HashMap<>();
   @JsonFormat public ZonedDateTime dateTime;
   VisitState visitState;
 
-  /* Проверка на начало новой транзакции */
+  /** Проверка на начало новой транзакции * */
   public static Boolean isNewOfTransaction(VisitEvent visitEvent) {
     return VisitEvent.newTransactionEvents.stream().anyMatch(am -> am.equals(visitEvent));
   }
 
-  /* Проверка на необходимость не отправлять в статистику */
+  /** Проверка на необходимость не отправлять в статистику */
   public static Boolean isIgnoredInStat(VisitEvent visitEvent) {
     return notSendToStat.contains(visitEvent);
   }
 
-  /* Проверка на необходимость отправки на фронт */
+  /** Проверка на необходимость отправки на фронт */
   public static Boolean isFrontEndEvent(VisitEvent visitEvent) {
     return frontEndVisitEvents.contains(visitEvent);
   }
 
-  /* Получение статуса визита соответствующего событию */
+  /** Получение статуса визита соответствующего событию */
   public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {
     if (transactionStatus.containsKey(visitEvent)) {
       return transactionStatus.get(visitEvent);
@@ -212,15 +218,7 @@ public enum VisitEvent {
     return null;
   }
 
-
-
-
-  // TRANSFER_TO_SERVICE_POINT_POOL, List.of(VisitState.WAITING_IN_SP_POOL),
-  // BACK_TO_QUEUE, List.of(VisitState.WAITING_IN_QUEUE)
-  // TRANSFER_TO_QUEUE, List.of(VisitState.WAITING_IN_QUEUE),
-  //  ADD_SERVICE, List.of()
-  // );
-  /* Проверка на возможность следующего события после текущего */
+  /** Проверка на возможность следующего события после текущего */
   public boolean canBeNext(VisitEvent next) {
     if (nextStates.containsKey(this.visitState)) {
       return nextStates.get(this.getState()).stream().anyMatch(e -> e.equals(next.getState()))
@@ -229,7 +227,7 @@ public enum VisitEvent {
     return true;
   }
 
-  /* Получение статуса визита соответствующего событию */
+  /** Получение статуса визита соответствующего событию */
   public VisitState getState() {
     visitState = visitStateMap.get(this);
     return visitState;
