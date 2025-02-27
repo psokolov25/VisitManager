@@ -1539,8 +1539,8 @@ public class VisitService {
       visit.setReturnDateTime(ZonedDateTime.now());
       visit.setReturnTimeDelay(returnTimeDelay);
       visit.setStartServingDateTime(null);
-      Optional<VisitEvent> event =
-          visit.getVisitEvents().stream().max(Comparator.comparing(VisitEvent::getDateTime));
+      Optional<VisitEventInformation> event =
+          visit.getVisitEventInformationList().stream().max(Comparator.comparing(VisitEventInformation::getEventDateTime));
 
       if (event.isPresent() && event.get().getParameters().containsKey("servicePointId")) {
         VisitEvent visitEvent =

@@ -442,7 +442,7 @@ public enum VisitEvent {
                   VisitState.END)),
           Map.entry(
               VisitState.CALLED,
-              List.of(VisitState.WAITING_IN_QUEUE, VisitState.SERVING, VisitState.END)),
+              List.of(VisitState.WAITING_IN_QUEUE, VisitState.SERVING, VisitState.END,VisitState.WAITING_IN_SERVICE_POOL,VisitState.WAITING_IN_USER_POOL)),
           Map.entry(
               VisitState.SERVING,
               List.of(
