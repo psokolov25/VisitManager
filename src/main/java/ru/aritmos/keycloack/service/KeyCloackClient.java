@@ -46,14 +46,8 @@ public class KeyCloackClient {
    */
   public Optional<AuthorizationResponse> Auth(@Body Credentials credentials) {
 
-    Map<String, Object> clientCredentials = new HashMap<>();
-    clientCredentials.put("secret", secret);
-    clientCredentials.put("provider", "secret");
+    AuthzClient authzClient= getAuthzClient(secret, keycloakUrl, realm, clientId);
 
-    Configuration configuration =
-        new Configuration(keycloakUrl, realm, clientId, clientCredentials, null);
-
-    AuthzClient authzClient = AuthzClient.create(configuration);
 
     return Optional.of(
         authzClient
@@ -61,8 +55,7 @@ public class KeyCloackClient {
             .authorize());
   }
 
-  public Optional<UserRepresentation> getUserInfo(String userName) {
-
+  public static AuthzClient getAuthzClient(String secret, String keycloakUrl, String realm, String clientId) {
     Map<String, Object> clientCredentials = new HashMap<>();
     clientCredentials.put("secret", secret);
     clientCredentials.put("provider", "secret");
@@ -70,7 +63,12 @@ public class KeyCloackClient {
     Configuration configuration =
         new Configuration(keycloakUrl, realm, clientId, clientCredentials, null);
 
-    AuthzClient authzClient = AuthzClient.create(configuration);
+      return AuthzClient.create(configuration);
+  }
+
+  public Optional<UserRepresentation> getUserInfo(String userName) {
+
+    AuthzClient authzClient= getAuthzClient(secret, keycloakUrl, realm, clientId);
     AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
     if (keycloak == null || keycloak.isClosed()) {
       keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
@@ -97,14 +95,7 @@ public class KeyCloackClient {
    * @param login логин сотрудника
    */
   public void userLogout(@PathVariable String login) {
-    Map<String, Object> clientCredentials = new HashMap<>();
-    clientCredentials.put("secret", secret);
-    clientCredentials.put("provider", "secret");
-
-    Configuration configuration =
-        new Configuration(keycloakUrl, realm, clientId, clientCredentials, null);
-
-    AuthzClient authzClient = AuthzClient.create(configuration);
+    AuthzClient authzClient= getAuthzClient(secret, keycloakUrl, realm, clientId);
 
     AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
     if (keycloak == null || keycloak.isClosed()) {
