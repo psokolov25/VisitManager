@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
-    info = @Info(title = "VisitManagement", version = "alpha_02.25"),
+    info = @Info(title = "VisitManagement", version = "alpha_03.25"),
     tags = {
       @Tag(name = "Зона обслуживания"),
       @Tag(name = "Зона ожидания"),
