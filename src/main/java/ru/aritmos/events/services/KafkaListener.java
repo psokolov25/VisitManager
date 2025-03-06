@@ -1,7 +1,6 @@
 package ru.aritmos.events.services;
 
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
-import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.scheduling.TaskExecutors;
@@ -13,10 +12,11 @@ import java.util.HashMap;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
+import ru.aritmos.exceptions.SystemException;
 
 @Slf4j
-@KafkaListener(offsetReset = OffsetReset.LATEST)
-public class KaffkaListener {
+@io.micronaut.configuration.kafka.annotation.KafkaListener(offsetReset = OffsetReset.LATEST)
+public class KafkaListener {
   private static final HashMap<String, EventHandler> allHandlers = new HashMap<>();
   private static final HashMap<String, EventHandler> serviceHandlers = new HashMap<>();
   @Inject ObjectMapper objectMapper;
@@ -38,7 +38,8 @@ public class KaffkaListener {
    */
   @Topic("event_${micronaut.application.name}")
   @ExecuteOn(TaskExecutors.IO)
-  public void recieve(@KafkaKey String key, String event) throws IOException {
+  public void receive(@KafkaKey String key, String event)
+      throws IOException, SystemException, IllegalAccessException {
 
     log.debug("Recieve key {} value {}", key, event);
     Event event1 = objectMapper.readValue(event, Event.class);
@@ -56,7 +57,8 @@ public class KaffkaListener {
    */
   @Topic("events")
   @ExecuteOn(TaskExecutors.IO)
-  public void recieveAll(@KafkaKey String key, String event) throws IOException {
+  public void receiveAll(@KafkaKey String key, String event)
+      throws IOException, SystemException, IllegalAccessException {
     log.debug("Recieve broadcast message key {} value {}", key, event);
     Event event1 = objectMapper.readValue(event, Event.class);
     if (allHandlers.containsKey(event1.getEventType())) {
