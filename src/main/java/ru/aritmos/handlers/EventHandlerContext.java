@@ -8,10 +8,10 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,8 @@ public class EventHandlerContext {
     BusinesErrorHandler businesErrorHandler = new BusinesErrorHandler();
     SystemErrorHandler systemErrorHandler = new SystemErrorHandler();
     EntityChangedHandler entityChangedHandler = new EntityChangedHandler();
-    BranchPublicHandler branchPublicHandler = new BranchPublicHandler(visitService, eventService,branchService);
+    BranchPublicHandler branchPublicHandler =
+        new BranchPublicHandler(visitService, eventService, branchService);
     ForceUserLogoutHandler forceUserLogoutHandler =
         new ForceUserLogoutHandler(visitService, eventService);
     NotForceUserLogoutHandler notForceUserLogoutHandler =
@@ -197,24 +198,27 @@ public class EventHandlerContext {
       this.eventService = eventService;
       this.branchService = branchService;
     }
-    private Map<String, Object> convertUsingReflection(Object object) throws IllegalAccessException {
+
+    private Map<String, Object> convertUsingReflection(Object object)
+        throws IllegalAccessException {
       Map<String, Object> map = new HashMap<>();
       Field[] fields = object.getClass().getDeclaredFields();
 
-      for (Field field: fields) {
+      for (Field field : fields) {
         field.setAccessible(true);
         map.put(field.getName(), field.get(object));
       }
 
       return map;
     }
+
     @Override
-    public void Handle(Event event)  {
+    public void Handle(Event event) {
       try {
-      Map<String, Object> branchHashMap = convertUsingReflection(event.getBody());
+        Map<String, Object> branchHashMap = convertUsingReflection(event.getBody());
 
         eventService.send(
-            "branchconfigurer",
+            List.of("branchconfigurer", "frontend"),
             false,
             Event.builder()
                 .eventType("PUBLIC_STARTED")
@@ -233,7 +237,7 @@ public class EventHandlerContext {
             (key, value) -> {
               branchService.add(key, (Branch) value);
               eventService.send(
-                  "branchconfigurer",
+                  List.of("branchconfigurer", "frontend"),
                   false,
                   Event.builder()
                       .eventType("BRANCH_PUBLIC_COMPLETE")
@@ -242,7 +246,7 @@ public class EventHandlerContext {
                       .build());
             });
         eventService.send(
-            "branchconfigurer",
+            List.of("branchconfigurer", "frontend"),
             false,
             Event.builder()
                 .eventType("PUBLIC_COMPLETE")
@@ -251,14 +255,13 @@ public class EventHandlerContext {
                 .build());
       } catch (Exception e) {
         eventService.send(
-            "branchconfigurer",
+            List.of("branchconfigurer", "frontend"),
             false,
             Event.builder()
                 .eventType("PUBLIC_ERROR")
                 .body(e.getMessage())
                 .eventDate(ZonedDateTime.now())
                 .build());
-
       }
     }
   }
