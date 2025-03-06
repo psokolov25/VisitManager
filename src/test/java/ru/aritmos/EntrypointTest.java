@@ -63,6 +63,7 @@ class EntrypointTest {
 
     if (!branchService.getBranches().containsKey("bc08b7d2-c731-438d-9785-eba2078b2089")) {
       branch = new Branch("bc08b7d2-c731-438d-9785-eba2078b2089", "Отделение на Тверской");
+      branch.setPrefix("TVR");
       branch
           .getMarks()
           .put(
