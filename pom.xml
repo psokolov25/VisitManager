@@ -55,6 +55,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>mvnrepository.com</id>
+            <url>https://mvnrepository.com/artifact/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -101,18 +105,18 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.118.Final</version>
+            <version>4.1.119.Final</version>
         </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-common</artifactId>
-            <version>4.1.118.Final</version>
+            <version>4.1.119.Final</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>4.1.114.Final</version>
+            <version>4.1.119.Final</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
