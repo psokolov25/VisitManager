@@ -104,8 +104,7 @@ public class Configuration {
     branch.setServices(serviceList);
 
     ServicePoint servicePointFSC =
-        new ServicePoint(
-            "099c43c1-40b5-4b80-928a-1d4b363152a8", "Старший финансовый консультант");
+        new ServicePoint("099c43c1-40b5-4b80-928a-1d4b363152a8", "Старший финансовый консультант");
 
     ServicePoint servicePointBFSC =
         new ServicePoint(
@@ -114,8 +113,7 @@ public class Configuration {
         new ServicePoint(
             "f9e60eaf-b4af-4bf8-8d64-e70d2e949829", "Самый самый старший финансовый консультант");
 
-    ServicePoint servicePointC =
-        new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");
+    ServicePoint servicePointC = new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Касса");
 
     WorkProfile workProfileC = new WorkProfile("Кассир");
     workProfileC.getQueueIds().add(queueC.getId());
@@ -172,10 +170,7 @@ public class Configuration {
         .getReception()
         .setPrinters(
             List.of(
-                Entity.builder()
-                    .id("eb7ea46d-c995-4ca0-ba92-c92151473614")
-                    .name("Intro17")
-                    .build(),
+                Entity.builder().id("eb7ea46d-c995-4ca0-ba92-c92151473614").name("Intro17").build(),
                 Entity.builder()
                     .id("eb7ea46d-c995-4ca0-ba92-c92151473612")
                     .name("Intro8")
@@ -189,8 +184,7 @@ public class Configuration {
     branchService.add(branch2.getId(), branch2);
     Branch branch3 = new Branch("e64078c1-e95a-40fd-b8b1-6bc3c8912abb", "Отделение на Арбате");
     branch3.setPrefix("ARB");
-    Branch branch4 =
-        new Branch("a06fabe5-0f69-41f8-b7d0-21da39cdaace", "Отделение на Центральной");
+    Branch branch4 = new Branch("a06fabe5-0f69-41f8-b7d0-21da39cdaace", "Отделение на Центральной");
     branch4.setPrefix("CNT");
     Branch branch5 = new Branch("15c9d0f3-384d-4a22-a5f2-84ceac1fa094", "Отделение на Урицкого");
     branch4.setPrefix("URC");

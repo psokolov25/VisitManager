@@ -34,8 +34,10 @@ public class Branch extends BranchEntity {
 
   /** Описание отделения */
   String description = "";
+
   /** Префикс отделения */
-  String prefix="";
+  String prefix = "";
+
   /** Правила вызова */
   List<Rule> callRules = new ArrayList<>();
 

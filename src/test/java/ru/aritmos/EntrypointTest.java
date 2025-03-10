@@ -433,65 +433,67 @@ class EntrypointTest {
     }
   }
 
-
   @Test
   void checkBackCalledUserToPoolVisit() throws InterruptedException, SystemException {
 
     Service service;
     service =
-            managementController.getBranch(branchId).getServices().values().stream()
-                    .filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c"))
-                    .findFirst()
-                    .orElse(null);
+        managementController.getBranch(branchId).getServices().values().stream()
+            .filter(f -> f.getId().equals("c3916e7f-7bea-4490-b9d1-0d4064adbe8c"))
+            .findFirst()
+            .orElse(null);
 
     ArrayList<String> serviceIds = new ArrayList<>();
     assert service != null;
     serviceIds.add(service.getId());
 
     VisitParameters visitParameters =
-            VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+        VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
-//    visit =
-//        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, false);
-//    // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
-//
-//    Thread.sleep(1000);
+    //    visit =
+    //        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit,
+    // false);
+    //    // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
+    //
+    //    Thread.sleep(1000);
     Optional<Visit> visits =
         visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-//    if (visits.isPresent()) {
-//      Long servtime = visits.get().getServingTime();
-//      Assertions.assertEquals(servtime, 0);
-//      Thread.sleep(800);
-//      visit =
-//          visitService.visitReCallForConfirm(
-//              branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-//      Thread.sleep(600);
-//
-//      visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-//      Thread.sleep(600);
-//      visit = visitService.visitPutBack(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", 150L);
-//
-//      Thread.sleep(900);
-//
-//      Assertions.assertEquals(
-//          0,
-//          branchService
-//              .getBranch(branchId)
-//              .getServicePoints()
-//              .get("be675d63-c5a1-41a9-a345-c82102ac42cc")
-//              .getVisits()
-//              .size());
-//      Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
-//      visits =
-//          visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-      Visit visittoBack=visitService.backCalledVisit(branchId,visits.get().getId(),60L);
-     visits =
-            visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
-    visittoBack=visitService.backCalledVisit(branchId,visits.get().getId(),60L);
-      Assertions.assertEquals(visittoBack.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
- //   }
+    //    if (visits.isPresent()) {
+    //      Long servtime = visits.get().getServingTime();
+    //      Assertions.assertEquals(servtime, 0);
+    //      Thread.sleep(800);
+    //      visit =
+    //          visitService.visitReCallForConfirm(
+    //              branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+    //      Thread.sleep(600);
+    //
+    //      visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+    //      Thread.sleep(600);
+    //      visit = visitService.visitPutBack(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",
+    // 150L);
+    //
+    //      Thread.sleep(900);
+    //
+    //      Assertions.assertEquals(
+    //          0,
+    //          branchService
+    //              .getBranch(branchId)
+    //              .getServicePoints()
+    //              .get("be675d63-c5a1-41a9-a345-c82102ac42cc")
+    //              .getVisits()
+    //              .size());
+    //      Assertions.assertEquals(visit.getStatus(),
+    // VisitEvent.BACK_TO_USER_POOL.getState().name());
+    //      visits =
+    //          visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",
+    // visit);
+    Visit visittoBack = visitService.backCalledVisit(branchId, visits.get().getId(), 60L);
+    visits =
+        visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+    visittoBack = visitService.backCalledVisit(branchId, visits.get().getId(), 60L);
+    Assertions.assertEquals(visittoBack.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
+    //   }
   }
-
 
   @Test
   void checkBackUserToPoolVisit() throws InterruptedException, SystemException {

@@ -1540,7 +1540,8 @@ public class VisitService {
       visit.setReturnTimeDelay(returnTimeDelay);
       visit.setStartServingDateTime(null);
       Optional<VisitEventInformation> event =
-          visit.getVisitEventInformationList().stream().max(Comparator.comparing(VisitEventInformation::getEventDateTime));
+          visit.getVisitEventInformationList().stream()
+              .max(Comparator.comparing(VisitEventInformation::getEventDateTime));
 
       if (event.isPresent() && event.get().getParameters().containsKey("servicePointId")) {
         VisitEvent visitEvent =
