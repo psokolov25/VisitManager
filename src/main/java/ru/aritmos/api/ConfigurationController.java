@@ -183,6 +183,7 @@ public class ConfigurationController {
    * @param branchId идентификатор отделения *
    * @return @return отделение
    */
+  @Tag(name = "Настройка автовызова")
   @Tag(name = "Конфигурация отделений")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/autocallModeOn")
@@ -192,17 +193,52 @@ public class ConfigurationController {
   }
 
   /**
+   * Включение авовызова для точки обслуживания отделения
+   * (а так же включается автовызов для отделения, если он был отключен)
+   * @param branchId идентификатор отделения *
+   * @return @return отделение
+   */
+  @Tag(name = "Настройка автовызова")
+  @Tag(name = "Конфигурация отделений")
+  @Tag(name = "Полный список")
+  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/autocallModeOn")
+  public Optional<ServicePoint> setAutoCallModeOfServicePointOn(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+    visitService.setAutoCallModeOfBranch(branchId, true);
+    return visitService.setAutoCallModeOfServicePoint(branchId, servicePointId, true);
+  }
+
+  /**
    * Выключение авовызова для отделения
    *
    * @param branchId идентификатор отделения *
    * @return @return отделение
    */
+  @Tag(name = "Настройка автовызова")
   @Tag(name = "Конфигурация отделений")
   @Tag(name = "Полный список")
   @Put(uri = "/branches/{branchId}/autocallModeOff")
   public Optional<Branch> setAutoCallModeOfBranchOff(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     return visitService.setAutoCallModeOfBranch(branchId, false);
+  }
+
+  /**
+   * Выключение авовызова для точки обслуживания отделения
+   *
+   * @param branchId идентификатор отделения *
+   * @return @return отделение
+   */
+  @Tag(name = "Настройка автовызова")
+  @Tag(name = "Конфигурация отделений")
+  @Tag(name = "Полный список")
+  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/autocallModeOff")
+  public Optional<ServicePoint> setAutoCallModeOfServicePointOff(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+
+    return visitService.setAutoCallModeOfServicePoint(branchId, servicePointId, false);
   }
 
   /**
