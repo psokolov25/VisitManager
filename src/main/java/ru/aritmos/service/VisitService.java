@@ -2966,7 +2966,13 @@ public class VisitService {
   public Optional<Branch> setAutoCallModeOfBranch(String branchId, Boolean isAutoCallMode) {
     Branch currentBranch = branchService.getBranch(branchId);
     currentBranch.getParameterMap().put("autoCallMode", isAutoCallMode.toString());
-
+    currentBranch
+            .getServicePoints()
+            .forEach((key, value) -> {
+                if (!isAutoCallMode) {
+                    value.setAutoCallMode(false);
+                }
+            });
     branchService.add(currentBranch.getId(), currentBranch);
     return Optional.of(currentBranch);
   }
