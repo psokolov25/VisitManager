@@ -1863,13 +1863,11 @@ public class VisitService {
 
         User staff;
         if (currentBranch.getServicePoints().containsKey(servicePointId)
-                && currentBranch.getServicePoints().get(servicePointId).getUser() != null) {
+            && currentBranch.getServicePoints().get(servicePointId).getUser() != null) {
           staff = currentBranch.getServicePoints().get(servicePointId).getUser();
-        }
-        else
-        {
+        } else {
           throw new BusinessException(
-                  "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+              "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
         event.dateTime = ZonedDateTime.now();
@@ -1897,7 +1895,7 @@ public class VisitService {
         event.getParameters().put("staffId", staff.getId());
         event.getParameters().put("staffName", staff.getName());
 
-        event.getParameters().put("poolUserId",user.getId());
+        event.getParameters().put("poolUserId", user.getId());
         event.getParameters().put("poolUserName", user.getName());
         event.getParameters().put("servicePointId", servicePointId);
         branchService.updateVisit(visit, event, this);
@@ -1943,13 +1941,11 @@ public class VisitService {
     }
     User user;
     if (currentBranch.getServicePoints().containsKey(servicePointId)
-            && currentBranch.getServicePoints().get(servicePointId).getUser() != null) {
+        && currentBranch.getServicePoints().get(servicePointId).getUser() != null) {
       user = currentBranch.getServicePoints().get(servicePointId).getUser();
-    }
-    else
-    {
+    } else {
       throw new BusinessException(
-              "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+          "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
@@ -1990,11 +1986,9 @@ public class VisitService {
     if (currentBranch.getServicePoints().containsKey(servicePointId)
         && currentBranch.getServicePoints().get(servicePointId).getUser() != null) {
       user = currentBranch.getServicePoints().get(servicePointId).getUser();
-    }
-    else
-    {
+    } else {
       throw new BusinessException(
-              "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+          "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
     Queue queue;
     if (currentBranch.getQueues().containsKey(queueId)) {
@@ -2112,13 +2106,11 @@ public class VisitService {
     String oldQueueID = visit.getQueueId();
     User user;
     if (currentBranch.getServicePoints().containsKey(servicePointId)
-            && currentBranch.getServicePoints().get(servicePointId).getUser() != null) {
+        && currentBranch.getServicePoints().get(servicePointId).getUser() != null) {
       user = currentBranch.getServicePoints().get(servicePointId).getUser();
-    }
-    else
-    {
+    } else {
       throw new BusinessException(
-              "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+          "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
     ServicePoint poolServicePoint;
     if (currentBranch.getServicePoints().containsKey(poolServicePointId)) {
@@ -2967,11 +2959,12 @@ public class VisitService {
     Branch currentBranch = branchService.getBranch(branchId);
     currentBranch.getParameterMap().put("autoCallMode", isAutoCallMode.toString());
     currentBranch
-            .getServicePoints()
-            .forEach((key, value) -> {
-                if (!isAutoCallMode) {
-                    value.setAutoCallMode(false);
-                }
+        .getServicePoints()
+        .forEach(
+            (key, value) -> {
+              if (!isAutoCallMode) {
+                value.setAutoCallMode(false);
+              }
             });
     branchService.add(currentBranch.getId(), currentBranch);
     return Optional.of(currentBranch);
@@ -3095,6 +3088,17 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
+      HashMap<String, String> parameterMap = new HashMap<>();
+      parameterMap.put("branchId", currentBranch.getId());
+      parameterMap.put("servicePointId", servicePoint.getId());
+      Event autocallEvent =
+          Event.builder()
+              .eventType("SERVUCEPOINT_AUTOCALL_MODE_TURN_ON")
+              .eventDate(ZonedDateTime.now())
+              .params(parameterMap)
+              .body(servicePoint)
+              .build();
+      eventService.send("frontend", false, autocallEvent);
       throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(207));
     }
   }
