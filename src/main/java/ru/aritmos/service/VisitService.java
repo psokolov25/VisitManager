@@ -2834,7 +2834,7 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(102));
+      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(207));
     }
     return Optional.empty();
   }
@@ -2889,7 +2889,7 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(102));
+      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(207));
     }
     return Optional.empty();
   }
@@ -2943,7 +2943,7 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(102));
+      throw new BusinessException("Autocall mode enabled!", eventService, HttpStatus.valueOf(207));
     }
     return Optional.empty();
   }
