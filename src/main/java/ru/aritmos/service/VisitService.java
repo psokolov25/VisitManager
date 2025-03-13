@@ -2993,6 +2993,17 @@ public class VisitService {
       servicePoint.setAutoCallMode(isAutoCallMode);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
+      HashMap<String, String> parameterMap = new HashMap<>();
+      parameterMap.put("branchId", currentBranch.getId());
+      parameterMap.put("servicePointId", servicePoint.getId());
+      Event autocallEvent =
+              Event.builder()
+                      .eventType("SERVUCEPOINT_AUTOCALL_MODE_TURN_ON")
+                      .eventDate(ZonedDateTime.now())
+                      .params(parameterMap)
+                      .body(servicePoint)
+                      .build();
+      eventService.send("frontend", false, autocallEvent);
       return Optional.of(servicePoint);
     } else if (isAutoCallMode) {
       throw new BusinessException(
@@ -3028,6 +3039,7 @@ public class VisitService {
    */
   public Optional<ServicePoint> startAutoCallModeOfServicePoint(
       String branchId, String servicePointId) {
+
     return setAutoCallModeOfServicePoint(branchId, servicePointId, true);
   }
 
