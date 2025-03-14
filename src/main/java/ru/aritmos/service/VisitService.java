@@ -827,7 +827,7 @@ public class VisitService {
             visit.setQueueId(serviceQueue.getId());
 
             if (printTicket
-                && currentBranch.getReception().getPrinters().stream()
+                && this.getPrinters(branchId).stream()
                     .anyMatch(f -> f.getId().equals(printerId))) {
               printerService.print(printerId, visit);
             }
