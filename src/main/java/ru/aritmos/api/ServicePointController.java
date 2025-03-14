@@ -920,7 +920,7 @@ public class ServicePointController {
   }
 
   /**
-   * Отмена режима автовызова для точки обслуживания
+   * Отмена режима автоматического вызова для точки обслуживания
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -938,8 +938,9 @@ public class ServicePointController {
     return visitService.cancelAutoCallModeOfServicePoint(branchId, servicePointId);
   }
 
+
   /**
-   * Запуск режима автовызова для точки обслуживания
+   * Запуск режима автоматического вызова для точки обслуживания
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -956,6 +957,8 @@ public class ServicePointController {
     visitService.setAutoCallModeOfBranch(branchId, true);
     return visitService.startAutoCallModeOfServicePoint(branchId, servicePointId);
   }
+
+
 
   /**
    * Получение возможных фактических услуг

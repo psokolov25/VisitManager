@@ -30,6 +30,7 @@ import ru.aritmos.service.rules.SegmentationRule;
 
 @Slf4j
 @Singleton
+@SuppressWarnings("unused")
 public class VisitService {
   @Inject public KeyCloackClient keyCloackClient;
   @Getter @Inject BranchService branchService;
@@ -2997,12 +2998,12 @@ public class VisitService {
       parameterMap.put("branchId", currentBranch.getId());
       parameterMap.put("servicePointId", servicePoint.getId());
       Event autocallEvent =
-              Event.builder()
-                      .eventType("SERVUCEPOINT_AUTOCALL_MODE_TURN_ON")
-                      .eventDate(ZonedDateTime.now())
-                      .params(parameterMap)
-                      .body(servicePoint)
-                      .build();
+          Event.builder()
+              .eventType("SERVUCEPOINT_AUTOCALL_MODE_TURN_ON")
+              .eventDate(ZonedDateTime.now())
+              .params(parameterMap)
+              .body(servicePoint)
+              .build();
       eventService.send("frontend", false, autocallEvent);
       return Optional.of(servicePoint);
     } else if (isAutoCallMode) {
@@ -3016,6 +3017,43 @@ public class VisitService {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
       return Optional.of(servicePoint);
     }
+  }
+
+  /**
+   * Включение-выключение режима необходимости подтверждения прихода для точки обслуживания
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param isConfirmRequiredMode режим необходимости подтверждения
+   * @return точка обслуживания
+   */
+  public Optional<ServicePoint> setConfirmRequiredModeOfServicePoint(
+      String branchId, String servicePointId, Boolean isConfirmRequiredMode) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    if (!currentBranch.getServicePoints().containsKey(servicePointId)) {
+      throw new BusinessException(
+          String.format("Service poiunt %s not found!", servicePointId),
+          eventService,
+          HttpStatus.NOT_FOUND);
+    }
+
+    ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+    servicePoint.setIsConfirmRequired(isConfirmRequiredMode);
+    currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
+    branchService.add(currentBranch.getId(), currentBranch);
+    HashMap<String, String> parameterMap = new HashMap<>();
+    parameterMap.put("branchId", currentBranch.getId());
+    parameterMap.put("servicePointId", servicePoint.getId());
+    Event autocallEvent =
+        Event.builder()
+            .eventType(
+                "SERVUCEPOINT_CONFIRM_REQUIRED_MODE_TURN_" + (isConfirmRequiredMode ? "ON" : "OFF"))
+            .eventDate(ZonedDateTime.now())
+            .params(parameterMap)
+            .body(servicePoint)
+            .build();
+    eventService.send("frontend", false, autocallEvent);
+    return Optional.of(servicePoint);
   }
 
   /**
