@@ -20,13 +20,15 @@ public final class Queue extends BranchEntityWithVisits {
   /** Стандартное время ожидания */
   Integer waitingSL;
 
-  public Queue(String name, String ticketPrefix) {
+  public Queue(String name, String ticketPrefix,Integer waitingSL) {
     super(name);
     this.ticketPrefix = ticketPrefix;
+    this.waitingSL = waitingSL;
   }
 
-  public Queue(String id, String name, String ticketPrefix) {
+  public Queue(String id, String name, String ticketPrefix,Integer waitingSL) {
     super(id, name);
     this.ticketPrefix = ticketPrefix;
+    this.waitingSL = waitingSL;
   }
 }

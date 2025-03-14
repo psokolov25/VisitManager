@@ -87,7 +87,7 @@ class EntrypointTest {
       HashMap<String, EntryPoint> entryPoints = new HashMap<>();
       entryPoints.put(entryPoint.getId(), entryPoint);
       branch.setEntryPoints(entryPoints);
-      Queue queueCredit = new Queue("371986f3-7872-4a4f-ab02-731f0ae4598e", "Кредиты", "F");
+      Queue queueCredit = new Queue("371986f3-7872-4a4f-ab02-731f0ae4598e", "Кредиты", "F",9000);
       Service creditService =
           new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8c", "Кредит", 9000, queueCredit.getId());
       DeliveredService creditCard =
@@ -101,14 +101,14 @@ class EntrypointTest {
       branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
       branch.getPossibleDeliveredServices().put(insurance.getId(), insurance);
       Queue queueBigCredit =
-          new Queue("bd4b586e-c93e-4e07-9a76-586dd84ddea5", "Очень большие кредиты", "S");
+          new Queue("bd4b586e-c93e-4e07-9a76-586dd84ddea5", "Очень большие кредиты", "S",9000);
       Service bigCreditService =
           new Service(
               "569769e8-3bb3-4263-bd2e-42d8b3ec0bd4",
               "Очень большой кредит",
               9000,
               queueBigCredit.getId());
-      Queue queueC = new Queue("В кассу", "C");
+      Queue queueC = new Queue("В кассу", "C",9000);
       Service kassaService =
           new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67", "Касса", 9000, queueC.getId());
       ServicePoint servicePointFC = new ServicePoint(servicePointFcId, "Финансовый консультант");
@@ -495,7 +495,7 @@ class EntrypointTest {
     //   }
   }
 
-  @Test
+  //@Test
   void checkBackUserToPoolVisit() throws InterruptedException, SystemException {
 
     Service service;

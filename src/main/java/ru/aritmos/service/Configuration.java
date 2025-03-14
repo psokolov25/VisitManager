@@ -56,7 +56,7 @@ public class Configuration {
     HashMap<String, EntryPoint> entryPoints = new HashMap<>();
     entryPoints.put(entryPoint.getId(), entryPoint);
     branch.setEntryPoints(entryPoints);
-    Queue queueCredit = new Queue("55da9b66-c928-4d47-9811-dbbab20d3780", "Кредиты", "F");
+    Queue queueCredit = new Queue("55da9b66-c928-4d47-9811-dbbab20d3780", "Кредиты", "F",9000);
     queueCredit.setWaitingSL(200);
     Service creditService =
         new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "Кредит", 9000, queueCredit.getId());
@@ -77,7 +77,7 @@ public class Configuration {
     branch.getPossibleDeliveredServices().put(insurance.getId(), insurance);
 
     Queue queueBigCredit =
-        new Queue("c211ae6b-de7b-4350-8a4c-cff7ff98104e", "Очень большие кредиты", "S");
+        new Queue("c211ae6b-de7b-4350-8a4c-cff7ff98104e", "Очень большие кредиты", "S",9000);
     Service bigCreditService =
         new Service(
             "569769e8-3bb3-4263-bd2e-42d8b3ec0bd2",
@@ -90,7 +90,7 @@ public class Configuration {
             "Кредит на покупку персонального самолета и бла  бла  бла  бла  бла  бла  бла  бла  бла   бла  бла  б",
             9000,
             queueCredit.getId());
-    Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C");
+    Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C",9000);
     Service kassaService =
         new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
     ServicePoint servicePointFC =
