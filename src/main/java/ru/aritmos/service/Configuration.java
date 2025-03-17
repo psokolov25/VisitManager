@@ -15,6 +15,7 @@ import ru.aritmos.model.*;
 public class Configuration {
   @Inject BranchService branchService;
   @Inject KeyCloackClient keyCloackClient;
+  @Inject VisitService visitService;
 
   public void getConfiguration() {
 
@@ -177,7 +178,7 @@ public class Configuration {
                     .build()));
     branchService.add(branch.getId(), branch);
     branchService.openServicePoint(
-        branch.getId(), psokolovUser.getName(), servicePointFC.getId(), workProfileFC.getId());
+        branch.getId(), psokolovUser.getName(), servicePointFC.getId(), workProfileFC.getId(),visitService);
 
     Branch branch2 = new Branch("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3", "Отделение на Ямской");
     branch2.setPrefix("YMS");

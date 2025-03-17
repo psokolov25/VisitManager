@@ -204,7 +204,7 @@ class EntrypointTest {
       branchService.add(branch.getId(), branch);
       this.psokolovUser =
           branchService.openServicePoint(
-              branchId, "psokolov", servicePointFC.getId(), workProfileFC.getId());
+              branchId, "psokolov", servicePointFC.getId(), workProfileFC.getId(),visitService);
       branch = branchService.getBranch(branchId);
       log.info(branchService.getBranches().toString());
     }
