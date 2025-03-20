@@ -49,7 +49,7 @@ public class MaxLifeTimeCallRule implements CallRule {
                             : o1.getReturningTime().compareTo(o2.getReturningTime()));
 
         if (result.isPresent()) {
-          result.get().getParameterMap().remove("isTransfereedToStart");
+          result.get().getParameterMap().remove("isTransferredToStart");
           result.get().setReturnDateTime(null);
           result.get().setTransferDateTime(null);
           return result;

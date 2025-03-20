@@ -87,7 +87,7 @@ class EntrypointTest {
       HashMap<String, EntryPoint> entryPoints = new HashMap<>();
       entryPoints.put(entryPoint.getId(), entryPoint);
       branch.setEntryPoints(entryPoints);
-      Queue queueCredit = new Queue("371986f3-7872-4a4f-ab02-731f0ae4598e", "Кредиты", "F",9000);
+      Queue queueCredit = new Queue("371986f3-7872-4a4f-ab02-731f0ae4598e", "Кредиты", "F", 9000);
       Service creditService =
           new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8c", "Кредит", 9000, queueCredit.getId());
       DeliveredService creditCard =
@@ -101,14 +101,14 @@ class EntrypointTest {
       branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
       branch.getPossibleDeliveredServices().put(insurance.getId(), insurance);
       Queue queueBigCredit =
-          new Queue("bd4b586e-c93e-4e07-9a76-586dd84ddea5", "Очень большие кредиты", "S",9000);
+          new Queue("bd4b586e-c93e-4e07-9a76-586dd84ddea5", "Очень большие кредиты", "S", 9000);
       Service bigCreditService =
           new Service(
               "569769e8-3bb3-4263-bd2e-42d8b3ec0bd4",
               "Очень большой кредит",
               9000,
               queueBigCredit.getId());
-      Queue queueC = new Queue("В кассу", "C",9000);
+      Queue queueC = new Queue("В кассу", "C", 9000);
       Service kassaService =
           new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a67", "Касса", 9000, queueC.getId());
       ServicePoint servicePointFC = new ServicePoint(servicePointFcId, "Финансовый консультант");
@@ -189,7 +189,7 @@ class EntrypointTest {
       workProfileFC.getQueueIds().add(queueCredit.getId());
       WorkProfile workProfileFSC = new WorkProfile("Старший финансовый консультант");
       workProfileFSC.getQueueIds().add(queueBigCredit.getId());
-
+      workProfileFSC.getQueueIds().add(queueCredit.getId());
       HashMap<String, Queue> queueMap = new HashMap<>();
       queueMap.put(queueCredit.getId(), queueCredit);
       queueMap.put(queueBigCredit.getId(), queueBigCredit);
@@ -204,7 +204,7 @@ class EntrypointTest {
       branchService.add(branch.getId(), branch);
       this.psokolovUser =
           branchService.openServicePoint(
-              branchId, "psokolov", servicePointFC.getId(), workProfileFC.getId(),visitService);
+              branchId, "psokolov", servicePointFC.getId(), workProfileFSC.getId(), visitService);
       branch = branchService.getBranch(branchId);
       log.info(branchService.getBranches().toString());
     }
@@ -261,7 +261,7 @@ class EntrypointTest {
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     Optional<Visit> visitForConfirm =
-        visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        visitService.visitCallForConfirmWithMaxWaitingTime(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
     if (visitForConfirm.isPresent()) {
       Long servtime = visitForConfirm.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -292,7 +292,7 @@ class EntrypointTest {
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     visitService.createVisit(branchId, "1", visitParameters, false);
     Thread.sleep(300);
-    Optional<Visit> currvisit = visitService.visitCallForConfirm(branchId, servicePointFcId);
+    Optional<Visit> currvisit = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId);
     if (currvisit.isPresent()) {
       Long servtime = currvisit.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -363,7 +363,7 @@ class EntrypointTest {
     // Visit visit=visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
-    Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, servicePointFcId);
+    Optional<Visit> visitOptional = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId);
     if (visitOptional.isPresent()) {
       Long servtime = visitOptional.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -377,8 +377,8 @@ class EntrypointTest {
       Thread.sleep(900);
 
       Visit visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc");
-
-      Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.getState().name());
+      Thread.sleep(900);
+      Assertions.assertEquals(visit2.getStatus(), VisitEvent.PLACED_IN_QUEUE.getState().name());
     }
   }
 
@@ -457,7 +457,7 @@ class EntrypointTest {
     //
     //    Thread.sleep(1000);
     Optional<Visit> visits =
-        visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        visitService.visitCallForConfirmWithMaxWaitingTime(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
     //    if (visits.isPresent()) {
     //      Long servtime = visits.get().getServingTime();
     //      Assertions.assertEquals(servtime, 0);
@@ -489,13 +489,13 @@ class EntrypointTest {
     // visit);
     Visit visittoBack = visitService.backCalledVisit(branchId, visits.get().getId(), 60L);
     visits =
-        visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        visitService.visitCallForConfirmWithMaxWaitingTime(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
     visittoBack = visitService.backCalledVisit(branchId, visits.get().getId(), 60L);
     Assertions.assertEquals(visittoBack.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
     //   }
   }
 
-  //@Test
+  // @Test
   void checkBackUserToPoolVisit() throws InterruptedException, SystemException {
 
     Service service;
@@ -518,7 +518,7 @@ class EntrypointTest {
 
     Thread.sleep(1000);
     Optional<Visit> visits =
-        visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+        visitService.visitCallForConfirmWithMaxWaitingTime(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -544,7 +544,7 @@ class EntrypointTest {
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
       visits =
-          visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
+          visitService.visitCallForConfirmWithMaxWaitingTime(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -576,7 +576,7 @@ class EntrypointTest {
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
-    Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, servicePointFcId);
+    Optional<Visit> visitOptional = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId);
     if (visitOptional.isPresent()) {
       Long servtime = visitOptional.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -602,7 +602,7 @@ class EntrypointTest {
               .getVisits()
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
-      Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      Optional<Visit> visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -638,7 +638,7 @@ class EntrypointTest {
 
     Thread.sleep(1000);
     Optional<Visit> visits =
-        visitService.visitCallForConfirm(branchId, "993211e7-31c8-4dcf-bab1-ecf7b9094d4c", visit);
+        visitService.visitCallForConfirmWithMaxWaitingTime(branchId, "993211e7-31c8-4dcf-bab1-ecf7b9094d4c", visit);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -662,7 +662,7 @@ class EntrypointTest {
               .size());
       Assertions.assertEquals(
           visit.getStatus(), VisitEvent.BACK_TO_SERVICE_POINT_POOL.getState().name());
-      visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -697,7 +697,7 @@ class EntrypointTest {
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
-    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -720,7 +720,7 @@ class EntrypointTest {
               .getVisits()
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
-      visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -752,7 +752,7 @@ class EntrypointTest {
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
-    Optional<Visit> visitOptional = visitService.visitCallForConfirm(branchId, servicePointFcId);
+    Optional<Visit> visitOptional = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId);
     if (visitOptional.isPresent()) {
       Long servtime = visitOptional.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -778,7 +778,7 @@ class EntrypointTest {
               .getVisits()
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
-      Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      Optional<Visit> visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
         Thread.sleep(900);
 
@@ -827,7 +827,7 @@ class EntrypointTest {
             .size());
     Assertions.assertEquals(
         visit.getStatus(), VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getState().name());
-    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Thread.sleep(900);
 
@@ -887,7 +887,7 @@ class EntrypointTest {
     // if(queue.getVisits().stream().filter(f->f.getId().equals(visit.getId())).count()>0)
     Thread.sleep(900);
 
-    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Thread.sleep(900);
 
@@ -899,7 +899,7 @@ class EntrypointTest {
       visit =
           visitService.visitTransferFromQueueToServicePointPool(
               branchId, servicePointFcId, servicePointFcId, visit, true);
-      visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+      visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
 
         visitService.visitConfirm(branchId, servicePointFcId, visits.get());
@@ -961,7 +961,7 @@ class EntrypointTest {
             .getVisits()
             .size());
     Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_QUEUE.getState().name());
-    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Thread.sleep(900);
 
@@ -1182,7 +1182,7 @@ class EntrypointTest {
     VisitParameters visitParameters =
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     visit = visitService.createVisit(branchId, "1", visitParameters, false);
-    Optional<Visit> visits = visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+    Optional<Visit> visits = visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
     if (visits.isPresent()) {
       Long servtime = visits.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
@@ -1259,15 +1259,30 @@ class EntrypointTest {
                 .build(),
             false,
             null);
+    Thread.sleep(800);
+    Visit visit4 =
+            entrypointController.createVisit(
+                    branchId,
+                    "1",
+                    VisitParameters.builder()
+                            .serviceIds(serviceIds)
 
+                            .build(),
+                    false,
+                    null);
+    visitService.visitTransfer(branchId,servicePointFcId,"371986f3-7872-4a4f-ab02-731f0ae4598e",visit4,true);
     Assertions.assertEquals(visit.getQueueId(), "bd4b586e-c93e-4e07-9a76-586dd84ddea5");
     Optional<Visit> visitForConfirm =
-        visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+        visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId);
     if (visitForConfirm.isPresent()) {
+      Thread.sleep(800);
+      visitService.visitConfirm(branchId, servicePointFcId, visitForConfirm.get());
       Long servtime = visitForConfirm.get().getServingTime();
       Assertions.assertEquals(servtime, 0);
       Thread.sleep(200);
-      visitService.visitReCallForConfirm(branchId, servicePointFcId, visit);
+      visitService.visitEnd(branchId, servicePointFcId);
+      Thread.sleep(200);
+      visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId);
       Thread.sleep(200);
       visitService.visitConfirm(branchId, servicePointFcId, visit);
       Thread.sleep(200);
@@ -1309,7 +1324,7 @@ class EntrypointTest {
 
     Assertions.assertEquals(visit.getQueueId(), "bd4b586e-c93e-4e07-9a76-586dd84ddea5");
     Optional<Visit> visitForConfirm =
-        visitService.visitCallForConfirm(branchId, servicePointFcId, visit);
+        visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
     if (visitForConfirm.isPresent()) {
       Long servtime = visitForConfirm.get().getServingTime();
       Assertions.assertEquals(servtime, 0);

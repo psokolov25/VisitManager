@@ -274,7 +274,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId) {
 
-    return branchService.openServicePoint(branchId, userName, servicePointId, workProfileId,visitService);
+    return branchService.openServicePoint(
+        branchId, userName, servicePointId, workProfileId, visitService);
   }
 
   /**
@@ -532,7 +533,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @Body Visit visit) {
 
-    return visitService.visitCallForConfirm(branchId, servicePointId, visit);
+    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId, visit);
   }
 
   /**
@@ -557,7 +558,7 @@ public class ServicePointController {
       @PathVariable String visitId) {
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitCallForConfirm(branchId, servicePointId, visit);
+    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId, visit);
   }
 
   /**
@@ -603,7 +604,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
 
-    return visitService.visitCallForConfirm(branchId, servicePointId);
+    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId);
   }
 
   /**
@@ -658,7 +659,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @Body List<String> queueIds) {
 
-    return visitService.visitCallForConfirm(branchId, servicePointId, queueIds);
+    return visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointId, queueIds);
   }
 
   /**
@@ -938,7 +939,6 @@ public class ServicePointController {
     return visitService.cancelAutoCallModeOfServicePoint(branchId, servicePointId);
   }
 
-
   /**
    * Запуск режима автоматического вызова для точки обслуживания
    *
@@ -957,8 +957,6 @@ public class ServicePointController {
     visitService.setAutoCallModeOfBranch(branchId, true);
     return visitService.startAutoCallModeOfServicePoint(branchId, servicePointId);
   }
-
-
 
   /**
    * Получение возможных фактических услуг
@@ -1637,7 +1635,7 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Put(
       uri =
-       "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer",
+          "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer",
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
@@ -1808,7 +1806,7 @@ public class ServicePointController {
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, isAppend);
+    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, !isAppend);
   }
 
   /**
@@ -1888,7 +1886,7 @@ public class ServicePointController {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
     }
 
-    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, isAppend);
+    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, !isAppend);
   }
 
   /**

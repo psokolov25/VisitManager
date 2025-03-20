@@ -151,7 +151,11 @@ public class BranchService {
   }
 
   public User openServicePoint(
-      String branchId, String userName, String servicePointId, String workProfileId, VisitService visitService) {
+      String branchId,
+      String userName,
+      String servicePointId,
+      String workProfileId,
+      VisitService visitService) {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
       throw new BusinessException("Work profile not found!!", eventService, HttpStatus.NOT_FOUND);
@@ -165,7 +169,15 @@ public class BranchService {
     } catch (Exception ex) {
       log.warn("User not found!!", ex);
     }
-    branch.getServicePoints().values().stream().filter(f->f.getUser()!=null && f.getUser().getName().equals(userName) && !f.getId().equals(servicePointId)).forEach(servicePoint -> closeServicePoint(branchId,servicePoint.getId(),visitService,false,false,""));
+    branch.getServicePoints().values().stream()
+        .filter(
+            f ->
+                f.getUser() != null
+                    && f.getUser().getName().equals(userName)
+                    && !f.getId().equals(servicePointId))
+        .forEach(
+            servicePoint ->
+                closeServicePoint(branchId, servicePoint.getId(), visitService, false, false, ""));
 
     if (branch.getUsers().containsKey(userName)) {
       User user = branch.getUsers().get(userName);

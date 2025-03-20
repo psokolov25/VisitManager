@@ -24,16 +24,16 @@ public class MaxWaitingTimeCallRule implements CallRule {
   @Inject EventService eventService;
 
   private Integer visitComparer(Visit visit1, Visit visit2) {
-    if (visit1.getParameterMap().containsKey("isTransfereedToStart")) {
-      if (visit2.getParameterMap().containsKey("isTransfereedToStart")) {
-        return getDateNyString(visit2.getParameterMap().get("isTransfereedToStart"))
-            .compareTo(getDateNyString(visit1.getParameterMap().get("isTransfereedToStart")));
+    if (visit1.getParameterMap().containsKey("isTransferredToStart")) {
+      if (visit2.getParameterMap().containsKey("isTransferredToStart")) {
+        return getDateNyString(visit2.getParameterMap().get("isTransferredToStart"))
+            .compareTo(getDateNyString(visit1.getParameterMap().get("isTransferredToStart")));
 
       } else {
         return 1;
       }
     } else {
-      if (visit2.getParameterMap().containsKey("isTransfereedToStart")) {
+      if (visit2.getParameterMap().containsKey("isTransferredToStart")) {
         return -1;
       }
     }
@@ -78,7 +78,7 @@ public class MaxWaitingTimeCallRule implements CallRule {
                                 || f.getReturningTime() > f.getReturnTimeDelay())
                             && f.getStatus().contains("WAITING"))
                 .max(this::visitComparer);
-        result.ifPresent(visit -> visit.getParameterMap().remove("isTransfereedToStart"));
+        result.ifPresent(visit -> visit.getParameterMap().remove("isTransferredToStart"));
         result.ifPresent(visit -> visit.setReturnDateTime(null));
         return result;
       } else {
@@ -110,7 +110,7 @@ public class MaxWaitingTimeCallRule implements CallRule {
                                     || f2.getReturningTime() > f2.getReturnTimeDelay())
                                 && f2.getStatus().contains("WAITING"))
                     .max(this::visitComparer);
-            result.ifPresent(visit -> visit.getParameterMap().remove("isTransfereedToStart"));
+            result.ifPresent(visit -> visit.getParameterMap().remove("isTransferredToStart"));
             result.ifPresent(visit -> visit.setReturnDateTime(null));
             result.ifPresent(visit -> visit.setTransferDateTime(null));
 

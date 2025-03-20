@@ -63,8 +63,8 @@ public class ConfigurationController {
    *
    * @param branchId идентификатор подразделения
    * @param serviceHashMap список услуг
-   * @param checkVisits флаг учета визитов при обновлении услуг (при наличии услуги в каком
-   *     нибудь визите - она обновляется)
+   * @param checkVisits флаг учета визитов при обновлении услуг (при наличии услуги в каком нибудь
+   *     визите - она обновляется)
    */
   @Tag(name = "Конфигурация отделений (в разработке!)")
   @Tag(name = "Полный список")
@@ -96,8 +96,8 @@ public class ConfigurationController {
    *
    * @param branchId идентификатор подразделения
    * @param serviceIds список идентификаторов услуг
-   * @param checkVisits флаг учета визитов при обновлении услуг (при наличии услуги в каком
-   *     нибудь визите - она удаляется)
+   * @param checkVisits флаг учета визитов при обновлении услуг (при наличии услуги в каком нибудь
+   *     визите - она удаляется)
    */
   @Tag(name = "Конфигурация отделений (в разработке!)")
   @Tag(name = "Полный список")
@@ -192,7 +192,6 @@ public class ConfigurationController {
     return visitService.setAutoCallModeOfBranch(branchId, true);
   }
 
-
   /**
    * Выключение автоматического вызова для отделения
    *
@@ -207,8 +206,6 @@ public class ConfigurationController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     return visitService.setAutoCallModeOfBranch(branchId, false);
   }
-
-
 
   /**
    * Добавление или обновление очередей
