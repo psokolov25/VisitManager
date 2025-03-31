@@ -1,0 +1,66 @@
+services:
+
+  visitmanager:
+    image: aritmosplatform/aritmos-platform:visitmanager-main
+    hostname: visitmanager
+    environment:
+      - REDIS_SERVER=redis://visitmanager-redis:6379/6
+      - DATABUS_SERVER=http://databus:8080
+      - CONFIG_SERVER=http://localhost:8081
+      #- PRINTER_SERVER=http://printerservice:8084
+      - PRINTER_SERVER=http://192.168.3.29:8084
+      - OIDC_ISSUER_DOMAIN=http://keycloak:8080/realms/aritmos_platform
+      - OAUTH_CLIENT_ID=${CLIENT_ID}
+      - KEYCLOAK_TECHLOGIN=${LOGIN_ADMIN}
+      - KEYCLOAK_TECHPASSWORD=${PASSWORD_ADMIN}
+      - OIDC_ISSUER_URL=http://keycloak:8080
+      - KAFKA_SERVER=kafka:9092
+      - LOKI_SERVER=http://loki:3100/loki/api/v1/push
+      - OAUTH_CLIENT_SECRET=${CLIENT_SECRET}
+    expose:
+      - '8080'
+      - '9094'
+      - '9092'
+      - '9093'
+      - '8082'
+    ports:
+      - "8080:8080"
+    networks:
+      - aritmosplatform-backend
+    depends_on:
+      - visitmanager-redis
+    #      visitmanager-redis:
+    #        condition: service_healthy
+    restart: always
+
+  visitmanager-redis:
+    image: redis:latest
+    hostname: visitmanager-redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+    expose:
+      - '6379'
+      - '9092'
+    networks:
+      - aritmosplatform-backend
+    restart: always
+    # ports:
+    #   - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+volumes:
+  redis_data:
+    external: false
+
+networks:
+  aritmosplatform-backend:
+    external:
+      name: aritmosplatform-backend
