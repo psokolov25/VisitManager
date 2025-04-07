@@ -7,10 +7,13 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
+import io.micronaut.serde.annotation.SerdeImport;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import org.keycloak.representations.idm.GroupRepresentation;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -28,6 +31,7 @@ import ru.aritmos.service.VisitService;
  * @author Pavel Sokolov REST API управления зоной ожидания
  */
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
+@SerdeImport(GroupRepresentation.class)
 @Controller("/servicepoint")
 public class ServicePointController {
   @Inject Services services;

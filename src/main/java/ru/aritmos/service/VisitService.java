@@ -460,6 +460,8 @@ public class VisitService {
                 .printTicket(printTicket)
                 .branchId(branchId)
                 .branchName(currentBranch.getName())
+                .branchPrefix(currentBranch.getPrefix())
+                .branchPath(currentBranch.getPath())
                 .currentService(currentService)
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
@@ -574,6 +576,8 @@ public class VisitService {
                 .printTicket(printTicket)
                 .branchId(branchId)
                 .branchName(currentBranch.getName())
+                .branchPrefix(currentBranch.getPrefix())
+                .branchPath(currentBranch.getPath())
                 .currentService(currentService)
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
@@ -679,6 +683,8 @@ public class VisitService {
                 .printTicket(printTicket)
                 .branchId(branchId)
                 .branchName(currentBranch.getName())
+                .branchPrefix(currentBranch.getPrefix())
+                .branchPath(currentBranch.getPath())
                 .currentService(currentService)
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
@@ -785,6 +791,8 @@ public class VisitService {
                 .printTicket(printTicket)
                 .branchId(branchId)
                 .branchName(currentBranch.getName())
+                .branchPrefix(currentBranch.getPrefix())
+                .branchPath(currentBranch.getPath())
                 .currentService(currentService)
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
@@ -888,6 +896,8 @@ public class VisitService {
                 .printTicket(false)
                 .branchId(branchId)
                 .branchName(currentBranch.getName())
+                .branchPrefix(currentBranch.getPrefix())
+                .branchPath(currentBranch.getPath())
                 .currentService(currentService)
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
@@ -2585,7 +2595,8 @@ public class VisitService {
    * @param visit визит
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(String branchId, String servicePointId, Visit visit) {
+  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(
+      String branchId, String servicePointId, Visit visit) {
 
     String userId = "";
     String userName = "";
@@ -2793,7 +2804,8 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(String branchId, String servicePointId) {
+  public Optional<Visit> visitCallForConfirmWithMaxWaitingTime(
+      String branchId, String servicePointId) {
     Branch currentBranch = branchService.getBranch(branchId);
     String userId = "";
     String userName = "";
@@ -3171,7 +3183,9 @@ public class VisitService {
         if (!servicePoint.get().getIsConfirmRequired()) {
           visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
         } else {
-          visit2 = visitCallForConfirmWithMaxWaitingTime(visit.getBranchId(), servicePoint.get().getId(), visit);
+          visit2 =
+              visitCallForConfirmWithMaxWaitingTime(
+                  visit.getBranchId(), servicePoint.get().getId(), visit);
         }
         if (visit2.isPresent()) {
           servicePoint.get().setAutoCallMode(false);

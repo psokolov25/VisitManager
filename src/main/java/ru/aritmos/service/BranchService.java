@@ -164,8 +164,10 @@ public class BranchService {
       throw new BusinessException("Service point not found!!", eventService, HttpStatus.NOT_FOUND);
     }
     Optional<UserRepresentation> userInfo = Optional.empty();
+
     try {
       userInfo = keyCloackClient.getUserInfo(userName);
+
     } catch (Exception ex) {
       log.warn("User not found!!", ex);
     }
@@ -186,6 +188,8 @@ public class BranchService {
         user.setEmail(userInfo.get().getEmail());
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
+        user.setAllBranches(keyCloackClient.getAllBranchesOfUser(userName));
+        user.setIsAdmin(keyCloackClient.isUserModuleTypeByUserName(userName,"admin"));
       }
       if (user.getLastBreakStartTime() != null && user.getLastBreakEndTime() == null) {
 
@@ -221,12 +225,26 @@ public class BranchService {
       }
       user.setServicePointId(servicePointId);
       user.setCurrentWorkProfileId(workProfileId);
+      if (!user.getIsAdmin()
+          && user.getAllBranches().stream()
+              .noneMatch(
+                  f ->
+                      f.getAttributes().containsKey("branchPrefix")
+                          && f.getAttributes().get("branchPrefix").contains(branch.getPrefix()))) {
+
+        throw new BusinessException(
+            String.format(
+                "User %s dont have permissions to access in branch '%s'!",
+                userName, branch.getName()),
+            eventService,
+            HttpStatus.valueOf(403));
+      }
       branch.openServicePoint(user, eventService);
       this.add(branch.getId(), branch);
       return branch.getUsers().get(userName);
     } else {
 
-      User user = new User(userName);
+      User user = new User(userName, keyCloackClient);
       if (userInfo.isPresent()) {
         user.setId(userInfo.get().getId());
         user.setEmail(userInfo.get().getEmail());

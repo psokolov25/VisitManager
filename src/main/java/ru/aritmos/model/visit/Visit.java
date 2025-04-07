@@ -42,6 +42,12 @@ public class Visit {
   /** Название отделения */
   String branchName;
 
+  /** Префикс отделения */
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  String branchPrefix;
+  /** Путь к отделению */
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  String branchPath;
   /** Дата создания визита */
   ZonedDateTime createDateTime;
 

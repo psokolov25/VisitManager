@@ -24,10 +24,46 @@ kafka:
     default:
       allow.auto.create.topics: true
   bootstrap:
-    servers: '${KAFKA_SERVER:`192.168.8.45:9094`}'
+    servers: '${KAFKA_SERVER:`192.168.8.45:29092`}'
 
 micronaut:
+  security:
+    authentication: cookie
 
+    intercept-url-map:
+      - pattern: /swagger-ui/*
+        access:
+          - isAuthenticated()
+      - pattern: /entrypoint/**
+        access:
+          - isAuthenticated()
+      - pattern: /servicepoint/**
+        access:
+          - isAuthenticated()
+      - pattern: /swagger-ui/**
+        access:
+          - isAuthenticated()
+      - pattern: /swagger/**
+        access:
+          - isAuthenticated()
+
+      - pattern: /oauth/login/keycloak
+        access:
+          - isAnonymous()
+
+    oauth2:
+      clients:
+        keycloak:
+          techlogin: '${KEYCLOAK_TECHLOGIN:admin}'
+          techpassword: '${KEYCLOAK_TECHPASSWORD:LtlVjhjp!23}'
+          keycloakurl: '${OIDC_ISSUER_URL:`http://192.168.8.45:9090`}'
+          realm: aritmos_platform
+          token:
+            auth-method: client_secret_post
+          client-secret: '${OAUTH_CLIENT_SECRET:HKdkHNfaMWWsDqFa6a4q3kcNVkRjN0Wv}' # <3>
+          client-id: '${OAUTH_CLIENT_ID:myclient}' # <4>
+          openid:
+            issuer: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.45:9090`}/realms/${KEYCLOAK_REALM:aritmos_platform}' # <5>
   server:
     port: 8080
     cors:

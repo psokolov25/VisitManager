@@ -37,7 +37,9 @@ public class Branch extends BranchEntity {
 
   /** Префикс отделения */
   String prefix = "";
-
+  /** Путь к отделению */
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  String path="";
   /** Правила вызова */
   List<Rule> callRules = new ArrayList<>();
 
@@ -105,6 +107,7 @@ public class Branch extends BranchEntity {
 
   public Branch(String key, String name) {
     super(key, name);
+
   }
 
   public Integer incrementTicketCounter(Queue queue) {
