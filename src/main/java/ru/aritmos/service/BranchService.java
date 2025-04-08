@@ -189,7 +189,7 @@ public class BranchService {
         user.setFirstName(userInfo.get().getFirstName());
         user.setLastName(userInfo.get().getLastName());
         user.setAllBranches(keyCloackClient.getAllBranchesOfUser(userName));
-        user.setIsAdmin(keyCloackClient.isUserModuleTypeByUserName(userName,"admin"));
+        user.setIsAdmin(keyCloackClient.isUserModuleTypeByUserName(userName, "admin"));
       }
       if (user.getLastBreakStartTime() != null && user.getLastBreakEndTime() == null) {
 

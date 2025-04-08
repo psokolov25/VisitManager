@@ -23,56 +23,64 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 @Introspected
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@SuppressWarnings({"unused","redundant"})
-
+@SuppressWarnings({"unused", "redundant"})
 public class User extends BranchEntityWithVisits {
   /** Флаг указывающий на административные права пользователя */
-
   Boolean isAdmin;
+
   /** Имя */
   @JsonInclude(value = ALWAYS)
   String firstName;
+
   /** Фамилия */
   @JsonInclude(value = ALWAYS)
   String lastName;
+
   /** Электронная почта */
   String email;
+
   /** Идентификатор текущего рабочего профиля */
   String currentWorkProfileId;
+
   /** Идентификатор точки обслуживания */
   String servicePointId;
+
   /** Идентификатор текущего отделения */
   String branchId;
+
   /** Время начала последнего перерыва */
   ZonedDateTime lastBreakStartTime;
+
   /** Время окончания последнего перерыва */
   ZonedDateTime lastBreakEndTime;
+
   /** Причина перерыва */
   String lastBreakReason;
+
   /** Служба получения данных о пользователе из Keycloak */
-  @JsonIgnore
-  @Getter
-  KeyCloackClient keyCloackClient;
+  @JsonIgnore @Getter KeyCloackClient keyCloackClient;
+
   /** Точка обслуживания, в которой сотрудник работал до перерыва */
   String lastServicePointId;
+
   /** Отделение, в которой сотрудник работал до перерыва */
   String lastBranchId;
-  List<GroupRepresentation> allBranches;
 
+  List<GroupRepresentation> allBranches;
 
   public User(String id, String name, KeyCloackClient keyCloackClient) {
 
     super(id, name);
-    this.keyCloackClient=keyCloackClient;
-    this.isAdmin=keyCloackClient.isUserModuleTypeByUserName(name, "admin");
-    this.allBranches=keyCloackClient.getAllBranchesOfUser(name);
+    this.keyCloackClient = keyCloackClient;
+    this.isAdmin = keyCloackClient.isUserModuleTypeByUserName(name, "admin");
+    this.allBranches = keyCloackClient.getAllBranchesOfUser(name);
   }
 
-    public User(String name,KeyCloackClient keyCloackClient) {
+  public User(String name, KeyCloackClient keyCloackClient) {
     super(name);
-    this.keyCloackClient=keyCloackClient;
-      this.isAdmin=keyCloackClient.isUserModuleTypeByUserName(name, "admin");
-      this.allBranches=keyCloackClient.getAllBranchesOfUser(name);
+    this.keyCloackClient = keyCloackClient;
+    this.isAdmin = keyCloackClient.isUserModuleTypeByUserName(name, "admin");
+    this.allBranches = keyCloackClient.getAllBranchesOfUser(name);
   }
 
   @Override

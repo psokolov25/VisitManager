@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.keycloak.representations.idm.GroupRepresentation;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;

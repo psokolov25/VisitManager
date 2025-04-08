@@ -45,9 +45,11 @@ public class Visit {
   /** Префикс отделения */
   @JsonInclude(JsonInclude.Include.ALWAYS)
   String branchPrefix;
+
   /** Путь к отделению */
   @JsonInclude(JsonInclude.Include.ALWAYS)
   String branchPath;
+
   /** Дата создания визита */
   ZonedDateTime createDateTime;
 

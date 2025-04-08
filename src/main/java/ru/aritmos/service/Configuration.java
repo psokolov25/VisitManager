@@ -127,7 +127,8 @@ public class Configuration {
     workProfileFSC.getQueueIds().add(queueBigCredit.getId());
     workProfileFSC.getQueueIds().add(queueCredit.getId());
 
-    User psokolovUser = new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov",keyCloackClient);
+    User psokolovUser =
+        new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov", keyCloackClient);
     try {
       Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(psokolovUser.getName());
 
@@ -136,8 +137,6 @@ public class Configuration {
         psokolovUser.setEmail(userInfo.get().getEmail());
         psokolovUser.setFirstName(userInfo.get().getFirstName());
         psokolovUser.setLastName(userInfo.get().getLastName());
-
-
       }
     } catch (Exception ex) {
       log.warn("Error {}", ex.getLocalizedMessage());

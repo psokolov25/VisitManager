@@ -155,8 +155,7 @@ public class KeyCloackClient {
                   .users()
                   .get(p.getId())
                   .groups(0, 1000000000)
-                  .forEach(
-                      f -> result.addAll(getAllBranchesByRegionId(f.getId())));
+                  .forEach(f -> result.addAll(getAllBranchesByRegionId(f.getId())));
             });
     return result;
   }
