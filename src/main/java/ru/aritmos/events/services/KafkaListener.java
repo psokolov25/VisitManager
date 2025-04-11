@@ -41,7 +41,7 @@ public class KafkaListener {
   public void receive(@KafkaKey String key, String event)
       throws IOException, SystemException, IllegalAccessException {
 
-    log.debug("Recieve key {} value {}", key, event);
+    log.debug("Receive key {} value {}", key, event);
     Event event1 = objectMapper.readValue(event, Event.class);
     if (serviceHandlers.containsKey(event1.getEventType())) {
       serviceHandlers.get(event1.getEventType()).Handle(event1);
@@ -59,7 +59,7 @@ public class KafkaListener {
   @ExecuteOn(TaskExecutors.IO)
   public void receiveAll(@KafkaKey String key, String event)
       throws IOException, SystemException, IllegalAccessException {
-    log.debug("Recieve broadcast message key {} value {}", key, event);
+    log.debug("Receive broadcast message key {} value {}", key, event);
     Event event1 = objectMapper.readValue(event, Event.class);
     if (allHandlers.containsKey(event1.getEventType())) {
       allHandlers.get(event1.getEventType()).Handle(event1);
