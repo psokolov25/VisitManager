@@ -159,7 +159,7 @@ public class ConfigurationController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @Body HashMap<String, SegmentationRuleData> segmentationRuleDataHashMap) {
 
-    branchService.addUpdateSegentationRules(branchId, segmentationRuleDataHashMap);
+    branchService.addUpdateSegmentationRules(branchId, segmentationRuleDataHashMap);
   }
 
   /**

@@ -107,7 +107,7 @@ public class MaxLifeTimeCallRule implements CallRule {
    * @return список точек обслуживания
    */
   @Override
-  public List<ServicePoint> getAvaliableServicePoints(Branch currentBranch, Visit visit) {
+  public List<ServicePoint> getAvailiableServicePoints(Branch currentBranch, Visit visit) {
 
     List<String> workProfileIds =
         currentBranch.getWorkProfiles().values().stream()

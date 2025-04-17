@@ -197,7 +197,7 @@ public class KeyCloackClient {
    * Авторизация пользователя в Keycloak
    *
    * @param credentials логин и пароль пользователя
-   * @return - данные авторизации (токен, токен обновления и т д )
+   * @return - данные авторизации (токен, токен обновления и т д)
    */
   public Optional<AuthorizationResponse> Auth(@Body Credentials credentials) {
 

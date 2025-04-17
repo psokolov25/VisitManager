@@ -268,13 +268,13 @@ public class BranchService {
       String branchId,
       String servicePointId,
       VisitService visitService,
-      Boolean withlogout,
+      Boolean isWithLogout,
       Boolean isBreak,
       String breakReason) {
 
     Branch branch = this.getBranch(branchId);
     branch.closeServicePoint(
-        servicePointId, eventService, visitService, withlogout, isBreak, breakReason);
+        servicePointId, eventService, visitService, isWithLogout, isBreak, breakReason);
     this.add(branch.getId(), branch);
   }
 
@@ -284,7 +284,7 @@ public class BranchService {
     return branch.getUsers();
   }
 
-  public Integer incrementTicetCounter(String branchId, Queue queue) {
+  public Integer incrementTicketCounter(String branchId, Queue queue) {
 
     Branch branch = this.getBranch(branchId);
     Integer result = branch.incrementTicketCounter(queue);
@@ -344,7 +344,7 @@ public class BranchService {
     this.add(branch.getId(), branch);
   }
 
-  public void addUpdateSegentationRules(
+  public void addUpdateSegmentationRules(
       String branchId, HashMap<String, SegmentationRuleData> segmentationRuleDataHashMap) {
     Branch branch = this.getBranch(branchId);
     branch.adUpdateSegmentRules(segmentationRuleDataHashMap, eventService);

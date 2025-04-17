@@ -123,21 +123,22 @@ public class EventHandlerContext {
                         false,
                         Event.builder()
                             .eventDate(ZonedDateTime.now())
-                            .eventType("WARNING_PROCESSING_USER_LOGOUT")
+                            .eventType("PROCESSING_USER_LOGOUT_FORCE")
                             .params(new HashMap<>())
                             .body(userSession)
                             .build());
-                  } else {
-                    visitService
-                        .getBranchService()
-                        .closeServicePoint(
-                            servicePoint.get().getBranchId(),
-                            servicePoint.get().getId(),
-                            visitService,
-                            false,
-                            false,
-                            "");
+                    visitService.visitEnd(
+                        servicePoint.get().getBranchId(), servicePoint.get().getId());
                   }
+                  visitService
+                      .getBranchService()
+                      .closeServicePoint(
+                          servicePoint.get().getBranchId(),
+                          servicePoint.get().getId(),
+                          visitService,
+                          false,
+                          false,
+                          "");
                 }
               });
     }

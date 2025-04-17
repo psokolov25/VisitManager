@@ -482,7 +482,7 @@ public class VisitService {
           serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
 
           serviceQueue.setTicketCounter(
-              branchService.incrementTicetCounter(branchId, serviceQueue));
+              branchService.incrementTicketCounter(branchId, serviceQueue));
           visit.setQueueId(serviceQueue.getId());
           visit.setTicket(
               (serviceQueue.getTicketPrefix()
@@ -599,7 +599,7 @@ public class VisitService {
           serviceQueue = queue.get();
 
           serviceQueue.setTicketCounter(
-              branchService.incrementTicetCounter(branchId, serviceQueue));
+              branchService.incrementTicketCounter(branchId, serviceQueue));
           visit.setQueueId(serviceQueue.getId());
           visit.setTicket(
               (serviceQueue.getTicketPrefix()
@@ -707,7 +707,7 @@ public class VisitService {
           serviceQueue = queue.get();
 
           serviceQueue.setTicketCounter(
-              branchService.incrementTicetCounter(branchId, serviceQueue));
+              branchService.incrementTicketCounter(branchId, serviceQueue));
           visit.setQueueId(serviceQueue.getId());
           visit.setTicket(
               (serviceQueue.getTicketPrefix()
@@ -813,7 +813,7 @@ public class VisitService {
           serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
 
           serviceQueue.setTicketCounter(
-              branchService.incrementTicetCounter(branchId, serviceQueue));
+              branchService.incrementTicketCounter(branchId, serviceQueue));
           visit.setQueueId(serviceQueue.getId());
           visit.setTicket(
               (serviceQueue.getTicketPrefix()
@@ -919,7 +919,7 @@ public class VisitService {
           serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
 
           serviceQueue.setTicketCounter(
-              branchService.incrementTicetCounter(branchId, serviceQueue));
+              branchService.incrementTicketCounter(branchId, serviceQueue));
           visit.setServicePointId(servicePointId);
           visit.setTicket(
               (serviceQueue.getTicketPrefix()
@@ -3176,7 +3176,7 @@ public class VisitService {
     if (currentBranch.getParameterMap().containsKey("autoCallMode")
         && currentBranch.getParameterMap().get("autoCallMode").toString().equals("true")) {
       Optional<ServicePoint> servicePoint =
-          waitingTimeCallRule.getAvaliableServicePoints(currentBranch, visit).stream()
+          waitingTimeCallRule.getAvailiableServicePoints(currentBranch, visit).stream()
               .filter(f -> f.getAutoCallMode() && f.getVisit() == null)
               .findFirst();
       if (servicePoint.isPresent()) {

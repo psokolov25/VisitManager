@@ -43,7 +43,7 @@
 
     <repositories>
         <repository>
-            <id>https://repo1.maven.org/maven2/</id>
+            <id>repo1_maven.org_maven2</id>
             <url>https://repo1.maven.org/maven2/</url>
             <snapshots>
                 <enabled>true</enabled>
@@ -58,19 +58,13 @@
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>mvnrepository.com</id>
+            <id>mvn_repository</id>
             <url>https://mvnrepository.com/artifact/</url>
         </repository>
     </repositories>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-authz-client -->
 
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-authz-client</artifactId>
-            <version>26.0.2</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client -->
         <dependency>
             <groupId>org.keycloak</groupId>
@@ -119,6 +113,13 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
             <version>4.1.119.Final</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-authz-client -->
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-authz-client</artifactId>
+            <version>26.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
@@ -312,7 +313,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.20.0</version>
+                <version>3.12.1</version>
                 <configuration>
                     <inputEncoding>UTF-8</inputEncoding>
                     <outputEncoding>UTF-8</outputEncoding>

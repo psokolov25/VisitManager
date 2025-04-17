@@ -11,5 +11,5 @@ public interface CallRule extends Rule {
 
   Optional<Visit> call(Branch branch, ServicePoint servicePoint, List<String> queueIds);
 
-  List<ServicePoint> getAvaliableServicePoints(Branch currentBranch, Visit visit);
+  List<ServicePoint> getAvailiableServicePoints(Branch currentBranch, Visit visit);
 }

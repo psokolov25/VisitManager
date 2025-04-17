@@ -122,9 +122,9 @@ public class Branch extends BranchEntity {
   }
 
   /**
-   * Получение перечня всех визитов отделение, с ключем - идентификатором визита
+   * Получение перечня всех визитов отделение, с ключом - идентификатором визита
    *
-   * @return перечень визитов с ключем - идентификатором визита
+   * @return перечень визитов с ключом - идентификатором визита
    */
   public HashMap<String, Visit> getAllVisits() {
     HashMap<String, Visit> visits = new HashMap<>();
@@ -152,9 +152,9 @@ public class Branch extends BranchEntity {
   }
 
   /**
-   * Получение перечня всех визитов отделение, с ключем - идентификатором визита
+   * Получение перечня всех визитов отделение, с ключом - идентификатором визита
    *
-   * @return перечень визитов с ключем - идентификатором визита
+   * @return перечень визитов с ключом - идентификатором визита
    */
   public List<Visit> getAllVisitsList() {
     List<Visit> visits = new ArrayList<>();
@@ -182,11 +182,11 @@ public class Branch extends BranchEntity {
   }
 
   /**
-   * Получение перечня всех визитов отделение, с ключем - идентификатором визита с фильтрацией по
+   * Получение перечня всех визитов отделение, с ключом - идентификатором визита с фильтрацией по
    * статусам визита
    *
-   * @param statuses спиок статусов
-   * @return перечень визитов с ключем - идентификатором визита
+   * @param statuses список статусов
+   * @return перечень визитов с ключом - идентификатором визита
    */
   public HashMap<String, Visit> getVisitsByStatus(List<String> statuses) {
     HashMap<String, Visit> visits = new HashMap<>();
@@ -199,7 +199,7 @@ public class Branch extends BranchEntity {
   /**
    * Открытие точки обслуживания
    *
-   * @param user сотрудник, открывший точку ослуживания
+   * @param user сотрудник, открывший точку обслуживания
    * @param eventService служба рассылки событий
    */
   public void openServicePoint(User user, EventService eventService) {
@@ -832,9 +832,9 @@ public class Branch extends BranchEntity {
         });
   }
 
-  public void deleteQueues(List<String> sueueIds, EventService eventService) {
+  public void deleteQueues(List<String> queueIds, EventService eventService) {
 
-    sueueIds.forEach(
+    queueIds.forEach(
         f -> {
           eventService.sendChangedEvent(
               "config", false, null, this.getQueues().get(f), new HashMap<>(), "Delete queue");
