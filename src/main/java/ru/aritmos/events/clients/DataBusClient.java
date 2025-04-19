@@ -8,6 +8,7 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.retry.annotation.Retryable;
 import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.Async;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Map;
@@ -25,6 +26,7 @@ public interface DataBusClient {
       produces = "application/json",
       consumes = "application/json")
   @ExecuteOn(TaskExecutors.IO)
+  @Async
   Publisher<Map<String, String>> send(
       @Header("Service-Destination") String destinationServices,
       @Header("Send-To-OtherBus") Boolean sendToOtherBus,
