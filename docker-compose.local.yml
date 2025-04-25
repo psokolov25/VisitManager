@@ -1,0 +1,64 @@
+services:
+
+  visitmanager:
+    expose:
+      - '8080'
+      - '9094'
+      - '9092'
+      - '9093'
+      - '8082'
+    networks:
+      - aritmosplatform-backend
+    container_name: visitmanager
+    ports:
+      - "8080:8080"
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: aritmos/visitmanager:0.8
+    depends_on:
+      visitmanager-redis:
+        condition: service_healthy
+    environment:
+      - REDIS_SERVER=redis://visitmanager-redis:6379/6
+      - DATABUS_SERVER=http://databus:8080
+      - CONFIG_SERVER=http://localhost:8081
+      #- PRINTER_SERVER=http://printerservice:8084
+      - PRINTER_SERVER=http://192.168.3.29:8084
+      - OIDC_ISSUER_DOMAIN=http://keycloak:8080/realms/aritmos_platform
+      - OAUTH_CLIENT_ID=myclient
+      - KEYCLOAK_TECHLOGIN=admin
+      - KEYCLOAK_TECHPASSWORD=LtlVjhjp!23
+      - OIDC_ISSUER_URL=http://keycloak:8080
+      - KAFKA_SERVER=kafka:9092
+      - LOKI_SERVER=http://loki:3100/loki/api/v1/push
+      - OAUTH_CLIENT_SECRET=HKdkHNfaMWWsDqFa6a4q3kcNVkRjN0Wv
+      - KEYCLOAK_REALM=aritmos_platform
+    restart: always
+  visitmanager-redis:
+    expose:
+      - '6379'
+      - '9092'
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+    networks:
+      - aritmosplatform-backend
+    image: redis:latest
+    container_name: visitmanager-redis
+    restart: always
+    # ports:
+    #   - "6379:6379"
+    volumes:
+      - /path/to/local/dаta:/root/redis
+      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=my-password
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+networks:
+  aritmosplatform-backend:
+    external:
+      name: aritmosplatform-backend
