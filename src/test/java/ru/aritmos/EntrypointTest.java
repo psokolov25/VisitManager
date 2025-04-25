@@ -209,7 +209,6 @@ class EntrypointTest {
       log.info(branchService.getBranches().toString());
     }
   }
-
   /** Проверка правильности формаирования номера талона */
   @Test
   void checkUpdateVisit() throws SystemException {
