@@ -42,7 +42,7 @@ micronaut:
         keycloak: # <2>
           techlogin: admin
           techpassword: LtlVjhjp!23
-          keycloakurl: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.45:9090`}'
+          keycloakurl: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.40:8282`}'
           realm: aritmos_platform
           client-secret: '${OAUTH_CLIENT_SECRET:HKdkHNfaMWWsDqFa6a4q3kcNVkRjN0Wv}' # <3>
           client-id: '${OAUTH_CLIENT_ID:myclient}' # <4>
