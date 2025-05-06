@@ -34,6 +34,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Generated("io.micronaut.openapi.generator.JavaMicronautServerCodegen")
+@JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("unused")
 public class ModuleRoleAccess {
 
   public static final String JSON_PROPERTY_NAME = "name";

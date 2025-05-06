@@ -35,6 +35,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("unused")
 public class TinyUserInfo {
 
   public static final String JSON_PROPERTY_NAME = "name";
