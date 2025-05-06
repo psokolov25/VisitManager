@@ -22,6 +22,7 @@ import ru.aritmos.keycloack.model.Credentials;
 
 @Slf4j
 @Singleton
+@SuppressWarnings("all")
 public class KeyCloackClient {
   @Inject EventService eventService;
 
@@ -100,7 +101,7 @@ public class KeyCloackClient {
         .findFirst()
         .orElse(new GroupRepresentation())
         .getPath();
-    keycloakLogout(keycloak);
+    //keycloakLogout(keycloak);
     return result;
   }
 
@@ -183,13 +184,13 @@ public class KeyCloackClient {
                   .getAttributes()
                   .get("type")
                   .contains(type)) {
-            keycloakLogout(keycloak);
+            //keycloakLogout(keycloak);
             return true;
           }
         }
       }
     }
-    keycloakLogout(keycloak);
+    //keycloakLogout(keycloak);
     return false;
   }
 
@@ -253,9 +254,9 @@ public class KeyCloackClient {
               keycloak.realm(realm).users().get(f.getId()).logout();
               log.info("{}", keycloak.serverInfo().getInfo());
             });
-    if (keycloak.tokenManager() != null) {
+    /*if (keycloak.tokenManager() != null) {
       keycloak.tokenManager().logout();
-    }
+    }*/
     //keycloak.close();
   }
 }
