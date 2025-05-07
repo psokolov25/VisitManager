@@ -245,7 +245,6 @@ public class KeyCloackClient {
 
   public Keycloak getKeycloak() {
     if (keycloak == null || keycloak.isClosed()) {
-
       keycloak =
           KeycloakBuilder.builder()
               .clientId(clientId)
