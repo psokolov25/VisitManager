@@ -9,6 +9,7 @@ import java.util.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
@@ -70,7 +71,8 @@ public class KeyCloackClient {
     return AuthzClient.create(configuration);
   }
 
-  public List<GroupRepresentation> getAllBranchesByRegionName(String regionName,Keycloak keycloak) {
+  public List<GroupRepresentation> getAllBranchesByRegionName(
+      String regionName, Keycloak keycloak) {
 
     RealmResource resource = keycloak.realm(getRealm());
     String regionId =
@@ -84,55 +86,52 @@ public class KeyCloackClient {
                         eventService,
                         HttpStatus.NOT_FOUND))
             .getId();
-    return getAllBranchesByRegionId(regionId,keycloak);
+    return getAllBranchesByRegionId(regionId, keycloak);
   }
 
   public String getBranchPathByBranchPrefix(String regionName, String prefix) {
-    AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
-    AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
-    if (keycloak == null || keycloak.isClosed()) {
-      keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
-    }
-    String result= getAllBranchesByRegionName(regionName,keycloak).stream()
-        .filter(
-            f ->
-                f.getAttributes().containsKey("branchPrefix")
-                    && f.getAttributes().get("branchPrefix").contains(prefix))
-        .findFirst()
-        .orElse(new GroupRepresentation())
-        .getPath();
-    //keycloakLogout(keycloak);
+
+
+
+    String result =
+        getAllBranchesByRegionName(regionName, getKeycloak()).stream()
+            .filter(
+                f ->
+                    f.getAttributes().containsKey("branchPrefix")
+                        && f.getAttributes().get("branchPrefix").contains(prefix))
+            .findFirst()
+            .orElse(new GroupRepresentation())
+            .getPath();
+    keycloakLogout(keycloak);
     return result;
   }
 
-
-  public List<GroupRepresentation> getAllBranchesByRegionId(String regionId,Keycloak keycloak) {
+  public List<GroupRepresentation> getAllBranchesByRegionId(String regionId, Keycloak keycloak) {
 
     RealmResource resource = keycloak.realm(getRealm());
     List<GroupRepresentation> result = new ArrayList<>();
 
     resource
-            .groups()
-            .group(regionId)
-            .getSubGroups(0, 1000000000, false)
-            .forEach(
-                    subGroup -> {
-                      if (subGroup.getAttributes() != null
-                              && subGroup.getAttributes().containsKey("type")
-                              && subGroup.getAttributes().get("type").contains("branch")) {
-                        result.add(subGroup);
-                      }
-                      if (subGroup.getAttributes() != null
-                              && subGroup.getAttributes().containsKey("type")
-                              && subGroup.getAttributes().get("type").contains("region")
-                              && subGroup.getSubGroupCount() > 0) {
-                        result.addAll(getAllBranchesByRegionId(subGroup.getId(),keycloak));
-                      }
-                    });
-    //keycloakLogout(keycloak);
+        .groups()
+        .group(regionId)
+        .getSubGroups(0, 1000000000, false)
+        .forEach(
+            subGroup -> {
+              if (subGroup.getAttributes() != null
+                  && subGroup.getAttributes().containsKey("type")
+                  && subGroup.getAttributes().get("type").contains("branch")) {
+                result.add(subGroup);
+              }
+              if (subGroup.getAttributes() != null
+                  && subGroup.getAttributes().containsKey("type")
+                  && subGroup.getAttributes().get("type").contains("region")
+                  && subGroup.getSubGroupCount() > 0) {
+                result.addAll(getAllBranchesByRegionId(subGroup.getId(), keycloak));
+              }
+            });
+
     return result;
   }
-
 
   /**
    * Получение всех отделений, к которым пользователь имеет доступ
@@ -146,30 +145,23 @@ public class KeyCloackClient {
     getUserInfo(username)
         .ifPresent(
             p -> {
-              AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
-              AuthorizationResponse t =
-                  authzClient.authorization(techlogin, techpassword).authorize();
-              if (keycloak == null || keycloak.isClosed()) {
-                keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
-              }
-              keycloak
+
+
+              getKeycloak()
                   .realm(getRealm())
                   .users()
                   .get(p.getId())
                   .groups(0, 1000000000)
-                  .forEach(f -> result.addAll(getAllBranchesByRegionId(f.getId(),keycloak)));
+                  .forEach(f -> result.addAll(getAllBranchesByRegionId(f.getId(), keycloak)));
             });
     return result;
   }
 
   public Boolean isUserModuleTypeByUserName(String userName, String type) {
 
-    AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
-    AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
-    if (keycloak == null || keycloak.isClosed()) {
-      keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
-    }
-    RealmResource realmResource = keycloak.realm(realm);
+
+
+    RealmResource realmResource = getKeycloak().realm(realm);
     for (UserRepresentation f : realmResource.users().searchByUsername(userName, true)) {
       for (RoleRepresentation role :
           realmResource.users().get(f.getId()).roles().getAll().getRealmMappings()) {
@@ -184,13 +176,13 @@ public class KeyCloackClient {
                   .getAttributes()
                   .get("type")
                   .contains(type)) {
-            //keycloakLogout(keycloak);
+            keycloakLogout(keycloak);
             return true;
           }
         }
       }
     }
-    //keycloakLogout(keycloak);
+    keycloakLogout(keycloak);
     return false;
   }
 
@@ -212,24 +204,16 @@ public class KeyCloackClient {
 
   public Optional<UserRepresentation> getUserInfo(String userName) {
 
-    AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
-    AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
-    if (keycloak == null || keycloak.isClosed()) {
-      keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
-    }
+
     List<UserRepresentation> userRepresentationList =
-        keycloak.realm(realm).users().search(userName, true);
+            getKeycloak().realm(realm).users().search(userName, true);
     if (!userRepresentationList.isEmpty()) {
-      if (keycloak.tokenManager() != null) {
-        keycloak.tokenManager().logout();
-      }
-      //keycloak.close();
+
+      // keycloak.close();
       return Optional.of(userRepresentationList.get(0));
     }
-    if (keycloak.tokenManager() != null) {
-      keycloak.tokenManager().logout();
-    }
-    //keycloak.close();
+
+    // keycloak.close();
     return Optional.empty();
   }
 
@@ -242,10 +226,8 @@ public class KeyCloackClient {
     AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
 
     AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
-    if (keycloak == null || keycloak.isClosed()) {
-      keycloak = Keycloak.getInstance(keycloakUrl, realm, clientId, t.getToken());
-    }
-    keycloak
+
+    getKeycloak()
         .realm(realm)
         .users()
         .search(login, true)
@@ -257,6 +239,25 @@ public class KeyCloackClient {
     /*if (keycloak.tokenManager() != null) {
       keycloak.tokenManager().logout();
     }*/
-    //keycloak.close();
+    // keycloak.close();
+  }
+
+  public Keycloak getKeycloak() {
+    if (keycloak == null || keycloak.isClosed()) {
+
+      keycloak =
+          KeycloakBuilder.builder()
+              .clientId(clientId)
+              .clientSecret(secret)
+              .realm(realm)
+              .username(techlogin)
+              .password(techpassword)
+              .serverUrl(keycloakUrl)
+              .build();
+      return keycloak;
+    } else {
+
+      return keycloak;
+    }
   }
 }
