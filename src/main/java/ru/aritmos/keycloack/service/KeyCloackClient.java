@@ -154,6 +154,7 @@ public class KeyCloackClient {
                   .groups(0, 1000000000)
                   .forEach(f -> result.addAll(getAllBranchesByRegionId(f.getId(), keycloak)));
             });
+    keycloakLogout(keycloak);
     return result;
   }
 
