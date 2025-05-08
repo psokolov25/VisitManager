@@ -6,6 +6,9 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
@@ -47,6 +50,7 @@ public class EntrypointController {
   @Tag(name = "Зона ожидания")
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Полный список")
+
   @Post(
       uri = "/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit",
       consumes = "application/json",
@@ -95,7 +99,21 @@ public class EntrypointController {
   public Visit createVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "2") String entryPointId,
-      @Body ArrayList<String> serviceIds,
+      @Body @RequestBody(
+              description = "Массив идентификаторов услуг",
+              useParameterTypeSchema = true,
+              content =
+              @Content(
+                      schema =
+                      @Schema(
+                              example =
+//language=JSON
+                                      """
+                                              [
+                                                "c3916e7f-7bea-4490-b9d1-0d4064adbe8b",
+                                                "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
+                                              ]
+                                              """))) ArrayList<String> serviceIds,
       @QueryValue(defaultValue = "false") Boolean printTicket,
       @Nullable @QueryValue String segmentationRuleId)
       throws SystemException {
@@ -143,7 +161,27 @@ public class EntrypointController {
   public Visit createVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "2") String entryPointId,
-      @Body VisitParameters parameters,
+      @Body @RequestBody(
+              description = "Идентификаторы услуг и параметры визита",
+              useParameterTypeSchema = true,
+              content =
+              @Content(
+                      schema =
+                      @Schema(
+                              example =
+//language=JSON
+                                      """
+   {
+     "serviceIds": [
+       "c3916e7f-7bea-4490-b9d1-0d4064adbe8b",
+       "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
+     ],
+     "parameters": {
+       "sex": "male",
+       "age": "33"
+     }
+   }
+   """)))VisitParameters parameters,
       @QueryValue Boolean printTicket,
       @Nullable @QueryValue String segmentationRuleId)
       throws SystemException {
@@ -188,7 +226,28 @@ public class EntrypointController {
   public Visit createVisitFromReception(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
-      @Body VisitParameters parameters,
+      @Body @RequestBody(
+              description = "Идентификаторы услуг и параметры визита",
+              useParameterTypeSchema = true,
+
+              content =
+              @Content(
+                      schema =
+                      @Schema(
+                              example =
+//language=JSON
+                                      """
+   {
+     "serviceIds": [
+       "c3916e7f-7bea-4490-b9d1-0d4064adbe8b",
+       "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
+     ],
+     "parameters": {
+       "sex": "male",
+       "age": "33"
+     }
+   }
+   """))) VisitParameters parameters,
       @QueryValue Boolean printTicket,
       @Nullable @QueryValue String segmentationRuleId)
       throws SystemException {

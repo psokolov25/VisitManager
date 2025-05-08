@@ -16,12 +16,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+/*
+ * Параметры визита
+ */
 public class VisitParameters {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   @Builder.Default
+  /*
+   * Идентификаторы услуг
+   */
   ArrayList<String> serviceIds = new ArrayList<>();
 
   @Builder.Default
   @JsonInclude(JsonInclude.Include.NON_NULL)
+  /*
+   * Параметры визита
+   */
   HashMap<String, String> parameters = new HashMap<>();
 }

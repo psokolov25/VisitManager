@@ -24,7 +24,7 @@ kafka:
     default:
       allow.auto.create.topics: true
   bootstrap:
-    servers: 192.168.8.45:9094
+    servers: 192.168.8.45:29092
 
 micronaut:
   test:
