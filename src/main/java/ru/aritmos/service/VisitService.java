@@ -882,7 +882,7 @@ public class VisitService {
 
     if (!services.isEmpty()) {
       if (currentBranch.getServices().containsKey(services.get(0).getId())) {
-        Service currentService = currentBranch.getServices().get(services.get(0).getId());
+        Service currentService = currentBranch.getServices().get(services.get(0).getId()).clone();
         List<Service> unServedServices = new ArrayList<>();
         services.stream()
             .skip(1)
