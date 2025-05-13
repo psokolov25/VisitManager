@@ -2436,7 +2436,7 @@ public class VisitService {
           stopServingEvent.getParameters().put("branchID", branchId);
           stopServingEvent.getParameters().put("staffId", visit.getUserId());
           stopServingEvent.getParameters().put("staffName", visit.getUserName());
-          branchService.updateVisit(visit, stopServingEvent, this);
+          branchService.updateVisit(visit, stopServingEvent, this,true);
 
           visit.setReturnDateTime(ZonedDateTime.now());
           visit.setCallDateTime(null);
@@ -2451,7 +2451,7 @@ public class VisitService {
           backToQueueEvent.getParameters().put("staffName", visit.getUserName());
 
           visit.setServicePointId(null);
-          branchService.updateVisit(visit, backToQueueEvent, this);
+          branchService.updateVisit(visit, backToQueueEvent, this,true);
 
         } else {
           visit.getServedServices().add(visit.getCurrentService());
@@ -2465,12 +2465,12 @@ public class VisitService {
           stopServingEvent.getParameters().put("staffId", visit.getUserId());
           stopServingEvent.getParameters().put("staffName", visit.getUserName());
           stopServingEvent.getParameters().put("servicePointId", servicePointId);
-          branchService.updateVisit(visit, stopServingEvent, this);
+          branchService.updateVisit(visit, stopServingEvent, this,true);
           endEvent = VisitEvent.END;
           endEvent.dateTime = ZonedDateTime.now();
 
           visit.setServicePointId(null);
-          branchService.updateVisit(visit, endEvent, this);
+          branchService.updateVisit(visit, endEvent, this,true);
         }
 
         log.info("Visit {} ended", visit);
