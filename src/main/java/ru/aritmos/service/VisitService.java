@@ -2417,7 +2417,9 @@ public class VisitService {
         visit.setServicePointId(servicePoint.getId());
         visit.setTransferDateTime(ZonedDateTime.now());
 
-        VisitEvent event;
+        VisitEvent stopServingEvent;
+        VisitEvent backToQueueEvent;
+        VisitEvent endEvent;
 
         if (visit.getUnservedServices() != null && !visit.getUnservedServices().isEmpty()) {
 
@@ -2428,28 +2430,28 @@ public class VisitService {
           visit.setQueueId(queueIdToReturn);
 
           visit.setServedDateTime(ZonedDateTime.now());
-          event = VisitEvent.STOP_SERVING;
-          event.dateTime = ZonedDateTime.now();
-          event.getParameters().put("servicePointId", servicePointId);
-          event.getParameters().put("branchID", branchId);
-          event.getParameters().put("staffId", visit.getUserId());
-          event.getParameters().put("staffName", visit.getUserName());
-          branchService.updateVisit(visit, event, this);
+          stopServingEvent = VisitEvent.STOP_SERVING;
+          stopServingEvent.dateTime = ZonedDateTime.now();
+          stopServingEvent.getParameters().put("servicePointId", servicePointId);
+          stopServingEvent.getParameters().put("branchID", branchId);
+          stopServingEvent.getParameters().put("staffId", visit.getUserId());
+          stopServingEvent.getParameters().put("staffName", visit.getUserName());
+          branchService.updateVisit(visit, stopServingEvent, this);
 
           visit.setReturnDateTime(ZonedDateTime.now());
           visit.setCallDateTime(null);
 
           visit.setStartServingDateTime(null);
 
-          event = VisitEvent.BACK_TO_QUEUE;
-          event.getParameters().put("branchID", branchId);
-          event.getParameters().put("queueId", queueIdToReturn);
-          event.getParameters().put("servicePointId", servicePointId);
-          event.getParameters().put("staffId", visit.getUserId());
-          event.getParameters().put("staffName", visit.getUserName());
+          backToQueueEvent = VisitEvent.BACK_TO_QUEUE;
+          backToQueueEvent.getParameters().put("branchID", branchId);
+          backToQueueEvent.getParameters().put("queueId", queueIdToReturn);
+          backToQueueEvent.getParameters().put("servicePointId", servicePointId);
+          backToQueueEvent.getParameters().put("staffId", visit.getUserId());
+          backToQueueEvent.getParameters().put("staffName", visit.getUserName());
 
           visit.setServicePointId(null);
-          branchService.updateVisit(visit, event, this);
+          branchService.updateVisit(visit, backToQueueEvent, this);
 
         } else {
           visit.getServedServices().add(visit.getCurrentService());
@@ -2457,18 +2459,18 @@ public class VisitService {
           visit.setServedDateTime(ZonedDateTime.now());
           visit.setQueueId(null);
           visit.setServedDateTime(ZonedDateTime.now());
-          event = VisitEvent.STOP_SERVING;
-          event.dateTime = ZonedDateTime.now();
-          event.getParameters().put("branchID", branchId);
-          event.getParameters().put("staffId", visit.getUserId());
-          event.getParameters().put("staffName", visit.getUserName());
-          event.getParameters().put("servicePointId", servicePointId);
-          branchService.updateVisit(visit, event, this);
-          event = VisitEvent.END;
-          event.dateTime = ZonedDateTime.now();
+          stopServingEvent = VisitEvent.STOP_SERVING;
+          stopServingEvent.dateTime = ZonedDateTime.now();
+          stopServingEvent.getParameters().put("branchID", branchId);
+          stopServingEvent.getParameters().put("staffId", visit.getUserId());
+          stopServingEvent.getParameters().put("staffName", visit.getUserName());
+          stopServingEvent.getParameters().put("servicePointId", servicePointId);
+          branchService.updateVisit(visit, stopServingEvent, this);
+          endEvent = VisitEvent.END;
+          endEvent.dateTime = ZonedDateTime.now();
 
           visit.setServicePointId(null);
-          branchService.updateVisit(visit, event, this);
+          branchService.updateVisit(visit, endEvent, this);
         }
 
         log.info("Visit {} ended", visit);
