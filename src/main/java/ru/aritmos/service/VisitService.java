@@ -2496,7 +2496,7 @@ public class VisitService {
    * @param visit визит
    * @return визит
    */
-  public Optional<Visit> visitCall(String branchId, String servicePointId, Visit visit) {
+  public Optional<Visit> visitCall(String branchId, String servicePointId, Visit visit,Boolean isCherryPick) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     Optional<Queue> queue;
@@ -2560,7 +2560,7 @@ public class VisitService {
     event.getParameters().put("branchID", branchId);
     event.getParameters().put("staffId", visit.getUserId());
     event.getParameters().put("staffName", visit.getUserName());
-    event.getParameters().put("isCherryPicked", "true");
+    event.getParameters().put("isCherryPicked", isCherryPick.toString());
     event.dateTime = ZonedDateTime.now();
     branchService.updateVisit(visit, event, this);
 
@@ -2586,7 +2586,7 @@ public class VisitService {
   public Optional<Visit> visitCall(String branchId, String servicePointId, String visitId) {
     if (this.getAllVisits(branchId).containsKey(visitId)) {
       Visit visit = this.getAllVisits(branchId).get(visitId);
-      return this.visitCall(branchId, servicePointId, visit);
+      return this.visitCall(branchId, servicePointId, visit,true);
     }
     return Optional.empty();
   }
@@ -3192,7 +3192,7 @@ public class VisitService {
               .findFirst();
       if (servicePoint.isPresent()) {
         if (!servicePoint.get().getIsConfirmRequired()) {
-          visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit);
+          visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit,false);
         } else {
           visit2 =
               visitCallForConfirmWithMaxWaitingTime(
@@ -3225,7 +3225,7 @@ public class VisitService {
         Optional<Visit> visit = waitingTimeCallRule.call(currentBranch, servicePoint);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get());
+          return visitCall(branchId, servicePoint.getId(), visit.get(),false);
         }
 
       } else {
@@ -3265,7 +3265,7 @@ public class VisitService {
         Optional<Visit> visit = waitingTimeCallRule.call(currentBranch, servicePoint, queueIds);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get());
+          return visitCall(branchId, servicePoint.getId(), visit.get(),false);
         }
 
       } else {
@@ -3302,7 +3302,7 @@ public class VisitService {
         Optional<Visit> visit = lifeTimeCallRule.call(currentBranch, servicePoint);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get());
+          return visitCall(branchId, servicePoint.getId(), visit.get(),false);
         }
 
       } else {
@@ -3341,7 +3341,7 @@ public class VisitService {
         Optional<Visit> visit = lifeTimeCallRule.call(currentBranch, servicePoint, queueIds);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get());
+          return visitCall(branchId, servicePoint.getId(), visit.get(),false);
         }
 
       } else {
