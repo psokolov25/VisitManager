@@ -2554,11 +2554,13 @@ public class VisitService {
       visit.setPoolUserId(null);
     }
 
+
     event.getParameters().put("servicePointId", servicePointId);
 
     event.getParameters().put("branchID", branchId);
     event.getParameters().put("staffId", visit.getUserId());
     event.getParameters().put("staffName", visit.getUserName());
+    event.getParameters().put("isCherryPicked", "true");
     event.dateTime = ZonedDateTime.now();
     branchService.updateVisit(visit, event, this);
 
@@ -2631,6 +2633,7 @@ public class VisitService {
             visit.getPoolServicePointId() != null ? visit.getPoolServicePointId() : "");
     event.getParameters().put("staffId", userId);
     event.getParameters().put("staffName", userName);
+    event.getParameters().put("isCherryPicked", "true");
     branchService.updateVisit(visit, event, this);
 
     log.info("Visit {} called!", visit);
@@ -2671,6 +2674,7 @@ public class VisitService {
     event.getParameters().put("queueId", visit.getQueueId());
     event.getParameters().put("staffId", userId);
     event.getParameters().put("staffName", userName);
+    event.getParameters().put("isCherryPicked", "true");
     branchService.updateVisit(visit, event, this);
 
     log.info("Visit {} called!", visit);
@@ -2749,6 +2753,7 @@ public class VisitService {
     event.getParameters().put("serviceId", visit.getCurrentService().getId());
     event.getParameters().put("staffId", userId);
     event.getParameters().put("staffName", userName);
+
     branchService.updateVisit(visit, event, this);
 
     log.info("Visit {} statted serving!", visit);
@@ -2833,6 +2838,7 @@ public class VisitService {
       event.getParameters().put("branchID", branchId);
       event.getParameters().put("staffId", userId);
       event.getParameters().put("staffName", userName);
+      event.getParameters().put("isCherryPicked", "false");
       if (visit.isPresent()) {
         branchService.updateVisit(visit.get(), event, this);
         return visit;
@@ -2888,6 +2894,7 @@ public class VisitService {
       event.getParameters().put("branchID", branchId);
       event.getParameters().put("staffId", userId);
       event.getParameters().put("staffName", userName);
+      event.getParameters().put("isCherryPicked", "false");
       if (visit.isPresent()) {
         branchService.updateVisit(visit.get(), event, this);
         return visit;
@@ -2942,6 +2949,7 @@ public class VisitService {
       event.getParameters().put("branchID", branchId);
       event.getParameters().put("staffId", userId);
       event.getParameters().put("staffName", userName);
+      event.getParameters().put("isCherryPicked", "false");
       if (visit.isPresent()) {
         branchService.updateVisit(visit.get(), event, this);
         return visit;
@@ -3129,6 +3137,7 @@ public class VisitService {
       event.getParameters().put("branchID", branchId);
       event.getParameters().put("staffId", userId);
       event.getParameters().put("staffName", userName);
+      event.getParameters().put("isCherryPicked", "false");
       if (visit.isPresent()) {
         branchService.updateVisit(visit.get(), event, this);
         return visit;
