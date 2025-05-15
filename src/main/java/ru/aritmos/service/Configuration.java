@@ -89,7 +89,7 @@ public class Configuration {
     Service longCreditService =
             new Service(
                     "856e8e77-aa8e-4feb-b947-566f6164e46f",
-                    "Терапевт",
+                    "Травматолог",
                     9000,
                     queueCredit.getId());
     Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C", 9000);
