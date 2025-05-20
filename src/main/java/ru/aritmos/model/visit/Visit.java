@@ -203,7 +203,7 @@ public class Visit {
                 ? this.getStartServingDateTime()
                 : ZonedDateTime.now(),
             this.getServedDateTime() != null ? this.getServedDateTime() : ZonedDateTime.now());
-    return servingTime;
+    return servingTime>=0?servingTime:0;
   }
 
   @JsonGetter
