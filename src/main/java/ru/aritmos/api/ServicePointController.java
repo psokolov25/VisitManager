@@ -199,6 +199,24 @@ public class ServicePointController {
   }
 
   /**
+   * Возвращает список всех сотрудников, на данный момент работающих в отделении
+   *
+   * @param branchId идентификатор отделения
+   * @return свободные точки обслуживания
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные о точках обслуживания")
+  @Tag(name = "Данные о сотрудниках")
+  @Tag(name = "Полный список")
+  @Tag(name = "Данные о пулах")
+  @Get("/branches/{branchId}/workingusers")
+  @ExecuteOn(TaskExecutors.IO)
+  public HashMap<String, User> getAllWorkingUsersOfBranch(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
+    return visitService.getAllWorkingUsers(branchId);
+  }
+
+  /**
    * Возвращает точку обслуживания по логину сотрудника
    *
    * @return свободные точки обслуживания
