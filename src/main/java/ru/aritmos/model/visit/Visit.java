@@ -154,10 +154,10 @@ public class Visit {
 
   @JsonIgnore List<VisitEventInformation> visitEventInformationList;
 
-  /** Лимит ожидания после возвращения  визита в очередь или пул сотрудника или точки обслуживания **/
+  /** Лимит ожидания после возвращения  визита в очередь или пул сотрудника или точки обслуживания */
   private Long returnTimeDelay;
 
-  /** Лимит ожидания после перевода  визита в очередь или пул сотрудника или точки обслуживания **/
+  /** Лимит ожидания после перевода  визита в очередь или пул сотрудника или точки обслуживания */
   private Long transferTimeDelay;
 
   @JsonGetter
@@ -178,7 +178,7 @@ public class Visit {
                 : ZonedDateTime.now());
     return waitingTime;
   }
-  /** Разница между текущим временем и временем возвращения, если времени возвращения нет - возвращаем 0 **/
+  /** Разница между текущим временем и временем возвращения, если времени возвращения нет - возвращаем 0 */
   @JsonGetter
   public Long getReturningTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
@@ -188,7 +188,7 @@ public class Visit {
     }
     return 0L;
   }
-  /** Разница между текущим временем и временем перевода, если времени перевода нет - возвращаем 0 **/
+  /** Разница между текущим временем и временем перевода, если времени перевода нет - возвращаем 0 */
   @JsonGetter
   public Long getTransferingTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
