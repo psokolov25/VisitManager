@@ -72,14 +72,17 @@ public class MaxWaitingTimeCallRule implements CallRule {
             availableQueues.stream()
                 .map(Queue::getVisits)
                 .flatMap(List::stream)
-                .filter(
-                    f ->
-                        (f.getReturnDateTime() == null
-                                || f.getReturningTime() > f.getReturnTimeDelay())
-                            && f.getStatus().contains("WAITING"))
+                    .filter(
+                            f ->
+                                    ((f.getReturnDateTime() == null
+                                      || f.getReturningTime() > f.getReturnTimeDelay())
+                                     && (f.getTransferDateTime() == null
+                                         || f.getTransferingTime() > f.getTransferTimeDelay()))
+                                    && f.getStatus().contains("WAITING"))
                 .max(this::visitComparer);
         result.ifPresent(visit -> visit.getParameterMap().remove("isTransferredToStart"));
         result.ifPresent(visit -> visit.setReturnDateTime(null));
+        result.ifPresent(visit -> visit.setTransferDateTime(null));
         return result;
       } else {
         throw new BusinessException(
@@ -104,11 +107,13 @@ public class MaxWaitingTimeCallRule implements CallRule {
           if (!availableQueue.getVisits().isEmpty()) {
             Optional<Visit> result =
                 availableQueue.getVisits().stream()
-                    .filter(
-                        f2 ->
-                            (f2.getReturnDateTime() == null
-                                    || f2.getReturningTime() > f2.getReturnTimeDelay())
-                                && f2.getStatus().contains("WAITING"))
+                        .filter(
+                                f2 ->
+                                        ((f2.getReturnDateTime() == null
+                                          || f2.getReturningTime() > f2.getReturnTimeDelay())
+                                         && (f2.getTransferDateTime() == null
+                                             || f2.getTransferingTime() > f2.getTransferTimeDelay()))
+                                        && f2.getStatus().contains("WAITING"))
                     .max(this::visitComparer);
             result.ifPresent(visit -> visit.getParameterMap().remove("isTransferredToStart"));
             result.ifPresent(visit -> visit.setReturnDateTime(null));

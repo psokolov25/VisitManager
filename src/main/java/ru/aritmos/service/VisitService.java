@@ -143,7 +143,10 @@ public class VisitService {
         queue.getVisits().stream()
             .filter(
                 f ->
-                    f.getReturnTimeDelay() == null || f.getReturnTimeDelay() < f.getReturningTime())
+                    (f.getReturnTimeDelay() == null
+                            || f.getReturnTimeDelay() < f.getReturningTime())
+                        && (f.getTransferTimeDelay() == null
+                            || f.getTransferTimeDelay() < f.getTransferingTime()))
             .toList();
     return visits.stream()
         .sorted((f1, f2) -> Long.compare(f2.getWaitingTime(), f1.getWaitingTime()))
@@ -470,6 +473,7 @@ public class VisitService {
                 .visitEvents(new ArrayList<>())
                 .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
                 // .endDateTime(ZonedDateTime.now())
@@ -590,6 +594,7 @@ public class VisitService {
                 .visitEvents(new ArrayList<>())
                 .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
                 // .endDateTime(ZonedDateTime.now())
@@ -702,6 +707,7 @@ public class VisitService {
                 .visitEvents(new ArrayList<>())
                 .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
                 // .endDateTime(ZonedDateTime.now())
@@ -811,6 +817,7 @@ public class VisitService {
                 .visitEvents(new ArrayList<>())
                 .visitEventInformationList(new ArrayList<>())
                 .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
                 // .endDateTime(ZonedDateTime.now())
@@ -916,11 +923,12 @@ public class VisitService {
                 .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
                 .visitEventInformationList(new ArrayList<>())
-                .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
                 // .endDateTime(ZonedDateTime.now())
                 .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
                 .servicePointId(null)
                 .servedServices(new ArrayList<>())
                 .parameterMap(parametersMap)
@@ -1633,7 +1641,7 @@ public class VisitService {
           delayedEvents.delayedEventService(
               "frontend", false, delayedEvent, returnTimeDelay, eventService);
           return visitTransfer(
-              branchId, servicePointId, visit.getParameterMap().get("LastQueueId"));
+              branchId, servicePointId, visit.getParameterMap().get("LastQueueId"), 0L);
         } else {
           throw new BusinessException("Visit cant be transfer!", eventService, HttpStatus.CONFLICT);
         }
@@ -1659,7 +1667,8 @@ public class VisitService {
    * @param queueId идентификатор очереди
    * @return визит
    */
-  public Visit visitTransfer(String branchId, String servicePointId, String queueId) {
+  public Visit visitTransfer(
+      String branchId, String servicePointId, String queueId, Long transferTimeDelay) {
 
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -1684,6 +1693,9 @@ public class VisitService {
         visit.setServicePointId(null);
         visit.setStartServingDateTime(null);
         visit.setTransferDateTime(ZonedDateTime.now());
+
+        visit.setTransferTimeDelay(transferTimeDelay);
+
         queue.getVisits().add(visit);
         currentBranch.getQueues().put(queue.getId(), queue);
         VisitEvent event = VisitEvent.BACK_TO_QUEUE;
@@ -2290,7 +2302,7 @@ public class VisitService {
    * @return визит
    */
   public Visit visitTransferFromQueueToUserPool(
-      String branchId, String userId, Visit visit, Boolean isAppend) {
+      String branchId, String userId, Visit visit, Boolean isAppend, Long transferTimeDelay) {
 
     String oldQueueID = visit.getQueueId();
 
@@ -2308,6 +2320,9 @@ public class VisitService {
     visit.setServicePointId(null);
     visit.setPoolServicePointId(null);
     visit.setPoolUserId(userId);
+
+    visit.setTransferTimeDelay(transferTimeDelay);
+
     VisitEvent event = VisitEvent.TRANSFER_TO_USER_POOL;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("oldQueueID", oldQueueID);
@@ -2337,7 +2352,8 @@ public class VisitService {
       String userId,
       Visit visit,
       Boolean isAppend,
-      HashMap<String, String> serviceInfo) {
+      HashMap<String, String> serviceInfo,
+      Long transferTimeDelay) {
 
     String oldQueueID = visit.getQueueId();
 
@@ -2355,6 +2371,8 @@ public class VisitService {
     visit.setServicePointId(null);
     visit.setPoolServicePointId(null);
     visit.setPoolUserId(userId);
+
+    visit.setTransferTimeDelay(transferTimeDelay);
 
     VisitEvent event = VisitEvent.TRANSFER_TO_USER_POOL;
     event.dateTime = ZonedDateTime.now();
@@ -2380,7 +2398,7 @@ public class VisitService {
    * @return визит
    */
   public Visit visitTransferFromQueueToUserPool(
-      String branchId, String userId, Visit visit, Integer index) {
+      String branchId, String userId, Visit visit, Integer index, Long transferTimeDelay) {
 
     String oldQueueID = visit.getQueueId();
 
@@ -2394,6 +2412,8 @@ public class VisitService {
     visit.setServicePointId(null);
     visit.setPoolServicePointId(null);
     visit.setPoolUserId(userId);
+
+    visit.setTransferTimeDelay(transferTimeDelay);
 
     VisitEvent event = VisitEvent.TRANSFER_TO_USER_POOL;
     event.dateTime = ZonedDateTime.now();
@@ -3383,6 +3403,10 @@ public class VisitService {
       throw new BusinessException(
           "You cant delete just returned visit!", eventService, HttpStatus.CONFLICT);
     }
+    if (visit.getTransferingTime() > 0 && visit.getTransferingTime() < visit.getTransferTimeDelay()) {
+      throw new BusinessException(
+          "You cant delete just transfered visit!", eventService, HttpStatus.CONFLICT);
+    }
     visit.setServicePointId(null);
     visit.setQueueId(null);
     VisitEvent event = VisitEvent.DELETED;
@@ -3394,7 +3418,8 @@ public class VisitService {
     // changedVisitEventSend("DELETED", visit, null, new HashMap<>());
   }
 
-  public Visit visitTransferToUserPool(String branchId, String servicePointId, String userId) {
+  public Visit visitTransferToUserPool(
+      String branchId, String servicePointId, String userId, Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -3426,6 +3451,7 @@ public class VisitService {
         visit.setStartServingDateTime(null);
         visit.setPoolUserId(user.getId());
         visit.setTransferDateTime(ZonedDateTime.now());
+        visit.setTransferTimeDelay(transferTimeDelay);
 
         visit.getParameterMap().remove("LastPoolUserId");
         event = VisitEvent.TRANSFER_TO_USER_POOL;
@@ -3454,7 +3480,7 @@ public class VisitService {
   }
 
   public Visit visitTransferToServicePointPool(
-      String branchId, String servicePointId, String poolServicePointId) {
+      String branchId, String servicePointId, String poolServicePointId, Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -3489,6 +3515,8 @@ public class VisitService {
         visit.setPoolUserId(null);
         visit.setPoolServicePointId(poolServicePointId);
         visit.setTransferDateTime(ZonedDateTime.now());
+
+        visit.setTransferTimeDelay(transferTimeDelay);
 
         visit.setStartServingDateTime(null);
         event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;

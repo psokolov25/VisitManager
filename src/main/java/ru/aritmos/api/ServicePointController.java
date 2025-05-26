@@ -1583,7 +1583,8 @@ public class ServicePointController {
   public Visit visitTransfer(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId) {
+      @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
+      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
     Branch branch;
 
     try {
@@ -1595,7 +1596,7 @@ public class ServicePointController {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
     }
 
-    return visitService.visitTransfer(branchId, servicePointId, queueId);
+    return visitService.visitTransfer(branchId, servicePointId, queueId, returnTimeDelay);
   }
 
   /**
@@ -1664,7 +1665,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2")
-          String poolServicePointId) {
+          String poolServicePointId,
+      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
     Branch branch;
 
     try {
@@ -1677,7 +1679,7 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferToServicePointPool(
-        branchId, servicePointId, poolServicePointId);
+        branchId, servicePointId, poolServicePointId, returnTimeDelay);
   }
 
   /**
@@ -2182,8 +2184,10 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
       @Body Visit visit,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
-    return visitService.visitTransferFromQueueToUserPool(branchId, userId, visit, isAppend);
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
+    return visitService.visitTransferFromQueueToUserPool(
+        branchId, userId, visit, isAppend, transferTimeDelay);
   }
 
   /**
@@ -2204,8 +2208,10 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
       @Body Visit visit,
-      @PathVariable(defaultValue = "0") Integer index) {
-    return visitService.visitTransferFromQueueToUserPool(branchId, userId, visit, index);
+      @PathVariable(defaultValue = "0") Integer index,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
+    return visitService.visitTransferFromQueueToUserPool(
+        branchId, userId, visit, index, transferTimeDelay);
   }
 
   /**
@@ -2226,9 +2232,11 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
       @PathVariable String visitId,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransferFromQueueToUserPool(branchId, userId, visit, isAppend);
+    return visitService.visitTransferFromQueueToUserPool(
+        branchId, userId, visit, isAppend, transferTimeDelay);
   }
 
   /**
@@ -2250,10 +2258,11 @@ public class ServicePointController {
       @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
       @PathVariable String visitId,
       HashMap<String, String> serviceInfo,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransferFromQueueToUserPool(
-        branchId, userId, visit, isAppend, serviceInfo);
+        branchId, userId, visit, isAppend, serviceInfo, transferTimeDelay);
   }
 
   /**
@@ -2274,9 +2283,11 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
       @PathVariable String visitId,
-      @QueryValue(defaultValue = "0") Integer index) {
+      @QueryValue(defaultValue = "0") Integer index,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransferFromQueueToUserPool(branchId, userId, visit, index);
+    return visitService.visitTransferFromQueueToUserPool(
+        branchId, userId, visit, index, transferTimeDelay);
   }
 
   /**
@@ -2321,8 +2332,9 @@ public class ServicePointController {
   public Visit visitTransferToUserPool(
       @PathVariable String branchId,
       @PathVariable String servicePointId,
-      @PathVariable String userId) {
-    return visitService.visitTransferToUserPool(branchId, servicePointId, userId);
+      @PathVariable String userId,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
+    return visitService.visitTransferToUserPool(branchId, servicePointId, userId, transferTimeDelay);
   }
 
   /**

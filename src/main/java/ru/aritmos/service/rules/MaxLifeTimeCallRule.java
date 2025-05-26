@@ -39,8 +39,10 @@ public class MaxLifeTimeCallRule implements CallRule {
                 .flatMap(List::stream)
                 .filter(
                     f ->
-                        (f.getReturnDateTime() == null
-                                || f.getReturningTime() > f.getReturnTimeDelay())
+                        ((f.getReturnDateTime() == null
+                                    || f.getReturningTime() > f.getReturnTimeDelay())
+                                && (f.getTransferDateTime() == null
+                                    || f.getTransferingTime() > f.getTransferTimeDelay()))
                             && f.getStatus().contains("WAITING"))
                 .max(
                     (o1, o2) ->
@@ -86,7 +88,9 @@ public class MaxLifeTimeCallRule implements CallRule {
                             o1.getReturningTime().compareTo(o2.getReturningTime()) == 0
                                 ? o1.getVisitLifeTime().compareTo(o2.getVisitLifeTime())
                                 : o1.getReturningTime().compareTo(o2.getReturningTime()));
+            result.ifPresent(visit -> visit.getParameterMap().remove("isTransferredToStart"));
             result.ifPresent(visit -> visit.setReturnDateTime(null));
+            result.ifPresent(visit -> visit.setTransferDateTime(null));
             return result;
           }
         }

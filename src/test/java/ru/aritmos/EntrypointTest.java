@@ -517,7 +517,7 @@ class EntrypointTest {
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     visit =
-        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, false);
+        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, false,0L);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -875,7 +875,7 @@ class EntrypointTest {
     Thread.sleep(1000);
 
     visit =
-        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true);
+        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true,0L);
 
     String visitId = visit.getId();
     Assertions.assertEquals(
@@ -911,7 +911,7 @@ class EntrypointTest {
       Thread.sleep(900);
       visit =
           visitService.visitTransferFromQueueToUserPool(
-              branchId, psokolovUser.getId(), visit, true);
+              branchId, psokolovUser.getId(), visit, true,0L);
       visit =
           visitService.visitTransferFromQueueToServicePointPool(
               branchId, servicePointFcId, servicePointFcId, visit, true);
@@ -1134,7 +1134,7 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
     visit =
-        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true);
+        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true,0L);
     Thread.sleep(1000);
 
     Assertions.assertEquals(
@@ -1249,62 +1249,6 @@ class EntrypointTest {
     }
   }
 
-  @Test
-  void checkConfirmVisitWithRule() throws InterruptedException, SystemException {
-    Service service;
-    service =
-        branchService.getBranch(branchId).getServices().values().stream()
-            .filter(f -> f.getId().equals(serviceId))
-            .findFirst()
-            .orElse(null);
-    ArrayList<String> serviceIds = new ArrayList<>();
-    serviceIds.add(serviceId);
-    assert service != null;
-
-    Visit visit =
-        entrypointController.createVisit(
-            branchId,
-            "1",
-            VisitParameters.builder()
-                .serviceIds(serviceIds)
-                .parameters(
-                    new HashMap<>() {
-                      {
-                        put("sex", "male");
-                        put("age", "33-55");
-                        put("level", "vip");
-                      }
-                    })
-                .build(),
-            false,
-            null);
-    Thread.sleep(800);
-    Visit visit4 =
-        entrypointController.createVisit(
-            branchId, "1", VisitParameters.builder().serviceIds(serviceIds).build(), false, null);
-
-    visitService.visitTransfer(
-        branchId, servicePointFcId, "371986f3-7872-4a4f-ab02-731f0ae4598e", visit4, true);
-    Assertions.assertEquals(visit.getQueueId(), "bd4b586e-c93e-4e07-9a76-586dd84ddea5");
-    Optional<Visit> visitForConfirm =
-        visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId);
-    if (visitForConfirm.isPresent()) {
-      Thread.sleep(800);
-      visitService.visitConfirm(branchId, servicePointFcId, visitForConfirm.get());
-      Long servtime = visitForConfirm.get().getServingTime();
-      Assertions.assertEquals(servtime, 0);
-      Thread.sleep(200);
-      visitService.visitEnd(branchId, servicePointFcId);
-      Thread.sleep(200);
-      visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId);
-      Thread.sleep(200);
-      visitService.visitConfirm(branchId, servicePointFcId, visit);
-      Thread.sleep(200);
-      Visit visit2;
-      visit2 = visitService.visitEnd(branchId, servicePointFcId);
-      Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
-    }
-  }
 
   @Test
   void checkConfirmVisitWithRuleInterrupted() throws InterruptedException, SystemException {

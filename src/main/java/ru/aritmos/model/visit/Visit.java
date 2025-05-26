@@ -120,6 +120,10 @@ public class Visit {
   @Schema(nullable = true)
   Long returningTime;
 
+  /** Время прошедшее от перевода в очередь */
+  @Schema(nullable = true)
+  Long transferingTime;
+
   /** Общее время с создания визита в секундах */
   @Schema(nullable = true)
   Long visitLifeTime;
@@ -150,8 +154,11 @@ public class Visit {
 
   @JsonIgnore List<VisitEventInformation> visitEventInformationList;
 
-  /** Лимит ожидания после возвращения визита в очередь */
+  /** Лимит ожидания после возвращения  визита в очередь или пул сотрудника или точки обслуживания */
   private Long returnTimeDelay;
+
+  /** Лимит ожидания после перевода  визита в очередь или пул сотрудника или точки обслуживания */
+  private Long transferTimeDelay;
 
   @JsonGetter
   public Long getWaitingTime() {
@@ -178,6 +185,16 @@ public class Visit {
     if (this.getReturnDateTime() != null) {
       returningTime = unit.between(this.getReturnDateTime(), ZonedDateTime.now());
       return returningTime;
+    }
+    return 0L;
+  }
+
+  @JsonGetter
+  public Long getTransferingTime() {
+    final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
+    if (this.getTransferDateTime() != null) {
+      transferingTime = unit.between(this.getTransferDateTime(), ZonedDateTime.now());
+      return transferingTime;
     }
     return 0L;
   }
