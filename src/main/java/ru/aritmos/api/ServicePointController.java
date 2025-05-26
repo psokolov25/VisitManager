@@ -2173,6 +2173,7 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visit переводимый визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2197,6 +2198,7 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visit переводимый визит
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2221,6 +2223,7 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visitId идентификатор переводимого визита
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2246,6 +2249,7 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visitId идентификатор переводимого визита
    * @param serviceInfo данные о внешней службе
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2272,6 +2276,7 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visitId идентификатор переводимого визита
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2319,7 +2324,8 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param userId идентификатор сотрудника *
+   * @param userId идентификатор сотрудника
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
