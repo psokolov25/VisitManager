@@ -211,9 +211,9 @@ public class ServicePointController {
   @Tag(name = "Данные о пулах")
   @Get("/branches/{branchId}/workingusers")
   @ExecuteOn(TaskExecutors.IO)
-  public HashMap<String, User> getAllWorkingUsersOfBranch(
+  public List<User> getAllWorkingUsersOfBranch(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
-    return visitService.getAllWorkingUsers(branchId);
+    return visitService.getAllWorkingUsers(branchId).values().stream().toList();
   }
 
   /**
@@ -2173,7 +2173,8 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visit переводимый визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
-   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2198,7 +2199,8 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visit переводимый визит
    * @param index позиция визита в списке
-   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2223,7 +2225,8 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visitId идентификатор переводимого визита
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
-   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2249,7 +2252,8 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visitId идентификатор переводимого визита
    * @param serviceInfo данные о внешней службе
-   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2276,7 +2280,8 @@ public class ServicePointController {
    * @param userId идентификатор сотрудника
    * @param visitId идентификатор переводимого визита
    * @param index позиция визита в списке
-   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2325,7 +2330,8 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @param userId идентификатор сотрудника
-   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2340,7 +2346,8 @@ public class ServicePointController {
       @PathVariable String servicePointId,
       @PathVariable String userId,
       @QueryValue(defaultValue = "0") Long transferTimeDelay) {
-    return visitService.visitTransferToUserPool(branchId, servicePointId, userId, transferTimeDelay);
+    return visitService.visitTransferToUserPool(
+        branchId, servicePointId, userId, transferTimeDelay);
   }
 
   /**
