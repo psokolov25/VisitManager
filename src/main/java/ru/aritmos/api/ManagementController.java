@@ -1,6 +1,5 @@
 package ru.aritmos.api;
-
-import io.micronaut.context.annotation.Value;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -9,25 +8,25 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
-import ru.aritmos.events.services.EventService;
+import java.util.stream.Collectors;
+import org.keycloak.representations.idm.UserRepresentation;
+import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.User;
 import ru.aritmos.model.tiny.TinyClass;
 import ru.aritmos.service.BranchService;
-import ru.aritmos.service.Services;
-import ru.aritmos.service.VisitService;
 
 /**
  * @author Pavel Sokolov REST API управления зоной ожидания
  */
 @Controller("/managementinformation")
 public class ManagementController {
-  @Inject Services services;
-  @Inject BranchService branchService;
-  @Inject VisitService visitService;
-  @Inject EventService eventService;
 
-  @Value("${micronaut.application.name}")
-  String applicationName;
+  @Inject BranchService branchService;
+
+  @Inject KeyCloackClient keyCloakClient;
+
+
 
   /**
    * Возвращает данные об отделении
@@ -59,7 +58,33 @@ public class ManagementController {
   @Tag(name = "Полный список")
   @Get(uri = "/branches")
   @ExecuteOn(TaskExecutors.IO)
-  public Map<String, Branch> getBranches() {
+  public Map<String, Branch> getBranches(@Nullable String userName) {
+    if (userName != null) {
+      Optional<UserRepresentation> userInfo = keyCloakClient.getUserInfo(userName);
+
+      if (userInfo.isPresent()) {
+        User user = new User(userInfo.get().getUsername(), keyCloakClient);
+
+        user.setAllBranches(keyCloakClient.getAllBranchesOfUser(userName));
+        try {
+          user.setIsAdmin(keyCloakClient.isUserModuleTypeByUserName(userName, "admin"));
+        } catch (Exception e) {
+          user.setIsAdmin(false);
+        }
+        return branchService.getBranches().entrySet().stream()
+            .filter(
+                f ->
+                    user.getIsAdmin()
+                        || user.getAllBranches().stream()
+                            .anyMatch(
+                                f2 ->
+                                    f2.getAttributes().containsKey("branchPrefix")
+                                        && f2.getAttributes()
+                                            .get("branchPrefix")
+                                            .contains(f.getValue().getPrefix())))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+      }
+    }
     return branchService.getBranches();
   }
 

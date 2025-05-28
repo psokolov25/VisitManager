@@ -91,8 +91,6 @@ public class KeyCloackClient {
 
   public String getBranchPathByBranchPrefix(String regionName, String prefix) {
 
-
-
     String result =
         getAllBranchesByRegionName(regionName, getKeycloak()).stream()
             .filter(
@@ -145,8 +143,6 @@ public class KeyCloackClient {
     getUserInfo(username)
         .ifPresent(
             p -> {
-
-
               getKeycloak()
                   .realm(getRealm())
                   .users()
@@ -160,25 +156,25 @@ public class KeyCloackClient {
 
   public Boolean isUserModuleTypeByUserName(String userName, String type) {
 
-
-
     RealmResource realmResource = getKeycloak().realm(realm);
     for (UserRepresentation f : realmResource.users().searchByUsername(userName, true)) {
-      for (RoleRepresentation role :
-          realmResource.users().get(f.getId()).roles().getAll().getRealmMappings()) {
-        for (String compositeId :
-            realmResource.rolesById().getRoleComposites(role.getId()).stream()
-                .map(RoleRepresentation::getId)
-                .toList()) {
-          if (realmResource.rolesById().getRole(compositeId).getAttributes().containsKey("type")
-              && realmResource
-                  .rolesById()
-                  .getRole(compositeId)
-                  .getAttributes()
-                  .get("type")
-                  .contains(type)) {
-            keycloakLogout(keycloak);
-            return true;
+      if (realmResource.users().get(f.getId()).roles().getAll().getRealmMappings() != null) {
+        for (RoleRepresentation role :
+            realmResource.users().get(f.getId()).roles().getAll().getRealmMappings()) {
+          for (String compositeId :
+              realmResource.rolesById().getRoleComposites(role.getId()).stream()
+                  .map(RoleRepresentation::getId)
+                  .toList()) {
+            if (realmResource.rolesById().getRole(compositeId).getAttributes().containsKey("type")
+                && realmResource
+                    .rolesById()
+                    .getRole(compositeId)
+                    .getAttributes()
+                    .get("type")
+                    .contains(type)) {
+              keycloakLogout(keycloak);
+              return true;
+            }
           }
         }
       }
@@ -205,9 +201,8 @@ public class KeyCloackClient {
 
   public Optional<UserRepresentation> getUserInfo(String userName) {
 
-
     List<UserRepresentation> userRepresentationList =
-            getKeycloak().realm(realm).users().search(userName, true);
+        getKeycloak().realm(realm).users().search(userName, true);
     if (!userRepresentationList.isEmpty()) {
 
       // keycloak.close();

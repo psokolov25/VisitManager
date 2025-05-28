@@ -59,6 +59,7 @@ public class BranchService {
         .forEach(
             f -> {
               Branch branch = new Branch(f.getId(), f.getName());
+              branch.setPrefix(f.getPrefix());
               result.put(branch.getId(), branch);
             });
     return result;
