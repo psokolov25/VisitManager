@@ -23,6 +23,7 @@ import ru.aritmos.api.ManagementController;
 import ru.aritmos.api.ServicePointController;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.SystemException;
+import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.visit.Visit;
@@ -51,6 +52,8 @@ class EntrypointTest {
   @Inject SecurityService securityService;
   @Inject EventService eventService;
   Branch branch;
+  @Inject
+  private KeyCloackClient keyCloackClient;
 
   @Test
   void testItWorks() {
@@ -1321,7 +1324,11 @@ class EntrypointTest {
         visit.getTicket(),
         queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
   }
-
+ // @Test
+  public void getSessions()
+  {
+    keyCloackClient.getUserBySid("0426430a-972a-4c12-baa5-ed0cb91a1f2d");
+  }
   /** Проверка правильности работы счетчика визитов */
   @Test
   void checkVisitCounter() throws SystemException {

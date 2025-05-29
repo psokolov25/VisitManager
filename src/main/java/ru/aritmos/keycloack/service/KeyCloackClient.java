@@ -13,9 +13,7 @@ import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
-import org.keycloak.representations.idm.GroupRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.*;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
@@ -152,6 +150,23 @@ public class KeyCloackClient {
             });
     keycloakLogout(keycloak);
     return result;
+  }
+
+  public Optional<UserRepresentation> getUserBySid(String sid) {
+
+    RealmResource realmResource = getKeycloak().realm(realm);
+    for (ClientRepresentation f : realmResource.clients().findAll()) {
+
+      List<UserSessionRepresentation> t =
+          realmResource.clients().get(f.getId()).getUserSessions(0, 1000000000).stream().toList();
+
+      if (t.stream().filter(session -> session.getId().equals(sid)).count() > 0) {
+        UserRepresentation user =
+            realmResource.users().get(t.get(0).getUserId()).toRepresentation();
+        return Optional.of(user);
+      }
+    }
+    return Optional.empty();
   }
 
   public Boolean isUserModuleTypeByUserName(String userName, String type) {
