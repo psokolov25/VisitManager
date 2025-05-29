@@ -1583,7 +1583,7 @@ public class VisitService {
         visitEvent
             .getParameters()
             .put("servicePointId", event.get().getParameters().get("servicePointId"));
-
+        visitEvent.dateTime=ZonedDateTime.now();
         visitEvent.getParameters().put("branchId", branchId);
         branchService.updateVisit(visit, visitEvent, this);
       }
@@ -1595,7 +1595,8 @@ public class VisitService {
   }
 
   /**
-   * Возвращение визита в очередь с задержкой
+   * Остановка обслуживания визита в точке обслуживания и возвращение
+   * визита в очередь с задержкой
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1603,7 +1604,7 @@ public class VisitService {
    * @return визит
    */
   @ExecuteOn(TaskExecutors.SCHEDULED)
-  public Visit visitBackToQueue(String branchId, String servicePointId, Long returnTimeDelay) {
+  public Visit stopServingAndBackToQueue(String branchId, String servicePointId, Long returnTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
@@ -1640,7 +1641,7 @@ public class VisitService {
                   .build();
           delayedEvents.delayedEventService(
               "frontend", false, delayedEvent, returnTimeDelay, eventService);
-          return visitTransfer(
+          return visitBack(
               branchId, servicePointId, visit.getParameterMap().get("LastQueueId"), 0L);
         } else {
           throw new BusinessException("Visit cant be transfer!", eventService, HttpStatus.CONFLICT);
@@ -1698,7 +1699,7 @@ public class VisitService {
 
         queue.getVisits().add(visit);
         currentBranch.getQueues().put(queue.getId(), queue);
-        VisitEvent event = VisitEvent.BACK_TO_QUEUE;
+        VisitEvent event = VisitEvent.TRANSFER_TO_QUEUE;
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("queueId", queueId);
@@ -1721,6 +1722,71 @@ public class VisitService {
           String.format("ServicePoint %s! not exist!", servicePointId),
           eventService,
           HttpStatus.NOT_FOUND);
+    }
+  }
+
+  /**
+   * Возвращение визита в очередь
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param queueId идентификатор очереди
+   * @return визит
+   */
+  public Visit visitBack(
+          String branchId, String servicePointId, String queueId, Long returnTimeDelay) {
+
+    Branch currentBranch = branchService.getBranch(branchId);
+
+    if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      if (servicePoint.getVisit() != null) {
+        Visit visit = servicePoint.getVisit();
+
+        Queue queue;
+        if (currentBranch.getQueues().containsKey(queueId)) {
+          queue = currentBranch.getQueues().get(queueId);
+        } else {
+
+          throw new BusinessException(
+                  "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+        }
+
+        assert queue != null;
+        visit.setQueueId(queue.getId());
+        visit.setPoolServicePointId(null);
+        visit.setPoolUserId(null);
+        visit.setServicePointId(null);
+        visit.setStartServingDateTime(null);
+        visit.setReturnDateTime(ZonedDateTime.now());
+
+        visit.setReturnTimeDelay(returnTimeDelay);
+
+        queue.getVisits().add(visit);
+        currentBranch.getQueues().put(queue.getId(), queue);
+        VisitEvent event = VisitEvent.BACK_TO_QUEUE;
+        event.dateTime = ZonedDateTime.now();
+        event.getParameters().put("branchId", branchId);
+        event.getParameters().put("queueId", queueId);
+        event.getParameters().put("staffId", visit.getUserId());
+        event.getParameters().put("staffName", visit.getUserName());
+        event.getParameters().put("servicePointId", servicePointId);
+
+        branchService.updateVisit(visit, event, this);
+        // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
+        log.info("Visit {} transfered!", visit);
+        return visit;
+      } else {
+        throw new BusinessException(
+                String.format("Visit in ServicePoint %s! not exist!", servicePointId),
+                eventService,
+                HttpStatus.NOT_FOUND);
+      }
+    } else {
+      throw new BusinessException(
+              String.format("ServicePoint %s! not exist!", servicePointId),
+              eventService,
+              HttpStatus.NOT_FOUND);
     }
   }
 
@@ -1773,14 +1839,14 @@ public class VisitService {
         visit.setReturnDateTime(ZonedDateTime.now());
         visit.setReturnTimeDelay(returnTimeDelay);
         visit.setStartServingDateTime(null);
-        event = VisitEvent.BACK_TO_SERVICE_POINT_POOL;
-        event.dateTime = ZonedDateTime.now();
-        event.getParameters().put("branchId", branchId);
-        event.getParameters().put("poolServicePointId", poolServicePointId);
-        event.getParameters().put("staffId", visit.getUserId());
-        event.getParameters().put("staffName", visit.getUserName());
-        event.getParameters().put("servicePointId", servicePointId);
-        branchService.updateVisit(visit, event, this);
+        VisitEvent backEvent = VisitEvent.BACK_TO_SERVICE_POINT_POOL;
+        backEvent.dateTime = ZonedDateTime.now();
+        backEvent.getParameters().put("branchId", branchId);
+        backEvent.getParameters().put("poolServicePointId", poolServicePointId);
+        backEvent.getParameters().put("staffId", visit.getUserId());
+        backEvent.getParameters().put("staffName", visit.getUserName());
+        backEvent.getParameters().put("servicePointId", servicePointId);
+        branchService.updateVisit(visit, backEvent, this);
         // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
         return visit;
@@ -1816,7 +1882,7 @@ public class VisitService {
           return visitBackToUserPool(branchId, servicePointId, ppolId, returnTimeDelay);
         } else if (visit.getParameterMap().containsKey("LastQueueId")) {
           // visit.getParameterMap().remove("LastQueueId");
-          return visitBackToQueue(branchId, servicePointId, returnTimeDelay);
+          return stopServingAndBackToQueue(branchId, servicePointId, returnTimeDelay);
         } else {
           throw new BusinessException(
               String.format("Visit in ServicePoint %s! cant be put back!", servicePointId),
@@ -2475,6 +2541,7 @@ public class VisitService {
           visit.setStartServingDateTime(null);
 
           backToQueueEvent = VisitEvent.BACK_TO_QUEUE;
+          backToQueueEvent.dateTime = ZonedDateTime.now();
           backToQueueEvent.getParameters().put("branchID", branchId);
           backToQueueEvent.getParameters().put("queueId", queueIdToReturn);
           backToQueueEvent.getParameters().put("servicePointId", servicePointId);

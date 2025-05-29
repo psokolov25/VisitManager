@@ -1747,7 +1747,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @QueryValue(defaultValue = "60") Long returnTimeDelay) {
 
-    return visitService.visitBackToQueue(branchId, servicePointId, returnTimeDelay);
+    return visitService.stopServingAndBackToQueue(branchId, servicePointId, returnTimeDelay);
   }
 
   /**
