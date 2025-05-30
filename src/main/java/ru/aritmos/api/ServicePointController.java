@@ -1584,7 +1584,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
-      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -1596,7 +1597,8 @@ public class ServicePointController {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
     }
 
-    return visitService.visitTransfer(branchId, servicePointId, queueId, returnTimeDelay);
+    return visitService.visitTransfer(
+        branchId, servicePointId, queueId, isAppend, transferTimeDelay);
   }
 
   /**
@@ -1758,6 +1760,8 @@ public class ServicePointController {
    * @param queueId идентификатор очереди
    * @param visitId идентификатор визита
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -1775,7 +1779,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
       @PathVariable String visitId,
-      @QueryValue(defaultValue = "0") Integer index) {
+      @QueryValue(defaultValue = "0") Integer index,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -1788,7 +1793,8 @@ public class ServicePointController {
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, index);
+    return visitService.visitTransfer(
+        branchId, servicePointId, queueId, visit, index, transferTimeDelay);
   }
 
   /**
@@ -1799,6 +1805,8 @@ public class ServicePointController {
    * @param queueId идентификатор очереди
    * @param visitId идентификатор визита
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -1816,7 +1824,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
       @PathVariable String visitId,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -1829,7 +1838,8 @@ public class ServicePointController {
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, !isAppend);
+    return visitService.visitTransfer(
+        branchId, servicePointId, queueId, visit, !isAppend, transferTimeDelay);
   }
 
   /**
@@ -1840,6 +1850,8 @@ public class ServicePointController {
    * @param visitId идентификатор визита
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
    * @param serviceInfo данные о внешней службе
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -1856,7 +1868,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
       @PathVariable String visitId,
       @Body HashMap<String, String> serviceInfo,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -1869,7 +1882,8 @@ public class ServicePointController {
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
-    return visitService.visitTransfer(branchId, queueId, visit, isAppend, serviceInfo);
+    return visitService.visitTransfer(
+        branchId, queueId, visit, isAppend, serviceInfo, transferTimeDelay);
   }
 
   /**
@@ -1880,6 +1894,8 @@ public class ServicePointController {
    * @param queueId идентификатор очереди
    * @param visit переводимый визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -1897,7 +1913,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
       @Body Visit visit,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -1909,7 +1926,8 @@ public class ServicePointController {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
     }
 
-    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, !isAppend);
+    return visitService.visitTransfer(
+        branchId, servicePointId, queueId, visit, !isAppend, transferTimeDelay);
   }
 
   /**
@@ -1920,6 +1938,8 @@ public class ServicePointController {
    * @param queueId идентификатор очереди
    * @param visit переводимый визит
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -1937,7 +1957,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e") String queueId,
       @Body Visit visit,
-      @PathVariable(defaultValue = "0") Integer index) {
+      @PathVariable(defaultValue = "0") Integer index,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -1949,7 +1970,8 @@ public class ServicePointController {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
     }
 
-    return visitService.visitTransfer(branchId, servicePointId, queueId, visit, index);
+    return visitService.visitTransfer(
+        branchId, servicePointId, queueId, visit, index, transferTimeDelay);
   }
 
   /**
@@ -1960,6 +1982,8 @@ public class ServicePointController {
    * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param visit переводимый визит
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -1978,7 +2002,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e")
           String poolServicePointId,
       @Body Visit visit,
-      @PathVariable(defaultValue = "0") Integer index) {
+      @PathVariable(defaultValue = "0") Integer index,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -1991,7 +2016,7 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointId, poolServicePointId, visit, index);
+        branchId, servicePointId, poolServicePointId, visit, index,transferTimeDelay);
   }
 
   /**
@@ -2002,6 +2027,8 @@ public class ServicePointController {
    * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param visit переводимый визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2020,7 +2047,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e")
           String poolServicePointId,
       @Body Visit visit,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -2033,7 +2061,7 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointId, poolServicePointId, visit, isAppend);
+        branchId, servicePointId, poolServicePointId, visit, isAppend, transferTimeDelay);
   }
 
   /**
@@ -2044,6 +2072,8 @@ public class ServicePointController {
    * @param visitId идентификатор визита
    * @param serviceInfo данные о внешней службе
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2061,7 +2091,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable String visitId,
       HashMap<String, String> serviceInfo,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
     Visit visit = visitService.getVisit(branchId, visitId);
     try {
@@ -2074,7 +2105,7 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointId, visit, isAppend, serviceInfo);
+        branchId, servicePointId, visit, isAppend, serviceInfo, transferTimeDelay);
   }
 
   /**
@@ -2085,6 +2116,8 @@ public class ServicePointController {
    * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param visitId переводимый визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2103,11 +2136,12 @@ public class ServicePointController {
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e")
           String poolServicePointId,
       @PathVariable String visitId,
-      @QueryValue(defaultValue = "true") Boolean isAppend) {
+      @QueryValue(defaultValue = "true") Boolean isAppend,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
 
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointId, poolServicePointId, visit, isAppend);
+        branchId, servicePointId, poolServicePointId, visit, isAppend, transferTimeDelay);
   }
 
   /**
@@ -2118,6 +2152,8 @@ public class ServicePointController {
    * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
    * @param visitId переводимый визит
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return итоговый визит
    */
   @Tag(name = "Зона обслуживания")
@@ -2136,11 +2172,12 @@ public class ServicePointController {
       @PathVariable(defaultValue = "c211ae6b-de7b-4350-8a4c-cff7ff98104e")
           String poolServicePointId,
       @PathVariable String visitId,
-      @QueryValue(defaultValue = "0") Integer index) {
+      @QueryValue(defaultValue = "0") Integer index,
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
 
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointId, poolServicePointId, visit, index);
+        branchId, servicePointId, poolServicePointId, visit, index, transferTimeDelay);
   }
 
   /**

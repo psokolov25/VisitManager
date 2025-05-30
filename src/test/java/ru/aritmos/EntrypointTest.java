@@ -644,7 +644,7 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     visit =
         visitService.visitTransferFromQueueToServicePointPool(
-            branchId, servicePointFcId, servicePointFcId, visit, false);
+            branchId, servicePointFcId, servicePointFcId, visit, false,0L);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -706,7 +706,7 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     visit =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true,0L);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -830,7 +830,7 @@ class EntrypointTest {
 
     visit =
         visitService.visitTransferFromQueueToServicePointPool(
-            branchId, servicePointFcId, servicePointFcId, visit, true);
+            branchId, servicePointFcId, servicePointFcId, visit, true,0L);
 
     Thread.sleep(900);
 
@@ -895,7 +895,7 @@ class EntrypointTest {
     Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_USER_POOL.getState().name());
     visit =
         visitService.visitTransferFromQueueToServicePointPool(
-            branchId, servicePointFcId, servicePointFcId, visit, true);
+            branchId, servicePointFcId, servicePointFcId, visit, true,0L);
     Assertions.assertEquals(
         managementController.getBranch(branchId).getAllVisitsList().stream()
             .filter(f -> f.getId().equals(visitId))
@@ -917,7 +917,7 @@ class EntrypointTest {
               branchId, psokolovUser.getId(), visit, true,0L);
       visit =
           visitService.visitTransferFromQueueToServicePointPool(
-              branchId, servicePointFcId, servicePointFcId, visit, true);
+              branchId, servicePointFcId, servicePointFcId, visit, true,0L);
       visits =
           visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
@@ -964,11 +964,11 @@ class EntrypointTest {
 
     visit =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true,0L);
     Thread.sleep(10000);
     visit2 =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true,0L);
 
     Thread.sleep(900);
 
@@ -1017,13 +1017,13 @@ class EntrypointTest {
 
     visit =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true,0L);
     Thread.sleep(1000);
     Assertions.assertTrue(visit.getWaitingTime() >= 0);
 
     visit2 =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true,0L);
     Thread.sleep(1000);
     Assertions.assertTrue(visit2.getWaitingTime() >= 0);
 
@@ -1061,7 +1061,7 @@ class EntrypointTest {
               servicePointFcId,
               "bd4b586e-c93e-4e07-9a76-586dd84ddea5",
               visits2.get(),
-              true);
+              true,0L);
       Assertions.assertTrue(visit2.getWaitingTime() >= 0);
     }
   }
@@ -1094,7 +1094,7 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
     visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointFcId, servicePointFcId, visit, true);
+        branchId, servicePointFcId, servicePointFcId, visit, true,0L);
     Thread.sleep(1000);
 
     Assertions.assertEquals(

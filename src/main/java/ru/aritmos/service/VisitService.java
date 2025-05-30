@@ -1583,7 +1583,7 @@ public class VisitService {
         visitEvent
             .getParameters()
             .put("servicePointId", event.get().getParameters().get("servicePointId"));
-        visitEvent.dateTime=ZonedDateTime.now();
+        visitEvent.dateTime = ZonedDateTime.now();
         visitEvent.getParameters().put("branchId", branchId);
         branchService.updateVisit(visit, visitEvent, this);
       }
@@ -1595,8 +1595,7 @@ public class VisitService {
   }
 
   /**
-   * Остановка обслуживания визита в точке обслуживания и возвращение
-   * визита в очередь с задержкой
+   * Остановка обслуживания визита в точке обслуживания и возвращение визита в очередь с задержкой
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1604,7 +1603,8 @@ public class VisitService {
    * @return визит
    */
   @ExecuteOn(TaskExecutors.SCHEDULED)
-  public Visit stopServingAndBackToQueue(String branchId, String servicePointId, Long returnTimeDelay) {
+  public Visit stopServingAndBackToQueue(
+      String branchId, String servicePointId, Long returnTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
       ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
@@ -1669,7 +1669,11 @@ public class VisitService {
    * @return визит
    */
   public Visit visitTransfer(
-      String branchId, String servicePointId, String queueId, Long transferTimeDelay) {
+      String branchId,
+      String servicePointId,
+      String queueId,
+      Boolean isAppend,
+      Long transferTimeDelay) {
 
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -1686,7 +1690,9 @@ public class VisitService {
           throw new BusinessException(
               "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
-
+        if (!isAppend) {
+          visit.getParameterMap().put("isTransferredToStart", "true");
+        }
         assert queue != null;
         visit.setQueueId(queue.getId());
         visit.setPoolServicePointId(null);
@@ -1707,7 +1713,7 @@ public class VisitService {
         event.getParameters().put("staffName", visit.getUserName());
         event.getParameters().put("servicePointId", servicePointId);
 
-        branchService.updateVisit(visit, event, this);
+        branchService.updateVisit(visit, event, this, !isAppend);
         // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
         return visit;
@@ -1734,7 +1740,7 @@ public class VisitService {
    * @return визит
    */
   public Visit visitBack(
-          String branchId, String servicePointId, String queueId, Long returnTimeDelay) {
+      String branchId, String servicePointId, String queueId, Long returnTimeDelay) {
 
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -1749,7 +1755,7 @@ public class VisitService {
         } else {
 
           throw new BusinessException(
-                  "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
+              "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
 
         assert queue != null;
@@ -1778,15 +1784,15 @@ public class VisitService {
         return visit;
       } else {
         throw new BusinessException(
-                String.format("Visit in ServicePoint %s! not exist!", servicePointId),
-                eventService,
-                HttpStatus.NOT_FOUND);
+            String.format("Visit in ServicePoint %s! not exist!", servicePointId),
+            eventService,
+            HttpStatus.NOT_FOUND);
       }
     } else {
       throw new BusinessException(
-              String.format("ServicePoint %s! not exist!", servicePointId),
-              eventService,
-              HttpStatus.NOT_FOUND);
+          String.format("ServicePoint %s! not exist!", servicePointId),
+          eventService,
+          HttpStatus.NOT_FOUND);
     }
   }
 
@@ -2023,10 +2029,17 @@ public class VisitService {
    * @param queueId идентификатор очереди
    * @param visit визит
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   public Visit visitTransfer(
-      String branchId, String servicePointId, String queueId, Visit visit, Integer index) {
+      String branchId,
+      String servicePointId,
+      String queueId,
+      Visit visit,
+      Integer index,
+      Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
@@ -2050,6 +2063,8 @@ public class VisitService {
     visit.setPoolUserId(null);
     visit.setPoolServicePointId(null);
     visit.setStartServingDateTime(null);
+    visit.setTransferTimeDelay(transferTimeDelay);
+    visit.setTransferDateTime(ZonedDateTime.now());
     assert queue != null;
     visit.setQueueId(queue.getId());
 
@@ -2075,10 +2090,17 @@ public class VisitService {
    * @param queueId идентификатор очереди
    * @param visit визит
    * @param isToStart флаг вставки визита в начало или в конец (по умолчанию в начало)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   public Visit visitTransfer(
-      String branchId, String servicePointId, String queueId, Visit visit, Boolean isToStart) {
+      String branchId,
+      String servicePointId,
+      String queueId,
+      Visit visit,
+      Boolean isToStart,
+      Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
     User user;
@@ -2098,13 +2120,11 @@ public class VisitService {
           "Queue not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
     visit.setTransferDateTime(ZonedDateTime.now());
+    visit.setTransferTimeDelay(transferTimeDelay);
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
     visit.setPoolServicePointId(null);
     visit.setStartServingDateTime(null);
-    if (visit.getServicePointId() != null) {
-      visit.setReturnDateTime(ZonedDateTime.now());
-    }
 
     if (isToStart) {
       DateTimeFormatter format =
@@ -2136,6 +2156,8 @@ public class VisitService {
    * @param queueId идентификатор очереди
    * @param visit визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   public Visit visitTransfer(
@@ -2143,7 +2165,8 @@ public class VisitService {
       String queueId,
       Visit visit,
       Boolean isAppend,
-      HashMap<String, String> serviceInfo) {
+      HashMap<String, String> serviceInfo,
+      Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
@@ -2163,7 +2186,8 @@ public class VisitService {
     if (!isAppend) {
       visit.getParameterMap().put("isTransferredToStart", "true");
     }
-
+    visit.setTransferTimeDelay(transferTimeDelay);
+    visit.setTransferDateTime(ZonedDateTime.now());
     visit.setPoolServicePointId(null);
     visit.setServicePointId(null);
     visit.setPoolUserId(null);
@@ -2193,6 +2217,8 @@ public class VisitService {
    * @param poolServicePointId идентификатор очереди
    * @param visit визит
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   public Visit visitTransferFromQueueToServicePointPool(
@@ -2200,7 +2226,8 @@ public class VisitService {
       String servicePointId,
       String poolServicePointId,
       Visit visit,
-      Integer index) {
+      Integer index,
+      Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
     User user;
@@ -2226,6 +2253,8 @@ public class VisitService {
     visit.setPoolUserId(null);
     visit.setStartServingDateTime(null);
     visit.setPoolServicePointId(poolServicePoint.getId());
+    visit.setTransferDateTime(ZonedDateTime.now());
+    visit.setTransferTimeDelay(transferTimeDelay);
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
     event.dateTime = ZonedDateTime.now();
     event.getParameters().put("oldQueueID", oldQueueID);
@@ -2248,6 +2277,8 @@ public class VisitService {
    * @param poolServicePointId идентификатор очереди
    * @param visit визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   public Visit visitTransferFromQueueToServicePointPool(
@@ -2255,7 +2286,8 @@ public class VisitService {
       String servicePointId,
       String poolServicePointId,
       Visit visit,
-      Boolean isAppend) {
+      Boolean isAppend,
+      Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
     //    if (visit.getQueueId().isBlank()) {
@@ -2275,6 +2307,8 @@ public class VisitService {
     visit.setPoolUserId(null);
     visit.setQueueId(null);
     visit.setStartServingDateTime(null);
+    visit.setTransferTimeDelay(transferTimeDelay);
+    visit.setTransferDateTime(ZonedDateTime.now());
     assert poolServicePoint != null;
 
     visit.setPoolServicePointId(poolServicePoint.getId());
@@ -2300,6 +2334,8 @@ public class VisitService {
    * @param visit визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
    * @param serviceInfo данные о внешней службе
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
+   *     перевода)
    * @return визит
    */
   public Visit visitTransferFromQueueToServicePointPool(
@@ -2307,7 +2343,8 @@ public class VisitService {
       String poolServicePointId,
       Visit visit,
       Boolean isAppend,
-      HashMap<String, String> serviceInfo) {
+      HashMap<String, String> serviceInfo,
+      Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
@@ -2323,6 +2360,8 @@ public class VisitService {
     visit.setQueueId(null);
     visit.setPoolUserId(null);
     visit.setServicePointId(null);
+    visit.setTransferDateTime(ZonedDateTime.now());
+    visit.setTransferTimeDelay(transferTimeDelay);
     assert poolServicePoint != null;
     visit.setStartServingDateTime(null);
     visit.setPoolServicePointId(poolServicePoint.getId());
@@ -3470,7 +3509,8 @@ public class VisitService {
       throw new BusinessException(
           "You cant delete just returned visit!", eventService, HttpStatus.CONFLICT);
     }
-    if (visit.getTransferingTime() > 0 && visit.getTransferingTime() < visit.getTransferTimeDelay()) {
+    if (visit.getTransferingTime() > 0
+        && visit.getTransferingTime() < visit.getTransferTimeDelay()) {
       throw new BusinessException(
           "You cant delete just transfered visit!", eventService, HttpStatus.CONFLICT);
     }
