@@ -80,8 +80,10 @@ public class MaxLifeTimeCallRule implements CallRule {
                 availableQueue.getVisits().stream()
                     .filter(
                         f2 ->
-                            (f2.getReturnDateTime() == null
-                                    || f2.getReturningTime() > f2.getReturnTimeDelay())
+                            ((f2.getReturnDateTime() == null
+                                        || f2.getReturningTime() > f2.getReturnTimeDelay())
+                                    && (f2.getTransferDateTime() == null
+                                        || f2.getTransferingTime() > f2.getTransferTimeDelay()))
                                 && f2.getStatus().contains("WAITING"))
                     .max(
                         (o1, o2) ->

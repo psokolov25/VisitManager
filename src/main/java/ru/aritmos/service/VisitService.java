@@ -387,7 +387,25 @@ public class VisitService {
                 .filter(f -> queueIds.contains(f.getKey()))
                 .map(Map.Entry::getValue)
                 .toList();
-        return Optional.of(avaibleQueues);
+        List<Queue> result = new ArrayList<>();
+        avaibleQueues.forEach(
+            q -> {
+              Queue queue =
+                  new Queue(q.getId(), q.getName(), q.getTicketPrefix(), q.getWaitingSL());
+              q.setVisits(
+                  q.getVisits().stream()
+                      .filter(
+                          f2 ->
+                              ((f2.getReturnDateTime() == null
+                                          || f2.getReturningTime() > f2.getReturnTimeDelay())
+                                      && (f2.getTransferDateTime() == null
+                                          || f2.getTransferingTime() > f2.getTransferTimeDelay()))
+                                  && f2.getStatus().contains("WAITING"))
+                      .toList());
+
+              result.add(q);
+            });
+        return Optional.of(result);
 
       } else {
         throw new BusinessException(
@@ -399,7 +417,16 @@ public class VisitService {
           "ServicePoint not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
   }
-
+  List<Visit> getAvaliableVisits(List<Visit> visits)
+  {
+    return visits.stream().filter(
+            f2 ->
+                    ((f2.getReturnDateTime() == null
+                      || f2.getReturningTime() > f2.getReturnTimeDelay())
+                     && (f2.getTransferDateTime() == null
+                         || f2.getTransferingTime() > f2.getTransferTimeDelay()))
+                    && f2.getStatus().contains("WAITING")).toList();
+  }
   /**
    * @param branchId идентификатор отделения
    * @return список визитов
