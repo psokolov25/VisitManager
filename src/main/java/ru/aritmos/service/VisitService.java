@@ -2561,7 +2561,7 @@ public class VisitService {
             .body(
                 TinyClass.builder()
                     .id(userId)
-                    .name(currentBranch.getUsers().get(userId).getName())
+                    .name(this.getAllWorkingUsers(branchId).get(userId).getName())
                     .build())
             .params(Map.of("poolUserId", userId, "branchId", branchId))
             .build();
@@ -2619,17 +2619,17 @@ public class VisitService {
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     log.info("Visit {} transfered!", visit);
     Event delayedEvent =
-            Event.builder()
-                    .eventType("SERVICEPOINT_POOL__REFRESHED")
-                    .body(
-                            TinyClass.builder()
-                                    .id(userId)
-                                    .name(currentBranch.getUsers().get(userId).getName())
-                                    .build())
-                    .params(Map.of("poolUserId", userId, "branchId", branchId))
-                    .build();
+        Event.builder()
+            .eventType("SERVICEPOINT_POOL__REFRESHED")
+            .body(
+                TinyClass.builder()
+                    .id(userId)
+                    .name(this.getAllWorkingUsers(branchId).get(userId).getName())
+                    .build())
+            .params(Map.of("poolUserId", userId, "branchId", branchId))
+            .build();
     delayedEvents.delayedEventService(
-            "frontend", false, delayedEvent, transferTimeDelay, eventService);
+        "frontend", false, delayedEvent, transferTimeDelay, eventService);
     return visit;
   }
 
@@ -2672,17 +2672,17 @@ public class VisitService {
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     log.info("Visit {} transfered!", visit);
     Event delayedEvent =
-            Event.builder()
-                    .eventType("SERVICEPOINT_POOL__REFRESHED")
-                    .body(
-                            TinyClass.builder()
-                                    .id(userId)
-                                    .name(this.getAllWorkingUsers(branchId).get(userId).getName())
-                                    .build())
-                    .params(Map.of("poolUserId", userId, "branchId", branchId))
-                    .build();
+        Event.builder()
+            .eventType("SERVICEPOINT_POOL__REFRESHED")
+            .body(
+                TinyClass.builder()
+                    .id(userId)
+                    .name(this.getAllWorkingUsers(branchId).get(userId).getName())
+                    .build())
+            .params(Map.of("poolUserId", userId, "branchId", branchId))
+            .build();
     delayedEvents.delayedEventService(
-            "frontend", false, delayedEvent, transferTimeDelay, eventService);
+        "frontend", false, delayedEvent, transferTimeDelay, eventService);
     return visit;
   }
 
