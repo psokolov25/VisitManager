@@ -392,7 +392,7 @@ public class VisitService {
             q -> {
               Queue queue =
                   new Queue(q.getId(), q.getName(), q.getTicketPrefix(), q.getWaitingSL());
-              q.setVisits(
+              queue.setVisits(
                   q.getVisits().stream()
                       .filter(
                           f2 ->
@@ -403,7 +403,7 @@ public class VisitService {
                                   && f2.getStatus().contains("WAITING"))
                       .toList());
 
-              result.add(q);
+              result.add(queue);
             });
         return Optional.of(result);
 
