@@ -1649,6 +1649,7 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @param poolServicePointId идентификатор точки обслуживания, которой принадлежит пул
+   * @param transferTimeDelay  задержка визита после перевода (период запрета на вызов после     перевода)
    * @return визит после перевода
    */
   @Tag(name = "Зона обслуживания")
@@ -1668,7 +1669,7 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2")
           String poolServicePointId,
-      @QueryValue(defaultValue = "0") Long returnTimeDelay) {
+      @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     Branch branch;
 
     try {
@@ -1681,7 +1682,7 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferToServicePointPool(
-        branchId, servicePointId, poolServicePointId, returnTimeDelay);
+        branchId, servicePointId, poolServicePointId, transferTimeDelay);
   }
 
   /**
