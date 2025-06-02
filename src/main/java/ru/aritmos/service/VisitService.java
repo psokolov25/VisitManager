@@ -1750,7 +1750,7 @@ public class VisitService {
                 .eventType("QUEUE_REFRESHED")
                 .body(
                     TinyClass.builder()
-                        .id(visit.getParameterMap().get("LastQueueId"))
+                        .id(queueId)
                         .name(currentBranch.getQueues().get(queueId).getName())
                         .build())
                 .params(Map.of("queueId", queueId, "branchId", branchId))
@@ -2126,7 +2126,7 @@ public class VisitService {
             .eventType("QUEUE_REFRESHED")
             .body(
                 TinyClass.builder()
-                    .id(visit.getParameterMap().get("LastQueueId"))
+                    .id(queueId)
                     .name(currentBranch.getQueues().get(queueId).getName())
                     .build())
             .params(Map.of("queueId", queueId, "branchId", branchId))
@@ -2207,7 +2207,7 @@ public class VisitService {
             .eventType("QUEUE_REFRESHED")
             .body(
                 TinyClass.builder()
-                    .id(visit.getParameterMap().get("LastQueueId"))
+                    .id(queueId)
                     .name(currentBranch.getQueues().get(queueId).getName())
                     .build())
             .params(Map.of("queueId", queueId, "branchId", branchId))
@@ -2279,7 +2279,7 @@ public class VisitService {
             .eventType("QUEUE_REFRESHED")
             .body(
                 TinyClass.builder()
-                    .id(visit.getParameterMap().get("LastQueueId"))
+                    .id(queueId)
                     .name(currentBranch.getQueues().get(queueId).getName())
                     .build())
             .params(Map.of("queueId", queueId, "branchId", branchId))
