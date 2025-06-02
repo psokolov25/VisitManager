@@ -3723,7 +3723,7 @@ public class VisitService {
         branchService.updateVisit(visit, event, this);
         Event delayedEvent =
                 Event.builder()
-                        .eventType("USERR_POOL_REFRESHED")
+                        .eventType("USER_POOL_REFRESHED")
                         .body(
                                 TinyClass.builder()
                                         .id(userId)
