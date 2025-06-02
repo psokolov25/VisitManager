@@ -3889,10 +3889,10 @@ public class VisitService {
                         .eventType("SERVICEPOINT_POOL_REFRESHED")
                         .body(
                                 TinyClass.builder()
-                                        .id(servicePointId)
-                                        .name(currentBranch.getServicePoints().get(servicePointId).getName())
+                                        .id(poolServicePointId)
+                                        .name(currentBranch.getServicePoints().get(poolServicePointId).getName())
                                         .build())
-                        .params(Map.of("servicePointId", servicePointId, "branchId", branchId))
+                        .params(Map.of("poolServicePointId", poolServicePointId, "branchId", branchId))
                         .build();
         delayedEvents.delayedEventService(
                 "frontend", false, delayedEvent, transferTimeDelay, eventService);
