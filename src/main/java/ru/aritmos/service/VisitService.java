@@ -2348,7 +2348,7 @@ public class VisitService {
     log.info("Visit {} transfered!", visit);
     Event delayedEvent =
         Event.builder()
-            .eventType("SERVICEPOINT_POOL__REFRESHED")
+            .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
                 TinyClass.builder()
                     .id(servicePointId)
@@ -2417,7 +2417,7 @@ public class VisitService {
     log.info("Visit {} transfered!", visit);
     Event delayedEvent =
         Event.builder()
-            .eventType("SERVICEPOINT_POOL__REFRESHED")
+            .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
                 TinyClass.builder()
                     .id(servicePointId)
@@ -2481,7 +2481,7 @@ public class VisitService {
     log.info("Visit {} transfered!", visit);
     Event delayedEvent =
         Event.builder()
-            .eventType("SERVICEPOINT_POOL__REFRESHED")
+            .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
                 TinyClass.builder()
                     .id(poolServicePointId)
@@ -2557,7 +2557,7 @@ public class VisitService {
     log.info("Visit {} transfered!", visit);
     Event delayedEvent =
         Event.builder()
-            .eventType("SERVICEPOINT_POOL__REFRESHED")
+            .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
                 TinyClass.builder()
                     .id(userId)
@@ -2620,7 +2620,7 @@ public class VisitService {
     log.info("Visit {} transfered!", visit);
     Event delayedEvent =
         Event.builder()
-            .eventType("SERVICEPOINT_POOL__REFRESHED")
+            .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
                 TinyClass.builder()
                     .id(userId)
@@ -2673,7 +2673,7 @@ public class VisitService {
     log.info("Visit {} transfered!", visit);
     Event delayedEvent =
         Event.builder()
-            .eventType("SERVICEPOINT_POOL__REFRESHED")
+            .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
                 TinyClass.builder()
                     .id(userId)
@@ -3723,7 +3723,7 @@ public class VisitService {
         branchService.updateVisit(visit, event, this);
         Event delayedEvent =
                 Event.builder()
-                        .eventType("USERR_POOL__REFRESHED")
+                        .eventType("USERR_POOL_REFRESHED")
                         .body(
                                 TinyClass.builder()
                                         .id(userId)
@@ -3802,7 +3802,7 @@ public class VisitService {
         log.info("Visit {} transfered!", visit);
         Event delayedEvent =
                 Event.builder()
-                        .eventType("SERVICEPOINT_POOL__REFRESHED")
+                        .eventType("SERVICEPOINT_POOL_REFRESHED")
                         .body(
                                 TinyClass.builder()
                                         .id(servicePointId)
@@ -3886,7 +3886,7 @@ public class VisitService {
         log.info("Visit {} transfered!", visit);
         Event delayedEvent =
                 Event.builder()
-                        .eventType("SERVICEPOINT_POOL__REFRESHED")
+                        .eventType("SERVICEPOINT_POOL_REFRESHED")
                         .body(
                                 TinyClass.builder()
                                         .id(servicePointId)
