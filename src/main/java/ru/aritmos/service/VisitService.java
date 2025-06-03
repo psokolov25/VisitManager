@@ -988,26 +988,50 @@ public class VisitService {
               .getParameters()
               .put(
                   "staffName",
-                  currentBranch.getServicePoints().containsKey(servicePointId)
-                          && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                      ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                      : "");
+                      currentBranch.getServicePoints().containsKey(servicePointId)
+                      && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                              ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
+                              : "");
           event
               .getParameters()
               .put(
                   "workProfileId",
-                  currentBranch.getServicePoints().containsKey(servicePointId)
-                          && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                      ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                      : "");
+                      currentBranch.getServicePoints().containsKey(servicePointId)
+                      && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                              ? currentBranch.getServicePoints().get(servicePointId).getUser().getCurrentWorkProfileId()
+                              : "");
           event.dateTime = ZonedDateTime.now();
 
           branchService.updateVisit(visit, event, this);
 
-          event = VisitEvent.CALLED;
-          event
+          VisitEvent calledEvent = VisitEvent.CALLED;
+          calledEvent
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          calledEvent
+                  .getParameters()
+                  .put(
+                          "staffId",
+                          currentBranch.getServicePoints().containsKey(servicePointId)
+                          && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                                  ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
+                                  : "");
+          calledEvent
+                  .getParameters()
+                  .put(
+                          "staffName",
+                          currentBranch.getServicePoints().containsKey(servicePointId)
+                          && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                                  ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
+                                  : "");
+          calledEvent
+                  .getParameters()
+                  .put(
+                          "workProfileId",
+                          currentBranch.getServicePoints().containsKey(servicePointId)
+                          && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                                  ? currentBranch.getServicePoints().get(servicePointId).getUser().getCurrentWorkProfileId()
+                                  : "");
           event.dateTime = ZonedDateTime.now();
           visit.setCallDateTime(ZonedDateTime.now());
           branchService.updateVisit(visit, event, this);
