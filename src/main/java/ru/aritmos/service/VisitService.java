@@ -1081,13 +1081,7 @@ public class VisitService {
         visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
         visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
         visitEvent.getParameters().put("branchId", branchId);
-        visitEvent
-            .getParameters()
-            .put(
-                "workProfileId",
-                servicePoint.getUser() != null
-                    ? servicePoint.getUser().getCurrentWorkProfileId()
-                    : "");
+
         visitEvent
             .getParameters()
             .put("staffId", servicePoint.getUser() != null ? servicePoint.getUser().getId() : "");
@@ -1096,6 +1090,11 @@ public class VisitService {
             .put(
                 "staffName",
                 servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+        visitEvent
+                .getParameters()
+                .put(
+                        "workProfileId",
+                        servicePoint.getUser() != null ? servicePoint.getUser().getCurrentWorkProfileId() : "");
         branchService.updateVisit(visit, visitEvent, this);
         return visit;
 
@@ -1165,6 +1164,11 @@ public class VisitService {
             .put(
                 "staffName",
                 servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+        visitEvent
+                .getParameters()
+                .put(
+                        "workProfileId",
+                        servicePoint.getUser() != null ? servicePoint.getUser().getCurrentWorkProfileId() : "");
         branchService.updateVisit(visit, visitEvent, this);
         return visit;
 
@@ -1220,6 +1224,11 @@ public class VisitService {
             .put(
                 "staffName",
                 servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+        visitEvent
+                .getParameters()
+                .put(
+                        "workProfileId",
+                        servicePoint.getUser() != null ? servicePoint.getUser().getCurrentWorkProfileId() : "");
         branchService.updateVisit(visit, visitEvent, this);
         return visit;
 
@@ -1274,6 +1283,11 @@ public class VisitService {
             .put(
                 "staffName",
                 servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+        visitEvent
+                .getParameters()
+                .put(
+                        "workProfileId",
+                        servicePoint.getUser() != null ? servicePoint.getUser().getCurrentWorkProfileId() : "");
         branchService.updateVisit(visit, visitEvent, this);
         return visit;
 
@@ -1321,6 +1335,11 @@ public class VisitService {
             .put(
                 "staffName",
                 servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+        visitEvent
+                .getParameters()
+                .put(
+                        "workProfileId",
+                        servicePoint.getUser() != null ? servicePoint.getUser().getCurrentWorkProfileId() : "");
         branchService.updateVisit(visit, visitEvent, this);
         return visit;
 
@@ -1432,6 +1451,11 @@ public class VisitService {
               .put(
                   "staffName",
                   servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+          visitEvent
+                  .getParameters()
+                  .put(
+                          "workProfileId",
+                          servicePoint.getUser() != null ? servicePoint.getUser().getCurrentWorkProfileId() : "");
           branchService.updateVisit(visit, visitEvent, this);
           return visit;
         }
