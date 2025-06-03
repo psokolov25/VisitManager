@@ -933,7 +933,7 @@ public class VisitService {
         List<Service> unServedServices = new ArrayList<>();
         services.stream()
             .skip(1)
-            .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId())));
+            .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId()).clone()));
 
         Visit visit =
             Visit.builder()
@@ -945,7 +945,7 @@ public class VisitService {
                 .branchName(currentBranch.getName())
                 .branchPrefix(currentBranch.getPrefix())
                 .branchPath(currentBranch.getPath())
-                .currentService(currentService)
+                .currentService(currentService.clone())
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
                 .visitMarks(new ArrayList<>())
@@ -992,7 +992,7 @@ public class VisitService {
             queueEvent.dateTime = ZonedDateTime.now();
             queueEvent
                 .getParameters()
-                .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+                .put("serviceId", !services.isEmpty() ? services.get(0).clone().getId() : null);
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             // visit.setQueueId(serviceQueue.getId());
             visit.setStartServingDateTime(ZonedDateTime.now());
