@@ -310,7 +310,7 @@ public class VisitService {
       ArrayList<Service> services = new ArrayList<>();
       visitParameters
           .getServiceIds()
-          .forEach(f -> services.add(currentBranch.getServices().get(f)));
+          .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
 
       return createVirtualVisit2(
           branchId, servicePointId, services, visitParameters.getParameters());
