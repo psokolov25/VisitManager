@@ -1032,11 +1032,35 @@ public class VisitService {
                           && currentBranch.getServicePoints().get(servicePointId).getUser() != null
                                   ? currentBranch.getServicePoints().get(servicePointId).getUser().getCurrentWorkProfileId()
                                   : "");
-          event.dateTime = ZonedDateTime.now();
+          calledEvent.dateTime = ZonedDateTime.now();
           visit.setCallDateTime(ZonedDateTime.now());
-          branchService.updateVisit(visit, event, this);
+          branchService.updateVisit(visit, calledEvent, this);
           if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
             VisitEvent queueEvent = VisitEvent.START_SERVING;
+            queueEvent
+                    .getParameters()
+                    .put(
+                            "staffId",
+                            currentBranch.getServicePoints().containsKey(servicePointId)
+                            && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                                    ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
+                                    : "");
+            queueEvent
+                    .getParameters()
+                    .put(
+                            "staffName",
+                            currentBranch.getServicePoints().containsKey(servicePointId)
+                            && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                                    ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
+                                    : "");
+            queueEvent
+                    .getParameters()
+                    .put(
+                            "workProfileId",
+                            currentBranch.getServicePoints().containsKey(servicePointId)
+                            && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                                    ? currentBranch.getServicePoints().get(servicePointId).getUser().getCurrentWorkProfileId()
+                                    : "");
             queueEvent.dateTime = ZonedDateTime.now();
             queueEvent
                 .getParameters()
