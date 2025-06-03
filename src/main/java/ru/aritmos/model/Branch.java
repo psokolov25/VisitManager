@@ -679,7 +679,7 @@ public class Branch extends BranchEntity {
                             && v2.getCurrentService().getId().equals(id)) {
                           v2.setCurrentService(null);
                           if (!v2.getUnservedServices().isEmpty()) {
-                            v2.setCurrentService(v2.getUnservedServices().get(0));
+                            v2.setCurrentService(v2.getUnservedServices().get(0).clone());
                             v2.getUnservedServices().remove(0);
                           } else {
                             v2.setQueueId(null);

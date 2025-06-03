@@ -494,7 +494,7 @@ public class VisitService {
                 .branchName(currentBranch.getName())
                 .branchPrefix(currentBranch.getPrefix())
                 .branchPath(currentBranch.getPath())
-                .currentService(currentService)
+                .currentService(currentService.clone())
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
                 .visitMarks(new ArrayList<>())
@@ -615,7 +615,7 @@ public class VisitService {
                 .branchName(currentBranch.getName())
                 .branchPrefix(currentBranch.getPrefix())
                 .branchPath(currentBranch.getPath())
-                .currentService(currentService)
+                .currentService(currentService.clone())
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
                 .visitMarks(new ArrayList<>())
@@ -728,7 +728,7 @@ public class VisitService {
                 .branchName(currentBranch.getName())
                 .branchPrefix(currentBranch.getPrefix())
                 .branchPath(currentBranch.getPath())
-                .currentService(currentService)
+                .currentService(currentService.clone())
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
                 .visitMarks(new ArrayList<>())
@@ -838,7 +838,7 @@ public class VisitService {
                 .branchName(currentBranch.getName())
                 .branchPrefix(currentBranch.getPrefix())
                 .branchPath(currentBranch.getPath())
-                .currentService(currentService)
+                .currentService(currentService.clone())
                 .unservedServices(unServedServices)
                 .createDateTime(ZonedDateTime.now())
                 .visitMarks(new ArrayList<>())
@@ -1072,7 +1072,7 @@ public class VisitService {
                                 .count()
                             + 1),
                 deliveredService);
-        visit.setCurrentService(currentService);
+        visit.setCurrentService(currentService.clone());
 
         VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
@@ -2713,7 +2713,7 @@ public class VisitService {
         if (visit.getUnservedServices() != null && !visit.getUnservedServices().isEmpty()) {
 
           visit.getServedServices().add(visit.toBuilder().build().getCurrentService());
-          visit.setCurrentService(visit.toBuilder().build().getUnservedServices().get(0));
+          visit.setCurrentService(visit.toBuilder().build().getUnservedServices().get(0).clone());
           visit.getUnservedServices().remove(0);
           String queueIdToReturn = visit.getCurrentService().getLinkedQueueId();
           visit.setQueueId(queueIdToReturn);

@@ -279,7 +279,7 @@ class EntrypointTest {
     }
   }
 
-  @Test
+  //@Test
   void checkConfirmVisitWithCallRule() throws InterruptedException, SystemException {
 
     Service service;

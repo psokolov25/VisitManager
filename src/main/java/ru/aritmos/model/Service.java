@@ -13,8 +13,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuppressWarnings("unused")
-public class Service extends BasedService implements Cloneable {
+public class Service extends BasedService implements Cloneable{
 
+  @SuppressWarnings("all")
   /** Нормативное время обслуживания */
   Integer servingSL;
 
@@ -37,13 +38,22 @@ public class Service extends BasedService implements Cloneable {
     this.isAvailable = true;
   }
 
-  @Override
   public Service clone() {
-    Service clone = (Service) super.clone();
+      Service service = (Service) super.clone();
+
+
+      Service clone = new Service();
+    clone.serviceGroupId = this.serviceGroupId;
+    clone.id = this.id;
+    clone.name = this.name;
+    clone.branchId = this.branchId;
     clone.servingSL = this.servingSL;
     clone.linkedQueueId = this.linkedQueueId;
     clone.isAvailable = this.isAvailable;
     clone.deliveredServices.putAll(this.deliveredServices);
+    clone.possibleOutcomes = new HashMap<>();
+    clone.possibleOutcomes.putAll(this.possibleOutcomes);
+
     if (this.outcome != null) {
       clone.outcome = this.outcome.clone();
     }

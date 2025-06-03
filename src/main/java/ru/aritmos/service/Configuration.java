@@ -103,7 +103,7 @@ public class Configuration {
     serviceList.put(creditService.getId(), creditService.clone());
     serviceList.put(bigCreditService.getId(), bigCreditService.clone());
     serviceList.put(longCreditService.getId(), longCreditService.clone());
-    branch.setServices(serviceList);
+    branch.getServices().putAll(serviceList);
 
     ServicePoint servicePointFSC =
             new ServicePoint("099c43c1-40b5-4b80-928a-1d4b363152a8", "Каб. 101");
