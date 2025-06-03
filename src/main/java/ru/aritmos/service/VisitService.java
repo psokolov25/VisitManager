@@ -1056,8 +1056,8 @@ public class VisitService {
         }
         DeliveredService deliveredService =
             currentBranch.getPossibleDeliveredServices().get(deliveredServiceId).clone();
-        visit
-            .getCurrentService()
+        Service currentService = visit.getCurrentService().clone();
+        currentService
             .getDeliveredServices()
             .put(
                 !visit
@@ -1072,6 +1072,7 @@ public class VisitService {
                                 .count()
                             + 1),
                 deliveredService);
+        visit.setCurrentService(currentService);
 
         VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
@@ -3722,17 +3723,17 @@ public class VisitService {
         event.getParameters().put("servicePointId", servicePointId);
         branchService.updateVisit(visit, event, this);
         Event delayedEvent =
-                Event.builder()
-                        .eventType("USER_POOL_REFRESHED")
-                        .body(
-                                TinyClass.builder()
-                                        .id(userId)
-                                        .name(getAllWorkingUsers(branchId).get(userId).getName())
-                                        .build())
-                        .params(Map.of("userId", userId, "branchId", branchId))
-                        .build();
+            Event.builder()
+                .eventType("USER_POOL_REFRESHED")
+                .body(
+                    TinyClass.builder()
+                        .id(userId)
+                        .name(getAllWorkingUsers(branchId).get(userId).getName())
+                        .build())
+                .params(Map.of("userId", userId, "branchId", branchId))
+                .build();
         delayedEvents.delayedEventService(
-                "frontend", false, delayedEvent, transferTimeDelay, eventService);
+            "frontend", false, delayedEvent, transferTimeDelay, eventService);
         // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
         return visit;
@@ -3801,17 +3802,17 @@ public class VisitService {
         // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
         Event delayedEvent =
-                Event.builder()
-                        .eventType("SERVICEPOINT_POOL_REFRESHED")
-                        .body(
-                                TinyClass.builder()
-                                        .id(poolServicePointId)
-                                        .name(currentBranch.getServicePoints().get(poolServicePointId).getName())
-                                        .build())
-                        .params(Map.of("poolServicePointId", poolServicePointId, "branchId", branchId))
-                        .build();
+            Event.builder()
+                .eventType("SERVICEPOINT_POOL_REFRESHED")
+                .body(
+                    TinyClass.builder()
+                        .id(poolServicePointId)
+                        .name(currentBranch.getServicePoints().get(poolServicePointId).getName())
+                        .build())
+                .params(Map.of("poolServicePointId", poolServicePointId, "branchId", branchId))
+                .build();
         delayedEvents.delayedEventService(
-                "frontend", false, delayedEvent, transferTimeDelay, eventService);
+            "frontend", false, delayedEvent, transferTimeDelay, eventService);
         return visit;
       } else {
         throw new BusinessException(
@@ -3832,8 +3833,7 @@ public class VisitService {
       String servicePointId,
       String poolServicePointId,
       HashMap<String, String> serviceInfo,
-  Long transferTimeDelay
-  ) {
+      Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {
@@ -3870,7 +3870,6 @@ public class VisitService {
 
         visit.setTransferDateTime(ZonedDateTime.now());
 
-
         visit.setTransferTimeDelay(transferTimeDelay);
         visit.setStartServingDateTime(null);
         event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
@@ -3885,17 +3884,17 @@ public class VisitService {
         // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
         Event delayedEvent =
-                Event.builder()
-                        .eventType("SERVICEPOINT_POOL_REFRESHED")
-                        .body(
-                                TinyClass.builder()
-                                        .id(poolServicePointId)
-                                        .name(currentBranch.getServicePoints().get(poolServicePointId).getName())
-                                        .build())
-                        .params(Map.of("poolServicePointId", poolServicePointId, "branchId", branchId))
-                        .build();
+            Event.builder()
+                .eventType("SERVICEPOINT_POOL_REFRESHED")
+                .body(
+                    TinyClass.builder()
+                        .id(poolServicePointId)
+                        .name(currentBranch.getServicePoints().get(poolServicePointId).getName())
+                        .build())
+                .params(Map.of("poolServicePointId", poolServicePointId, "branchId", branchId))
+                .build();
         delayedEvents.delayedEventService(
-                "frontend", false, delayedEvent, transferTimeDelay, eventService);
+            "frontend", false, delayedEvent, transferTimeDelay, eventService);
         return visit;
       } else {
         throw new BusinessException(
