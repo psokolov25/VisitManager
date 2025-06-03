@@ -560,7 +560,6 @@ public class Branch extends BranchEntity {
           }
         }
       }
-
       entry.setValue(value);
     }
     eventService.send(
