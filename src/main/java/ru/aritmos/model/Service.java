@@ -43,9 +43,9 @@ public class Service extends BasedService implements Cloneable {
     clone.servingSL = this.servingSL;
     clone.linkedQueueId = this.linkedQueueId;
     clone.isAvailable = this.isAvailable;
-    clone.deliveredServices = new HashMap<>(deliveredServices);
+    clone.deliveredServices.putAll(this.deliveredServices);
     if (this.outcome != null) {
-      clone.outcome = this.outcome;
+      clone.outcome = this.outcome.clone();
     }
 
     return clone;

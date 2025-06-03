@@ -24,9 +24,10 @@ public class BasedService extends BranchEntity implements Cloneable {
   @Override
   public BasedService clone() {
     BasedService clone = (BasedService) super.clone();
-    clone.possibleOutcomes = this.possibleOutcomes;
-    clone.outcome = this.outcome;
-
+    clone.possibleOutcomes.putAll(this.possibleOutcomes);
+    if (this.outcome != null) {
+      clone.outcome = this.outcome.clone();
+    }
     return clone;
   }
 }
