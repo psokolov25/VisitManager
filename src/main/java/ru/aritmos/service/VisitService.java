@@ -2459,7 +2459,17 @@ public class VisitService {
     return result;
   }
 private String getLastOldQueueId(Visit visit) {
-    return getLastNotNutllEventParam(visit, "oldQueueId");
+    String result=getLastNotNutllEventParam(visit, "oldQueueId");
+    if(!result.isEmpty())
+    {
+      return result;
+    }
+    else
+    {
+      result=getLastNotNutllEventParam(visit, "queueId");
+
+    }
+    return result;
 }
   /**
    * Перевод визита из очереди в очередь внешней службой
