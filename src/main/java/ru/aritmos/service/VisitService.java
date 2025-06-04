@@ -2452,7 +2452,7 @@ public class VisitService {
   private String getLastNotNutllEventParam(Visit visit, String paramName) {
     String result = "";
     Optional<VisitEvent> event =
-        visit.getVisitEvents().stream()
+        visit.getEvents().stream().flatMap(fm->fm.stream().map(VisitEventInformation::getVisitEvent)).toList().stream()
             .filter(
                 f ->
                     f.getParameters().containsKey(paramName)
