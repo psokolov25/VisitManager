@@ -1044,6 +1044,7 @@ public class VisitService {
                       : "");
           calledEvent.getParameters().put("queueId", serviceQueue.getId());
           visit.getParameterMap().put("LastQueueId", serviceQueue.getId());
+          visit.setQueueId(null);
           calledEvent.dateTime = ZonedDateTime.now();
           visit.setCallDateTime(ZonedDateTime.now());
           branchService.updateVisit(visit, calledEvent, this);
