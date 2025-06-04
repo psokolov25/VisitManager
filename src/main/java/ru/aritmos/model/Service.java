@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuppressWarnings("unused")
-public class Service extends BasedService implements Cloneable{
+public class Service extends BasedService implements Cloneable {
 
   @SuppressWarnings("all")
   /** Нормативное время обслуживания */
@@ -39,10 +39,9 @@ public class Service extends BasedService implements Cloneable{
   }
 
   public Service clone() {
-      Service service = (Service) super.clone();
+    Service service = (Service) super.clone();
 
-
-      Service clone = new Service();
+    Service clone = new Service();
     clone.serviceGroupId = this.serviceGroupId;
     clone.id = this.id;
     clone.name = this.name;

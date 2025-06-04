@@ -8,6 +8,7 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -988,18 +989,22 @@ public class VisitService {
               .getParameters()
               .put(
                   "staffName",
-                      currentBranch.getServicePoints().containsKey(servicePointId)
-                      && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                              ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                              : "");
+                  currentBranch.getServicePoints().containsKey(servicePointId)
+                          && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                      ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
+                      : "");
           event
               .getParameters()
               .put(
                   "workProfileId",
-                      currentBranch.getServicePoints().containsKey(servicePointId)
-                      && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                              ? currentBranch.getServicePoints().get(servicePointId).getUser().getCurrentWorkProfileId()
-                              : "");
+                  currentBranch.getServicePoints().containsKey(servicePointId)
+                          && currentBranch.getServicePoints().get(servicePointId).getUser() != null
+                      ? currentBranch
+                          .getServicePoints()
+                          .get(servicePointId)
+                          .getUser()
+                          .getCurrentWorkProfileId()
+                      : "");
           event.dateTime = ZonedDateTime.now();
 
           branchService.updateVisit(visit, event, this);
@@ -1009,58 +1014,69 @@ public class VisitService {
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
           calledEvent
-                  .getParameters()
-                  .put(
-                          "staffId",
-                          currentBranch.getServicePoints().containsKey(servicePointId)
+              .getParameters()
+              .put(
+                  "staffId",
+                  currentBranch.getServicePoints().containsKey(servicePointId)
                           && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                                  ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
-                                  : "");
+                      ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
+                      : "");
           calledEvent
-                  .getParameters()
-                  .put(
-                          "staffName",
-                          currentBranch.getServicePoints().containsKey(servicePointId)
+              .getParameters()
+              .put(
+                  "staffName",
+                  currentBranch.getServicePoints().containsKey(servicePointId)
                           && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                                  ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                                  : "");
+                      ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
+                      : "");
           calledEvent
-                  .getParameters()
-                  .put(
-                          "workProfileId",
-                          currentBranch.getServicePoints().containsKey(servicePointId)
+              .getParameters()
+              .put(
+                  "workProfileId",
+                  currentBranch.getServicePoints().containsKey(servicePointId)
                           && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                                  ? currentBranch.getServicePoints().get(servicePointId).getUser().getCurrentWorkProfileId()
-                                  : "");
+                      ? currentBranch
+                          .getServicePoints()
+                          .get(servicePointId)
+                          .getUser()
+                          .getCurrentWorkProfileId()
+                      : "");
           calledEvent.dateTime = ZonedDateTime.now();
           visit.setCallDateTime(ZonedDateTime.now());
           branchService.updateVisit(visit, calledEvent, this);
           if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
             VisitEvent queueEvent = VisitEvent.START_SERVING;
             queueEvent
-                    .getParameters()
-                    .put(
-                            "staffId",
-                            currentBranch.getServicePoints().containsKey(servicePointId)
-                            && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                                    ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
-                                    : "");
+                .getParameters()
+                .put(
+                    "staffId",
+                    currentBranch.getServicePoints().containsKey(servicePointId)
+                            && currentBranch.getServicePoints().get(servicePointId).getUser()
+                                != null
+                        ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
+                        : "");
             queueEvent
-                    .getParameters()
-                    .put(
-                            "staffName",
-                            currentBranch.getServicePoints().containsKey(servicePointId)
-                            && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                                    ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                                    : "");
+                .getParameters()
+                .put(
+                    "staffName",
+                    currentBranch.getServicePoints().containsKey(servicePointId)
+                            && currentBranch.getServicePoints().get(servicePointId).getUser()
+                                != null
+                        ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
+                        : "");
             queueEvent
-                    .getParameters()
-                    .put(
-                            "workProfileId",
-                            currentBranch.getServicePoints().containsKey(servicePointId)
-                            && currentBranch.getServicePoints().get(servicePointId).getUser() != null
-                                    ? currentBranch.getServicePoints().get(servicePointId).getUser().getCurrentWorkProfileId()
-                                    : "");
+                .getParameters()
+                .put(
+                    "workProfileId",
+                    currentBranch.getServicePoints().containsKey(servicePointId)
+                            && currentBranch.getServicePoints().get(servicePointId).getUser()
+                                != null
+                        ? currentBranch
+                            .getServicePoints()
+                            .get(servicePointId)
+                            .getUser()
+                            .getCurrentWorkProfileId()
+                        : "");
             queueEvent.dateTime = ZonedDateTime.now();
             queueEvent
                 .getParameters()
@@ -2309,6 +2325,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
     event.getParameters().put("newQueueId", queueId);
     event.getParameters().put("servicePointId", servicePointId);
@@ -2392,6 +2413,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
     event.getParameters().put("newQueueId", queueId);
     event.getParameters().put("servicePointId", servicePointId);
@@ -2418,6 +2444,23 @@ public class VisitService {
     return visit;
   }
 
+  private String getLastNotNutllEventParam(Visit visit, String paramName) {
+    String result = "";
+    Optional<VisitEvent> event =
+        visit.getVisitEvents().stream()
+            .filter(
+                f ->
+                    f.getParameters().containsKey(paramName)
+                        && f.getParameters().get(paramName) != null)
+            .max(Comparator.comparing(co -> co.dateTime.truncatedTo(ChronoUnit.SECONDS)));
+    if (event.isPresent()) {
+      result = event.get().getParameters().get(paramName);
+    }
+    return result;
+  }
+private String getLastOldQueueId(Visit visit) {
+    return getLastNotNutllEventParam(visit, "oldQueueId");
+}
   /**
    * Перевод визита из очереди в очередь внешней службой
    *
@@ -2467,6 +2510,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
     event.getParameters().put("newQueueId", queueId);
 
@@ -2542,6 +2590,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
     event.getParameters().put("servicePointId", servicePointId);
@@ -2614,6 +2667,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
     event.getParameters().put("servicePointId", servicePointId);
@@ -2705,6 +2763,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
     event.getParameters().putAll(serviceInfo);
@@ -2781,6 +2844,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
 
     event.getParameters().put("userId", userId);
@@ -2846,6 +2914,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
 
     event.getParameters().put("userId", userId);
@@ -2901,6 +2974,11 @@ public class VisitService {
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId",value);
+      }
     }
 
     event.getParameters().put("userId", userId);

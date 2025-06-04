@@ -52,8 +52,7 @@ class EntrypointTest {
   @Inject SecurityService securityService;
   @Inject EventService eventService;
   Branch branch;
-  @Inject
-  private KeyCloackClient keyCloackClient;
+  @Inject private KeyCloackClient keyCloackClient;
 
   @Test
   void testItWorks() {
@@ -212,6 +211,7 @@ class EntrypointTest {
       log.info(branchService.getBranches().toString());
     }
   }
+
   /** Проверка правильности формаирования номера талона */
   @Test
   void checkUpdateVisit() throws SystemException {
@@ -279,7 +279,7 @@ class EntrypointTest {
     }
   }
 
-  //@Test
+  // @Test
   void checkConfirmVisitWithCallRule() throws InterruptedException, SystemException {
 
     Service service;
@@ -520,7 +520,8 @@ class EntrypointTest {
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     visit =
-        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, false,0L);
+        visitService.visitTransferFromQueueToUserPool(
+            branchId, psokolovUser.getId(), visit, false, 0L);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -644,7 +645,7 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     visit =
         visitService.visitTransferFromQueueToServicePointPool(
-            branchId, servicePointFcId, servicePointFcId, visit, false,0L);
+            branchId, servicePointFcId, servicePointFcId, visit, false, 0L);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -706,7 +707,7 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     visit =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true,0L);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true, 0L);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -830,7 +831,7 @@ class EntrypointTest {
 
     visit =
         visitService.visitTransferFromQueueToServicePointPool(
-            branchId, servicePointFcId, servicePointFcId, visit, true,0L);
+            branchId, servicePointFcId, servicePointFcId, visit, true, 0L);
 
     Thread.sleep(900);
 
@@ -878,7 +879,8 @@ class EntrypointTest {
     Thread.sleep(1000);
 
     visit =
-        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true,0L);
+        visitService.visitTransferFromQueueToUserPool(
+            branchId, psokolovUser.getId(), visit, true, 0L);
 
     String visitId = visit.getId();
     Assertions.assertEquals(
@@ -895,7 +897,7 @@ class EntrypointTest {
     Assertions.assertEquals(visit.getStatus(), VisitEvent.TRANSFER_TO_USER_POOL.getState().name());
     visit =
         visitService.visitTransferFromQueueToServicePointPool(
-            branchId, servicePointFcId, servicePointFcId, visit, true,0L);
+            branchId, servicePointFcId, servicePointFcId, visit, true, 0L);
     Assertions.assertEquals(
         managementController.getBranch(branchId).getAllVisitsList().stream()
             .filter(f -> f.getId().equals(visitId))
@@ -914,10 +916,10 @@ class EntrypointTest {
       Thread.sleep(900);
       visit =
           visitService.visitTransferFromQueueToUserPool(
-              branchId, psokolovUser.getId(), visit, true,0L);
+              branchId, psokolovUser.getId(), visit, true, 0L);
       visit =
           visitService.visitTransferFromQueueToServicePointPool(
-              branchId, servicePointFcId, servicePointFcId, visit, true,0L);
+              branchId, servicePointFcId, servicePointFcId, visit, true, 0L);
       visits =
           visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
@@ -964,11 +966,11 @@ class EntrypointTest {
 
     visit =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true,0L);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true, 0L);
     Thread.sleep(10000);
     visit2 =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true,0L);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true, 0L);
 
     Thread.sleep(900);
 
@@ -1017,13 +1019,13 @@ class EntrypointTest {
 
     visit =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true,0L);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true, 0L);
     Thread.sleep(1000);
     Assertions.assertTrue(visit.getWaitingTime() >= 0);
 
     visit2 =
         visitService.visitTransfer(
-            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true,0L);
+            branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit2, true, 0L);
     Thread.sleep(1000);
     Assertions.assertTrue(visit2.getWaitingTime() >= 0);
 
@@ -1061,7 +1063,8 @@ class EntrypointTest {
               servicePointFcId,
               "bd4b586e-c93e-4e07-9a76-586dd84ddea5",
               visits2.get(),
-              true,0L);
+              true,
+              0L);
       Assertions.assertTrue(visit2.getWaitingTime() >= 0);
     }
   }
@@ -1094,7 +1097,7 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
     visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointFcId, servicePointFcId, visit, true,0L);
+        branchId, servicePointFcId, servicePointFcId, visit, true, 0L);
     Thread.sleep(1000);
 
     Assertions.assertEquals(
@@ -1137,7 +1140,8 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
     visit =
-        visitService.visitTransferFromQueueToUserPool(branchId, psokolovUser.getId(), visit, true,0L);
+        visitService.visitTransferFromQueueToUserPool(
+            branchId, psokolovUser.getId(), visit, true, 0L);
     Thread.sleep(1000);
 
     Assertions.assertEquals(
@@ -1252,7 +1256,6 @@ class EntrypointTest {
     }
   }
 
-
   @Test
   void checkConfirmVisitWithRuleInterrupted() throws InterruptedException, SystemException {
     Service service;
@@ -1324,11 +1327,12 @@ class EntrypointTest {
         visit.getTicket(),
         queue.getTicketPrefix() + String.format("%03d", queue.getTicketCounter()));
   }
- // @Test
-  public void getSessions()
-  {
+
+  // @Test
+  public void getSessions() {
     keyCloackClient.getUserBySid("0426430a-972a-4c12-baa5-ed0cb91a1f2d");
   }
+
   /** Проверка правильности работы счетчика визитов */
   @Test
   void checkVisitCounter() throws SystemException {

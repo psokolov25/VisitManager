@@ -33,27 +33,27 @@ public class Configuration {
     branch.setPrefix("TVR");
     branch.setPath(keyCloackClient.getBranchPathByBranchPrefix("REGION", branch.getPrefix()));
     branch
-            .getMarks()
-            .put(
-                    "04992364-9e96-4ec9-8a05-923766aa57e7",
-                    Mark.builder()
-                            .id("04992364-9e96-4ec9-8a05-923766aa57e7")
-                            .value("Клиент доволен")
-                            .build());
+        .getMarks()
+        .put(
+            "04992364-9e96-4ec9-8a05-923766aa57e7",
+            Mark.builder()
+                .id("04992364-9e96-4ec9-8a05-923766aa57e7")
+                .value("Клиент доволен")
+                .build());
     branch
-            .getMarks()
-            .put(
-                    "d75076be-d3e0-4323-b7db-b32ea6b30817",
-                    Mark.builder()
-                            .id("d75076be-d3e0-4323-b7db-b32ea6b30817")
-                            .value("Клиент не доволен")
-                            .build());
+        .getMarks()
+        .put(
+            "d75076be-d3e0-4323-b7db-b32ea6b30817",
+            Mark.builder()
+                .id("d75076be-d3e0-4323-b7db-b32ea6b30817")
+                .value("Клиент не доволен")
+                .build());
     branch.getParameterMap().put("autoCallMode", false);
     branch.getBreakReasons().put("5454e87a-9ace-46fd-be30-b00f7bb88688", "Обучение");
     branch.getBreakReasons().put("75caee17-d8f3-49b1-b298-96bbb6ba19f3", "Обед");
     EntryPoint entryPoint = new EntryPoint();
     entryPoint.setPrinter(
-            Entity.builder().id("eb7ea46d-c995-4ca0-ba92-c92151473214").name("Intro18").build());
+        Entity.builder().id("eb7ea46d-c995-4ca0-ba92-c92151473214").name("Intro18").build());
     entryPoint.setId("2");
     HashMap<String, EntryPoint> entryPoints = new HashMap<>();
     entryPoints.put(entryPoint.getId(), entryPoint);
@@ -61,42 +61,37 @@ public class Configuration {
     Queue queueCredit = new Queue("55da9b66-c928-4d47-9811-dbbab20d3780", "Хирург", "F", 9000);
     queueCredit.setWaitingSL(200);
     Service creditService =
-            new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "Хирург", 9000, queueCredit.getId());
+        new Service("c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "Хирург", 9000, queueCredit.getId());
 
-    Outcome creditAccepted = new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Запись на повторный приём");
+    Outcome creditAccepted =
+        new Outcome("462bac1a-568a-4f1f-9548-1c7b61792b4b", "Запись на повторный приём");
     creditAccepted.setCode(1L);
     creditService.getPossibleOutcomes().put(creditAccepted.getId(), creditAccepted);
     DeliveredService creditCard =
-            new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Консультация");
+        new DeliveredService("35d73fdd-1597-4d94-a087-fd8a99c9d1ed", "Консультация");
     creditCard.getServiceIds().add(creditService.getId());
     Outcome creditCardGiven = new Outcome("8dc29622-cd87-4384-85a7-04b66b28dd0f", "Получена");
     creditCard.getPossibleOutcomes().put(creditCardGiven.getId(), creditCardGiven);
     branch.getPossibleDeliveredServices().put(creditCard.getId(), creditCard);
 
     DeliveredService insurance =
-            new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Подготовка к операции");
+        new DeliveredService("daa17035-7bd7-403f-a036-6c14b81e666f", "Подготовка к операции");
     insurance.getServiceIds().add(creditService.getId());
     branch.getPossibleDeliveredServices().put(insurance.getId(), insurance);
 
     Queue queueBigCredit =
-            new Queue("c211ae6b-de7b-4350-8a4c-cff7ff98104e", "Офтальмолог", "S", 9000);
+        new Queue("c211ae6b-de7b-4350-8a4c-cff7ff98104e", "Офтальмолог", "S", 9000);
     Service bigCreditService =
-            new Service(
-                    "569769e8-3bb3-4263-bd2e-42d8b3ec0bd2",
-                    "Офтальмолог",
-                    9000,
-                    queueBigCredit.getId());
+        new Service(
+            "569769e8-3bb3-4263-bd2e-42d8b3ec0bd2", "Офтальмолог", 9000, queueBigCredit.getId());
     Service longCreditService =
-            new Service(
-                    "856e8e77-aa8e-4feb-b947-566f6164e46f",
-                    "Травматолог",
-                    9000,
-                    queueCredit.getId());
+        new Service(
+            "856e8e77-aa8e-4feb-b947-566f6164e46f", "Травматолог", 9000, queueCredit.getId());
     Queue queueC = new Queue("8eee7e6e-345a-4f9b-9743-ff30a4322ef5", "В кассу", "C", 9000);
     Service kassaService =
-            new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
+        new Service("9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66", "Касса", 9000, queueC.getId());
     ServicePoint servicePointFC =
-            new ServicePoint("a66ff6f4-4f4a-4009-8602-0dc278024cf2", "Каб. 121");
+        new ServicePoint("a66ff6f4-4f4a-4009-8602-0dc278024cf2", "Каб. 121");
 
     HashMap<String, Service> serviceList = new HashMap<>();
     serviceList.put(kassaService.getId(), kassaService.clone());
@@ -106,29 +101,27 @@ public class Configuration {
     branch.getServices().putAll(serviceList);
 
     ServicePoint servicePointFSC =
-            new ServicePoint("099c43c1-40b5-4b80-928a-1d4b363152a8", "Каб. 101");
+        new ServicePoint("099c43c1-40b5-4b80-928a-1d4b363152a8", "Каб. 101");
 
     ServicePoint servicePointBFSC =
-            new ServicePoint(
-                    "090bd53d-96ba-466b-9845-d64e81894964", "Каб. 114");
+        new ServicePoint("090bd53d-96ba-466b-9845-d64e81894964", "Каб. 114");
     ServicePoint servicePointBBFSC =
-            new ServicePoint(
-                    "f9e60eaf-b4af-4bf8-8d64-e70d2e949829", "Каб. 120");
+        new ServicePoint("f9e60eaf-b4af-4bf8-8d64-e70d2e949829", "Каб. 120");
 
-    ServicePoint servicePointC = new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Каб. 102 Касса");
+    ServicePoint servicePointC =
+        new ServicePoint("043536cc-62bb-43df-bdc6-d0b9df9ff961", "Каб. 102 Касса");
 
     WorkProfile workProfileC = new WorkProfile("Кассир");
     workProfileC.getQueueIds().add(queueC.getId());
-    WorkProfile workProfileFC =
-            new WorkProfile("d5a84e60-e605-4527-b065-f4bd7a385790", "Хирург");
+    WorkProfile workProfileFC = new WorkProfile("d5a84e60-e605-4527-b065-f4bd7a385790", "Хирург");
     workProfileFC.getQueueIds().add(queueCredit.getId());
     WorkProfile workProfileFSC =
-            new WorkProfile("76e4d31e-1787-476a-9668-9ff5c50c6855", "Офтальмолог");
+        new WorkProfile("76e4d31e-1787-476a-9668-9ff5c50c6855", "Офтальмолог");
     workProfileFSC.getQueueIds().add(queueBigCredit.getId());
     workProfileFSC.getQueueIds().add(queueCredit.getId());
 
     User psokolovUser =
-            new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov", keyCloackClient);
+        new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov", keyCloackClient);
     try {
       Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(psokolovUser.getName());
 
@@ -170,21 +163,21 @@ public class Configuration {
     branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
     branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
     branch
-            .getReception()
-            .setPrinters(
-                    List.of(
-                            Entity.builder().id("eb7ea46d-c995-4ca0-ba92-c92151473614").name("Intro17").build(),
-                            Entity.builder()
-                                    .id("eb7ea46d-c995-4ca0-ba92-c92151473612")
-                                    .name("Intro8")
-                                    .build()));
+        .getReception()
+        .setPrinters(
+            List.of(
+                Entity.builder().id("eb7ea46d-c995-4ca0-ba92-c92151473614").name("Intro17").build(),
+                Entity.builder()
+                    .id("eb7ea46d-c995-4ca0-ba92-c92151473612")
+                    .name("Intro8")
+                    .build()));
     branchService.add(branch.getId(), branch);
     branchService.openServicePoint(
-            branch.getId(),
-            psokolovUser.getName(),
-            servicePointFC.getId(),
-            workProfileFC.getId(),
-            visitService);
+        branch.getId(),
+        psokolovUser.getName(),
+        servicePointFC.getId(),
+        workProfileFC.getId(),
+        visitService);
 
     Branch branch2 = new Branch("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3", " Клиника на Ямской");
     branch2.setPrefix("YMS");

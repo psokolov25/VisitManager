@@ -6,7 +6,6 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
-
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;

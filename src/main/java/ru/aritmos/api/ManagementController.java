@@ -1,4 +1,5 @@
 package ru.aritmos.api;
+
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
@@ -25,8 +26,6 @@ public class ManagementController {
   @Inject BranchService branchService;
 
   @Inject KeyCloackClient keyCloakClient;
-
-
 
   /**
    * Возвращает данные об отделении
