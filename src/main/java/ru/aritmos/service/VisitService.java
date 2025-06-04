@@ -977,7 +977,7 @@ public class VisitService {
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
-          event.getParameters().put("queueID", serviceQueue.getId());
+          event.getParameters().put("queueId", serviceQueue.getId());
           event
               .getParameters()
               .put(
@@ -1042,7 +1042,7 @@ public class VisitService {
                           .getUser()
                           .getCurrentWorkProfileId()
                       : "");
-          calledEvent.getParameters().put("queueID", serviceQueue.getId());
+          calledEvent.getParameters().put("queueId", serviceQueue.getId());
           calledEvent.dateTime = ZonedDateTime.now();
           visit.setCallDateTime(ZonedDateTime.now());
           branchService.updateVisit(visit, calledEvent, this);
@@ -1079,7 +1079,7 @@ public class VisitService {
                             .getUser()
                             .getCurrentWorkProfileId()
                         : "");
-            queueEvent.getParameters().put("queueID", serviceQueue.getId());
+            queueEvent.getParameters().put("queueId", serviceQueue.getId());
             queueEvent.dateTime = ZonedDateTime.now();
             queueEvent
                 .getParameters()
