@@ -2773,14 +2773,7 @@ public class VisitService {
     visit.setPoolServicePointId(poolServicePoint.getId());
 
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
-    if (oldQueueID != null) {
-      event.getParameters().put("oldQueueId", oldQueueID);
-    } else {
-      String value = getLastOldQueueId(visit);
-      if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId", value);
-      }
-    }
+
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
@@ -4361,7 +4354,7 @@ public class VisitService {
 
         String value = getLastOldQueueId(visit);
         if (value != null && !value.isEmpty()) {
-          event.getParameters().put("oldQueueId", value);
+          transferEvent.getParameters().put("oldQueueId", value);
         }
 
         transferEvent.dateTime = ZonedDateTime.now();
