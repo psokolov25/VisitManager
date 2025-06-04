@@ -1934,6 +1934,11 @@ public class VisitService {
                 servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
         event.getParameters().put("servicePointId", servicePointId);
 
+        String value = getLastOldQueueId(visit);
+        if (value != null && !value.isEmpty()) {
+          event.getParameters().put("oldQueueId", value);
+        }
+
         branchService.updateVisit(visit, event, this, !isAppend);
         // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
         log.info("Visit {} transfered!", visit);
@@ -2328,7 +2333,7 @@ public class VisitService {
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
     event.getParameters().put("newQueueId", queueId);
@@ -2416,7 +2421,7 @@ public class VisitService {
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
     event.getParameters().put("newQueueId", queueId);
@@ -2458,19 +2463,17 @@ public class VisitService {
     }
     return result;
   }
-private String getLastOldQueueId(Visit visit) {
-    String result=getLastNotNutllEventParam(visit, "oldQueueId");
-    if(!result.isEmpty())
-    {
-      return result;
-    }
-    else
-    {
-      result=getLastNotNutllEventParam(visit, "queueId");
 
+  private String getLastOldQueueId(Visit visit) {
+    String result = getLastNotNutllEventParam(visit, "oldQueueId");
+    if (!result.isEmpty()) {
+      return result;
+    } else {
+      result = getLastNotNutllEventParam(visit, "queueId");
     }
     return result;
-}
+  }
+
   /**
    * Перевод визита из очереди в очередь внешней службой
    *
@@ -2523,7 +2526,7 @@ private String getLastOldQueueId(Visit visit) {
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
     event.getParameters().put("newQueueId", queueId);
@@ -2603,7 +2606,7 @@ private String getLastOldQueueId(Visit visit) {
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -2680,7 +2683,7 @@ private String getLastOldQueueId(Visit visit) {
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -2770,13 +2773,21 @@ private String getLastOldQueueId(Visit visit) {
     visit.setPoolServicePointId(poolServicePoint.getId());
 
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
+    if (oldQueueID != null) {
+      event.getParameters().put("oldQueueId", oldQueueID);
+    } else {
+      String value = getLastOldQueueId(visit);
+      if (value != null && !value.isEmpty()) {
+        event.getParameters().put("oldQueueId", value);
+      }
+    }
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("oldQueueId", oldQueueID);
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -2857,7 +2868,7 @@ private String getLastOldQueueId(Visit visit) {
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
 
@@ -2927,7 +2938,7 @@ private String getLastOldQueueId(Visit visit) {
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
 
@@ -2987,7 +2998,7 @@ private String getLastOldQueueId(Visit visit) {
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId",value);
+        event.getParameters().put("oldQueueId", value);
       }
     }
 
@@ -4226,6 +4237,12 @@ private String getLastOldQueueId(Visit visit) {
 
         visit.getParameterMap().remove("LastPoolUserId");
         event = VisitEvent.TRANSFER_TO_USER_POOL;
+
+        String value = getLastOldQueueId(visit);
+        if (value != null && !value.isEmpty()) {
+          event.getParameters().put("oldQueueId", value);
+        }
+
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("userId", userId);
@@ -4341,6 +4358,12 @@ private String getLastOldQueueId(Visit visit) {
 
         visit.setStartServingDateTime(null);
         VisitEvent transferEvent = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
+
+        String value = getLastOldQueueId(visit);
+        if (value != null && !value.isEmpty()) {
+          event.getParameters().put("oldQueueId", value);
+        }
+
         transferEvent.dateTime = ZonedDateTime.now();
         transferEvent.getParameters().put("branchId", branchId);
         transferEvent.getParameters().put("poolServicePointId", poolServicePointId);
@@ -4461,6 +4484,12 @@ private String getLastOldQueueId(Visit visit) {
         visit.setTransferTimeDelay(transferTimeDelay);
         visit.setStartServingDateTime(null);
         event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
+
+        String value = getLastOldQueueId(visit);
+        if (value != null && !value.isEmpty()) {
+          event.getParameters().put("oldQueueId", value);
+        }
+
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("poolServicePointId", poolServicePointId);
