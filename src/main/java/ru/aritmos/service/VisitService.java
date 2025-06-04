@@ -966,7 +966,7 @@ public class VisitService {
         Queue serviceQueue;
         if (segmentationRule.getQueue(visit, currentBranch).isPresent()) {
           serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
-
+          visit.setQueueId(serviceQueue.getId());
           serviceQueue.setTicketCounter(
               branchService.incrementTicketCounter(branchId, serviceQueue));
           visit.setServicePointId(servicePointId);
@@ -977,6 +977,7 @@ public class VisitService {
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          event.getParameters().put("queueID", serviceQueue.getId());
           event
               .getParameters()
               .put(
@@ -1041,6 +1042,7 @@ public class VisitService {
                           .getUser()
                           .getCurrentWorkProfileId()
                       : "");
+          calledEvent.getParameters().put("queueID", serviceQueue.getId());
           calledEvent.dateTime = ZonedDateTime.now();
           visit.setCallDateTime(ZonedDateTime.now());
           branchService.updateVisit(visit, calledEvent, this);
@@ -1077,6 +1079,7 @@ public class VisitService {
                             .getUser()
                             .getCurrentWorkProfileId()
                         : "");
+            queueEvent.getParameters().put("queueID", serviceQueue.getId());
             queueEvent.dateTime = ZonedDateTime.now();
             queueEvent
                 .getParameters()
@@ -2452,7 +2455,10 @@ public class VisitService {
   private String getLastNotNutllEventParam(Visit visit, String paramName) {
     String result = "";
     Optional<VisitEvent> event =
-        visit.getEvents().stream().flatMap(fm->fm.stream().map(VisitEventInformation::getVisitEvent)).toList().stream()
+        visit.getEvents().stream()
+            .flatMap(fm -> fm.stream().map(VisitEventInformation::getVisitEvent))
+            .toList()
+            .stream()
             .filter(
                 f ->
                     f.getParameters().containsKey(paramName)
