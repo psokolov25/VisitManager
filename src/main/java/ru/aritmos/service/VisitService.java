@@ -1043,6 +1043,7 @@ public class VisitService {
                           .getCurrentWorkProfileId()
                       : "");
           calledEvent.getParameters().put("queueId", serviceQueue.getId());
+          visit.getParameterMap().put("LastQueueId", serviceQueue.getId());
           calledEvent.dateTime = ZonedDateTime.now();
           visit.setCallDateTime(ZonedDateTime.now());
           branchService.updateVisit(visit, calledEvent, this);
