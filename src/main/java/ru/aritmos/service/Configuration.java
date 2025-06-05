@@ -188,7 +188,7 @@ public class Configuration {
     branch4.setPrefix("CNT");
     Branch branch5 = new Branch("15c9d0f3-384d-4a22-a5f2-84ceac1fa094", " Клиника на Урицкого");
     branch4.setPrefix("URC");
-    Branch branch6 = new Branch("15c9d0f3-384d-4a22-a5f2-84ceac1fa094", " Клиника доктора Дмитрия Юненко");
+    Branch branch6 = new Branch("38f46d6b-3d37-40b9-8840-b57beac0ec1e", " Клиника доктора Дмитрия Юненко");
     branch6.setPrefix("DIM");
     branchService.add(branch3.getId(), branch3);
     branchService.add(branch4.getId(), branch4);
