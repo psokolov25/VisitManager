@@ -1174,7 +1174,10 @@ public class VisitService {
         visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
         visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
         visitEvent.getParameters().put("branchId", branchId);
-
+        String queueId = getLastOldQueueId(visit);
+        if (queueId != null && !queueId.isEmpty()) {
+          visitEvent.getParameters().put("queueId", queueId);
+        }
         visitEvent
             .getParameters()
             .put("staffId", servicePoint.getUser() != null ? servicePoint.getUser().getId() : "");
@@ -1389,6 +1392,10 @@ public class VisitService {
                 servicePoint.getUser() != null
                     ? servicePoint.getUser().getCurrentWorkProfileId()
                     : "");
+        String queueId = getLastOldQueueId(visit);
+        if (queueId != null && !queueId.isEmpty()) {
+          visitEvent.getParameters().put("queueId", queueId);
+        }
         branchService.updateVisit(visit, visitEvent, this);
         return visit;
 
@@ -1561,6 +1568,10 @@ public class VisitService {
                   servicePoint.getUser() != null
                       ? servicePoint.getUser().getCurrentWorkProfileId()
                       : "");
+          String queueId = getLastOldQueueId(visit);
+          if (queueId != null && !queueId.isEmpty()) {
+            visitEvent.getParameters().put("queueId", queueId);
+          }
           branchService.updateVisit(visit, visitEvent, this);
           return visit;
         }
@@ -1649,6 +1660,10 @@ public class VisitService {
               .put(
                   "staffName",
                   servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+          String queueId = getLastOldQueueId(visit);
+          if (queueId != null && !queueId.isEmpty()) {
+            visitEvent.getParameters().put("queueId", queueId);
+          }
           branchService.updateVisit(visit, visitEvent, this);
           return visit;
         }
@@ -4591,6 +4606,11 @@ public class VisitService {
         }
         visit.getVisitNotes().add(note);
         VisitEvent visitEvent = VisitEvent.ADDED_NOTE;
+
+        String queueId = getLastOldQueueId(visit);
+        if (queueId != null && !queueId.isEmpty()) {
+          visitEvent.getParameters().put("queueId", queueId);
+        }
 
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("note", noteText);
