@@ -1043,9 +1043,11 @@ public class VisitService {
                           .getCurrentWorkProfileId()
                       : "");
           calledEvent.getParameters().put("queueId", serviceQueue.getId());
+          calledEvent.dateTime = ZonedDateTime.now();
+
           visit.getParameterMap().put("LastQueueId", serviceQueue.getId());
           visit.setQueueId(null);
-          calledEvent.dateTime = ZonedDateTime.now();
+
           visit.setCallDateTime(ZonedDateTime.now());
           branchService.updateVisit(visit, calledEvent, this);
           if (currentBranch.getQueues().containsKey(serviceQueue.getId())) {
@@ -1375,6 +1377,7 @@ public class VisitService {
         }
         visit.getVisitMarks().add(mark);
         VisitEvent visitEvent = VisitEvent.ADDED_MARK;
+        visitEvent.dateTime=ZonedDateTime.now();
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("mark", mark.getValue());
         visitEvent.getParameters().put("branchId", branchId);
@@ -4613,7 +4616,7 @@ public class VisitService {
         if (queueId != null && !queueId.isEmpty()) {
           visitEvent.getParameters().put("queueId", queueId);
         }
-
+        visitEvent.dateTime=ZonedDateTime.now();
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("note", noteText);
         visitEvent.getParameters().put("branchId", branchId);
