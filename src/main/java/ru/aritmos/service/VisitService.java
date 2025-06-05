@@ -1941,7 +1941,7 @@ public class VisitService {
 
         String value = getLastOldQueueId(visit);
         if (value != null && !value.isEmpty()) {
-          event.getParameters().put("oldQueueId", value);
+          event.getParameters().put("queueId", value);
         }
 
         branchService.updateVisit(visit, event, this, !isAppend);
@@ -2610,11 +2610,11 @@ public class VisitService {
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
-      event.getParameters().put("oldQueueId", oldQueueID);
+      event.getParameters().put("queueId", oldQueueID);
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId", value);
+        event.getParameters().put("queueId", value);
       }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -2687,11 +2687,11 @@ public class VisitService {
     VisitEvent event = VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL;
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
-      event.getParameters().put("oldQueueId", oldQueueID);
+      event.getParameters().put("queueId", oldQueueID);
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId", value);
+        event.getParameters().put("queueId", value);
       }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -2784,11 +2784,11 @@ public class VisitService {
 
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
-      event.getParameters().put("oldQueueId", oldQueueID);
+      event.getParameters().put("queueId", oldQueueID);
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId", value);
+        event.getParameters().put("queueId", value);
       }
     }
     event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -2865,11 +2865,11 @@ public class VisitService {
     VisitEvent event = VisitEvent.TRANSFER_TO_USER_POOL;
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
-      event.getParameters().put("oldQueueId", oldQueueID);
+      event.getParameters().put("queueId", oldQueueID);
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId", value);
+        event.getParameters().put("queueId", value);
       }
     }
 
@@ -2935,11 +2935,11 @@ public class VisitService {
     VisitEvent event = VisitEvent.TRANSFER_TO_USER_POOL;
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
-      event.getParameters().put("oldQueueId", oldQueueID);
+      event.getParameters().put("queueId", oldQueueID);
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId", value);
+        event.getParameters().put("queueId", value);
       }
     }
 
@@ -2995,11 +2995,11 @@ public class VisitService {
     VisitEvent event = VisitEvent.TRANSFER_TO_USER_POOL;
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
-      event.getParameters().put("oldQueueId", oldQueueID);
+      event.getParameters().put("queueId", oldQueueID);
     } else {
       String value = getLastOldQueueId(visit);
       if (value != null && !value.isEmpty()) {
-        event.getParameters().put("oldQueueId", value);
+        event.getParameters().put("queueId", value);
       }
     }
 
@@ -4241,7 +4241,7 @@ public class VisitService {
 
         String value = getLastOldQueueId(visit);
         if (value != null && !value.isEmpty()) {
-          event.getParameters().put("oldQueueId", value);
+          event.getParameters().put("queueId", value);
         }
 
         event.dateTime = ZonedDateTime.now();
@@ -4362,7 +4362,7 @@ public class VisitService {
 
         String value = getLastOldQueueId(visit);
         if (value != null && !value.isEmpty()) {
-          transferEvent.getParameters().put("oldQueueId", value);
+          transferEvent.getParameters().put("queueId", value);
         }
 
         transferEvent.dateTime = ZonedDateTime.now();
@@ -4488,7 +4488,7 @@ public class VisitService {
 
         String value = getLastOldQueueId(visit);
         if (value != null && !value.isEmpty()) {
-          event.getParameters().put("oldQueueId", value);
+          event.getParameters().put("queueId", value);
         }
 
         event.dateTime = ZonedDateTime.now();
