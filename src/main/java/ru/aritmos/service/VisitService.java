@@ -1168,6 +1168,7 @@ public class VisitService {
         visit.setCurrentService(currentService.clone());
 
         VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
+        visitEvent.dateTime=ZonedDateTime.now();
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
         visitEvent.getParameters().put("deliveredServiceName", deliveredService.getName());
@@ -2478,7 +2479,8 @@ public class VisitService {
             .stream()
             .filter(
                 f ->
-                    f.getParameters().containsKey(paramName)
+                    f.dateTime != null
+                        && f.getParameters().containsKey(paramName)
                         && f.getParameters().get(paramName) != null)
             .max(Comparator.comparing(co -> co.dateTime.truncatedTo(ChronoUnit.SECONDS)));
     if (event.isPresent()) {
