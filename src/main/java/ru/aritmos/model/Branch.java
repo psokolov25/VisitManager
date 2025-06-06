@@ -242,6 +242,9 @@ public class Branch extends BranchEntity {
         } else {
           throw new BusinessException(
               String.format(
+                  "%s уже вошел в точку обслуживания %s ",
+                  servicePoint.getUser().getName(), user.servicePointId),
+              String.format(
                   "In servicePoint %s already %s logged in ",
                   user.servicePointId, servicePoint.getUser().getName()),
               eventService,
