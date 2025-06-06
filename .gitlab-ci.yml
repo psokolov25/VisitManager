@@ -1,3 +1,10 @@
+image: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/deploy:latest
+
+include: 
+    - project: 'aritmosplatform/devops-admin/gitlab-ci-template'
+      ref: main
+      file: '.default-before-after-template.yml'
+
 stages:
   - build
   - deploy
