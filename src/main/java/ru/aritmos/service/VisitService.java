@@ -974,6 +974,7 @@ public class VisitService {
               (serviceQueue.getTicketPrefix()
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
+
           event.getParameters().put("isVirtual", "true");
           event
               .getParameters()
