@@ -966,7 +966,7 @@ public class VisitService {
         Queue serviceQueue;
         if (segmentationRule.getQueue(visit, currentBranch).isPresent()) {
           serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
-          //visit.setQueueId(serviceQueue.getId());
+          // visit.setQueueId(serviceQueue.getId());
           serviceQueue.setTicketCounter(
               branchService.incrementTicketCounter(branchId, serviceQueue));
           visit.setServicePointId(servicePointId);
@@ -974,6 +974,7 @@ public class VisitService {
               (serviceQueue.getTicketPrefix()
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
+          event.getParameters().put("isVirtual", "true");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -1170,7 +1171,7 @@ public class VisitService {
         visit.setCurrentService(currentService.clone());
 
         VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
-        visitEvent.dateTime=ZonedDateTime.now();
+        visitEvent.dateTime = ZonedDateTime.now();
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
         visitEvent.getParameters().put("deliveredServiceName", deliveredService.getName());
@@ -1377,7 +1378,7 @@ public class VisitService {
         }
         visit.getVisitMarks().add(mark);
         VisitEvent visitEvent = VisitEvent.ADDED_MARK;
-        visitEvent.dateTime=ZonedDateTime.now();
+        visitEvent.dateTime = ZonedDateTime.now();
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("mark", mark.getValue());
         visitEvent.getParameters().put("branchId", branchId);
@@ -4616,7 +4617,7 @@ public class VisitService {
         if (queueId != null && !queueId.isEmpty()) {
           visitEvent.getParameters().put("queueId", queueId);
         }
-        visitEvent.dateTime=ZonedDateTime.now();
+        visitEvent.dateTime = ZonedDateTime.now();
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("note", noteText);
         visitEvent.getParameters().put("branchId", branchId);
