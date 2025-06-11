@@ -522,6 +522,7 @@ public class VisitService {
               (serviceQueue.getTicketPrefix()
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
+          event.getParameters().put("isVirtual", "false");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -644,6 +645,7 @@ public class VisitService {
               (serviceQueue.getTicketPrefix()
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
+          event.getParameters().put("isVirtual", "false");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -758,6 +760,7 @@ public class VisitService {
               (serviceQueue.getTicketPrefix()
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
+          event.getParameters().put("isVirtual", "false");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -866,6 +869,7 @@ public class VisitService {
               (serviceQueue.getTicketPrefix()
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
+          event.getParameters().put("isVirtual", "false");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
