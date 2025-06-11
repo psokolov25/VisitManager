@@ -318,10 +318,11 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @QueryValue(defaultValue = "false") Boolean isBreak,
-      @Nullable @QueryValue String breakReason) {
+      @Nullable @QueryValue String breakReason,
+      @QueryValue(defaultValue = "false") Boolean isForced) {
 
     branchService.closeServicePoint(
-        branchId, servicePointId, visitService, false, isBreak, breakReason);
+        branchId, servicePointId, visitService, false, isBreak, breakReason, isForced);
   }
 
   /**
@@ -343,10 +344,11 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @QueryValue(defaultValue = "false") Boolean isBreak,
-      @Nullable @QueryValue String breakReason) {
+      @Nullable @QueryValue String breakReason,
+      @QueryValue(defaultValue = "false") Boolean isForced) {
 
     branchService.closeServicePoint(
-        branchId, servicePointId, visitService, true, isBreak, breakReason);
+        branchId, servicePointId, visitService, true, isBreak, breakReason, isForced);
   }
 
   /**
@@ -2201,9 +2203,10 @@ public class ServicePointController {
   @ExecuteOn(TaskExecutors.IO)
   public Visit visitEnd(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+      @QueryValue(defaultValue = "false") Boolean isForced) {
 
-    return visitService.visitEnd(branchId, servicePointId);
+    return visitService.visitEnd(branchId, servicePointId, isForced);
   }
 
   /**

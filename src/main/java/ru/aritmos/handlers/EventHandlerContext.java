@@ -128,7 +128,7 @@ public class EventHandlerContext {
                             .body(userSession)
                             .build());
                     visitService.visitEnd(
-                        servicePoint.get().getBranchId(), servicePoint.get().getId());
+                        servicePoint.get().getBranchId(), servicePoint.get().getId(),true);
                   }
                   visitService
                       .getBranchService()
@@ -138,7 +138,7 @@ public class EventHandlerContext {
                           visitService,
                           false,
                           false,
-                          "");
+                          "",false);
                 }
               });
     }
@@ -183,7 +183,7 @@ public class EventHandlerContext {
                                 visitService,
                                 false,
                                 false,
-                                ""));
+                                "",true));
               });
     }
   }

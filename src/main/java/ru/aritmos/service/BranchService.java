@@ -180,7 +180,7 @@ public class BranchService {
                     && !f.getId().equals(servicePointId))
         .forEach(
             servicePoint ->
-                closeServicePoint(branchId, servicePoint.getId(), visitService, false, false, ""));
+                closeServicePoint(branchId, servicePoint.getId(), visitService, false, false, "",true));
 
     if (branch.getUsers().containsKey(userName)) {
       User user = branch.getUsers().get(userName);
@@ -271,11 +271,12 @@ public class BranchService {
       VisitService visitService,
       Boolean isWithLogout,
       Boolean isBreak,
-      String breakReason) {
+      String breakReason,
+      Boolean isForced) {
 
     Branch branch = this.getBranch(branchId);
     branch.closeServicePoint(
-        servicePointId, eventService, visitService, isWithLogout, isBreak, breakReason);
+        servicePointId, eventService, visitService, isWithLogout, isBreak, breakReason, isForced);
     this.add(branch.getId(), branch);
   }
 

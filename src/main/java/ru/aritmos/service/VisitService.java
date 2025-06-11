@@ -3055,7 +3055,7 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Visit visitEnd(String branchId, String servicePointId) {
+  public Visit visitEnd(String branchId, String servicePointId,Boolean isForced) {
     Branch currentBranch = branchService.getBranch(branchId);
     Visit visit;
 
@@ -3081,6 +3081,7 @@ public class VisitService {
 
           visit.setServedDateTime(ZonedDateTime.now());
           stopServingEvent = VisitEvent.STOP_SERVING;
+          stopServingEvent.getParameters().put("isForced",isForced.toString());
           stopServingEvent.dateTime = ZonedDateTime.now();
           stopServingEvent.getParameters().put("servicePointId", servicePointId);
           stopServingEvent.getParameters().put("branchId", branchId);
