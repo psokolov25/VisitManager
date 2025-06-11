@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @JsonFormat
 @AllArgsConstructor
 @NoArgsConstructor
+@SuppressWarnings("all")
 public enum VisitEvent {
   /** Визит создан */
   CREATED,
@@ -191,7 +192,7 @@ public enum VisitEvent {
           Map.entry(DELETED_DELIVERED_SERVICE_RESULT, VisitState.SERVING),
           Map.entry(DELETED_SERVICE_RESULT, VisitState.SERVING));
 
-  @Getter final Map<String, String> parameters = new HashMap<>();
+  @Getter Map<String, String> parameters = new HashMap<>();
   @JsonFormat public ZonedDateTime dateTime;
   VisitState visitState;
 
