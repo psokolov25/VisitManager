@@ -307,6 +307,7 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на
    *     перерыв
+   * @param isForced флаг "принудительного" завершения обслуживания
    * @param breakReason причина перерыва
    */
   @Tag(name = "Зона обслуживания")
@@ -331,8 +332,8 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на
-   *     перерыв
+   * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на перерыв
+   * @param isForced флаг "принудительного" завершения обслуживания
    * @param breakReason причина перерыва
    */
   @Tag(name = "Зона обслуживания")
@@ -2190,6 +2191,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
+   * @param isForced флаг "принудительного" завершения обслуживания
    * @return визит после перевода
    */
   @Tag(name = "Зона обслуживания")

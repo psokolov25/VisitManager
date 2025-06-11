@@ -1855,6 +1855,7 @@ public class VisitService {
         visit.setReturnTimeDelay(returnTimeDelay);
         visit.setStartServingDateTime(null);
         VisitEvent visitEvent = VisitEvent.STOP_SERVING;
+        visitEvent.getParameters().put("isForced","false");
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("branchId", branchId);
 
@@ -2097,6 +2098,7 @@ public class VisitService {
               HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
+        event.getParameters().put("isForced","false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -2259,6 +2261,7 @@ public class VisitService {
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
         event.dateTime = ZonedDateTime.now();
+        event.getParameters().put("isForced","false");
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("staffId", staff.getId());
         event.getParameters().put("staffName", staff.getName());
@@ -3149,6 +3152,7 @@ public class VisitService {
           visit.setQueueId(null);
           visit.setServedDateTime(ZonedDateTime.now());
           stopServingEvent = VisitEvent.STOP_SERVING;
+          stopServingEvent.getParameters().put("isForced",isForced.toString());
           stopServingEvent.dateTime = ZonedDateTime.now();
           stopServingEvent.getParameters().put("branchId", branchId);
           stopServingEvent
@@ -4223,6 +4227,7 @@ public class VisitService {
               "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
+        event.getParameters().put("isForced","false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event
@@ -4342,6 +4347,7 @@ public class VisitService {
               HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
+        event.getParameters().put("isForced","false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -4468,6 +4474,7 @@ public class VisitService {
               HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
+        event.getParameters().put("isForced","false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("poolServicePointId", poolServicePointId);
