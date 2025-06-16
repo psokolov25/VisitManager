@@ -110,11 +110,26 @@ public class BranchService {
   }
 
   @CacheInvalidate(parameters = {"key"})
-  public void delete(String key,VisitService visitService) {
+  public void delete(String key, VisitService visitService) {
     Branch oldBranch;
     if (this.branches.containsKey(key)) {
       oldBranch = this.branches.get(key);
-      oldBranch.getServicePoints().forEach((key1, value) -> closeServicePoint(oldBranch.getBranchId(),key1,visitService,true,false,"",true,"BRANCH_DELETED"));
+      oldBranch
+          .getServicePoints()
+          .forEach(
+              (key1, value) -> {
+                if (oldBranch.getServicePoints().get(key1).getUser() != null) {
+                  closeServicePoint(
+                      oldBranch.getBranchId(),
+                      key1,
+                      visitService,
+                      true,
+                      false,
+                      "",
+                      true,
+                      "BRANCH_DELETED");
+                }
+              });
       eventService.sendChangedEvent(
           "config", true, oldBranch, null, new HashMap<>(), "BRANCH_DELETED");
       // eventService.sendChangedEvent("*", true, oldBranch, null, new HashMap<>(), "DELETED");
@@ -181,7 +196,8 @@ public class BranchService {
                     && !f.getId().equals(servicePointId))
         .forEach(
             servicePoint ->
-                closeServicePoint(branchId, servicePoint.getId(), visitService, false, false, "",false,""));
+                closeServicePoint(
+                    branchId, servicePoint.getId(), visitService, false, false, "", false, ""));
 
     if (branch.getUsers().containsKey(userName)) {
       User user = branch.getUsers().get(userName);
@@ -274,12 +290,18 @@ public class BranchService {
       Boolean isBreak,
       String breakReason,
       Boolean isForced,
-      String reason
-      ) {
+      String reason) {
 
     Branch branch = this.getBranch(branchId);
     branch.closeServicePoint(
-        servicePointId, eventService, visitService, isWithLogout, isBreak, breakReason, isForced,reason);
+        servicePointId,
+        eventService,
+        visitService,
+        isWithLogout,
+        isBreak,
+        breakReason,
+        isForced,
+        reason);
     this.add(branch.getId(), branch);
   }
 

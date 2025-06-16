@@ -2909,7 +2909,7 @@ public class VisitService {
       }
     }
 
-    event.getParameters().put("userId", userId);
+    event.getParameters().put("poolUserId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().put("staffId", visit.getUserId());
     event.getParameters().put("staffName", visit.getUserName());
@@ -3029,6 +3029,7 @@ public class VisitService {
     visit.setTransferTimeDelay(transferTimeDelay);
 
     VisitEvent event = VisitEvent.TRANSFER_TO_USER_POOL;
+    event.getParameters().clear();
     event.dateTime = ZonedDateTime.now();
     if (oldQueueID != null) {
       event.getParameters().put("queueId", oldQueueID);
@@ -3039,7 +3040,7 @@ public class VisitService {
       }
     }
 
-    event.getParameters().put("userId", userId);
+    event.getParameters().put("poolUserId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().put("staffId", visit.getUserId());
     event.getParameters().put("staffName", visit.getUserName());
@@ -4279,39 +4280,40 @@ public class VisitService {
         visit.setTransferTimeDelay(transferTimeDelay);
 
         visit.getParameterMap().remove("LastPoolUserId");
-        event = VisitEvent.TRANSFER_TO_USER_POOL;
-
+        VisitEvent transferEvent = VisitEvent.TRANSFER_TO_USER_POOL;
+        transferEvent.getParameters().clear();
         String value = getLastOldQueueId(visit);
         if (value != null && !value.isEmpty()) {
-          event.getParameters().put("queueId", value);
+          transferEvent.getParameters().put("queueId", value);
         }
 
-        event.dateTime = ZonedDateTime.now();
-        event.getParameters().put("branchId", branchId);
-        event.getParameters().put("userId", userId);
-        event
+        transferEvent.dateTime = ZonedDateTime.now();
+        transferEvent.getParameters().put("branchId", branchId);
+        transferEvent.getParameters().put("userId", userId);
+        transferEvent
             .getParameters()
             .put(
                 "staffId",
                 currentBranch.getServicePoints().get(servicePointId).getUser() != null
                     ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
                     : "");
-        event
+        transferEvent
             .getParameters()
             .put(
                 "staffName",
                 currentBranch.getServicePoints().get(servicePointId).getUser() != null
                     ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
                     : "");
-        event
+        transferEvent
             .getParameters()
             .put(
                 "workProfileId",
                 servicePoint.getUser() != null
                     ? servicePoint.getUser().getCurrentWorkProfileId()
                     : "");
-        event.getParameters().put("servicePointId", servicePointId);
-        branchService.updateVisit(visit, event, this);
+        transferEvent.getParameters().put("servicePointId", servicePointId);
+        transferEvent.getParameters().put("poolUserId",userId);
+        branchService.updateVisit(visit, transferEvent, this);
         Event delayedEvent =
             Event.builder()
                 .eventType("USER_POOL_REFRESHED")
