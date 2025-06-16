@@ -521,7 +521,7 @@ class EntrypointTest {
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
     visit =
         visitService.visitTransferFromQueueToUserPool(
-            branchId, psokolovUser.getId(), visit, false, 0L);
+            branchId, psokolovUser.getId(), visit, false, 0L,"");
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(1000);
@@ -880,7 +880,7 @@ class EntrypointTest {
 
     visit =
         visitService.visitTransferFromQueueToUserPool(
-            branchId, psokolovUser.getId(), visit, true, 0L);
+            branchId, psokolovUser.getId(), visit, true, 0L,"");
 
     String visitId = visit.getId();
     Assertions.assertEquals(
@@ -916,7 +916,7 @@ class EntrypointTest {
       Thread.sleep(900);
       visit =
           visitService.visitTransferFromQueueToUserPool(
-              branchId, psokolovUser.getId(), visit, true, 0L);
+              branchId, psokolovUser.getId(), visit, true, 0L,"");
       visit =
           visitService.visitTransferFromQueueToServicePointPool(
               branchId, servicePointFcId, servicePointFcId, visit, true, 0L);
@@ -1141,7 +1141,7 @@ class EntrypointTest {
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
     visit =
         visitService.visitTransferFromQueueToUserPool(
-            branchId, psokolovUser.getId(), visit, true, 0L);
+            branchId, psokolovUser.getId(), visit, true, 0L,"");
     Thread.sleep(1000);
 
     Assertions.assertEquals(
