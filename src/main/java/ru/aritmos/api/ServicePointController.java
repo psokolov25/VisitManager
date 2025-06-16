@@ -33,6 +33,7 @@ import ru.aritmos.service.VisitService;
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 @SerdeImport(GroupRepresentation.class)
 @Controller("/servicepoint")
+@SerdeImport(UserRepresentation.class)
 public class ServicePointController {
   @Inject Services services;
   @Inject BranchService branchService;
