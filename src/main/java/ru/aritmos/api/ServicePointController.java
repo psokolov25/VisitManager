@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.keycloak.representations.idm.GroupRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -32,6 +33,7 @@ import ru.aritmos.service.VisitService;
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 @SerdeImport(GroupRepresentation.class)
 @Controller("/servicepoint")
+@SerdeImport(UserRepresentation.class)
 public class ServicePointController {
   @Inject Services services;
   @Inject BranchService branchService;
@@ -1896,7 +1898,7 @@ public class ServicePointController {
 
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransfer(
-        branchId, queueId, visit, isAppend, serviceInfo, transferTimeDelay,staffId);
+        branchId, queueId, visit, isAppend, serviceInfo, transferTimeDelay, staffId);
   }
 
   /**
@@ -2474,5 +2476,14 @@ public class ServicePointController {
       @PathVariable String visitId,
       @QueryValue(defaultValue = "60") Long returnTimeDelay) {
     return visitService.backCalledVisit(branchId, visitId, returnTimeDelay);
+  }
+  @Tag(name = "Работа сотрудников")
+  @Tag(name = "Полный список")
+  @Get(uri = "/branches/{branchId}/currentUser")
+  public Optional<UserRepresentation> getCurrentUserInfo(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @Nullable @CookieValue(value = "sid") String userId) {
+
+    return keyCloackClient.getUserBySid(userId);
   }
 }
