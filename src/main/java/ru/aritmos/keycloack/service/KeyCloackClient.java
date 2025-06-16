@@ -162,7 +162,15 @@ public class KeyCloackClient {
 
       if (t.stream().filter(session -> session.getId().equals(sid)).count() > 0) {
         UserRepresentation user =
-            realmResource.users().get(t.get(0).getUserId()).toRepresentation();
+            realmResource
+                .users()
+                .get(
+                    t.stream()
+                        .filter(session -> session.getId().equals(sid))
+                        .toList()
+                        .get(0)
+                        .getUserId())
+                .toRepresentation();
         return Optional.of(user);
       }
     }
