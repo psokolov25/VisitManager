@@ -2538,14 +2538,16 @@ public class VisitService {
       Boolean isAppend,
       HashMap<String, String> serviceInfo,
       Long transferTimeDelay,
-      String staffId
+      String sid
       ) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
-    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
+    String staffId="";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
+      staffId=user.get().getId();
     }
     Queue queue;
     if (currentBranch.getQueues().containsKey(queueId)) {
@@ -2806,7 +2808,7 @@ public class VisitService {
       Visit visit,
       Boolean isAppend,
       HashMap<String, String> serviceInfo,
-      Long transferTimeDelay,String staffId) {
+      Long transferTimeDelay,String sid) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
@@ -2818,10 +2820,12 @@ public class VisitService {
       throw new BusinessException(
           "Service Point not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
-    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
+    String staffId="";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
+      staffId=user.get().getId();
     }
     visit.setQueueId(null);
     visit.setPoolUserId(null);
@@ -2904,11 +2908,13 @@ public class VisitService {
       Visit visit,
       Boolean isAppend,
       Long transferTimeDelay,
-      String staffId) {
-    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+      String sid) {
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
+    String staffId="";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
+      staffId=user.get().getId();
     }
     String oldQueueID = visit.getQueueId();
 
@@ -2983,7 +2989,7 @@ public class VisitService {
       Boolean isAppend,
       HashMap<String, String> serviceInfo,
       Long transferTimeDelay,
-      String staffId) {
+      String sid) {
 
     String oldQueueID = visit.getQueueId();
 
@@ -2996,10 +3002,12 @@ public class VisitService {
       throw new BusinessException(
           "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
-    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
+    String staffId="";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
+      staffId=user.get().getId();
     }
     visit.setQueueId(null);
     visit.setServicePointId(null);
@@ -3061,7 +3069,7 @@ public class VisitService {
       Visit visit,
       Integer index,
       Long transferTimeDelay,
-      String staffId) {
+      String sid) {
 
     String oldQueueID = visit.getQueueId();
 
@@ -3070,10 +3078,12 @@ public class VisitService {
       throw new BusinessException(
           "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
-    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
+    String staffId="";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
+      staffId=user.get().getId();
     }
     visit.setQueueId(null);
     visit.setServicePointId(null);
