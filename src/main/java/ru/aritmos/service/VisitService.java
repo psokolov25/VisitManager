@@ -1864,7 +1864,7 @@ public class VisitService {
         visit.setStartServingDateTime(null);
         VisitEvent visitEvent = VisitEvent.STOP_SERVING;
         visitEvent.getParameters().clear();
-        visitEvent.getParameters().put("isForced","false");
+        visitEvent.getParameters().put("isForced", "false");
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("branchId", branchId);
 
@@ -2108,7 +2108,7 @@ public class VisitService {
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
         event.getParameters().clear();
-        event.getParameters().put("isForced","false");
+        event.getParameters().put("isForced", "false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -2272,7 +2272,7 @@ public class VisitService {
         VisitEvent event = VisitEvent.STOP_SERVING;
         event.getParameters().clear();
         event.dateTime = ZonedDateTime.now();
-        event.getParameters().put("isForced","false");
+        event.getParameters().put("isForced", "false");
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("staffId", staff.getId());
         event.getParameters().put("staffName", staff.getName());
@@ -2535,7 +2535,9 @@ public class VisitService {
       Visit visit,
       Boolean isAppend,
       HashMap<String, String> serviceInfo,
-      Long transferTimeDelay) {
+      Long transferTimeDelay,
+      String staffId
+      ) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
@@ -2576,8 +2578,14 @@ public class VisitService {
     event.getParameters().put("newQueueId", queueId);
 
     event.getParameters().put("branchId", branchId);
-    event.getParameters().put("staffId", visit.getUserId());
-    event.getParameters().put("staffName", visit.getUserName());
+    event.getParameters().put("staffId", staffId != null ? staffId : "");
+    event
+            .getParameters()
+            .put(
+                    "staffName",
+                    staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
+                            ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
+                            : "");
     event.getParameters().putAll(serviceInfo);
     branchService.updateVisit(visit, event, this, !isAppend);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
@@ -2794,7 +2802,7 @@ public class VisitService {
       Visit visit,
       Boolean isAppend,
       HashMap<String, String> serviceInfo,
-      Long transferTimeDelay) {
+      Long transferTimeDelay,String staffId) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
@@ -2827,6 +2835,14 @@ public class VisitService {
         event.getParameters().put("queueId", value);
       }
     }
+    event.getParameters().put("staffId", staffId != null ? staffId : "");
+    event
+            .getParameters()
+            .put(
+                    "staffName",
+                    staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
+                            ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
+                            : "");
     event.getParameters().put("poolServicePointId", poolServicePointId);
     event.getParameters().putAll(serviceInfo);
     event.getParameters().put("branchId", branchId);
@@ -2877,7 +2893,12 @@ public class VisitService {
    * @return визит
    */
   public Visit visitTransferFromQueueToUserPool(
-      String branchId, String userId, Visit visit, Boolean isAppend, Long transferTimeDelay) {
+      String branchId,
+      String userId,
+      Visit visit,
+      Boolean isAppend,
+      Long transferTimeDelay,
+      String staffId) {
 
     String oldQueueID = visit.getQueueId();
 
@@ -2911,8 +2932,14 @@ public class VisitService {
 
     event.getParameters().put("poolUserId", userId);
     event.getParameters().put("branchId", branchId);
-    event.getParameters().put("staffId", visit.getUserId());
-    event.getParameters().put("staffName", visit.getUserName());
+    event.getParameters().put("staffId", staffId != null ? staffId : "");
+    event
+        .getParameters()
+        .put(
+            "staffName",
+            staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
+                ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
+                : "");
     branchService.updateVisit(visit, event, this, !isAppend);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     log.info("Visit {} transfered!", visit);
@@ -2947,7 +2974,8 @@ public class VisitService {
       Visit visit,
       Boolean isAppend,
       HashMap<String, String> serviceInfo,
-      Long transferTimeDelay) {
+      Long transferTimeDelay,
+      String staffId) {
 
     String oldQueueID = visit.getQueueId();
 
@@ -2978,7 +3006,14 @@ public class VisitService {
         event.getParameters().put("queueId", value);
       }
     }
-
+    event.getParameters().put("staffId", staffId != null ? staffId : "");
+    event
+        .getParameters()
+        .put(
+            "staffName",
+            staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
+                ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
+                : "");
     event.getParameters().put("userId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().putAll(serviceInfo);
@@ -3011,7 +3046,12 @@ public class VisitService {
    * @return визит
    */
   public Visit visitTransferFromQueueToUserPool(
-      String branchId, String userId, Visit visit, Integer index, Long transferTimeDelay) {
+      String branchId,
+      String userId,
+      Visit visit,
+      Integer index,
+      Long transferTimeDelay,
+      String staffId) {
 
     String oldQueueID = visit.getQueueId();
 
@@ -3042,8 +3082,14 @@ public class VisitService {
 
     event.getParameters().put("poolUserId", userId);
     event.getParameters().put("branchId", branchId);
-    event.getParameters().put("staffId", visit.getUserId());
-    event.getParameters().put("staffName", visit.getUserName());
+    event.getParameters().put("staffId", staffId != null ? staffId : "");
+    event
+        .getParameters()
+        .put(
+            "staffName",
+            staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
+                ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
+                : "");
 
     branchService.updateVisit(visit, event, this, index);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
@@ -3070,7 +3116,7 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Visit visitEnd(String branchId, String servicePointId,Boolean isForced,String reason) {
+  public Visit visitEnd(String branchId, String servicePointId, Boolean isForced, String reason) {
     Branch currentBranch = branchService.getBranch(branchId);
     Visit visit;
 
@@ -3097,8 +3143,8 @@ public class VisitService {
           visit.setServedDateTime(ZonedDateTime.now());
           stopServingEvent = VisitEvent.STOP_SERVING;
           stopServingEvent.getParameters().clear();
-          stopServingEvent.getParameters().put("isForced",isForced.toString());
-          stopServingEvent.getParameters().put("reason",reason);
+          stopServingEvent.getParameters().put("isForced", isForced.toString());
+          stopServingEvent.getParameters().put("reason", reason);
           stopServingEvent.dateTime = ZonedDateTime.now();
           stopServingEvent.getParameters().put("servicePointId", servicePointId);
           stopServingEvent.getParameters().put("branchId", branchId);
@@ -3108,21 +3154,21 @@ public class VisitService {
                   "staffId",
                   currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
-                      : getLastNotNutllEventParam(visit,"staffId"));
+                      : getLastNotNutllEventParam(visit, "staffId"));
           stopServingEvent
               .getParameters()
               .put(
                   "staffName",
                   currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                      : getLastNotNutllEventParam(visit,"staffName"));
+                      : getLastNotNutllEventParam(visit, "staffName"));
           stopServingEvent
               .getParameters()
               .put(
                   "workProfileId",
                   servicePoint.getUser() != null
                       ? servicePoint.getUser().getCurrentWorkProfileId()
-                      : getLastNotNutllEventParam(visit,"workProfileId"));
+                      : getLastNotNutllEventParam(visit, "workProfileId"));
           branchService.updateVisit(visit, stopServingEvent, this, true);
 
           visit.setReturnDateTime(ZonedDateTime.now());
@@ -3166,8 +3212,8 @@ public class VisitService {
           visit.setQueueId(null);
           visit.setServedDateTime(ZonedDateTime.now());
           stopServingEvent = VisitEvent.STOP_SERVING;
-          stopServingEvent.getParameters().put("isForced",isForced.toString());
-          stopServingEvent.getParameters().put("reason",reason);
+          stopServingEvent.getParameters().put("isForced", isForced.toString());
+          stopServingEvent.getParameters().put("reason", reason);
           stopServingEvent.dateTime = ZonedDateTime.now();
           stopServingEvent.getParameters().put("branchId", branchId);
           stopServingEvent
@@ -3176,21 +3222,21 @@ public class VisitService {
                   "staffId",
                   currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
-                      : getLastNotNutllEventParam(visit,"staffId"));
+                      : getLastNotNutllEventParam(visit, "staffId"));
           stopServingEvent
               .getParameters()
               .put(
                   "staffName",
                   currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                      : getLastNotNutllEventParam(visit,"staffName"));
+                      : getLastNotNutllEventParam(visit, "staffName"));
           stopServingEvent
               .getParameters()
               .put(
                   "workProfileId",
                   servicePoint.getUser() != null
                       ? servicePoint.getUser().getCurrentWorkProfileId()
-                      : getLastNotNutllEventParam(visit,"workProfileId"));
+                      : getLastNotNutllEventParam(visit, "workProfileId"));
           stopServingEvent.getParameters().put("servicePointId", servicePointId);
           branchService.updateVisit(visit, stopServingEvent, this, true);
           endEvent = VisitEvent.END;
@@ -4242,7 +4288,7 @@ public class VisitService {
               "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
-        event.getParameters().put("isForced","false");
+        event.getParameters().put("isForced", "false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event
@@ -4312,7 +4358,7 @@ public class VisitService {
                     ? servicePoint.getUser().getCurrentWorkProfileId()
                     : "");
         transferEvent.getParameters().put("servicePointId", servicePointId);
-        transferEvent.getParameters().put("poolUserId",userId);
+        transferEvent.getParameters().put("poolUserId", userId);
         branchService.updateVisit(visit, transferEvent, this);
         Event delayedEvent =
             Event.builder()
@@ -4363,7 +4409,7 @@ public class VisitService {
               HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
-        event.getParameters().put("isForced","false");
+        event.getParameters().put("isForced", "false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("poolServicePointId", poolServicePointId);
@@ -4490,7 +4536,7 @@ public class VisitService {
               HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
-        event.getParameters().put("isForced","false");
+        event.getParameters().put("isForced", "false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
         event.getParameters().put("poolServicePointId", poolServicePointId);
