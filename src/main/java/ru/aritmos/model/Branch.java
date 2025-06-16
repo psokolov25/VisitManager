@@ -273,7 +273,9 @@ public class Branch extends BranchEntity {
       Boolean withLogout,
       Boolean isBreak,
       String breakReason,
-  Boolean isForced
+  Boolean isForced,
+      String reason
+
   ) {
 
     if (this.getServicePoints().containsKey(servicePointId)) {
@@ -396,7 +398,7 @@ public class Branch extends BranchEntity {
     ServicePoint servicePoint =
         visitService.getServicePointHashMap(this.getId()).get(servicePointId);
     if (servicePoint.getVisit() != null) {
-      visitService.visitEnd(this.getId(), servicePointId,isForced);
+      visitService.visitEnd(this.getId(), servicePointId,isForced,reason);
     }
   }
 

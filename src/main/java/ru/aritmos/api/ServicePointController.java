@@ -32,6 +32,7 @@ import ru.aritmos.service.VisitService;
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 @SerdeImport(GroupRepresentation.class)
 @Controller("/servicepoint")
+
 public class ServicePointController {
   @Inject Services services;
   @Inject BranchService branchService;
@@ -310,20 +311,22 @@ public class ServicePointController {
    * @param isForced флаг "принудительного" завершения обслуживания
    * @param breakReason причина перерыва
    */
+  @SuppressWarnings("all")
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
   @Tag(name = "Полный список")
   @Post("/branches/{branchId}/servicePoints/{servicePointId}/close")
   @ExecuteOn(TaskExecutors.IO)
-  public void closeUser(
+  public void closeServicePoint(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @QueryValue(defaultValue = "false") Boolean isBreak,
       @Nullable @QueryValue String breakReason,
-      @QueryValue(defaultValue = "false") Boolean isForced) {
+      @QueryValue(defaultValue = "false") Boolean isForced,
+      @QueryValue(defaultValue = "") String reason) {
 
     branchService.closeServicePoint(
-        branchId, servicePointId, visitService, false, isBreak, breakReason, isForced);
+        branchId, servicePointId, visitService, false, isBreak, breakReason, isForced, reason);
   }
 
   /**
@@ -332,10 +335,13 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на перерыв
+   * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на
+   *     перерыв
    * @param isForced флаг "принудительного" завершения обслуживания
+   * @param reason причина принудительного завершения обслуживания
    * @param breakReason причина перерыва
    */
+  @SuppressWarnings("all")
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
   @Tag(name = "Полный список")
@@ -346,10 +352,11 @@ public class ServicePointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @QueryValue(defaultValue = "false") Boolean isBreak,
       @Nullable @QueryValue String breakReason,
-      @QueryValue(defaultValue = "false") Boolean isForced) {
+      @QueryValue(defaultValue = "false") Boolean isForced,
+      @QueryValue(defaultValue = "") String reason) {
 
     branchService.closeServicePoint(
-        branchId, servicePointId, visitService, true, isBreak, breakReason, isForced);
+        branchId, servicePointId, visitService, true, isBreak, breakReason, isForced, reason);
   }
 
   /**
@@ -2192,8 +2199,10 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @param isForced флаг "принудительного" завершения обслуживания
+   * @param reason причина принудительного завершения обслуживания
    * @return визит после перевода
    */
+  @SuppressWarnings("all")
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
@@ -2206,9 +2215,10 @@ public class ServicePointController {
   public Visit visitEnd(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @QueryValue(defaultValue = "false") Boolean isForced) {
+      @QueryValue(defaultValue = "false") Boolean isForced,
+      @QueryValue(defaultValue = "") String reason) {
 
-    return visitService.visitEnd(branchId, servicePointId, isForced);
+    return visitService.visitEnd(branchId, servicePointId, isForced, reason);
   }
 
   /**

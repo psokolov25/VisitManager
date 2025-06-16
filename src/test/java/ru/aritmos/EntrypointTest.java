@@ -274,7 +274,7 @@ class EntrypointTest {
       visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
       Thread.sleep(200);
       Visit visit2;
-      visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false);
+      visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false,"");
       Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
     }
   }
@@ -331,7 +331,7 @@ class EntrypointTest {
       Assertions.assertEquals(visit.getVisitMarks().size(), 1);
       Thread.sleep(300);
 
-      Visit visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false);
+      Visit visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false,"");
 
       Assertions.assertEquals(visit2.getStatus(), VisitEvent.END.name());
     }
@@ -381,7 +381,7 @@ class EntrypointTest {
 
       Thread.sleep(900);
 
-      Visit visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false);
+      Visit visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false,"");
       Thread.sleep(900);
       Assertions.assertEquals(visit2.getStatus(), VisitEvent.PLACED_IN_QUEUE.getState().name());
     }
@@ -432,7 +432,7 @@ class EntrypointTest {
 
       Thread.sleep(900);
 
-      Visit visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false);
+      Visit visit2 = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false,"");
 
       Assertions.assertEquals(visit2.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
     }
@@ -560,7 +560,7 @@ class EntrypointTest {
 
         visitService.visitConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visits.get());
         Thread.sleep(900);
-        visit = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false);
+        visit = visitService.visitEnd(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",false,"");
         Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
       }
     }
@@ -620,7 +620,7 @@ class EntrypointTest {
 
         visitService.visitConfirm(branchId, servicePointFcId, visits.get());
         Thread.sleep(900);
-        visit = visitService.visitEnd(branchId, servicePointFcId,false);
+        visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
         Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
       }
     }
@@ -682,7 +682,7 @@ class EntrypointTest {
 
         visitService.visitConfirm(branchId, servicePointFcId, visits.get());
         Thread.sleep(900);
-        visit = visitService.visitEnd(branchId, servicePointFcId,false);
+        visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
         Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
       }
     }
@@ -742,7 +742,7 @@ class EntrypointTest {
 
         visitService.visitConfirm(branchId, servicePointFcId, visits.get());
         Thread.sleep(900);
-        visit = visitService.visitEnd(branchId, servicePointFcId,false);
+        visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
         Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
       }
     }
@@ -802,7 +802,7 @@ class EntrypointTest {
 
         visitService.visitConfirm(branchId, servicePointFcId, visits.get());
         Thread.sleep(900);
-        visit = visitService.visitEnd(branchId, servicePointFcId,false);
+        visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
         Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
       }
     }
@@ -852,7 +852,7 @@ class EntrypointTest {
 
       visitService.visitConfirm(branchId, servicePointFcId, visits.get());
       Thread.sleep(900);
-      visit = visitService.visitEnd(branchId, servicePointFcId,false);
+      visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
       Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
     }
   }
@@ -931,7 +931,7 @@ class EntrypointTest {
                 .filter(f -> f.getId().equals(visitId))
                 .count(),
             1);
-        visit = visitService.visitEnd(branchId, servicePointFcId,false);
+        visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
         Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
         Assertions.assertEquals(
             managementController.getBranch(branchId).getAllVisitsList().stream()
@@ -990,7 +990,7 @@ class EntrypointTest {
 
       visitService.visitConfirm(branchId, servicePointFcId, visits.get());
       Thread.sleep(900);
-      visit = visitService.visitEnd(branchId, servicePointFcId,false);
+      visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
       Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
     }
   }
@@ -1047,7 +1047,7 @@ class EntrypointTest {
       Thread.sleep(900);
 
       Thread.sleep(900);
-      visit = visitService.visitEnd(branchId, servicePointFcId,false);
+      visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
       Assertions.assertEquals(visit.getStatus(), VisitEvent.END.name());
     }
     Optional<Visit> visits2 =
@@ -1182,7 +1182,7 @@ class EntrypointTest {
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(3000);
-    visit = visitService.visitEnd(branchId, servicePointFcId,false);
+    visit = visitService.visitEnd(branchId, servicePointFcId,false,"");
 
     Assertions.assertEquals(visit.getStatus(), VisitEvent.END.getState().name());
   }
@@ -1386,8 +1386,8 @@ class EntrypointTest {
 
   @AfterEach
   void deleteBranch() {
-    branchService.closeServicePoint(branchId, servicePointFcId, visitService, true, false, "",true);
-    branchService.delete(branchId);
+    branchService.closeServicePoint(branchId, servicePointFcId, visitService, true, false, "",true,"BRANCH_DELETED");
+    branchService.delete(branchId,visitService);
   }
 
   /** Проверка сохранения изменения состояния отделения в кэше редис */

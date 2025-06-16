@@ -1863,6 +1863,7 @@ public class VisitService {
         visit.setReturnTimeDelay(returnTimeDelay);
         visit.setStartServingDateTime(null);
         VisitEvent visitEvent = VisitEvent.STOP_SERVING;
+        visitEvent.getParameters().clear();
         visitEvent.getParameters().put("isForced","false");
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("branchId", branchId);
@@ -2106,6 +2107,7 @@ public class VisitService {
               HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
+        event.getParameters().clear();
         event.getParameters().put("isForced","false");
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
@@ -2268,6 +2270,7 @@ public class VisitService {
               "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
         }
         VisitEvent event = VisitEvent.STOP_SERVING;
+        event.getParameters().clear();
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("isForced","false");
         event.getParameters().put("branchId", branchId);
@@ -3066,7 +3069,7 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  public Visit visitEnd(String branchId, String servicePointId,Boolean isForced) {
+  public Visit visitEnd(String branchId, String servicePointId,Boolean isForced,String reason) {
     Branch currentBranch = branchService.getBranch(branchId);
     Visit visit;
 
@@ -3092,7 +3095,9 @@ public class VisitService {
 
           visit.setServedDateTime(ZonedDateTime.now());
           stopServingEvent = VisitEvent.STOP_SERVING;
+          stopServingEvent.getParameters().clear();
           stopServingEvent.getParameters().put("isForced",isForced.toString());
+          stopServingEvent.getParameters().put("reason",reason);
           stopServingEvent.dateTime = ZonedDateTime.now();
           stopServingEvent.getParameters().put("servicePointId", servicePointId);
           stopServingEvent.getParameters().put("branchId", branchId);
@@ -3102,21 +3107,21 @@ public class VisitService {
                   "staffId",
                   currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
-                      : "");
+                      : getLastNotNutllEventParam(visit,"staffId"));
           stopServingEvent
               .getParameters()
               .put(
                   "staffName",
                   currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                      : "");
+                      : getLastNotNutllEventParam(visit,"staffName"));
           stopServingEvent
               .getParameters()
               .put(
                   "workProfileId",
                   servicePoint.getUser() != null
                       ? servicePoint.getUser().getCurrentWorkProfileId()
-                      : "");
+                      : getLastNotNutllEventParam(visit,"workProfileId"));
           branchService.updateVisit(visit, stopServingEvent, this, true);
 
           visit.setReturnDateTime(ZonedDateTime.now());
@@ -3161,6 +3166,7 @@ public class VisitService {
           visit.setServedDateTime(ZonedDateTime.now());
           stopServingEvent = VisitEvent.STOP_SERVING;
           stopServingEvent.getParameters().put("isForced",isForced.toString());
+          stopServingEvent.getParameters().put("reason",reason);
           stopServingEvent.dateTime = ZonedDateTime.now();
           stopServingEvent.getParameters().put("branchId", branchId);
           stopServingEvent
@@ -3169,21 +3175,21 @@ public class VisitService {
                   "staffId",
                   currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
-                      : "");
+                      : getLastNotNutllEventParam(visit,"staffId"));
           stopServingEvent
               .getParameters()
               .put(
                   "staffName",
                   currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                      : "");
+                      : getLastNotNutllEventParam(visit,"staffName"));
           stopServingEvent
               .getParameters()
               .put(
                   "workProfileId",
                   servicePoint.getUser() != null
                       ? servicePoint.getUser().getCurrentWorkProfileId()
-                      : "");
+                      : getLastNotNutllEventParam(visit,"workProfileId"));
           stopServingEvent.getParameters().put("servicePointId", servicePointId);
           branchService.updateVisit(visit, stopServingEvent, this, true);
           endEvent = VisitEvent.END;
