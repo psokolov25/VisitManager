@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.keycloak.representations.idm.UserRepresentation;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
@@ -2540,7 +2541,11 @@ public class VisitService {
       ) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
-
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    String staffName = "";
+    if (user.isPresent()) {
+      staffName = user.get().getUsername();
+    }
     Queue queue;
     if (currentBranch.getQueues().containsKey(queueId)) {
       queue = currentBranch.getQueues().get(queueId);
@@ -2583,9 +2588,7 @@ public class VisitService {
             .getParameters()
             .put(
                     "staffName",
-                    staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
-                            ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
-                            : "");
+                    staffName);
     event.getParameters().putAll(serviceInfo);
     branchService.updateVisit(visit, event, this, !isAppend);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
@@ -2814,7 +2817,11 @@ public class VisitService {
       throw new BusinessException(
           "Service Point not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
-
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    String staffName = "";
+    if (user.isPresent()) {
+      staffName = user.get().getUsername();
+    }
     visit.setQueueId(null);
     visit.setPoolUserId(null);
     visit.setServicePointId(null);
@@ -2840,9 +2847,7 @@ public class VisitService {
             .getParameters()
             .put(
                     "staffName",
-                    staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
-                            ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
-                            : "");
+                    staffName);
     event.getParameters().put("poolServicePointId", poolServicePointId);
     event.getParameters().putAll(serviceInfo);
     event.getParameters().put("branchId", branchId);
@@ -2887,7 +2892,7 @@ public class VisitService {
    * Перевод визита из очереди в пул сотрудника
    *
    * @param branchId идентификатор отделения
-   * @param userId идентификатор cотрудника
+   * @param userId идентификатор сотрудника
    * @param visit визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
    * @return визит
@@ -2899,7 +2904,11 @@ public class VisitService {
       Boolean isAppend,
       Long transferTimeDelay,
       String staffId) {
-
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    String staffName = "";
+    if (user.isPresent()) {
+      staffName = user.get().getUsername();
+    }
     String oldQueueID = visit.getQueueId();
 
     Branch currentBranch = branchService.getBranch(branchId);
@@ -2937,9 +2946,7 @@ public class VisitService {
         .getParameters()
         .put(
             "staffName",
-            staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
-                ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
-                : "");
+            staffName);
     branchService.updateVisit(visit, event, this, !isAppend);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     log.info("Visit {} transfered!", visit);
@@ -2988,7 +2995,11 @@ public class VisitService {
       throw new BusinessException(
           "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
-
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    String staffName = "";
+    if (user.isPresent()) {
+      staffName = user.get().getUsername();
+    }
     visit.setQueueId(null);
     visit.setServicePointId(null);
     visit.setPoolServicePointId(null);
@@ -3011,9 +3022,7 @@ public class VisitService {
         .getParameters()
         .put(
             "staffName",
-            staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
-                ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
-                : "");
+           staffName);
     event.getParameters().put("userId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().putAll(serviceInfo);
@@ -3060,7 +3069,11 @@ public class VisitService {
       throw new BusinessException(
           "User not found in branch configuration!", eventService, HttpStatus.NOT_FOUND);
     }
-
+    Optional<UserRepresentation> user = keyCloackClient.getUserBySid(staffId);
+    String staffName = "";
+    if (user.isPresent()) {
+      staffName = user.get().getUsername();
+    }
     visit.setQueueId(null);
     visit.setServicePointId(null);
     visit.setPoolServicePointId(null);
@@ -3087,9 +3100,7 @@ public class VisitService {
         .getParameters()
         .put(
             "staffName",
-            staffId != null && branchService.getBranch(branchId).getUsers().containsKey(staffId)
-                ? branchService.getBranch(branchId).getUsers().get(staffId).getName()
-                : "");
+            staffName);
 
     branchService.updateVisit(visit, event, this, index);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
