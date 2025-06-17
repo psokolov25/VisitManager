@@ -247,7 +247,7 @@ public class VisitService {
    * @return созданный визит
    */
   public Visit createVisitFromReception(
-      String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket)
+      String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket,String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
@@ -259,7 +259,7 @@ public class VisitService {
 
       return visitAutoCall(
           createVisit2FromReception(
-              branchId, printerId, services, visitParameters.getParameters(), printTicket));
+              branchId, printerId, services, visitParameters.getParameters(), printTicket,sid));
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -268,6 +268,7 @@ public class VisitService {
 
   /**
    * Создание визита из приемной
+   * с передачей идентификатора используемого правила сегментации
    *
    * @param branchId идентификатор отделения
    * @param printerId идентификатор энтри поинта
@@ -280,7 +281,7 @@ public class VisitService {
       String printerId,
       VisitParameters visitParameters,
       Boolean printTicket,
-      String segmentationRuleId) {
+      String segmentationRuleId,String sid) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -296,7 +297,7 @@ public class VisitService {
               services,
               visitParameters.getParameters(),
               printTicket,
-              segmentationRuleId));
+              segmentationRuleId,sid));
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -420,7 +421,7 @@ public class VisitService {
     }
   }
 
-  List<Visit> getAvaliableVisits(List<Visit> visits) {
+  List<Visit> getAvailableVisits(List<Visit> visits) {
     return visits.stream()
         .filter(
             f2 ->
@@ -714,7 +715,7 @@ public class VisitService {
       ArrayList<Service> services,
       HashMap<String, String> parametersMap,
       Boolean printTicket,
-      String segmentationRuleId) {
+      String segmentationRuleId,String sid) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -751,7 +752,13 @@ public class VisitService {
                 .parameterMap(parametersMap)
                 .build();
         Queue serviceQueue;
-
+        Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
+        String staffName = "";
+        String staffId="";
+        if (user.isPresent()) {
+          staffName = user.get().getUsername();
+          staffId=user.get().getId();
+        }
         Optional<Queue> queue = segmentationRule.getQueue(visit, currentBranch, segmentationRuleId);
         if (queue.isPresent()) {
           serviceQueue = queue.get();
@@ -765,6 +772,8 @@ public class VisitService {
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
           event.getParameters().put("isVirtual", "false");
+          event.getParameters().put("staffId",staffId);
+          event.getParameters().put("staffName",staffName);
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -825,7 +834,7 @@ public class VisitService {
       String printerId,
       ArrayList<Service> services,
       HashMap<String, String> parametersMap,
-      Boolean printTicket)
+      Boolean printTicket,String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -864,6 +873,13 @@ public class VisitService {
                 .build();
         Queue serviceQueue;
         if (segmentationRule.getQueue(visit, currentBranch).isPresent()) {
+          Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
+          String staffName = "";
+          String staffId="";
+          if (user.isPresent()) {
+            staffName = user.get().getUsername();
+            staffId=user.get().getId();
+          }
           serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
 
           serviceQueue.setTicketCounter(
@@ -874,6 +890,8 @@ public class VisitService {
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
+          event.getParameters().put("staffId",staffId);
+          event.getParameters().put("staffName",staffName);
           event.getParameters().put("isVirtual", "false");
           event
               .getParameters()
