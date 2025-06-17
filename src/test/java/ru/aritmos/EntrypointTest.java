@@ -34,6 +34,7 @@ import ru.aritmos.service.VisitService;
 @Nested
 @Slf4j
 @MicronautTest
+@SuppressWarnings("all")
 class EntrypointTest {
 
   final String branchId = "bc08b7d2-c731-438d-9785-eba2078b2089";
@@ -1178,7 +1179,7 @@ class EntrypointTest {
 
     VisitParameters visitParameters =
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
-    Visit visit = visitService.createVirtualVisit(branchId, servicePointFcId, visitParameters);
+    Visit visit = visitService.createVirtualVisit(branchId, servicePointFcId, visitParameters,"");
     // Visit visitForTransfer= visitService.createVisit(branchId, "1", serviceIds, false);
 
     Thread.sleep(3000);

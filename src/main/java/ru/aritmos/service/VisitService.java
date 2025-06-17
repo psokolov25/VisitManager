@@ -305,7 +305,7 @@ public class VisitService {
   }
 
   public Visit createVirtualVisit(
-      String branchId, String servicePointId, VisitParameters visitParameters)
+      String branchId, String servicePointId, VisitParameters visitParameters,String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
@@ -316,7 +316,7 @@ public class VisitService {
           .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
 
       return createVirtualVisit2(
-          branchId, servicePointId, services, visitParameters.getParameters());
+          branchId, servicePointId, services, visitParameters.getParameters(),sid);
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -951,7 +951,7 @@ public class VisitService {
       String branchId,
       String servicePointId,
       ArrayList<Service> services,
-      HashMap<String, String> parametersMap)
+      HashMap<String, String> parametersMap, String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -959,6 +959,13 @@ public class VisitService {
       if (currentBranch.getServices().containsKey(services.get(0).getId())) {
         Service currentService = currentBranch.getServices().get(services.get(0).getId()).clone();
         List<Service> unServedServices = new ArrayList<>();
+        Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
+        String staffName = "";
+        String staffId="";
+        if (user.isPresent()) {
+          staffName = user.get().getUsername();
+          staffId=user.get().getId();
+        }
         services.stream()
             .skip(1)
             .forEach(f -> unServedServices.add(currentBranch.getServices().get(f.getId()).clone()));
@@ -1014,7 +1021,7 @@ public class VisitService {
                   currentBranch.getServicePoints().containsKey(servicePointId)
                           && currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getId()
-                      : "");
+                      : staffId);
           event
               .getParameters()
               .put(
@@ -1022,7 +1029,7 @@ public class VisitService {
                   currentBranch.getServicePoints().containsKey(servicePointId)
                           && currentBranch.getServicePoints().get(servicePointId).getUser() != null
                       ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
-                      : "");
+                      : staffName);
           event
               .getParameters()
               .put(

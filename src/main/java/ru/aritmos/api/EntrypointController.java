@@ -74,7 +74,8 @@ public class EntrypointController {
                                                 "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
                                               ]
                                               """)))
-          ArrayList<String> serviceIds)
+          ArrayList<String> serviceIds,
+      @Nullable @CookieValue("sid") String sid)
       throws SystemException {
     Branch branch;
     try {
@@ -87,7 +88,7 @@ public class EntrypointController {
 
       VisitParameters visitParameters =
           VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
-      return visitService.createVirtualVisit(branchId, servicePointId, visitParameters);
+      return visitService.createVirtualVisit(branchId, servicePointId, visitParameters, sid);
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -281,10 +282,11 @@ public class EntrypointController {
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(parameters.getServiceIds())) {
       if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
-        return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket,staffId);
+        return visitService.createVisitFromReception(
+            branchId, printerId, parameters, printTicket, staffId);
       } else {
         return visitService.createVisitFromReception(
-            branchId, printerId, parameters, printTicket, segmentationRuleId,staffId);
+            branchId, printerId, parameters, printTicket, segmentationRuleId, staffId);
       }
 
     } else {
