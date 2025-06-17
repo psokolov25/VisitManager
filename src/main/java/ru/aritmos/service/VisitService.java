@@ -658,6 +658,7 @@ public class VisitService {
             event.getParameters().put("printerId", entryPoint.getPrinter().getId());
           }
 
+
           event.dateTime = ZonedDateTime.now();
 
           branchService.updateVisit(visit, event, this);
@@ -771,7 +772,7 @@ public class VisitService {
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
-          event.getParameters().put("isVirtual", "false");
+          event.getParameters().put("isVirtual",printTicket?"false":"true");
           event.getParameters().put("staffId",staffId);
           event.getParameters().put("staffName",staffName);
           event
