@@ -39,7 +39,7 @@ public class EntrypointController {
   @Inject EventService eventService;
 
   /**
-   * Создани виртуального визита сотрудником
+   * Создание виртуального визита сотрудником
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -269,7 +269,8 @@ public class EntrypointController {
    """)))
           VisitParameters parameters,
       @QueryValue Boolean printTicket,
-      @Nullable @QueryValue String segmentationRuleId)
+      @Nullable @QueryValue String segmentationRuleId,
+      @Nullable @CookieValue("sid") String staffId)
       throws SystemException {
     Branch branch;
     try {
@@ -280,10 +281,10 @@ public class EntrypointController {
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(parameters.getServiceIds())) {
       if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
-        return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket);
+        return visitService.createVisitFromReception(branchId, printerId, parameters, printTicket,staffId);
       } else {
         return visitService.createVisitFromReception(
-            branchId, printerId, parameters, printTicket, segmentationRuleId);
+            branchId, printerId, parameters, printTicket, segmentationRuleId,staffId);
       }
 
     } else {
