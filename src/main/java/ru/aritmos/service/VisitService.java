@@ -247,7 +247,11 @@ public class VisitService {
    * @return созданный визит
    */
   public Visit createVisitFromReception(
-      String branchId, String printerId, VisitParameters visitParameters, Boolean printTicket,String sid)
+      String branchId,
+      String printerId,
+      VisitParameters visitParameters,
+      Boolean printTicket,
+      String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
@@ -259,7 +263,7 @@ public class VisitService {
 
       return visitAutoCall(
           createVisit2FromReception(
-              branchId, printerId, services, visitParameters.getParameters(), printTicket,sid));
+              branchId, printerId, services, visitParameters.getParameters(), printTicket, sid));
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -267,8 +271,7 @@ public class VisitService {
   }
 
   /**
-   * Создание визита из приемной
-   * с передачей идентификатора используемого правила сегментации
+   * Создание визита из приемной с передачей идентификатора используемого правила сегментации
    *
    * @param branchId идентификатор отделения
    * @param printerId идентификатор энтри поинта
@@ -281,7 +284,8 @@ public class VisitService {
       String printerId,
       VisitParameters visitParameters,
       Boolean printTicket,
-      String segmentationRuleId,String sid) {
+      String segmentationRuleId,
+      String sid) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -297,7 +301,8 @@ public class VisitService {
               services,
               visitParameters.getParameters(),
               printTicket,
-              segmentationRuleId,sid));
+              segmentationRuleId,
+              sid));
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -305,7 +310,7 @@ public class VisitService {
   }
 
   public Visit createVirtualVisit(
-      String branchId, String servicePointId, VisitParameters visitParameters,String sid)
+      String branchId, String servicePointId, VisitParameters visitParameters, String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
@@ -316,7 +321,7 @@ public class VisitService {
           .forEach(f -> services.add(currentBranch.getServices().get(f).clone()));
 
       return createVirtualVisit2(
-          branchId, servicePointId, services, visitParameters.getParameters(),sid);
+          branchId, servicePointId, services, visitParameters.getParameters(), sid);
 
     } else {
       throw new BusinessException("Services not found!", eventService, HttpStatus.NOT_FOUND);
@@ -658,7 +663,6 @@ public class VisitService {
             event.getParameters().put("printerId", entryPoint.getPrinter().getId());
           }
 
-
           event.dateTime = ZonedDateTime.now();
 
           branchService.updateVisit(visit, event, this);
@@ -716,7 +720,8 @@ public class VisitService {
       ArrayList<Service> services,
       HashMap<String, String> parametersMap,
       Boolean printTicket,
-      String segmentationRuleId,String sid) {
+      String segmentationRuleId,
+      String sid) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     if (!services.isEmpty()) {
@@ -755,10 +760,10 @@ public class VisitService {
         Queue serviceQueue;
         Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
         String staffName = "";
-        String staffId="";
+        String staffId = "";
         if (user.isPresent()) {
           staffName = user.get().getUsername();
-          staffId=user.get().getId();
+          staffId = user.get().getId();
         }
         Optional<Queue> queue = segmentationRule.getQueue(visit, currentBranch, segmentationRuleId);
         if (queue.isPresent()) {
@@ -772,9 +777,9 @@ public class VisitService {
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
-          event.getParameters().put("isVirtual",printTicket?"false":"true");
-          event.getParameters().put("staffId",staffId);
-          event.getParameters().put("staffName",staffName);
+          event.getParameters().put("isVirtual", printTicket ? "false" : "true");
+          event.getParameters().put("staffId", staffId);
+          event.getParameters().put("staffName", staffName);
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -835,7 +840,8 @@ public class VisitService {
       String printerId,
       ArrayList<Service> services,
       HashMap<String, String> parametersMap,
-      Boolean printTicket,String sid)
+      Boolean printTicket,
+      String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -876,10 +882,10 @@ public class VisitService {
         if (segmentationRule.getQueue(visit, currentBranch).isPresent()) {
           Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
           String staffName = "";
-          String staffId="";
+          String staffId = "";
           if (user.isPresent()) {
             staffName = user.get().getUsername();
-            staffId=user.get().getId();
+            staffId = user.get().getId();
           }
           serviceQueue = segmentationRule.getQueue(visit, currentBranch).get();
 
@@ -891,9 +897,9 @@ public class VisitService {
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
-          event.getParameters().put("staffId",staffId);
-          event.getParameters().put("staffName",staffName);
-          event.getParameters().put("isVirtual", "false");
+          event.getParameters().put("staffId", staffId);
+          event.getParameters().put("staffName", staffName);
+          event.getParameters().put("isVirtual", printTicket ? "false" : "true");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -952,7 +958,8 @@ public class VisitService {
       String branchId,
       String servicePointId,
       ArrayList<Service> services,
-      HashMap<String, String> parametersMap, String sid)
+      HashMap<String, String> parametersMap,
+      String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -962,10 +969,10 @@ public class VisitService {
         List<Service> unServedServices = new ArrayList<>();
         Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
         String staffName = "";
-        String staffId="";
+        String staffId = "";
         if (user.isPresent()) {
           staffName = user.get().getUsername();
-          staffId=user.get().getId();
+          staffId = user.get().getId();
         }
         services.stream()
             .skip(1)
@@ -2545,7 +2552,6 @@ public class VisitService {
     return result;
   }
 
-
   /**
    * Перевод визита из очереди в очередь внешней службой
    *
@@ -2564,16 +2570,15 @@ public class VisitService {
       Boolean isAppend,
       HashMap<String, String> serviceInfo,
       Long transferTimeDelay,
-      String sid
-      ) {
+      String sid) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
     Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
-    String staffId="";
+    String staffId = "";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
-      staffId=user.get().getId();
+      staffId = user.get().getId();
     }
     Queue queue;
     if (currentBranch.getQueues().containsKey(queueId)) {
@@ -2613,11 +2618,7 @@ public class VisitService {
 
     event.getParameters().put("branchId", branchId);
     event.getParameters().put("staffId", staffId != null ? staffId : "");
-    event
-            .getParameters()
-            .put(
-                    "staffName",
-                    staffName);
+    event.getParameters().put("staffName", staffName);
     event.getParameters().putAll(serviceInfo);
     branchService.updateVisit(visit, event, this, !isAppend);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
@@ -2834,7 +2835,8 @@ public class VisitService {
       Visit visit,
       Boolean isAppend,
       HashMap<String, String> serviceInfo,
-      Long transferTimeDelay,String sid) {
+      Long transferTimeDelay,
+      String sid) {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
 
@@ -2848,10 +2850,10 @@ public class VisitService {
     }
     Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
-    String staffId="";
+    String staffId = "";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
-      staffId=user.get().getId();
+      staffId = user.get().getId();
     }
     visit.setQueueId(null);
     visit.setPoolUserId(null);
@@ -2874,11 +2876,7 @@ public class VisitService {
       }
     }
     event.getParameters().put("staffId", staffId != null ? staffId : "");
-    event
-            .getParameters()
-            .put(
-                    "staffName",
-                    staffName);
+    event.getParameters().put("staffName", staffName);
     event.getParameters().put("poolServicePointId", poolServicePointId);
     event.getParameters().putAll(serviceInfo);
     event.getParameters().put("branchId", branchId);
@@ -2937,10 +2935,10 @@ public class VisitService {
       String sid) {
     Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
-    String staffId="";
+    String staffId = "";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
-      staffId=user.get().getId();
+      staffId = user.get().getId();
     }
     String oldQueueID = visit.getQueueId();
 
@@ -2975,11 +2973,7 @@ public class VisitService {
     event.getParameters().put("poolUserId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().put("staffId", staffId != null ? staffId : "");
-    event
-        .getParameters()
-        .put(
-            "staffName",
-            staffName);
+    event.getParameters().put("staffName", staffName);
     branchService.updateVisit(visit, event, this, !isAppend);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     log.info("Visit {} transfered!", visit);
@@ -3030,10 +3024,10 @@ public class VisitService {
     }
     Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
-    String staffId="";
+    String staffId = "";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
-      staffId=user.get().getId();
+      staffId = user.get().getId();
     }
     visit.setQueueId(null);
     visit.setServicePointId(null);
@@ -3053,11 +3047,7 @@ public class VisitService {
       }
     }
     event.getParameters().put("staffId", staffId != null ? staffId : "");
-    event
-        .getParameters()
-        .put(
-            "staffName",
-           staffName);
+    event.getParameters().put("staffName", staffName);
     event.getParameters().put("userId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().putAll(serviceInfo);
@@ -3106,10 +3096,10 @@ public class VisitService {
     }
     Optional<UserRepresentation> user = keyCloackClient.getUserBySid(sid);
     String staffName = "";
-    String staffId="";
+    String staffId = "";
     if (user.isPresent()) {
       staffName = user.get().getUsername();
-      staffId=user.get().getId();
+      staffId = user.get().getId();
     }
     visit.setQueueId(null);
     visit.setServicePointId(null);
@@ -3133,11 +3123,7 @@ public class VisitService {
     event.getParameters().put("poolUserId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().put("staffId", staffId != null ? staffId : "");
-    event
-        .getParameters()
-        .put(
-            "staffName",
-            staffName);
+    event.getParameters().put("staffName", staffName);
 
     branchService.updateVisit(visit, event, this, index);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
