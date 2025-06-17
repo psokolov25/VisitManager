@@ -1883,7 +1883,7 @@ public class ServicePointController {
       @Body HashMap<String, String> serviceInfo,
       @QueryValue(defaultValue = "true") Boolean isAppend,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
-      @Nullable @CookieValue("sid") String staffId) {
+      @Nullable @CookieValue("sid") String sid) {
     Branch branch;
 
     try {
@@ -1897,7 +1897,7 @@ public class ServicePointController {
 
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransfer(
-        branchId, queueId, visit, isAppend, serviceInfo, transferTimeDelay, staffId);
+        branchId, queueId, visit, isAppend, serviceInfo, transferTimeDelay, sid);
   }
 
   /**
@@ -2107,7 +2107,7 @@ public class ServicePointController {
       HashMap<String, String> serviceInfo,
       @QueryValue(defaultValue = "true") Boolean isAppend,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
-      @Nullable @CookieValue("sid") String staffId) {
+      @Nullable @CookieValue("sid") String sid) {
     Branch branch;
     Visit visit = visitService.getVisit(branchId, visitId);
     try {
@@ -2120,7 +2120,7 @@ public class ServicePointController {
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
-        branchId, servicePointId, visit, isAppend, serviceInfo, transferTimeDelay, staffId);
+        branchId, servicePointId, visit, isAppend, serviceInfo, transferTimeDelay, sid);
   }
 
   /**
@@ -2245,10 +2245,10 @@ public class ServicePointController {
       @Body Visit visit,
       @QueryValue(defaultValue = "true") Boolean isAppend,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
-      @Nullable @CookieValue("sid") String staffId) {
+      @Nullable @CookieValue("sid") String sid) {
 
     return visitService.visitTransferFromQueueToUserPool(
-        branchId, userId, visit, isAppend, transferTimeDelay, staffId);
+        branchId, userId, visit, isAppend, transferTimeDelay, sid);
   }
 
   /**
@@ -2273,9 +2273,9 @@ public class ServicePointController {
       @Body Visit visit,
       @PathVariable(defaultValue = "0") Integer index,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
-      @Nullable @CookieValue("sid") String staffId) {
+      @Nullable @CookieValue("sid") String sid) {
     return visitService.visitTransferFromQueueToUserPool(
-        branchId, userId, visit, index, transferTimeDelay, staffId);
+        branchId, userId, visit, index, transferTimeDelay, sid);
   }
 
   /**
@@ -2300,10 +2300,10 @@ public class ServicePointController {
       @PathVariable String visitId,
       @QueryValue(defaultValue = "true") Boolean isAppend,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
-      @Nullable @CookieValue("sid") String staffId) {
+      @Nullable @CookieValue("sid") String sid) {
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransferFromQueueToUserPool(
-        branchId, userId, visit, isAppend, transferTimeDelay, staffId);
+        branchId, userId, visit, isAppend, transferTimeDelay, sid);
   }
 
   /**
@@ -2329,10 +2329,10 @@ public class ServicePointController {
       HashMap<String, String> serviceInfo,
       @QueryValue(defaultValue = "true") Boolean isAppend,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
-      @Nullable @CookieValue("sid") String staffId) {
+      @Nullable @CookieValue("sid") String sid) {
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransferFromQueueToUserPool(
-        branchId, userId, visit, isAppend, serviceInfo, transferTimeDelay, staffId);
+        branchId, userId, visit, isAppend, serviceInfo, transferTimeDelay, sid);
   }
 
   /**
@@ -2357,10 +2357,10 @@ public class ServicePointController {
       @PathVariable String visitId,
       @QueryValue(defaultValue = "0") Integer index,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
-      @Nullable @CookieValue("sid") String staffId) {
+      @Nullable @CookieValue("sid") String sid) {
     Visit visit = visitService.getVisit(branchId, visitId);
     return visitService.visitTransferFromQueueToUserPool(
-        branchId, userId, visit, index, transferTimeDelay, staffId);
+        branchId, userId, visit, index, transferTimeDelay, sid);
   }
 
   /**
