@@ -128,7 +128,10 @@ public class EventHandlerContext {
                             .body(userSession)
                             .build());
                     visitService.visitEnd(
-                        servicePoint.get().getBranchId(), servicePoint.get().getId(),true,"USER_SESSION_KILLED");
+                        servicePoint.get().getBranchId(),
+                        servicePoint.get().getId(),
+                        true,
+                        "USER_SESSION_KILLED");
                   }
                   visitService
                       .getBranchService()
@@ -138,7 +141,9 @@ public class EventHandlerContext {
                           visitService,
                           false,
                           false,
-                          "",false,"");
+                          "",
+                          false,
+                          "");
                 }
               });
     }
@@ -183,7 +188,9 @@ public class EventHandlerContext {
                                 visitService,
                                 false,
                                 false,
-                                "",true,"USER_SESSION_KILLED"));
+                                "",
+                                true,
+                                "USER_SESSION_KILLED"));
               });
     }
   }
@@ -231,7 +238,7 @@ public class EventHandlerContext {
             .forEach(
                 (key, value) -> {
                   if (!branchHashMap.containsKey(key)) {
-                    branchService.delete(key,visitService);
+                    branchService.delete(key, visitService);
                   }
                 });
         branchHashMap.forEach(
