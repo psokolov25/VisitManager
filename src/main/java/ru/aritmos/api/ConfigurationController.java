@@ -1,5 +1,6 @@
 package ru.aritmos.api;
 
+import groovy.util.logging.Slf4j;
 import io.micronaut.http.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
@@ -15,7 +16,9 @@ import ru.aritmos.service.VisitService;
 /**
  * @author Pavel Sokolov REST API управления конфигурацией отделений
  */
+@lombok.extern.slf4j.Slf4j
 @Controller("/configuration")
+@Slf4j
 public class ConfigurationController {
   @Inject BranchService branchService;
   @Inject Configuration configuration;
@@ -36,11 +39,15 @@ public class ConfigurationController {
         .getBranches()
         .forEach(
             (key, value) -> {
-              if (branchHashMap.containsKey(key)) {
+              if (!branchHashMap.containsKey(key)) {
                 branchService.delete(key, visitService);
               }
             });
-    branchHashMap.forEach((key, value) -> branchService.add(key, value));
+    branchHashMap.forEach(
+        (key, value) -> {
+          branchService.delete(key, visitService);
+          branchService.add(key, value);
+        });
     return branchService.getBranches();
   }
 
@@ -57,7 +64,13 @@ public class ConfigurationController {
     branchService
         .getBranches()
         .forEach(
-            (key, value) -> branchService.delete(key, visitService));
+            (key, value) -> {
+              try {
+                branchService.delete(key, visitService);
+              } catch (Exception e) {
+                log.warn("Branch {} not found", key);
+              }
+            });
     configuration.getCleanedConfiguration();
     return branchService.getBranches();
   }

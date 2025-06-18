@@ -398,6 +398,12 @@ public class Branch extends BranchEntity {
     ServicePoint servicePoint =
         visitService.getServicePointHashMap(this.getId()).get(servicePointId);
     if (servicePoint.getVisit() != null) {
+      if(isForced)
+      {
+        Visit visit=servicePoint.getVisit();
+        visit.getUnservedServices().clear();
+        updateVisit(visit,eventService,"UNSERVED_SERVICES_CLEANED",visitService);
+      }
       visitService.visitEnd(this.getId(), servicePointId,isForced,reason);
     }
   }

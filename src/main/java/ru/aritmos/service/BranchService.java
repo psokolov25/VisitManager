@@ -120,7 +120,7 @@ public class BranchService {
               (key1, value) -> {
                 if (oldBranch.getServicePoints().get(key1).getUser() != null) {
                   closeServicePoint(
-                      oldBranch.getBranchId(),
+                      oldBranch.getId(),
                       key1,
                       visitService,
                       true,
