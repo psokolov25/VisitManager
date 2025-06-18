@@ -161,37 +161,39 @@ public class EventHandlerContext {
     @Override
     @ExecuteOn(TaskExecutors.IO)
     public void Handle(Event event) throws JsonProcessingException {
-      ObjectMapper objectMapper = new ObjectMapper();
-      String eventBody = objectMapper.writeValueAsString(event.getBody());
-      UserSession userSession = objectMapper.readValue(eventBody, UserSession.class);
-      log.info("Force user logged out: {}", userSession);
-      visitService
-          .getBranchService()
-          .getDetailedBranches()
-          .values()
-          .forEach(
-              f -> {
-                Optional<ServicePoint> servicePoint =
-                    f.getServicePoints().values().stream()
-                        .filter(
-                            f2 ->
-                                f2.getUser() != null
-                                    && f2.getUser().getName().equals(userSession.getLogin()))
-                        .findFirst();
-                servicePoint.ifPresent(
-                    point ->
-                        visitService
-                            .getBranchService()
-                            .closeServicePoint(
-                                point.getBranchId(),
-                                point.getId(),
-                                visitService,
-                                false,
-                                false,
-                                "",
-                                true,
-                                "USER_SESSION_KILLED"));
-              });
+      if (!event.getSenderService().equals("visitmanager")) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String eventBody = objectMapper.writeValueAsString(event.getBody());
+        UserSession userSession = objectMapper.readValue(eventBody, UserSession.class);
+        log.info("Force user logged out: {}", userSession);
+        visitService
+            .getBranchService()
+            .getDetailedBranches()
+            .values()
+            .forEach(
+                f -> {
+                  Optional<ServicePoint> servicePoint =
+                      f.getServicePoints().values().stream()
+                          .filter(
+                              f2 ->
+                                  f2.getUser() != null
+                                      && f2.getUser().getName().equals(userSession.getLogin()))
+                          .findFirst();
+                  servicePoint.ifPresent(
+                      point ->
+                          visitService
+                              .getBranchService()
+                              .closeServicePoint(
+                                  point.getBranchId(),
+                                  point.getId(),
+                                  visitService,
+                                  false,
+                                  false,
+                                  "",
+                                  true,
+                                  "USER_SESSION_KILLED"));
+                });
+      }
     }
   }
 

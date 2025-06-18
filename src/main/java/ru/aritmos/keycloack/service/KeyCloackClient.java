@@ -15,6 +15,7 @@ import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 import org.keycloak.representations.idm.*;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
+import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.model.Credentials;
@@ -241,7 +242,7 @@ public class KeyCloackClient {
    *
    * @param login логин сотрудника
    */
-  public void userLogout(@PathVariable String login) {
+  public void userLogout(@PathVariable String login,Boolean isForced) {
     AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
 
     AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
@@ -252,6 +253,23 @@ public class KeyCloackClient {
         .search(login, true)
         .forEach(
             f -> {
+
+              eventService.send(
+                      "frontend",
+                      false,
+                      Event.builder()
+                              .senderService("visitmanager")
+                              .eventType(isForced?"PROCESSING_USER_LOGOUT_NOT_FORCE":"PROCESSING_USER_LOGOUT_FORCE")
+                              .body(f)
+                              .build());
+              eventService.send(
+                      "stat",
+                      false,
+                      Event.builder()
+                              .senderService("visitmanager")
+                              .eventType("KEYCLOACK_USER_LOGOUT")
+                              .body(f)
+                              .build());
               keycloak.realm(realm).users().get(f.getId()).logout();
               log.info("{}", keycloak.serverInfo().getInfo());
             });
