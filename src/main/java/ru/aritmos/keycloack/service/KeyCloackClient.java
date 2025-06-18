@@ -301,7 +301,7 @@ public class KeyCloackClient {
                   Event.builder()
                       .senderService("visitmanager")
                       .eventType(
-                          isForced
+                          !isForced
                               ? "PROCESSING_USER_LOGOUT_NOT_FORCE"
                               : "PROCESSING_USER_LOGOUT_FORCE")
                       .body(getUserSessionByLogin(f))
