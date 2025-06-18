@@ -5,6 +5,10 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,9 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.model.Credentials;
+import ru.aritmos.model.UserInfo;
+import ru.aritmos.model.UserSession;
+import ru.aritmos.model.UserToken;
 
 @Slf4j
 @Singleton
@@ -237,6 +244,43 @@ public class KeyCloackClient {
     return Optional.empty();
   }
 
+  public Optional<UserSession> getUserSessionByLogin(UserRepresentation user) {
+    RealmResource realmResource = getKeycloak().realm(realm);
+    Optional<UserSessionRepresentation> userSessionRepresentation =
+        realmResource.users().get(user.getId()).getUserSessions().parallelStream()
+            .toList()
+            .parallelStream()
+            .max((m1, m2) -> Long.compare(m2.getStart(), m1.getStart()));
+    try {
+      UserSession userSession =
+          UserSession.builder()
+              .sid(
+                  userSessionRepresentation.isPresent()
+                      ? userSessionRepresentation.get().getId()
+                      : UUID.randomUUID().toString())
+              .create_session(Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()).getTime())
+              .login(user.getUsername())
+              .last_update(Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()).getTime())
+              .userToken(
+                  UserToken.builder()
+                      .user(
+                          UserInfo.builder()
+                              .email(user.getEmail())
+                              .sub(user.getId())
+                              .name(
+                                  URLEncoder.encode(
+                                      user.getFirstName() + " " + user.getLastName(),
+                                      StandardCharsets.UTF_8))
+                              .description("")
+                              .build())
+                      .build())
+              .build();
+      return Optional.of(userSession);
+    } catch (Exception e) {
+      return Optional.empty();
+    }
+  }
+
   /**
    * Выход сотрудника
    *
@@ -260,7 +304,7 @@ public class KeyCloackClient {
                           isForced
                               ? "PROCESSING_USER_LOGOUT_NOT_FORCE"
                               : "PROCESSING_USER_LOGOUT_FORCE")
-                      .body(f)
+                      .body(getUserSessionByLogin(f))
                       .build());
               eventService.send(
                   "stat",
@@ -268,7 +312,7 @@ public class KeyCloackClient {
                   Event.builder()
                       .senderService("visitmanager")
                       .eventType("KEYCLOACK_USER_LOGOUT")
-                      .body(f)
+                      .body(getUserSessionByLogin(f))
                       .build());
               keycloak.realm(realm).users().get(f.getId()).logout();
               log.info("{}", keycloak.serverInfo().getInfo());
