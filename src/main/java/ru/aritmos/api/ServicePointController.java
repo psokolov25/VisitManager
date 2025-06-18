@@ -32,7 +32,6 @@ import ru.aritmos.service.VisitService;
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 @SerdeImport(GroupRepresentation.class)
 @Controller("/servicepoint")
-
 public class ServicePointController {
   @Inject Services services;
   @Inject BranchService branchService;
@@ -2476,5 +2475,4 @@ public class ServicePointController {
       @QueryValue(defaultValue = "60") Long returnTimeDelay) {
     return visitService.backCalledVisit(branchId, visitId, returnTimeDelay);
   }
-
 }
