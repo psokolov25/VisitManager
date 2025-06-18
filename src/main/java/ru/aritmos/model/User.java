@@ -22,6 +22,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 @Serdeable
 @Introspected
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder(toBuilder = true)
 @SuppressWarnings({"unused", "redundant"})
 public class User extends BranchEntityWithVisits {
@@ -67,20 +68,24 @@ public class User extends BranchEntityWithVisits {
   String lastBranchId;
 
   List<GroupRepresentation> allBranches;
-
+@JsonIgnore
   public User(String id, String name, KeyCloackClient keyCloackClient) {
 
     super(id, name);
+    if(keyCloackClient!=null){
     this.keyCloackClient = keyCloackClient;
     this.isAdmin = keyCloackClient.isUserModuleTypeByUserName(name, "admin");
     this.allBranches = keyCloackClient.getAllBranchesOfUser(name);
+    }
   }
-
+  @JsonIgnore
   public User(String name, KeyCloackClient keyCloackClient) {
     super(name);
-    this.keyCloackClient = keyCloackClient;
-    this.isAdmin = keyCloackClient.isUserModuleTypeByUserName(name, "admin");
-    this.allBranches = keyCloackClient.getAllBranchesOfUser(name);
+    if (keyCloackClient != null) {
+      this.keyCloackClient = keyCloackClient;
+      this.isAdmin = keyCloackClient.isUserModuleTypeByUserName(name, "admin");
+      this.allBranches = keyCloackClient.getAllBranchesOfUser(name);
+    }
   }
 
   @Override

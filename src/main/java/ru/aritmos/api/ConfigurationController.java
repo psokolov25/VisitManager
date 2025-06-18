@@ -60,7 +60,7 @@ public class ConfigurationController {
   @Tag(name = "Полный список")
   @Post(uri = "/branches/hardcode")
   public Map<String, Branch> update() {
-
+HashMap<String,Branch> branchHashMap = new HashMap<>();
     branchService
         .getBranches()
         .forEach(
@@ -72,7 +72,8 @@ public class ConfigurationController {
               }
             });
     configuration.getCleanedConfiguration();
-    return branchService.getBranches();
+    branchService.getBranches().forEach((key, value) -> branchHashMap.put(key, branchService.getBranch(key)));
+    return branchHashMap;
   }
 
   /**
