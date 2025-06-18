@@ -37,7 +37,7 @@ public class ConfigurationController {
         .forEach(
             (key, value) -> {
               if (branchHashMap.containsKey(key)) {
-                branchService.delete(key,visitService);
+                branchService.delete(key, visitService);
               }
             });
     branchHashMap.forEach((key, value) -> branchService.add(key, value));
@@ -54,6 +54,10 @@ public class ConfigurationController {
   @Post(uri = "/branches/hardcode")
   public Map<String, Branch> update() {
 
+    branchService
+        .getBranches()
+        .forEach(
+            (key, value) -> branchService.delete(key, visitService));
     configuration.getCleanedConfiguration();
     return branchService.getBranches();
   }
