@@ -1,10 +1,7 @@
 package ru.aritmos.api;
 
 import io.micronaut.context.annotation.Property;
-import io.micronaut.http.annotation.Body;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.PathVariable;
-import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.*;
 import io.micronaut.serde.annotation.SerdeImport;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
@@ -61,7 +58,7 @@ public class KeyCloakController {
       uri = "/keycloak/users/{login}",
       consumes = "application/json",
       produces = "application/json")
-  void DeleteSession(@PathVariable String login) {
-    keyCloackClient.userLogout(login);
+  void DeleteSession(@PathVariable String login, @QueryValue(defaultValue = "false") Boolean isForced) {
+    keyCloackClient.userLogout(login,isForced);
   }
 }
