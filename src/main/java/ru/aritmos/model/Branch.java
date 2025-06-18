@@ -89,16 +89,18 @@ public class Branch extends BranchEntity {
    * Правила сегментации, где ключом является набор параметров визита, а значением идентификатор
    * соответствующей очереди
    */
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  HashMap<String, SegmentationRuleData> segmentationRules = new HashMap<>();
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  Map<String, SegmentationRuleData> segmentationRules = new HashMap<>();
 
   /** Перечень запрограммированных скриптом Groovy правил сегментации */
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  HashMap<String, GroovyScript> customSegmentationRules = new HashMap<>();
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+
+  Map<String, GroovyScript> customSegmentationRules = new HashMap<>();
 
   /** Перечень запрограммированных скриптом Groovy правил вызова */
-  @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  HashMap<String, GroovyScript> customCallRules = new HashMap<>();
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+
+  Map<String, GroovyScript> customCallRules = new HashMap<>();
 
   /** Группы услуг */
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -350,7 +352,7 @@ public class Branch extends BranchEntity {
 
         if (withLogout) {
 
-          visitService.keyCloackClient.userLogout(servicePoint.getUser().getName(),isForced);
+          visitService.keyCloackClient.userLogout(servicePoint.getUser().getName(), isForced);
         }
         servicePoint.setUser(null);
         eventService.send(

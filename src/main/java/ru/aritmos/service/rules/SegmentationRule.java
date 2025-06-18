@@ -1,5 +1,6 @@
 package ru.aritmos.service.rules;
 
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -12,7 +13,9 @@ import ru.aritmos.exceptions.SystemException;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
+import ru.aritmos.service.GroovyScriptService;
 
+@Introspected(classes = GroovyScript.class)
 @Singleton
 @SuppressWarnings("unchecked")
 public class SegmentationRule {
@@ -28,6 +31,7 @@ public class SegmentationRule {
    * @param branch отделение
    * @return Очередь
    */
+
   public Optional<Queue> getQueue(Visit visit, Branch branch) throws SystemException {
     if (visit.getCurrentService() != null
         && visit.getCurrentService().getServiceGroupId() != null) {
@@ -69,6 +73,7 @@ public class SegmentationRule {
     return Optional.empty();
   }
 
+
   public Optional<Queue> getQueue(Visit visit, Branch branch, String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branch.getId());
     if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
@@ -85,7 +90,8 @@ public class SegmentationRule {
     if (inputParameters.containsKey("visit") && inputParameters.containsKey("branch")) {
       inputParameters.put("visit", visit);
       inputParameters.put("branch", branch);
-      groovyScript.Execute();
+      GroovyScriptService groovyScriptService = new GroovyScriptService();
+      groovyScriptService.Execute(groovyScript);
       if (groovyScript.getOutputParameters().containsKey("queue")) {
         Optional<Queue> queue;
         queue = (Optional<Queue>) groovyScript.getOutputParameters().get("queue");

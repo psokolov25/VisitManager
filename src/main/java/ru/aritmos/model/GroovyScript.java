@@ -1,24 +1,32 @@
 package ru.aritmos.model;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-import groovy.lang.Script;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.serde.annotation.Serdeable;
+
+import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-@Data
-@Serdeable
-@AllArgsConstructor
 @Builder(toBuilder = true)
-@SuppressWarnings({"unused"})
+@NoArgsConstructor
+@AllArgsConstructor
+@Serdeable
+@Data
+@Slf4j
 public class GroovyScript {
-  Map<String, Object> inputParameters;
-  Map<Object, Object> outputParameters;
-  String ruleCode;
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  Map<String, Object> inputParameters = new HashMap<>();
 
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  HashMap<Object, Object> outputParameters = new HashMap<>();
+
+
+  String ruleCode;
+ /* @JsonIgnore
   public void Execute() {
     Binding binding = new Binding();
     // Объект выполнения скрипта Groovy
@@ -31,5 +39,5 @@ public class GroovyScript {
     script.run();
     // Передача двух тестовых визитов
     outputParameters.putAll(binding.getVariables());
-  }
+  }*/
 }
