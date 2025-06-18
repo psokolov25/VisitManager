@@ -230,7 +230,7 @@ public class EventHandlerContext {
             .getBranches()
             .forEach(
                 (key, value) -> {
-                  if (!branchHashMap.containsKey(key)) {
+                  if (branchHashMap.containsKey(key)) {
                     branchService.delete(key,visitService);
                   }
                 });
