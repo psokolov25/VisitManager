@@ -172,12 +172,12 @@ public class Configuration {
                     .name("Intro8")
                     .build()));
     branchService.add(branch.getId(), branch);
-    branchService.openServicePoint(
+    /*branchService.openServicePoint(
         branch.getId(),
         psokolovUser.getName(),
         servicePointFC.getId(),
         workProfileFC.getId(),
-        visitService);
+        visitService);*/
 
     Branch branch2 = new Branch("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3", " Клиника на Ямской");
     branch2.setPrefix("YMS");
