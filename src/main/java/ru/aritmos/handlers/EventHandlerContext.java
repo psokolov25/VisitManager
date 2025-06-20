@@ -228,7 +228,7 @@ public class EventHandlerContext {
         Map<String, Object> branchHashMap = convertUsingReflection(event.getBody());
 
         eventService.send(
-            List.of("branchconfigurer", "frontend"),
+            List.of("branchconfigurer", "frontend","stat"),
             false,
             Event.builder()
                 .eventType("PUBLIC_STARTED")
@@ -240,14 +240,24 @@ public class EventHandlerContext {
             .forEach(
                 (key, value) -> {
                   if (!branchHashMap.containsKey(key)) {
+                    Branch body = branchService.getBranch(key);
+
                     branchService.delete(key, visitService);
+                    Event eventDeleted =
+                            Event.builder()
+                                    .eventType("PUBLIC_BRANCH_DELETED")
+                                    .eventDate(ZonedDateTime.now())
+                                    .body(body)
+                                    .params(Map.of("branchId", key))
+                                    .build();
+                    eventService.send(List.of("branchconfigurer", "frontend","stat"), false, eventDeleted);
                   }
                 });
         branchHashMap.forEach(
             (key, value) -> {
               branchService.add(key, (Branch) value);
               eventService.send(
-                  List.of("branchconfigurer", "frontend"),
+                  List.of("branchconfigurer", "frontend","stat"),
                   false,
                   Event.builder()
                       .eventType("BRANCH_PUBLIC_COMPLETE")
@@ -256,7 +266,7 @@ public class EventHandlerContext {
                       .build());
             });
         eventService.send(
-            List.of("branchconfigurer", "frontend"),
+            List.of("branchconfigurer", "frontend","stat"),
             false,
             Event.builder()
                 .eventType("PUBLIC_COMPLETE")
@@ -265,7 +275,7 @@ public class EventHandlerContext {
                 .build());
       } catch (Exception e) {
         eventService.send(
-            List.of("branchconfigurer", "frontend"),
+            List.of("branchconfigurer", "frontend","stat"),
             false,
             Event.builder()
                 .eventType("PUBLIC_ERROR")
