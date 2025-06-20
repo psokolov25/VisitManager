@@ -54,16 +54,16 @@ public class KeyCloackClient {
 
   Keycloak keycloak;
 
-  private static void keycloakLogout(Keycloak keycloak) {
-    if (keycloak.tokenManager() != null) {
-      try {
-        keycloak.tokenManager().logout();
-      } catch (Exception e) {
-        log.warn(e.getMessage());
-      }
-    }
-    keycloak.close();
-  }
+//  private static void keycloakLogout(Keycloak keycloak) {
+//    if (keycloak.tokenManager() != null) {
+//      try {
+//        keycloak.tokenManager().logout();
+//      } catch (Exception e) {
+//        log.warn(e.getMessage());
+//      }
+//    }
+//    keycloak.close();
+//  }
 
   public static AuthzClient getAuthzClient(
       String secret, String keycloakUrl, String realm, String clientId) {
@@ -106,7 +106,7 @@ public class KeyCloackClient {
             .findFirst()
             .orElse(new GroupRepresentation())
             .getPath();
-    keycloakLogout(keycloak);
+    //keycloakLogout(keycloak);
     return result;
   }
 
@@ -156,7 +156,7 @@ public class KeyCloackClient {
                   .groups(0, 1000000000)
                   .forEach(f -> result.addAll(getAllBranchesByRegionId(f.getId(), keycloak)));
             });
-    keycloakLogout(keycloak);
+    //keycloakLogout(keycloak);
     return result;
   }
 
@@ -203,14 +203,14 @@ public class KeyCloackClient {
                     .getAttributes()
                     .get("type")
                     .contains(type)) {
-              keycloakLogout(keycloak);
+              //keycloakLogout(keycloak);
               return true;
             }
           }
         }
       }
     }
-    keycloakLogout(keycloak);
+   // keycloakLogout(keycloak);
     return false;
   }
 
