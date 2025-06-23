@@ -68,16 +68,18 @@ public class User extends BranchEntityWithVisits {
   String lastBranchId;
 
   List<GroupRepresentation> allBranches;
-@JsonIgnore
+
+  @JsonIgnore
   public User(String id, String name, KeyCloackClient keyCloackClient) {
 
     super(id, name);
-    if(keyCloackClient!=null){
-    this.keyCloackClient = keyCloackClient;
-    this.isAdmin = keyCloackClient.isUserModuleTypeByUserName(name, "admin");
-    this.allBranches = keyCloackClient.getAllBranchesOfUser(name);
+    if (keyCloackClient != null) {
+      this.keyCloackClient = keyCloackClient;
+      this.isAdmin = keyCloackClient.isUserModuleTypeByUserName(name, "admin");
+      this.allBranches = keyCloackClient.getAllBranchesOfUser(name);
     }
   }
+
   @JsonIgnore
   public User(String name, KeyCloackClient keyCloackClient) {
     super(name);

@@ -58,7 +58,8 @@ public class KeyCloakController {
       uri = "/keycloak/users/{login}",
       consumes = "application/json",
       produces = "application/json")
-  void DeleteSession(@PathVariable String login, @QueryValue(defaultValue = "false") Boolean isForced) {
-    keyCloackClient.userLogout(login,isForced);
+  void DeleteSession(
+      @PathVariable String login, @QueryValue(defaultValue = "false") Boolean isForced) {
+    keyCloackClient.userLogout(login, isForced);
   }
 }

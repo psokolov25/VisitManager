@@ -109,6 +109,21 @@ public class BranchService {
     return branch;
   }
 
+  /**
+   * Проверка на наличие отделения в списке отделений по ключу
+   *
+   * @param key ключ отделения
+   * @return флаг существования отделения
+   */
+  public Boolean branchExists(String key) {
+    try {
+      getBranch(key);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   @CacheInvalidate(parameters = {"key"})
   public void delete(String key, VisitService visitService) {
     Branch oldBranch;

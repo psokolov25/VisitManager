@@ -4,15 +4,10 @@ import groovy.util.logging.Slf4j;
 import io.micronaut.http.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
-
-import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import ru.aritmos.events.model.Event;
-import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.*;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Configuration;
@@ -26,9 +21,8 @@ import ru.aritmos.service.VisitService;
 @Slf4j
 public class ConfigurationController {
   @Inject BranchService branchService;
-  @Inject Configuration configuration;
   @Inject VisitService visitService;
-  @Inject EventService eventService;
+  @Inject Configuration configuration;
 
   /**
    * Обновление конфигурации отделений
@@ -40,68 +34,7 @@ public class ConfigurationController {
   @Tag(name = "Полный список")
   @Post(uri = "/branches")
   public Map<String, Branch> update(@Body Map<String, Branch> branchHashMap) {
-    Event eventPublicStart =
-        Event.builder()
-            .eventType("PUBLIC_STARTED")
-            .eventDate(ZonedDateTime.now())
-            .body(branchHashMap)
-            .build();
-    eventService.send("stat", false, eventPublicStart);
-    try {
-      Thread.sleep(20);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-    //
-    //    branchService
-    //        .getBranches()
-    //        .forEach(
-    //            (key, value) -> {
-    //              if (!branchHashMap.containsKey(key)) {
-    //                Branch body = branchHashMap.get(key);
-    //                branchService.delete(key, visitService);
-    //                Event eventDeleted =
-    //                    Event.builder()
-    //                        .eventType("PUBLIC_BRANCH_DELETED")
-    //                        .eventDate(ZonedDateTime.now())
-    //                        .body(body)
-    //                        .params(Map.of("branchId", key))
-    //                        .build();
-    //                eventService.send("stat", false, eventDeleted);
-    //              }
-    //            });
-    branchHashMap.forEach(
-        (key, value) -> {
-
-          branchService.delete(key, visitService);
-          branchService.add(key, value);
-          Event eventDeleted =
-              Event.builder()
-                  .eventType("BRANCH_PUBLIC_COMPLETE")
-                  .eventDate(ZonedDateTime.now())
-                  .body(value)
-                  .params(Map.of("branchId", key))
-                  .build();
-          eventService.send("stat", false, eventDeleted);
-          try {
-            Thread.sleep(20);
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          }
-        });
-    Event eventPublicFinished =
-        Event.builder()
-            .eventType("PUBLIC_COMPLETE")
-            .eventDate(ZonedDateTime.now())
-            .body(branchHashMap)
-            .build();
-    eventService.send("stat", false, eventPublicFinished);
-    try {
-      Thread.sleep(20);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-    return branchService.getBranches();
+    return configuration.createBranchConfiguration(branchHashMap);
   }
 
   /**
@@ -114,84 +47,7 @@ public class ConfigurationController {
   @Post(uri = "/branches/hardcode")
   public Map<String, Branch> update() {
 
-    HashMap<String, Branch> branchHashMap = new HashMap<>();
-    HashMap<String, Branch> oldBranchHashMap = new HashMap<>();
-    branchService
-        .getBranches()
-        .forEach(
-            (key, value) ->
-                oldBranchHashMap.put(key, branchService.getDetailedBranches().get(key)));
-    Event eventPublicStart =
-        Event.builder()
-            .eventType("PUBLIC_STARTED")
-            .eventDate(ZonedDateTime.now())
-            .body(oldBranchHashMap)
-            .build();
-    eventService.send(List.of("branchconfigurer", "frontend", "stat"), false, eventPublicStart);
-    try {
-      Thread.sleep(20);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-    //
-    //    branchService
-    //        .getBranches()
-    //        .forEach((key, value) -> oldBranchHashMap.put(key,
-    // branchService.getDetailedBranches().get(key)));
-    //    branchService
-    //        .getBranches()
-    //        .forEach(
-    //            (key, value) -> {
-    //              try {
-    //                branchService.delete(key, visitService);
-    //                Event eventDeleted =
-    //                        Event.builder()
-    //                                .eventType("PUBLIC_BRANCH_DELETED")
-    //                                .eventDate(ZonedDateTime.now())
-    //                                .body(value)
-    //                                .params(Map.of("branchId", key))
-    //                                .build();
-    //                eventService.send(List.of("branchconfigurer", "frontend","stat"), false,
-    // eventDeleted);
-    //              } catch (Exception e) {
-    //                log.warn("Branch {} not found", key);
-    //              }
-    //            });
-    configuration.getCleanedConfiguration();
-
-    branchService
-        .getBranches()
-        .forEach(
-            (key, value) -> {
-              branchHashMap.put(key, branchService.getDetailedBranches().get(key));
-              Event eventDeleted =
-                  Event.builder()
-                      .eventType("BRANCH_PUBLIC_COMPLETE")
-                      .eventDate(ZonedDateTime.now())
-                      .body(branchService.getDetailedBranches().get(key))
-                      .params(Map.of("branchId", key))
-                      .build();
-              eventService.send(
-                  List.of("branchconfigurer", "frontend", "stat"), false, eventDeleted);
-              try {
-                Thread.sleep(20);
-              } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-              }
-            });
-    try {
-      Thread.sleep(20);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-    Event eventPublicFinished =
-        Event.builder()
-            .eventType("PUBLIC_COMPLETE")
-            .eventDate(ZonedDateTime.now())
-            .body(branchHashMap)
-            .build();
-    eventService.send(List.of("branchconfigurer", "frontend", "stat"), false, eventPublicFinished);
-    return branchHashMap;
+    return configuration.createBranchConfiguration(configuration.createDemoBranch());
   }
 
   /**

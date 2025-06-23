@@ -62,7 +62,7 @@ public class GroovyTest {
                     .build());
           }
         });
-    // Передача дополнительных параметров, в данном случае идентификаторы очереди, юзерпула и пула
+    // Передача дополнительных параметров, в данном случае идентификаторы очереди, пула сотрудника и пула
     // точки обслуживания
     // из которых нужно извлекать визиты
     binding.setVariable(
@@ -82,7 +82,7 @@ public class GroovyTest {
     Optional<Visit> optimalVisit = (Optional<Visit>) result.get("result");
 
     Assertions.assertTrue(optimalVisit.isPresent());
-    Assertions.assertEquals(optimalVisit.get().getQueueId(), "123");
+    Assertions.assertEquals("123", optimalVisit.get().getQueueId());
     log.info("Оптимальный визит:{}!", optimalVisit);
   }
 }

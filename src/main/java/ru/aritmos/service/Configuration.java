@@ -2,11 +2,13 @@ package ru.aritmos.service;
 
 import io.micronaut.context.annotation.Context;
 import jakarta.inject.Inject;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.representations.idm.UserRepresentation;
+import ru.aritmos.events.model.Event;
+import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 
@@ -16,17 +18,76 @@ public class Configuration {
   @Inject BranchService branchService;
   @Inject KeyCloackClient keyCloackClient;
   @Inject VisitService visitService;
+  @Inject EventService eventService;
 
-  public void getConfiguration() {
-
-    if (branchService.getBranches().isEmpty()) {
-      //        if (branchService.getBranches().isEmpty()) {
-
-      createBranch();
+  public HashMap<String, Branch> createBranchConfiguration(Map<String, Branch> branchHashMap) {
+    Event eventPublicStart =
+        Event.builder()
+            .eventType("PUBLIC_STARTED")
+            .eventDate(ZonedDateTime.now())
+            .body(branchHashMap)
+            .build();
+    eventService.send("stat", false, eventPublicStart);
+    try {
+      Thread.sleep(20);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
     }
+    //
+    //    branchService
+    //        .getBranches()
+    //        .forEach(
+    //            (key, value) -> {
+    //              if (!branchHashMap.containsKey(key)) {
+    //                Branch body = branchHashMap.get(key);
+    //                branchService.delete(key, visitService);
+    //                Event eventDeleted =
+    //                    Event.builder()
+    //                        .eventType("PUBLIC_BRANCH_DELETED")
+    //                        .eventDate(ZonedDateTime.now())
+    //                        .body(body)
+    //                        .params(Map.of("branchId", key))
+    //                        .build();
+    //                eventService.send("stat", false, eventDeleted);
+    //              }
+    //            });
+    branchHashMap.forEach(
+        (key, value) -> {
+          if (branchService.branchExists(key)) {
+            branchService.delete(key, visitService);
+          }
+          branchService.add(key, value);
+          Event eventDeleted =
+              Event.builder()
+                  .eventType("BRANCH_PUBLIC_COMPLETE")
+                  .eventDate(ZonedDateTime.now())
+                  .body(value)
+                  .params(Map.of("branchId", key))
+                  .build();
+          eventService.send("stat", false, eventDeleted);
+          try {
+            Thread.sleep(20);
+          } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+          }
+        });
+    Event eventPublicFinished =
+        Event.builder()
+            .eventType("PUBLIC_COMPLETE")
+            .eventDate(ZonedDateTime.now())
+            .body(branchHashMap)
+            .build();
+    eventService.send("stat", false, eventPublicFinished);
+    try {
+      Thread.sleep(20);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+    return branchService.getDetailedBranches();
   }
 
-  private void createBranch() {
+  public Map<String, Branch> createDemoBranch() {
+    Map<String, Branch> branches = new HashMap<>();
     Branch branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b4", "Клиника на Тверской");
     branch.setAddress("Москва, ул. Тверская 13");
     branch.setDescription("Главное отделение");
@@ -120,22 +181,7 @@ public class Configuration {
     workProfileFSC.getQueueIds().add(queueBigCredit.getId());
     workProfileFSC.getQueueIds().add(queueCredit.getId());
 
-    User psokolovUser =
-        new User("f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89", "psokolov", keyCloackClient);
-    try {
-      Optional<UserRepresentation> userInfo = keyCloackClient.getUserInfo(psokolovUser.getName());
 
-      if (userInfo.isPresent()) {
-        psokolovUser.setId(userInfo.get().getId());
-        psokolovUser.setEmail(userInfo.get().getEmail());
-        psokolovUser.setFirstName(userInfo.get().getFirstName());
-        psokolovUser.setLastName(userInfo.get().getLastName());
-      }
-    } catch (Exception ex) {
-      log.warn("Error {}", ex.getLocalizedMessage());
-      psokolovUser.setFirstName("Pavel");
-      psokolovUser.setLastName("Sokolov");
-    }
     HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
     servicePointC.setIsConfirmRequired(false);
     servicePointFSC.setIsConfirmRequired(false);
@@ -158,7 +204,6 @@ public class Configuration {
     branch.setQueues(queueMap);
 
     branch.setServicePoints(servicePointMap);
-    branch.getServicePoints().get(servicePointFC.getId()).setUser(psokolovUser);
     branch.getWorkProfiles().put(workProfileC.getId(), workProfileC);
     branch.getWorkProfiles().put(workProfileFC.getId(), workProfileFC);
     branch.getWorkProfiles().put(workProfileFSC.getId(), workProfileFSC);
@@ -171,13 +216,8 @@ public class Configuration {
                     .id("eb7ea46d-c995-4ca0-ba92-c92151473612")
                     .name("Intro8")
                     .build()));
-    branchService.add(branch.getId(), branch);
-    /*branchService.openServicePoint(
-        branch.getId(),
-        psokolovUser.getName(),
-        servicePointFC.getId(),
-        workProfileFC.getId(),
-        visitService);*/
+
+
 
     Branch branch2 = new Branch("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3", " Клиника на Ямской");
     branch2.setPrefix("YMS");
@@ -191,16 +231,11 @@ public class Configuration {
     Branch branch6 =
         new Branch("38f46d6b-3d37-40b9-8840-b57beac0ec1e", " Клиника доктора Дмитрия Юненко");
     branch6.setPrefix("DIM");
-    branchService.add(branch3.getId(), branch3);
-    branchService.add(branch4.getId(), branch4);
-    branchService.add(branch5.getId(), branch5);
-    branchService.add(branch6.getId(), branch6);
-  }
-
-  public void getCleanedConfiguration() {
-
-    //        if (branchService.getBranches().isEmpty()) {
-
-    createBranch();
+    branches.put(branch.getId(), branch);
+    branches.put(branch3.getId(), branch3);
+    branches.put(branch4.getId(), branch4);
+    branches.put(branch5.getId(), branch5);
+    branches.put(branch6.getId(), branch6);
+    return branches;
   }
 }
