@@ -350,7 +350,7 @@ public class Branch extends BranchEntity {
 
         if (withLogout) {
 
-          visitService.keyCloackClient.userLogout(servicePoint.getUser().getName(), isForced);
+          visitService.keyCloackClient.userLogout(servicePoint.getUser().getName(), isForced,reason);
         }
         servicePoint.setUser(null);
         eventService.send(
