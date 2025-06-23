@@ -286,7 +286,7 @@ public class KeyCloackClient {
    *
    * @param login логин сотрудника
    */
-  public void userLogout(@PathVariable String login, Boolean isForced,String reaseon) {
+  public void userLogout(@PathVariable String login, Boolean isForced, String reason) {
     AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
 
     AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
@@ -295,6 +295,13 @@ public class KeyCloackClient {
         .filter(f -> f.getUsername().equals(login))
         .forEach(
             f -> {
+              Optional<UserSession> userSession = getUserSessionByLogin(f);
+              if (userSession.isPresent()) {
+                userSession
+                    .get()
+                    .setParams(
+                        new HashMap<>(Map.of("isForced", isForced.toString(), "reason", reason)));
+              }
               eventService.send(
                   "frontend",
                   false,
@@ -304,7 +311,7 @@ public class KeyCloackClient {
                           !isForced
                               ? "PROCESSING_USER_LOGOUT_NOT_FORCE"
                               : "PROCESSING_USER_LOGOUT_FORCE")
-                      .body(getUserSessionByLogin(f))
+                      .body(userSession)
                       .build());
               eventService.send(
                   "stat",
@@ -312,8 +319,8 @@ public class KeyCloackClient {
                   Event.builder()
                       .senderService("visitmanager")
                       .eventType("KEYCLOACK_USER_LOGOUT")
-                      .params(Map.of("isForced", isForced.toString(),"reason",reaseon))
-                      .body(getUserSessionByLogin(f))
+                      .params(Map.of("isForced", isForced.toString(), "reason", reason))
+                      .body(userSession)
                       .build());
               keycloak.realm(realm).users().get(f.getId()).logout();
               log.info("{}", keycloak.serverInfo().getInfo());
