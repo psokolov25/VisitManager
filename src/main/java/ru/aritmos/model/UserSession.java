@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
+
 @Data
 @Serdeable
 @Builder
@@ -18,4 +20,5 @@ public class UserSession {
   Long last_update;
   UserToken userToken;
   String sid;
+  HashMap<String, String> params = new HashMap<>();
 }
