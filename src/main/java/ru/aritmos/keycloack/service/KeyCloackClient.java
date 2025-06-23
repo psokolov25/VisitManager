@@ -286,7 +286,7 @@ public class KeyCloackClient {
    *
    * @param login логин сотрудника
    */
-  public void userLogout(@PathVariable String login, Boolean isForced) {
+  public void userLogout(@PathVariable String login, Boolean isForced,String reaseon) {
     AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
 
     AuthorizationResponse t = authzClient.authorization(techlogin, techpassword).authorize();
@@ -312,6 +312,7 @@ public class KeyCloackClient {
                   Event.builder()
                       .senderService("visitmanager")
                       .eventType("KEYCLOACK_USER_LOGOUT")
+                      .params(Map.of("isForced", isForced.toString(),"reason",reaseon))
                       .body(getUserSessionByLogin(f))
                       .build());
               keycloak.realm(realm).users().get(f.getId()).logout();
