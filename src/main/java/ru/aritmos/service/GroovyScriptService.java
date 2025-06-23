@@ -5,7 +5,6 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import ru.aritmos.model.GroovyScript;
 
-
 public class GroovyScriptService {
     public void Execute(GroovyScript groovyScript)
     {

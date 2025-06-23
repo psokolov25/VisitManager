@@ -11,7 +11,6 @@ import jakarta.inject.Singleton;
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,7 @@ public class EventHandlerContext {
     SystemErrorHandler systemErrorHandler = new SystemErrorHandler();
     EntityChangedHandler entityChangedHandler = new EntityChangedHandler();
     BranchPublicHandler branchPublicHandler =
-        new BranchPublicHandler(visitService, eventService, branchService);
+        new BranchPublicHandler(visitService, eventService, branchService, configuration);
     ForceUserLogoutHandler forceUserLogoutHandler =
         new ForceUserLogoutHandler(visitService, eventService);
     NotForceUserLogoutHandler notForceUserLogoutHandler =
@@ -56,7 +55,7 @@ public class EventHandlerContext {
     KafkaListener.addServiceEventHandler(
         "PROCESSING_USER_LOGOUT_NOT_FORCE", notForceUserLogoutHandler);
 
-    configuration.getConfiguration();
+    configuration.createBranchConfiguration(configuration.createDemoBranch());
   }
 
   static class BusinesErrorHandler implements EventHandler {
@@ -201,12 +200,17 @@ public class EventHandlerContext {
     VisitService visitService;
     EventService eventService;
     BranchService branchService;
+    Configuration configuration;
 
     BranchPublicHandler(
-        VisitService visitService, EventService eventService, BranchService branchService) {
+        VisitService visitService,
+        EventService eventService,
+        BranchService branchService,
+        Configuration configuration) {
       this.visitService = visitService;
       this.eventService = eventService;
       this.branchService = branchService;
+      this.configuration = configuration;
     }
 
     private Map<String, Object> convertUsingReflection(Object object)
@@ -223,66 +227,12 @@ public class EventHandlerContext {
     }
 
     @Override
-    public void Handle(Event event) {
-      try {
-        Map<String, Object> branchHashMap = convertUsingReflection(event.getBody());
+    public void Handle(Event event) throws IllegalAccessException {
 
-        eventService.send(
-            List.of("branchconfigurer", "frontend","stat"),
-            false,
-            Event.builder()
-                .eventType("PUBLIC_STARTED")
-                .body(branchHashMap)
-                .eventDate(ZonedDateTime.now())
-                .build());
-        branchService
-            .getBranches()
-            .forEach(
-                (key, value) -> {
-                  if (!branchHashMap.containsKey(key)) {
-                    Branch body = branchService.getBranch(key);
-
-                    branchService.delete(key, visitService);
-                    Event eventDeleted =
-                            Event.builder()
-                                    .eventType("PUBLIC_BRANCH_DELETED")
-                                    .eventDate(ZonedDateTime.now())
-                                    .body(body)
-                                    .params(Map.of("branchId", key))
-                                    .build();
-                    eventService.send(List.of("branchconfigurer", "frontend","stat"), false, eventDeleted);
-                  }
-                });
-        branchHashMap.forEach(
-            (key, value) -> {
-              branchService.add(key, (Branch) value);
-              eventService.send(
-                  List.of("branchconfigurer", "frontend","stat"),
-                  false,
-                  Event.builder()
-                      .eventType("BRANCH_PUBLIC_COMPLETE")
-                      .body(value)
-                      .eventDate(ZonedDateTime.now())
-                      .build());
-            });
-        eventService.send(
-            List.of("branchconfigurer", "frontend","stat"),
-            false,
-            Event.builder()
-                .eventType("PUBLIC_COMPLETE")
-                .body(branchHashMap)
-                .eventDate(ZonedDateTime.now())
-                .build());
-      } catch (Exception e) {
-        eventService.send(
-            List.of("branchconfigurer", "frontend","stat"),
-            false,
-            Event.builder()
-                .eventType("PUBLIC_ERROR")
-                .body(e.getMessage())
-                .eventDate(ZonedDateTime.now())
-                .build());
-      }
+      Map<String, Object> branchHashMap = convertUsingReflection(event.getBody());
+      Map<String, Branch> branchMap = new HashMap<>();
+      branchHashMap.forEach((key, value) -> branchMap.put(key, (Branch) value));
+      configuration.createBranchConfiguration(branchMap);
     }
   }
 }

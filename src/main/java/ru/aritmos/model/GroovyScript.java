@@ -2,7 +2,6 @@ package ru.aritmos.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.serde.annotation.Serdeable;
-
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -24,9 +23,8 @@ public class GroovyScript {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   HashMap<Object, Object> outputParameters = new HashMap<>();
 
-
   String ruleCode;
- /* @JsonIgnore
+  /* @JsonIgnore
   public void Execute() {
     Binding binding = new Binding();
     // Объект выполнения скрипта Groovy

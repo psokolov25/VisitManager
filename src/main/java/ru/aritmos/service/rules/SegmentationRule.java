@@ -31,7 +31,6 @@ public class SegmentationRule {
    * @param branch отделение
    * @return Очередь
    */
-
   public Optional<Queue> getQueue(Visit visit, Branch branch) throws SystemException {
     if (visit.getCurrentService() != null
         && visit.getCurrentService().getServiceGroupId() != null) {
@@ -72,7 +71,6 @@ public class SegmentationRule {
 
     return Optional.empty();
   }
-
 
   public Optional<Queue> getQueue(Visit visit, Branch branch, String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branch.getId());
