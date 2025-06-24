@@ -54,7 +54,11 @@ public class Configuration {
     branchHashMap.forEach(
         (key, value) -> {
           if (branchService.branchExists(key)) {
-            branchService.delete(key, visitService);
+            try {
+              branchService.delete(key,visitService);
+            } catch (Exception e) {
+             // throw new RuntimeException(e);
+            }
           }
           branchService.add(key, value);
           Event eventDeleted =

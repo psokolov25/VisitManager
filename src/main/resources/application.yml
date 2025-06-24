@@ -61,12 +61,13 @@ redis:
   uri: '${REDIS_SERVER:`redis://192.168.8.45:7379`}'
   #uri: redis://192.168.8.45:7379/5
   #uri: ${REDIS_SERVER}
-  cache:
-    key-serializer: io.micronaut.core.serialize.ObjectSerializer
-    value-serializer: io.micronaut.core.serialize.ObjectSerializer
-
   caches:
     branches:
       charset: UTF-8
+      key-serializer: io.micronaut.core.serialize.ObjectSerializer
+      value-serializer: io.micronaut.core.serialize.ObjectSerializer
+      expire-after-write: 1h  # Время жизни записи
+      expire-after-access: 30m # Время жизни после последнего доступа
+      maximum-size: 1000       # Максимальное количество записей
 
 
