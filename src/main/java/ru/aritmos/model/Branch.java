@@ -350,7 +350,8 @@ public class Branch extends BranchEntity {
 
         if (withLogout) {
 
-          visitService.keyCloackClient.userLogout(servicePoint.getUser().getName(), isForced,reason);
+          visitService.keyCloackClient.userLogout(
+              servicePoint.getUser().getName(), isForced, reason);
         }
         servicePoint.setUser(null);
         eventService.send(
@@ -397,7 +398,9 @@ public class Branch extends BranchEntity {
     ServicePoint servicePoint =
         visitService.getServicePointHashMap(this.getId()).get(servicePointId);
     if (servicePoint.getVisit() != null) {
-      if (isForced && !servicePoint.getVisit().getUnservedServices().isEmpty()) {
+      if (isForced
+          && servicePoint.getVisit().getUnservedServices() != null
+          && !servicePoint.getVisit().getUnservedServices().isEmpty()) {
         Visit visit = servicePoint.getVisit();
         visit.getUnservedServices().clear();
         updateVisit(visit, eventService, "UNSERVED_SERVICES_CANCELED", visitService);
