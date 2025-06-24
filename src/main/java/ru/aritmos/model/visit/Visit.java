@@ -152,7 +152,7 @@ public class Visit {
   /** Массив событий */
   List<VisitEvent> visitEvents;
 
-  @JsonIgnore List<VisitEventInformation> visitEventInformationList;
+  List<VisitEventInformation> visitEventInformationList;
 
   /** Лимит ожидания после возвращения визита в очередь или пул сотрудника или точки обслуживания */
   private Long returnTimeDelay;
