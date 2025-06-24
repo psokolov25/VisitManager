@@ -534,6 +534,9 @@ public class VisitService {
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          event
+                  .getParameters()
+                  .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
           if (entryPoint.getPrinter() != null && entryPoint.getPrinter().getId() != null) {
 
             event.getParameters().put("printerId", entryPoint.getPrinter().getId());
@@ -547,6 +550,9 @@ public class VisitService {
             queueEvent
                 .getParameters()
                 .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+            queueEvent
+                    .getParameters()
+                    .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             visit.setQueueId(serviceQueue.getId());
 
@@ -658,6 +664,9 @@ public class VisitService {
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          event
+                  .getParameters()
+                  .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
           if (entryPoint.getPrinter() != null && entryPoint.getPrinter().getId() != null) {
 
             event.getParameters().put("printerId", entryPoint.getPrinter().getId());
@@ -672,6 +681,9 @@ public class VisitService {
             queueEvent
                 .getParameters()
                 .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+            queueEvent
+                    .getParameters()
+                    .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             visit.setQueueId(serviceQueue.getId());
 
@@ -783,6 +795,9 @@ public class VisitService {
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          event
+                  .getParameters()
+                  .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
           event.getParameters().put("printerId", printerId);
           event.dateTime = ZonedDateTime.now();
 
@@ -793,6 +808,9 @@ public class VisitService {
             queueEvent
                 .getParameters()
                 .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+            queueEvent
+                    .getParameters()
+                    .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             visit.setQueueId(serviceQueue.getId());
 
@@ -903,6 +921,9 @@ public class VisitService {
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          event
+                  .getParameters()
+                  .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
           event.getParameters().put("printerId", printerId);
           event.dateTime = ZonedDateTime.now();
 
@@ -913,6 +934,9 @@ public class VisitService {
             queueEvent
                 .getParameters()
                 .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+            queueEvent
+                    .getParameters()
+                    .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             visit.setQueueId(serviceQueue.getId());
 
@@ -1021,6 +1045,9 @@ public class VisitService {
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          event
+                  .getParameters()
+                  .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
           event.getParameters().put("queueId", serviceQueue.getId());
           event
               .getParameters()
@@ -1058,6 +1085,9 @@ public class VisitService {
           calledEvent
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
+          calledEvent
+                  .getParameters()
+                  .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
           calledEvent
               .getParameters()
               .put(
@@ -1132,6 +1162,9 @@ public class VisitService {
             queueEvent
                 .getParameters()
                 .put("serviceId", !services.isEmpty() ? services.get(0).clone().getId() : null);
+            queueEvent
+                    .getParameters()
+                    .put("serviceName", !services.isEmpty() ? services.get(0).getName() : null);
             queueEvent.getParameters().put("queueId", serviceQueue.getId());
             // visit.setQueueId(serviceQueue.getId());
             visit.setStartServingDateTime(ZonedDateTime.now());
@@ -3602,6 +3635,8 @@ public class VisitService {
     event.getParameters().put("servicePointId", servicePointId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().put("serviceId", visit.getCurrentService().getId());
+    event.getParameters().put("serviceName", visit.getCurrentService().getName());
+
     event
         .getParameters()
         .put(

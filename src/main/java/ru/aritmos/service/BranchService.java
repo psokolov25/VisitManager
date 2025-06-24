@@ -37,7 +37,9 @@ public class BranchService {
   @Inject EventService eventService;
   @Inject KeyCloackClient keyCloackClient;
 
-  @Cacheable
+  @Cacheable(
+      parameters = {"key"},
+      value = {"branch"})
   public Branch getBranch(String key) throws BusinessException {
 
     Branch branch = branches.get(key);
@@ -76,33 +78,35 @@ public class BranchService {
     return result;
   }
 
-  @CachePut(parameters = {"key"})
-  public Branch add(String key, Branch value) {
+  @CachePut(
+      parameters = {"key"},
+      value = {"branch"})
+  public Branch add(String key, Branch branch) {
 
     Branch oldBranch;
 
     if (this.branches.containsKey(key)) {
       oldBranch = this.branches.get(key);
       eventService.sendChangedEvent(
-          "config", true, oldBranch, value, new HashMap<>(), "BRANCH_CHANGED");
-      // eventService.sendChangedEvent("*", true, oldBranch, value, new HashMap<>(), "CHANGED");
+          "config", true, oldBranch, branch, new HashMap<>(), "BRANCH_CHANGED");
+      // eventService.sendChangedEvent("*", true, oldBranch, branch, new HashMap<>(), "CHANGED");
 
     } else {
       eventService.sendChangedEvent(
-          "config", true, null, value, new HashMap<>(), "BRANCH_CREATED");
-      // eventService.sendChangedEvent("*", true, null, value, new HashMap<>(), "CREATED");
+          "config", true, null, branch, new HashMap<>(), "BRANCH_CREATED");
+      // eventService.sendChangedEvent("*", true, null, branch, new HashMap<>(), "CREATED");
     }
-    value.getQueues().forEach((key1, value2) -> value2.setBranchId(key));
-    value.getServicePoints().forEach((key1, value2) -> value2.setBranchId(key));
-    value.getEntryPoints().forEach((key1, value2) -> value2.setBranchId(key));
-    value.getServices().forEach((key1, value2) -> value2.setBranchId(key));
-    value.getWorkProfiles().forEach((key1, value2) -> value2.setBranchId(key));
-    value.getServiceGroups().forEach((key1, value2) -> value2.setBranchId(key));
-    value.getReception().setBranchId(key);
-    branches.put(key, value);
+    branch.getQueues().forEach((key1, value) -> value.setBranchId(key));
+    branch.getServicePoints().forEach((key1, value) -> value.setBranchId(key));
+    branch.getEntryPoints().forEach((key1, value) -> value.setBranchId(key));
+    branch.getServices().forEach((key1, value) -> value.setBranchId(key));
+    branch.getWorkProfiles().forEach((key1, value) -> value.setBranchId(key));
+    branch.getServiceGroups().forEach((key1, value) -> value.setBranchId(key));
+    branch.getReception().setBranchId(key);
+    branches.put(key, branch);
 
-    log.info("Putting branchInfo {}", value);
-    return value;
+    log.info("Putting branchInfo {}", branch);
+    return branch;
   }
 
   /**
@@ -120,7 +124,7 @@ public class BranchService {
     }
   }
 
-  @CacheInvalidate
+  @CacheInvalidate(parameters = {"key"})
   public void delete(String key, VisitService visitService) {
     Branch oldBranch;
     if (this.branches.containsKey(key)) {
