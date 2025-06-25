@@ -1731,6 +1731,15 @@ public class VisitService {
           VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE_RESULT;
           visitEvent.getParameters().put("servicePointId", servicePoint.getId());
           visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+          visitEvent
+              .getParameters()
+              .put(
+                  "deliveredServiceName",
+                  visit
+                      .getCurrentService()
+                      .getDeliveredServices()
+                      .get(deliveredServiceId)
+                      .getName());
           visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
           visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
 
@@ -1805,7 +1814,26 @@ public class VisitService {
               eventService,
               HttpStatus.NOT_FOUND);
         }
-
+        String outcomeId =
+            visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).getOutcome()
+                    != null
+                ? visit
+                    .getCurrentService()
+                    .getDeliveredServices()
+                    .get(deliveredServiceId)
+                    .getOutcome()
+                    .getId()
+                : "";
+        String outcomeName =
+            visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).getOutcome()
+                    != null
+                ? visit
+                    .getCurrentService()
+                    .getDeliveredServices()
+                    .get(deliveredServiceId)
+                    .getOutcome()
+                    .getName()
+                : "";
         visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).setOutcome(null);
 
         VisitEvent visitEvent = VisitEvent.DELETED_DELIVERED_SERVICE_RESULT;
@@ -1813,7 +1841,8 @@ public class VisitService {
         visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
         visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
         visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
-        visitEvent.getParameters().put("outcomeId", "");
+        visitEvent.getParameters().put("outcomeId", outcomeId);
+        visitEvent.getParameters().put("outcomeName", outcomeName);
         visitEvent.getParameters().put("branchId", branchId);
         visitEvent
             .getParameters()
@@ -1860,7 +1889,14 @@ public class VisitService {
               eventService,
               HttpStatus.BAD_REQUEST);
         }
-
+        String outcomeId =
+            visit.getCurrentService().getOutcome() != null
+                ? visit.getCurrentService().getOutcome().getId()
+                : "";
+        String outcomeName =
+            visit.getCurrentService().getOutcome() != null
+                ? visit.getCurrentService().getOutcome().getName()
+                : "";
         visit.getCurrentService().setOutcome(null);
 
         VisitEvent visitEvent = VisitEvent.DELETED_SERVICE_RESULT;
@@ -1875,6 +1911,8 @@ public class VisitService {
             .put(
                 "staffName",
                 servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
+        visitEvent.getParameters().put("outcomeId", outcomeId);
+        visitEvent.getParameters().put("outcomeName", outcomeName);
         branchService.updateVisit(visit, visitEvent, this);
         return visit;
 
