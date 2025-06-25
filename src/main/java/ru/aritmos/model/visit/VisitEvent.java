@@ -122,7 +122,7 @@ public enum VisitEvent {
           Map.entry(TRANSFER_TO_USER_POOL, TransactionCompletionStatus.TRANSFER_TO_USER_POOL));
 
   /* Список событий, которые не должны отправляться в топики статистики */
-  private static final List<VisitEvent> notSendToStat = List.of(RECALLED);
+  private static final List<VisitEvent> notSendToStat = List.of();
 
   /**
    * Список разрешенных следующих состояний, где ключ - состояние, значение - список разрешенных
@@ -196,6 +196,7 @@ public enum VisitEvent {
   VisitState visitState;
 
   /** Проверка на начало новой транзакции * */
+  @SuppressWarnings("unused")
   public static Boolean isNewOfTransaction(VisitEvent visitEvent) {
     return VisitEvent.newTransactionEvents.stream().anyMatch(am -> am.equals(visitEvent));
   }
@@ -211,6 +212,7 @@ public enum VisitEvent {
   }
 
   /** Получение статуса визита соответствующего событию */
+  @SuppressWarnings("unused")
   public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {
     if (transactionStatus.containsKey(visitEvent)) {
       return transactionStatus.get(visitEvent);

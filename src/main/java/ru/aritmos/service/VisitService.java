@@ -341,7 +341,7 @@ public class VisitService {
         throw new BusinessException("wasn't early created", eventService, HttpStatus.CONFLICT);
       else {
         visit
-            .getVisitEventInformationList()
+            .getEvents()
             .add(
                 VisitEventInformation.builder()
                     .visitEvent(event)
@@ -355,7 +355,7 @@ public class VisitService {
       VisitEvent prevEvent = visit.getVisitEvents().get(visit.getVisitEvents().size() - 1);
       if (prevEvent.canBeNext(event)) {
         visit
-            .getVisitEventInformationList()
+            .getEvents()
             .add(
                 VisitEventInformation.builder()
                     .visitEvent(event)
@@ -508,7 +508,7 @@ public class VisitService {
                 .visitMarks(new ArrayList<>())
                 .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
-                .visitEventInformationList(new ArrayList<>())
+                .events(new ArrayList<>())
                 .returnTimeDelay(0L)
                 .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
@@ -637,7 +637,7 @@ public class VisitService {
                 .visitMarks(new ArrayList<>())
                 .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
-                .visitEventInformationList(new ArrayList<>())
+                .events(new ArrayList<>())
                 .returnTimeDelay(0L)
                 .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
@@ -759,7 +759,7 @@ public class VisitService {
                 .visitMarks(new ArrayList<>())
                 .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
-                .visitEventInformationList(new ArrayList<>())
+                .events(new ArrayList<>())
                 .returnTimeDelay(0L)
                 .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
@@ -886,7 +886,7 @@ public class VisitService {
                 .visitMarks(new ArrayList<>())
                 .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
-                .visitEventInformationList(new ArrayList<>())
+                .events(new ArrayList<>())
                 .returnTimeDelay(0L)
                 .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
@@ -1018,7 +1018,7 @@ public class VisitService {
                 .visitMarks(new ArrayList<>())
                 .visitNotes(new ArrayList<>())
                 .visitEvents(new ArrayList<>())
-                .visitEventInformationList(new ArrayList<>())
+                .events(new ArrayList<>())
                 .transferTimeDelay(0L)
                 // .updateDateTime(ZonedDateTime.now())
                 // .transferDateTime(ZonedDateTime.now())
@@ -1940,7 +1940,7 @@ public class VisitService {
       visit.setReturnTimeDelay(returnTimeDelay);
       visit.setStartServingDateTime(null);
       Optional<VisitEventInformation> event =
-          visit.getVisitEventInformationList().stream()
+          visit.getEvents().stream()
               .max(Comparator.comparing(VisitEventInformation::getEventDateTime));
 
       if (event.isPresent() && event.get().getParameters().containsKey("servicePointId")) {
@@ -2615,17 +2615,18 @@ public class VisitService {
 
   private String getLastNotNutllEventParam(Visit visit, String paramName) {
     String result = "";
-    Optional<VisitEvent> event =
+    Optional<VisitEventInformation> event =
         visit.getEvents().stream()
-            .flatMap(fm -> fm.stream().map(VisitEventInformation::getVisitEvent))
-            .toList()
-            .stream()
+
+
             .filter(
                 f ->
-                    f.dateTime != null
+                    f.getEventDateTime() != null
                         && f.getParameters().containsKey(paramName)
-                        && f.getParameters().get(paramName) != null)
-            .max(Comparator.comparing(co -> co.dateTime.truncatedTo(ChronoUnit.SECONDS)));
+                        && f.getParameters().get(paramName) != null
+                    && !f.getParameters().get(paramName).isEmpty()
+            )
+            .max(Comparator.comparing(co -> co.getEventDateTime().truncatedTo(ChronoUnit.SECONDS)));
     if (event.isPresent()) {
       result = event.get().getParameters().get(paramName);
     }
