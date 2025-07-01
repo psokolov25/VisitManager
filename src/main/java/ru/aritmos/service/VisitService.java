@@ -146,9 +146,9 @@ public class VisitService {
             .filter(
                 f ->
                     (f.getReturnTimeDelay() == null
-                            || f.getReturnTimeDelay() < f.getReturningTime())
+                            || f.getReturnTimeDelay() <= f.getReturningTime())
                         && (f.getTransferTimeDelay() == null
-                            || f.getTransferTimeDelay() < f.getTransferingTime()))
+                            || f.getTransferTimeDelay() <= f.getTransferingTime()))
             .toList();
     return visits.stream()
         .sorted((f1, f2) -> Long.compare(f2.getWaitingTime(), f1.getWaitingTime()))
