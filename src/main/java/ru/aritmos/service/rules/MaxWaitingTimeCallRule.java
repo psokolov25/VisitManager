@@ -75,9 +75,9 @@ public class MaxWaitingTimeCallRule implements CallRule {
                 .filter(
                     f ->
                         ((f.getReturnDateTime() == null
-                                    || f.getReturningTime() > f.getReturnTimeDelay())
+                                    || f.getReturningTime() >= f.getReturnTimeDelay())
                                 && (f.getTransferDateTime() == null
-                                    || f.getTransferingTime() > f.getTransferTimeDelay()))
+                                    || f.getTransferingTime() >= f.getTransferTimeDelay()))
                             && f.getStatus().contains("WAITING"))
                 .max(this::visitComparer);
         result.ifPresent(visit -> visit.getParameterMap().remove("isTransferredToStart"));
@@ -110,9 +110,9 @@ public class MaxWaitingTimeCallRule implements CallRule {
                     .filter(
                         f2 ->
                             ((f2.getReturnDateTime() == null
-                                        || f2.getReturningTime() > f2.getReturnTimeDelay())
+                                        || f2.getReturningTime() >= f2.getReturnTimeDelay())
                                     && (f2.getTransferDateTime() == null
-                                        || f2.getTransferingTime() > f2.getTransferTimeDelay()))
+                                        || f2.getTransferingTime() >= f2.getTransferTimeDelay()))
                                 && f2.getStatus().contains("WAITING"))
                     .max(this::visitComparer);
             result.ifPresent(visit -> visit.getParameterMap().remove("isTransferredToStart"));
