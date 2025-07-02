@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 
 @OpenAPIDefinition(
-    info = @Info(title = "VisitManagement", version = "alpha05-06.25"),
+    info = @Info(title = "VisitManagement", version = "alpha07.25"),
     tags = {
       @Tag(name = "Зона обслуживания"),
       @Tag(name = "Зона ожидания"),
@@ -28,6 +28,7 @@ public class Application {
   public void getConfiguration() {}
 
   @ContextConfigurer
+  @SuppressWarnings("unused")
   public static class Configurer implements ApplicationContextConfigurer {
     @Override
     public void configure(@NonNull ApplicationContextBuilder builder) {

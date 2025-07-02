@@ -2083,7 +2083,7 @@ public class VisitService {
         VisitEvent event = VisitEvent.TRANSFER_TO_QUEUE;
         event.dateTime = ZonedDateTime.now();
         event.getParameters().put("branchId", branchId);
-        event.getParameters().put("queueId", queueId);
+        event.getParameters().put("newQueueId", queueId);
         event
             .getParameters()
             .put("staffId", servicePoint.getUser() != null ? servicePoint.getUser().getId() : "");
@@ -2096,7 +2096,7 @@ public class VisitService {
 
         String value = getLastOldQueueId(visit);
         if (value != null && !value.isEmpty()) {
-          event.getParameters().put("queueId", value);
+          event.getParameters().put("oldQueueId", value);
         }
 
         branchService.updateVisit(visit, event, this, !isAppend);
