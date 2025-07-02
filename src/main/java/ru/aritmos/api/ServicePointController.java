@@ -303,6 +303,8 @@ public class ServicePointController {
                     mediaType = "application/json",
                     examples = {
                       @ExampleObject(
+                          name = "Сотрудник не обслуживает",
+                          value =
                               """
                                       {
                                         "servicePointId": "a66ff6f4-4f4a-4009-8602-0dc278024cf2",
@@ -310,7 +312,18 @@ public class ServicePointController {
                                         "ticket": "",
                                         "userName": "psokolov",
                                         "servicePointName": "Каб. 121"
-                                      }""")
+                                      }"""),
+                      @ExampleObject(
+                          name = "Сотрудник обслуживает",
+                          value =
+                              """
+                                            {
+                                              "servicePointId": "a66ff6f4-4f4a-4009-8602-0dc278024cf2",
+                                              "message": "The service point is already busy!",
+                                              "ticket": "F001",
+                                              "userName": "psokolov",
+                                              "servicePointName": "Каб. 121"
+                                            }""")
                     },
                     schema = @Schema(implementation = HashMap.class))),
         @ApiResponse(responseCode = "500", description = "Server Error")
