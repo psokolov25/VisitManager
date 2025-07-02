@@ -240,15 +240,31 @@ public class Branch extends BranchEntity {
                   .build());
 
         } else {
-          throw new BusinessException(
-              String.format(
-                  "%s уже вошел в точку обслуживания %s ",
-                  servicePoint.getUser().getName(), user.servicePointId),
-              String.format(
-                  "In servicePoint %s already %s logged in ",
-                  user.servicePointId, servicePoint.getUser().getName()),
-              eventService,
-              HttpStatus.CONFLICT);
+          String ticket = "";
+          if (servicePoint.getVisit() != null) {
+            ticket = servicePoint.getVisit().getTicket();
+          }
+          if (ticket.isEmpty()) {
+            throw new BusinessException(
+                String.format(
+                    "%s уже занял точку обслуживания %s ",
+                    servicePoint.getUser().getName(), servicePoint.getName()),
+                String.format(
+                    "In servicePoint %s already %s logged in ",
+                    servicePoint.getName(), servicePoint.getUser().getName()),
+                eventService,
+                HttpStatus.CONFLICT);
+          } else {
+            throw new BusinessException(
+                String.format(
+                    "%s обслуживает талон %s в занятой им точке обслуживания %s",
+                    servicePoint.getUser().getName(), ticket, servicePoint.getName()),
+                String.format(
+                    "In servicePoint %s already %s logged in and servicing ticket %s ",
+                    servicePoint.getName(), servicePoint.getUser().getName(), ticket),
+                eventService,
+                HttpStatus.CONFLICT);
+          }
         }
       } else {
         throw new BusinessException(
