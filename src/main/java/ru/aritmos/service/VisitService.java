@@ -2617,15 +2617,12 @@ public class VisitService {
     String result = "";
     Optional<VisitEventInformation> event =
         visit.getEvents().stream()
-
-
             .filter(
                 f ->
                     f.getEventDateTime() != null
                         && f.getParameters().containsKey(paramName)
                         && f.getParameters().get(paramName) != null
-                    && !f.getParameters().get(paramName).isEmpty()
-            )
+                        && !f.getParameters().get(paramName).isEmpty())
             .max(Comparator.comparing(co -> co.getEventDateTime().truncatedTo(ChronoUnit.SECONDS)));
     if (event.isPresent()) {
       result = event.get().getParameters().get(paramName);

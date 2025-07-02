@@ -1,12 +1,11 @@
 package ru.aritmos.model;
 
 import io.micronaut.serde.annotation.Serdeable;
+import java.util.HashMap;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.HashMap;
 
 @Data
 @Serdeable

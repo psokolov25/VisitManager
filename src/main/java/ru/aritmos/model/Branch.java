@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.serde.ObjectMapper;
 import io.micronaut.serde.annotation.Serdeable;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -202,7 +204,7 @@ public class Branch extends BranchEntity {
    * @param user сотрудник, открывший точку обслуживания
    * @param eventService служба рассылки событий
    */
-  public void openServicePoint(User user, EventService eventService) {
+  public void openServicePoint(User user, EventService eventService) throws IOException {
     getUsers().put(user.getName(), user);
     if (user.servicePointId != null) {
       if (this.getServicePoints().containsKey(user.servicePointId)) {
@@ -241,30 +243,26 @@ public class Branch extends BranchEntity {
 
         } else {
           String ticket = "";
+
           if (servicePoint.getVisit() != null) {
             ticket = servicePoint.getVisit().getTicket();
           }
-          if (ticket.isEmpty()) {
-            throw new BusinessException(
-                String.format(
-                    "%s уже занял точку обслуживания %s ",
-                    servicePoint.getUser().getName(), servicePoint.getName()),
-                String.format(
-                    "In servicePoint %s already %s logged in ",
-                    servicePoint.getName(), servicePoint.getUser().getName()),
-                eventService,
-                HttpStatus.CONFLICT);
-          } else {
-            throw new BusinessException(
-                String.format(
-                    "%s обслуживает талон %s в занятой им точке обслуживания %s",
-                    servicePoint.getUser().getName(), ticket, servicePoint.getName()),
-                String.format(
-                    "In servicePoint %s already %s logged in and servicing ticket %s ",
-                    servicePoint.getName(), servicePoint.getUser().getName(), ticket),
-                eventService,
-                HttpStatus.CONFLICT);
-          }
+          HashMap<String, String> errorBody =
+              new HashMap<>(
+                  Map.of(
+                      "message",
+                      "The service point is already busy!",
+                      "ticket",
+                      ticket,
+                      "servicePointId",
+                      servicePoint.getId(),
+                      "servicePointName",
+                      servicePoint.getName(),
+                      "userName",
+                      servicePoint.getUser().getName()));
+          ObjectMapper objectMapper = ObjectMapper.getDefault();
+
+          throw new BusinessException(errorBody, eventService, HttpStatus.CONFLICT, objectMapper);
         }
       } else {
         throw new BusinessException(

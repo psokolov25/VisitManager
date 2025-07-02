@@ -62,7 +62,7 @@ class EntrypointTest {
 
   /** Создание отделения для проведения юнит теста */
   @BeforeEach
-  void CreateBranch() {
+  void CreateBranch() throws IOException {
 
     if (!branchService.getBranches().containsKey("bc08b7d2-c731-438d-9785-eba2078b2089")) {
       branch = new Branch("bc08b7d2-c731-438d-9785-eba2078b2089", "Отделение на Тверской");

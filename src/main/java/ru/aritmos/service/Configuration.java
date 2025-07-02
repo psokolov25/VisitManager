@@ -55,9 +55,9 @@ public class Configuration {
         (key, value) -> {
           if (branchService.branchExists(key)) {
             try {
-              branchService.delete(key,visitService);
+              branchService.delete(key, visitService);
             } catch (Exception e) {
-             // throw new RuntimeException(e);
+              // throw new RuntimeException(e);
             }
           }
           branchService.add(key, value);
@@ -185,7 +185,6 @@ public class Configuration {
     workProfileFSC.getQueueIds().add(queueBigCredit.getId());
     workProfileFSC.getQueueIds().add(queueCredit.getId());
 
-
     HashMap<String, ServicePoint> servicePointMap = new HashMap<>();
     servicePointC.setIsConfirmRequired(false);
     servicePointFSC.setIsConfirmRequired(false);
@@ -220,8 +219,6 @@ public class Configuration {
                     .id("eb7ea46d-c995-4ca0-ba92-c92151473612")
                     .name("Intro8")
                     .build()));
-
-
 
     Branch branch2 = new Branch("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3", " Клиника на Ямской");
     branch2.setPrefix("YMS");

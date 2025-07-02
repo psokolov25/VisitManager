@@ -8,8 +8,14 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.SerdeImport;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.keycloak.representations.idm.GroupRepresentation;
@@ -283,6 +289,32 @@ public class ServicePointController {
    * @param workProfileId идентификатор рабочего профиля
    * @return сотрудник
    */
+  @Operation(
+      operationId = "openServicePoint",
+      summary = "Открытие точки обслуживания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Открытие произошло успешно"),
+        @ApiResponse(
+            responseCode = "409",
+            description =
+                "В данной точке обслуживания уже сидит сотрудник, и если возвращается не пустой ticketId - идет обслуживание",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    examples = {
+                      @ExampleObject(
+                              """
+                                      {
+                                        "servicePointId": "a66ff6f4-4f4a-4009-8602-0dc278024cf2",
+                                        "message": "The service point is already busy!",
+                                        "ticket": "",
+                                        "userName": "psokolov",
+                                        "servicePointName": "Каб. 121"
+                                      }""")
+                    },
+                    schema = @Schema(implementation = HashMap.class))),
+        @ApiResponse(responseCode = "500", description = "Server Error")
+      })
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
   @Tag(name = "Полный список")
@@ -293,7 +325,8 @@ public class ServicePointController {
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable String userName,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId) {
+      @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId)
+      throws IOException {
 
     return branchService.openServicePoint(
         branchId, userName, servicePointId, workProfileId, visitService);

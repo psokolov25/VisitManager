@@ -83,7 +83,7 @@ redis:
   caches:
     branches:
       charset: UTF-8
-      key-serializer:  io.micronaut.core.serialize.ObjectSerializer
+      key-serializer: io.micronaut.core.serialize.ObjectSerializer
       value-serializer: io.micronaut.core.serialize.ObjectSerializer
       expire-after-access: 30d
       expire-after-write: 30d

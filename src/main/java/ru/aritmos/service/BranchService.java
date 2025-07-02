@@ -3,13 +3,13 @@ package ru.aritmos.service;
 import io.micronaut.cache.annotation.CacheConfig;
 import io.micronaut.cache.annotation.CacheInvalidate;
 import io.micronaut.cache.annotation.CachePut;
-import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.cache.interceptor.ParametersKey;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,7 +183,7 @@ public class BranchService {
       String userName,
       String servicePointId,
       String workProfileId,
-      VisitService visitService) {
+      VisitService visitService) throws IOException {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
       throw new BusinessException("Work profile not found!!", eventService, HttpStatus.NOT_FOUND);

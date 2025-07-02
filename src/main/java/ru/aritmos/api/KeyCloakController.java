@@ -60,7 +60,9 @@ public class KeyCloakController {
       produces = "application/json")
   @SuppressWarnings("all")
   void DeleteSession(
-      @PathVariable String login, @QueryValue(defaultValue = "false") Boolean isForced,@QueryValue(defaultValue = "") String reason) {
-    keyCloackClient.userLogout(login, isForced,reason);
+      @PathVariable String login,
+      @QueryValue(defaultValue = "false") Boolean isForced,
+      @QueryValue(defaultValue = "") String reason) {
+    keyCloackClient.userLogout(login, isForced, reason);
   }
 }

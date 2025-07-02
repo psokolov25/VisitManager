@@ -231,30 +231,30 @@ public class Visit {
     return servingTime >= 0 ? servingTime : 0;
   }
 
-//  @JsonGetter
-//  public ArrayList<ArrayList<VisitEventInformation>> getEvents() {
-//
-//    ArrayList<ArrayList<VisitEventInformation>> result = new ArrayList<>();
-//    ArrayList<VisitEventInformation> subresult = new ArrayList<>();
-//    result.add(subresult);
-//    for (VisitEventInformation f : this.getVisitEventInformationList()) {
-//
-//      VisitEventInformation visitEventDateTime =
-//          VisitEventInformation.builder()
-//              .visitEvent(f.visitEvent)
-//              .eventDateTime(f.getEventDateTime())
-//              .parameters(f.getParameters())
-//              .transactionCompletionStatus(
-//                  VisitEvent.isNewOfTransaction(f.visitEvent)
-//                      ? VisitEvent.getStatus(f.visitEvent)
-//                      : null)
-//              .build();
-//      subresult.add(visitEventDateTime);
-//      if (VisitEvent.isNewOfTransaction(f.visitEvent)) {
-//        subresult = new ArrayList<>();
-//        result.add(subresult);
-//      }
-//    }
-//    return result;
-//  }
+  //  @JsonGetter
+  //  public ArrayList<ArrayList<VisitEventInformation>> getEvents() {
+  //
+  //    ArrayList<ArrayList<VisitEventInformation>> result = new ArrayList<>();
+  //    ArrayList<VisitEventInformation> subresult = new ArrayList<>();
+  //    result.add(subresult);
+  //    for (VisitEventInformation f : this.getVisitEventInformationList()) {
+  //
+  //      VisitEventInformation visitEventDateTime =
+  //          VisitEventInformation.builder()
+  //              .visitEvent(f.visitEvent)
+  //              .eventDateTime(f.getEventDateTime())
+  //              .parameters(f.getParameters())
+  //              .transactionCompletionStatus(
+  //                  VisitEvent.isNewOfTransaction(f.visitEvent)
+  //                      ? VisitEvent.getStatus(f.visitEvent)
+  //                      : null)
+  //              .build();
+  //      subresult.add(visitEventDateTime);
+  //      if (VisitEvent.isNewOfTransaction(f.visitEvent)) {
+  //        subresult = new ArrayList<>();
+  //        result.add(subresult);
+  //      }
+  //    }
+  //    return result;
+  //  }
 }
