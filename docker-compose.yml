@@ -1,7 +1,7 @@
 services:
 
   visitmanager:
-    image: registry.aritmosplatform.ru/aritmosplatform/visitmanager:dev
+    image: registry.aritmosplatform.ru/aritmosplatform/visitmanager:${ENVIRONMENT}
     hostname: visitmanager
     environment:
       - REDIS_SERVER=redis://visitmanager-redis:6379/6
@@ -17,6 +17,7 @@ services:
       - KAFKA_SERVER=kafka:9092
       - LOKI_SERVER=http://loki:3100/loki/api/v1/push
       - OAUTH_CLIENT_SECRET=${CLIENT_SECRET}
+    env_file: ./.env
     expose:
       - '8080'
       - '9094'
@@ -27,6 +28,7 @@ services:
       - "8080:8080"
     networks:
       - aritmosplatform-backend
+      - visitmanager-network
     depends_on:
       - visitmanager-redis
     #      visitmanager-redis:
@@ -40,11 +42,12 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_PORT=6379
       - REDIS_DATABASES=16
+    env_file: ./.env
     expose:
       - '6379'
       - '9092'
     networks:
-      - aritmosplatform-backend
+      - visitmanager-network
     restart: always
     # ports:
     #   - "6379:6379"
@@ -61,6 +64,5 @@ volumes:
     external: false
 
 networks:
-  aritmosplatform-backend:
-    external:
-      name: aritmosplatform-backend
+  visitmanager-network:
+    driver: bridge

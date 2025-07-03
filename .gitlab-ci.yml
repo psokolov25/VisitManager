@@ -1,32 +1,39 @@
 image: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/deploy:latest
 
-include:
+include: 
   - project: 'aritmosplatform/devops-admin/gitlab-ci-template'
     ref: main
     file: '.default-before-after-template.yml'
+
+  - project: 'aritmosplatform/devops-admin/gitlab-ci-template'
+    ref: main
+    file: '.deploy-client-template.yml'
 
 stages:
   - build
   - deploy
 
+variables:
+
+  USER: gitlab-ci-token
+  PASS: $CI_JOB_TOKEN
+  REGISTRY: $CI_REGISTRY
+  REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
+
 Build images:
   variables:
     ENVIRONMENT: "dev"
-    USER: gitlab-ci-token
-    PASS: $CI_JOB_TOKEN
-    REGISTRY: $CI_REGISTRY
-    REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
   stage: build
-  image: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/docker:19.03.12
+  image: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/docker
   services:
-    - name: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/docker:19.03.12-dind
+    - name: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/docker:dind
       alias: docker
   script:
     - docker login -u $USER -p $PASS $REGISTRY
     - docker build --pull -t $REGISTRY_IMAGE:$ENVIRONMENT -f ./Dockerfile .
     - docker push $REGISTRY_IMAGE:$ENVIRONMENT
   rules:
-    - if: $CI_COMMIT_REF_NAME == "develop" && $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_COMMIT_REF_NAME == "dev" && $CI_PIPELINE_SOURCE == "push"
     - if: $CI_COMMIT_REF_NAME == "test" && $CI_PIPELINE_SOURCE == "push"
       variables:
         ENVIRONMENT: "test"
@@ -37,60 +44,4 @@ Build images:
         REGISTRY: "https://index.docker.io/v1/"
         REGISTRY_IMAGE: "aritmosplatform/aritmos-platform"
         ENVIRONMENT: $CI_PROJECT_NAME-main
-
-
-Deploy_Services:
-  variables:
-    ENVIRONMENT: "dev"
-    SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_DEV
-    SSH_HOST: $SSH_HOST_DEV
-    USER_SSH: "linux"
-    REGISTRY: $CI_REGISTRY
-    USER: gitlab-ci-token
-    PASS: $CI_JOB_TOKEN
-  stage: deploy
-  image: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/deploy:latest
-  script:
-    - ssh-keyscan -t rsa $SSH_HOST  >> ~/.ssh/known_hosts
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | base64 -d - | tr -d '\r' | ssh-add -
-    - ssh "$USER_SSH@$SSH_HOST" "mkdir -p /tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
-    - scp ./docker-compose.$ENVIRONMENT.yml ./.env.$ENVIRONMENT "$USER_SSH@$SSH_HOST:/tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
-    - >
-      ssh "$USER_SSH@$SSH_HOST" \
-      "cd /tmp/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME && \
-
-       mv ./.env.$ENVIRONMENT ./.env && \
-
-       export \$(cat ./.env) > /dev/null 2>&1 && \
-
-       docker login -u $USER -p $PASS $REGISTRY && \
-
-       CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE \
-
-       ENVIRONMENT=$ENVIRONMENT \
-
-       CI_PROJECT_NAMESPACE=$CI_PROJECT_NAMESPACE \
-
-       CI_PROJECT_NAME=$CI_PROJECT_NAME \
-
-       docker stack deploy -c docker-compose.$ENVIRONMENT.yml --with-registry-auth --resolve-image always $CI_PROJECT_NAME"
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "develop" && $CI_PIPELINE_SOURCE == "push"
-    - if: $CI_COMMIT_REF_NAME == "test" && $CI_PIPELINE_SOURCE == "push"
-      variables:
-        ENVIRONMENT: "test"
-        SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_QA
-        SSH_HOST: $SSH_HOST_QA
-        USER_SSH: "linux"
-    - if: $CI_COMMIT_REF_NAME == "master" && $CI_PIPELINE_SOURCE == "push"
-      when: manual
-      variables:
-        ENVIRONMENT: "main"
-        SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_CLOUD
-        SSH_HOST: $SSH_HOST_CLOUD
-        USER_SSH: "root"
-        REGISTRY: "https://index.docker.io/v1/"
-        USER: $DOCKER_HUB_USER
-        PASS: $DOCKER_HUB_PASS
 
