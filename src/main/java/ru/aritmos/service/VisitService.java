@@ -2418,12 +2418,12 @@ public class VisitService {
         VisitEvent backEvent = VisitEvent.BACK_TO_USER_POOL;
         backEvent.dateTime = ZonedDateTime.now();
         backEvent.getParameters().put("branchId", branchId);
-        backEvent.getParameters().put("userId", userId);
+
         backEvent.getParameters().put("staffId", staff.getId());
         backEvent.getParameters().put("staffName", staff.getName());
         backEvent.getParameters().put("workProfileId", staff.getCurrentWorkProfileId());
-        backEvent.getParameters().put("poolUserId", user.getId());
-        backEvent.getParameters().put("poolUserName", user.getName());
+        backEvent.getParameters().put("userId", user.getId());
+        backEvent.getParameters().put("userName", user.getName());
         backEvent.getParameters().put("servicePointId", servicePointId);
         branchService.updateVisit(visit, backEvent, this);
         // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
@@ -3058,7 +3058,7 @@ public class VisitService {
       }
     }
 
-    event.getParameters().put("poolUserId", userId);
+    event.getParameters().put("userId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().put("staffId", staffId != null ? staffId : "");
     event.getParameters().put("staffName", staffName);
@@ -3208,7 +3208,7 @@ public class VisitService {
       }
     }
 
-    event.getParameters().put("poolUserId", userId);
+    event.getParameters().put("userId", userId);
     event.getParameters().put("branchId", branchId);
     event.getParameters().put("staffId", staffId != null ? staffId : "");
     event.getParameters().put("staffName", staffName);
@@ -4482,7 +4482,7 @@ public class VisitService {
                     ? servicePoint.getUser().getCurrentWorkProfileId()
                     : "");
         transferEvent.getParameters().put("servicePointId", servicePointId);
-        transferEvent.getParameters().put("poolUserId", userId);
+
         branchService.updateVisit(visit, transferEvent, this);
         Event delayedEvent =
             Event.builder()
