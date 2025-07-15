@@ -1066,6 +1066,28 @@ public class ServicePointController {
   }
 
   /**
+   * Получение списка предоставленных фактических услуг у текущей услугу текущего визита в указанной
+   * точке обслуживания
+   *
+   * @param branchId идентификатор отделения
+   * @return вызванный визит
+   */
+  @Tag(name = "Зона обслуживания")
+  @Tag(name = "Данные об услугах")
+  @Tag(name = "Полный список")
+  @Get(
+      uri = "/branches/{branchId}/servicePoins/{servicePointId}/deliveredServices",
+      consumes = "application/json",
+      produces = "application/json")
+  @ExecuteOn(TaskExecutors.IO)
+  public Map<String, DeliveredService> getDeliveredServiceOfCurrentService(
+      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+
+    return visitService.getDeliveredServices(branchId, servicePointId);
+  }
+
+  /**
    * Получение услуг соответствующего рабочего профиля
    *
    * @param branchId идентификатор отделения

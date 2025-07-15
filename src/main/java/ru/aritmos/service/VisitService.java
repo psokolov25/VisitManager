@@ -1194,6 +1194,31 @@ public class VisitService {
   }
 
   /**
+   * Получение списка предоставленных фактических услуг у текущей услугу текущего визита в указанной точке обслуживания
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @return оказанные услуги
+   */
+  public Map<String, DeliveredService> getDeliveredServices(
+      String branchId, String servicePointId) {
+    Branch currentBranch = branchService.getBranch(branchId);
+    if (currentBranch.getServicePoints().containsKey(servicePointId)) {
+      ServicePoint servicePoint = currentBranch.getServicePoints().get(servicePointId);
+      if (servicePoint.getVisit() != null) {
+        Visit visit = servicePoint.getVisit();
+        if (visit.getCurrentService() == null) {
+          throw new BusinessException(
+              "Current service is null!", eventService, HttpStatus.NOT_FOUND);
+        }
+
+        Service currentService = visit.getCurrentService().clone();
+        return currentService.getDeliveredServices();
+      }
+    }
+    return new HashMap<>();
+  }
+
+  /**
    * Добавление фактической услуги
    *
    * @param branchId идентификатор отделения
@@ -1229,22 +1254,16 @@ public class VisitService {
         DeliveredService deliveredService =
             currentBranch.getPossibleDeliveredServices().get(deliveredServiceId).clone();
         Service currentService = visit.getCurrentService().clone();
-        String uid=!visit
-                .getCurrentService()
-                .getDeliveredServices()
-                .containsKey(deliveredService.getId())
+        String uid =
+            !visit.getCurrentService().getDeliveredServices().containsKey(deliveredService.getId())
                 ? deliveredService.getId()
                 : deliveredService.getId()
-                  + "_"
-                  + (visit.getCurrentService().getDeliveredServices().keySet().stream()
-                             .filter(f -> f.contains(deliveredService.getId()))
-                             .count()
-                     + 1);
-        currentService
-            .getDeliveredServices()
-            .put(
-                uid,
-                deliveredService);
+                    + "_"
+                    + (visit.getCurrentService().getDeliveredServices().keySet().stream()
+                            .filter(f -> f.contains(deliveredService.getId()))
+                            .count()
+                        + 1);
+        currentService.getDeliveredServices().put(uid, deliveredService);
         visit.setCurrentService(currentService.clone());
 
         VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE;
@@ -1311,7 +1330,8 @@ public class VisitService {
           throw new BusinessException(
               "Current service is null!", eventService, HttpStatus.NOT_FOUND);
         }
-        if (!currentBranch.getPossibleDeliveredServices().containsKey(deliveredServiceId) && !visit.getCurrentService().getDeliveredServices().containsKey(deliveredServiceId)) {
+        if (!currentBranch.getPossibleDeliveredServices().containsKey(deliveredServiceId)
+            && !visit.getCurrentService().getDeliveredServices().containsKey(deliveredServiceId)) {
           throw new BusinessException(
               String.format("Delivered service with id %s not found!", deliveredServiceId),
               eventService,
@@ -1327,14 +1347,11 @@ public class VisitService {
         }
         DeliveredService deliveredService;
         if (currentBranch.getPossibleDeliveredServices().containsKey(deliveredServiceId)) {
-          deliveredService =
-              currentBranch.getPossibleDeliveredServices().get(deliveredServiceId);
+          deliveredService = currentBranch.getPossibleDeliveredServices().get(deliveredServiceId);
           visit.getCurrentService().getDeliveredServices().remove(deliveredService.getId());
-}
-        else
-        {
+        } else {
           deliveredService =
-                  visit.getCurrentService().getDeliveredServices().get(deliveredServiceId);
+              visit.getCurrentService().getDeliveredServices().get(deliveredServiceId);
           visit.getCurrentService().getDeliveredServices().remove(deliveredServiceId);
         }
         VisitEvent visitEvent = VisitEvent.DELETED_DELIVERED_SERVICE;
@@ -3408,7 +3425,7 @@ public class VisitService {
     Branch currentBranch = branchService.getBranch(branchId);
 
     Optional<Queue> queue;
-    String servicePointName="";
+    String servicePointName = "";
     visit.setStatus("CALLED");
     visit.setCallDateTime(ZonedDateTime.now());
     visit.getParameterMap().remove("isTransferredToStart");
@@ -3556,7 +3573,7 @@ public class VisitService {
                   .getUser()
                   .getCurrentWorkProfileId()
               : "";
-      servicePointName=currentBranch.getServicePoints().get(servicePointId).getName();
+      servicePointName = currentBranch.getServicePoints().get(servicePointId).getName();
     }
 
     // visit.setStatus("CALLED");
@@ -3609,7 +3626,7 @@ public class VisitService {
           currentBranch.getServicePoints().get(servicePointId).getUser() != null
               ? currentBranch.getServicePoints().get(servicePointId).getUser().getName()
               : "";
-      servicePointName=currentBranch.getServicePoints().get(servicePointId).getName();
+      servicePointName = currentBranch.getServicePoints().get(servicePointId).getName();
     }
 
     visit.setCallDateTime(ZonedDateTime.now());
@@ -3883,7 +3900,7 @@ public class VisitService {
       VisitEvent event = VisitEvent.CALLED;
       event.dateTime = ZonedDateTime.now();
       event.getParameters().put("servicePointId", servicePointId);
-      event.getParameters().put("servicePointName",servicePoint.getName());
+      event.getParameters().put("servicePointName", servicePoint.getName());
       event.getParameters().put("branchId", branchId);
       event
           .getParameters()
