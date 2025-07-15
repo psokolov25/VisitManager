@@ -1311,7 +1311,7 @@ public class VisitService {
           throw new BusinessException(
               "Current service is null!", eventService, HttpStatus.NOT_FOUND);
         }
-        if (!currentBranch.getPossibleDeliveredServices().containsKey(deliveredServiceId)) {
+        if (!currentBranch.getPossibleDeliveredServices().containsKey(deliveredServiceId) && !visit.getCurrentService().getDeliveredServices().containsKey(deliveredServiceId)) {
           throw new BusinessException(
               String.format("Delivered service with id %s not found!", deliveredServiceId),
               eventService,
@@ -1325,10 +1325,18 @@ public class VisitService {
               eventService,
               HttpStatus.CONFLICT);
         }
-        DeliveredService deliveredService =
-            currentBranch.getPossibleDeliveredServices().get(deliveredServiceId);
-        visit.getCurrentService().getDeliveredServices().remove(deliveredService.getId());
-
+        DeliveredService deliveredService;
+        if (currentBranch.getPossibleDeliveredServices().containsKey(deliveredServiceId)) {
+          deliveredService =
+              currentBranch.getPossibleDeliveredServices().get(deliveredServiceId);
+          visit.getCurrentService().getDeliveredServices().remove(deliveredService.getId());
+}
+        else
+        {
+          deliveredService =
+                  visit.getCurrentService().getDeliveredServices().get(deliveredServiceId);
+          visit.getCurrentService().getDeliveredServices().remove(deliveredServiceId);
+        }
         VisitEvent visitEvent = VisitEvent.DELETED_DELIVERED_SERVICE;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("uiDeliveredServiceId", deliveredServiceId);
