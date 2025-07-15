@@ -1194,7 +1194,9 @@ public class VisitService {
   }
 
   /**
-   * Получение списка предоставленных фактических услуг у текущей услугу текущего визита в указанной точке обслуживания
+   * Получение списка предоставленных фактических услуг у текущей услугу текущего визита в указанной
+   * точке обслуживания
+   *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @return оказанные услуги
@@ -1758,7 +1760,11 @@ public class VisitService {
 
           VisitEvent visitEvent = VisitEvent.ADDED_DELIVERED_SERVICE_RESULT;
           visitEvent.getParameters().put("servicePointId", servicePoint.getId());
-          visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+          visitEvent
+              .getParameters()
+              .put(
+                  "deliveredServiceId",
+                  visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).getId());
           visitEvent
               .getParameters()
               .put(
@@ -1866,7 +1872,11 @@ public class VisitService {
 
         VisitEvent visitEvent = VisitEvent.DELETED_DELIVERED_SERVICE_RESULT;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
-        visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+        visitEvent
+            .getParameters()
+            .put(
+                "deliveredServiceId",
+                visit.getCurrentService().getDeliveredServices().get(deliveredServiceId).getId());
         visitEvent.getParameters().put("uiDeliveredServiceId", deliveredServiceId);
         visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
         visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
