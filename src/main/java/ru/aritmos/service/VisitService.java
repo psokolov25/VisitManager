@@ -1229,20 +1229,21 @@ public class VisitService {
         DeliveredService deliveredService =
             currentBranch.getPossibleDeliveredServices().get(deliveredServiceId).clone();
         Service currentService = visit.getCurrentService().clone();
+        String uid=!visit
+                .getCurrentService()
+                .getDeliveredServices()
+                .containsKey(deliveredService.getId())
+                ? deliveredService.getId()
+                : deliveredService.getId()
+                  + "_"
+                  + (visit.getCurrentService().getDeliveredServices().keySet().stream()
+                             .filter(f -> f.contains(deliveredService.getId()))
+                             .count()
+                     + 1);
         currentService
             .getDeliveredServices()
             .put(
-                !visit
-                        .getCurrentService()
-                        .getDeliveredServices()
-                        .containsKey(deliveredService.getId())
-                    ? deliveredService.getId()
-                    : deliveredService.getId()
-                        + "_"
-                        + (visit.getCurrentService().getDeliveredServices().keySet().stream()
-                                .filter(f -> f.contains(deliveredService.getId()))
-                                .count()
-                            + 1),
+                uid,
                 deliveredService);
         visit.setCurrentService(currentService.clone());
 
@@ -1250,6 +1251,7 @@ public class VisitService {
         visitEvent.dateTime = ZonedDateTime.now();
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+        visitEvent.getParameters().put("uiDeliveredServiceId", uid);
         visitEvent.getParameters().put("deliveredServiceName", deliveredService.getName());
         visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
         visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
@@ -1329,6 +1331,7 @@ public class VisitService {
 
         VisitEvent visitEvent = VisitEvent.DELETED_DELIVERED_SERVICE;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
+        visitEvent.getParameters().put("uiDeliveredServiceId", deliveredServiceId);
         visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
         visitEvent.getParameters().put("deliveredServiceName", deliveredService.getName());
         visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
@@ -1744,7 +1747,7 @@ public class VisitService {
           visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
 
           visitEvent.getParameters().put("outcomeId", outcomeId);
-
+          visitEvent.getParameters().put("uiDeliveredServiceId", deliveredServiceId);
           visitEvent
               .getParameters()
               .put(
@@ -1839,6 +1842,7 @@ public class VisitService {
         VisitEvent visitEvent = VisitEvent.DELETED_DELIVERED_SERVICE_RESULT;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+        visitEvent.getParameters().put("uiDeliveredServiceId", deliveredServiceId);
         visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
         visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
         visitEvent.getParameters().put("outcomeId", outcomeId);
