@@ -1074,6 +1074,7 @@ public class ServicePointController {
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об услугах")
+  @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
   @Get(
       uri = "/branches/{branchId}/servicePoins/{servicePointId}/deliveredServices",
