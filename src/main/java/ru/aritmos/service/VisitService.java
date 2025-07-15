@@ -1340,7 +1340,7 @@ public class VisitService {
         VisitEvent visitEvent = VisitEvent.DELETED_DELIVERED_SERVICE;
         visitEvent.getParameters().put("servicePointId", servicePoint.getId());
         visitEvent.getParameters().put("uiDeliveredServiceId", deliveredServiceId);
-        visitEvent.getParameters().put("deliveredServiceId", deliveredServiceId);
+        visitEvent.getParameters().put("deliveredServiceId", deliveredService.getId());
         visitEvent.getParameters().put("deliveredServiceName", deliveredService.getName());
         visitEvent.getParameters().put("serviceId", visit.getCurrentService().getId());
         visitEvent.getParameters().put("serviceName", visit.getCurrentService().getName());
