@@ -136,6 +136,7 @@ public class ServicePointController {
    *
    * @param branchId идентификатор отделения
    * @return свободные обслуживания
+   *
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
