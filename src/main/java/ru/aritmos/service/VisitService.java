@@ -2287,6 +2287,7 @@ public class VisitService {
                 "staffName",
                 servicePoint.getUser() != null ? servicePoint.getUser().getName() : "");
         event.getParameters().put("servicePointId", servicePointId);
+        event.getParameters().put("servicePointName", servicePoint.getName());
         branchService.updateVisit(visit, event, this);
 
         visit.getParameterMap().remove("LastPoolServicePointId");
