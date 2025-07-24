@@ -497,7 +497,8 @@ class EntrypointTest {
     //      visits =
     //          visitService.visitCallForConfirm(branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc",
     // visit);
-    Visit visittoBack = visitService.backCalledVisit(branchId, visits.get().getId(), 60L);
+    Visit visittoBack = visitService.backCalledVisit(branchId, visits.get().getId(), 6L);
+    Thread.sleep(6001);
     visits =
         visitService.visitCallForConfirmWithMaxWaitingTime(
             branchId, "be675d63-c5a1-41a9-a345-c82102ac42cc", visit);
@@ -665,7 +666,7 @@ class EntrypointTest {
 
       visitService.visitConfirm(branchId, servicePointFcId, visit);
       Thread.sleep(600);
-      visit = visitService.visitPutBack(branchId, servicePointFcId, 150L);
+      visit = visitService.visitPutBack(branchId, servicePointFcId, 1L);
 
       Thread.sleep(900);
 
@@ -679,6 +680,7 @@ class EntrypointTest {
               .size());
       Assertions.assertEquals(
           visit.getStatus(), VisitEvent.BACK_TO_SERVICE_POINT_POOL.getState().name());
+      Thread.sleep(3000);
       visits =
           visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
@@ -726,7 +728,7 @@ class EntrypointTest {
 
       visitService.visitConfirm(branchId, servicePointFcId, visit);
       Thread.sleep(600);
-      visit = visitService.visitPutBack(branchId, servicePointFcId, 5L);
+      visit = visitService.visitPutBack(branchId, servicePointFcId, 0L);
 
       // Thread.sleep(1500L);
 
@@ -739,6 +741,7 @@ class EntrypointTest {
               .getVisits()
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_QUEUE.getState().name());
+      Thread.sleep(900);
       visits =
           visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
@@ -785,9 +788,9 @@ class EntrypointTest {
       Thread.sleep(600);
       String servicePointId = servicePointFcId;
       String userId = psokolovUser.getId();
-      visit = visitService.visitBackToUserPool(branchId, servicePointId, userId, 150L);
+      visit = visitService.visitBackToUserPool(branchId, servicePointId, userId, 5L);
 
-      Thread.sleep(900);
+      Thread.sleep(5001);
 
       Assertions.assertEquals(
           1,
@@ -799,6 +802,7 @@ class EntrypointTest {
               .getVisits()
               .size());
       Assertions.assertEquals(visit.getStatus(), VisitEvent.BACK_TO_USER_POOL.getState().name());
+
       Optional<Visit> visits =
           visitService.visitCallForConfirmWithMaxWaitingTime(branchId, servicePointFcId, visit);
       if (visits.isPresent()) {
