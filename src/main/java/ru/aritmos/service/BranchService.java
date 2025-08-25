@@ -175,6 +175,28 @@ public class BranchService {
     branch.updateVisit(visit, eventService, visitEvent, visitService, index);
   }
 
+  public User changeUserWorkProfileInServicePoint(
+      String branchId, String servicePointId, String workProfileId) {
+    Branch branch = this.getBranch(branchId);
+    if (!branch.getWorkProfiles().containsKey(workProfileId)) {
+      throw new BusinessException("Work profile not found!", eventService, HttpStatus.NOT_FOUND);
+    }
+    if (!branch.getServicePoints().containsKey(servicePointId)) {
+      throw new BusinessException("Service point not found!", eventService, HttpStatus.NOT_FOUND);
+    }
+    User user = branch.getServicePoints().get(servicePointId).getUser();
+    if (user == null) {
+      throw new BusinessException(
+          "User not found in Service point!", eventService, HttpStatus.NOT_FOUND);
+    }
+    String oldWorkProfileId = user.getCurrentWorkProfileId();
+    branch.getServicePoints().get(servicePointId).getUser().setCurrentWorkProfileId(workProfileId);
+
+    this.add(branch.getId(), branch);
+    checkWorkProfileChange(workProfileId, user, oldWorkProfileId);
+    return branch.getServicePoints().get(servicePointId).getUser();
+  }
+
   public User openServicePoint(
       String branchId,
       String userName,

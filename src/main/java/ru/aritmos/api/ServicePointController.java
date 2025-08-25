@@ -280,7 +280,42 @@ public class ServicePointController {
     return visitService.getWorkProfiles(branchId);
   }
 
-  /**
+
+
+    /**
+     * Смена рабочего профиля сотрудника работающего в точке обслуживания
+     *
+     * @param branchId идентификатор отделения
+     * @param servicePointId идентификатор точки обслуживания
+     * @param workProfileId идентификатор рабочего профиля
+     * @return сотрудник
+     */
+    @Operation(
+            operationId = "openServicePoint",
+            summary = "Смена рабочего профиля сотрудника работающего в точки обслуживания",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Смена рабочего профиля произошла успешно"),
+
+                    @ApiResponse(responseCode = "500", description = "Server Error")
+            })
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Работа сотрудников")
+    @Tag(name = "Полный список")
+    @Put(
+            "/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}")
+    @ExecuteOn(TaskExecutors.IO)
+    public User changeUserWorkprofile(
+            @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+
+            @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+            @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId) {
+
+        return branchService.changeUserWorkProfileInServicePoint(
+                branchId,  servicePointId, workProfileId);
+    }
+
+
+    /**
    * Открытие рабочей станции сотрудником Если рабочая станция уже открыта - выдается 409 ошибка
    * (конфликт)
    *
