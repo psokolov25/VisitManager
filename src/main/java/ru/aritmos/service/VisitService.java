@@ -313,6 +313,15 @@ public class VisitService {
       String branchId, String servicePointId, VisitParameters visitParameters, String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
+    if(currentBranch.getServicePoints().containsKey(servicePointId) && currentBranch.getServicePoints().get(servicePointId).getVisit()!=null) {
+        Visit currentVisit = currentBranch.getServicePoints().get(servicePointId).getVisit();
+       if(ChronoUnit.SECONDS.between(currentVisit.getCreateDateTime(),ZonedDateTime.now())<5)
+       {
+           throw new BusinessException("Visit already created in the ServicePoint! ", eventService, HttpStatus.CONFLICT);
+       }
+
+    }
+
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
       ArrayList<Service> services = new ArrayList<>();
