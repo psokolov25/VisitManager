@@ -11,10 +11,7 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
 import ru.aritmos.events.model.Event;
@@ -22,6 +19,7 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
+import ru.aritmos.model.Queue;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
 
@@ -88,8 +86,7 @@ public class BranchService {
       // eventService.sendChangedEvent("*", true, oldBranch, value, new HashMap<>(), "CHANGED");
 
     } else {
-      eventService.sendChangedEvent(
-          "config", true, null, value, new HashMap<>(), "BRANCH_CREATED");
+      eventService.sendChangedEvent("config", true, null, value, new HashMap<>(), "BRANCH_CREATED");
       // eventService.sendChangedEvent("*", true, null, value, new HashMap<>(), "CREATED");
     }
     value.getQueues().forEach((key1, value2) -> value2.setBranchId(key));
@@ -183,7 +180,8 @@ public class BranchService {
       String userName,
       String servicePointId,
       String workProfileId,
-      VisitService visitService) throws IOException {
+      VisitService visitService)
+      throws IOException {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
       throw new BusinessException("Work profile not found!!", eventService, HttpStatus.NOT_FOUND);
@@ -284,9 +282,47 @@ public class BranchService {
         user.setLastName("Отсутствует");
       }
       user.setBranchId(branchId);
+      String oldServicePointId = user.getServicePointId() != null ? user.getServicePointId() : "";
       user.setServicePointId(servicePointId);
-      user.setCurrentWorkProfileId(workProfileId);
 
+      String oldWorkProfileId =
+          user.getCurrentWorkProfileId() != null ? user.getCurrentWorkProfileId() : "";
+      user.setServicePointId(servicePointId);
+      if (!oldServicePointId.equals(servicePointId)) {
+        eventService.send(
+            "stat",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("USER_SERVICE_POINT_CHANGED")
+                .params(new HashMap<>())
+                .body(
+                    new HashMap<>(
+                        Map.ofEntries(
+                            Map.entry("userName", user.getName()),
+                            Map.entry("userId", user.getId()),
+                            Map.entry("oldServicePointId", oldServicePointId),
+                            Map.entry("newServicePointId", servicePointId))))
+                .build());
+      }
+      user.setCurrentWorkProfileId(workProfileId);
+      if (!oldWorkProfileId.equals(workProfileId)) {
+        eventService.send(
+            "stat",
+            false,
+            Event.builder()
+                .eventDate(ZonedDateTime.now())
+                .eventType("USER_WORK_PROFILE_CHANGED")
+                .params(new HashMap<>())
+                .body(
+                    new HashMap<>(
+                        Map.ofEntries(
+                            Map.entry("userName", user.getName()),
+                            Map.entry("userId", user.getId()),
+                            Map.entry("oldWorkProfileId", oldWorkProfileId),
+                            Map.entry("newWorkProfileId", workProfileId))))
+                .build());
+      }
       branch.openServicePoint(user, eventService);
       this.add(branch.getId(), branch);
       return user;
