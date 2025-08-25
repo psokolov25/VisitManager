@@ -250,8 +250,12 @@ public class BranchService {
                 .body(user)
                 .build());
       }
+      String oldServicePointId = user.getServicePointId() != null ? user.getServicePointId() : "";
       user.setServicePointId(servicePointId);
-      user.setCurrentWorkProfileId(workProfileId);
+      checkServicePointChange(servicePointId, user, oldServicePointId);
+      String oldWorkProfileId =
+          user.getCurrentWorkProfileId() != null ? user.getCurrentWorkProfileId() : "";
+      checkWorkProfileChange(workProfileId, user, oldWorkProfileId);
       if (!user.getIsAdmin()
           && user.getAllBranches().stream()
               .noneMatch(
@@ -288,44 +292,52 @@ public class BranchService {
       String oldWorkProfileId =
           user.getCurrentWorkProfileId() != null ? user.getCurrentWorkProfileId() : "";
       user.setServicePointId(servicePointId);
-      if (!oldServicePointId.equals(servicePointId)) {
-        eventService.send(
-            "stat",
-            false,
-            Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("USER_SERVICE_POINT_CHANGED")
-                .params(new HashMap<>())
-                .body(
-                    new HashMap<>(
-                        Map.ofEntries(
-                            Map.entry("userName", user.getName()),
-                            Map.entry("userId", user.getId()),
-                            Map.entry("oldServicePointId", oldServicePointId),
-                            Map.entry("newServicePointId", servicePointId))))
-                .build());
-      }
-      user.setCurrentWorkProfileId(workProfileId);
-      if (!oldWorkProfileId.equals(workProfileId)) {
-        eventService.send(
-            "stat",
-            false,
-            Event.builder()
-                .eventDate(ZonedDateTime.now())
-                .eventType("USER_WORK_PROFILE_CHANGED")
-                .params(new HashMap<>())
-                .body(
-                    new HashMap<>(
-                        Map.ofEntries(
-                            Map.entry("userName", user.getName()),
-                            Map.entry("userId", user.getId()),
-                            Map.entry("oldWorkProfileId", oldWorkProfileId),
-                            Map.entry("newWorkProfileId", workProfileId))))
-                .build());
-      }
+      checkServicePointChange(servicePointId, user, oldServicePointId);
+      checkWorkProfileChange(workProfileId, user, oldWorkProfileId);
       branch.openServicePoint(user, eventService);
       this.add(branch.getId(), branch);
       return user;
+    }
+  }
+
+  private void checkServicePointChange(String servicePointId, User user, String oldServicePointId) {
+    if (!oldServicePointId.equals(servicePointId)) {
+      eventService.send(
+          "stat",
+          false,
+          Event.builder()
+              .eventDate(ZonedDateTime.now())
+              .eventType("USER_SERVICE_POINT_CHANGED")
+              .params(new HashMap<>())
+              .body(
+                  new HashMap<>(
+                      Map.ofEntries(
+                          Map.entry("userName", user.getName()),
+                          Map.entry("userId", user.getId()),
+                          Map.entry("oldServicePointId", oldServicePointId),
+                          Map.entry("newServicePointId", servicePointId))))
+              .build());
+    }
+  }
+
+  private void checkWorkProfileChange(String workProfileId, User user, String oldWorkProfileId) {
+    user.setCurrentWorkProfileId(workProfileId);
+    if (!oldWorkProfileId.equals(workProfileId)) {
+      eventService.send(
+          "stat",
+          false,
+          Event.builder()
+              .eventDate(ZonedDateTime.now())
+              .eventType("USER_WORK_PROFILE_CHANGED")
+              .params(new HashMap<>())
+              .body(
+                  new HashMap<>(
+                      Map.ofEntries(
+                          Map.entry("userName", user.getName()),
+                          Map.entry("userId", user.getId()),
+                          Map.entry("oldWorkProfileId", oldWorkProfileId),
+                          Map.entry("newWorkProfileId", workProfileId))))
+              .build());
     }
   }
 
