@@ -313,13 +313,13 @@ public class VisitService {
       String branchId, String servicePointId, VisitParameters visitParameters, String sid)
       throws SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
-    if(currentBranch.getServicePoints().containsKey(servicePointId) && currentBranch.getServicePoints().get(servicePointId).getVisit()!=null) {
-        Visit currentVisit = currentBranch.getServicePoints().get(servicePointId).getVisit();
-       if(ChronoUnit.SECONDS.between(currentVisit.getCreateDateTime(),ZonedDateTime.now())<5)
-       {
-           throw new BusinessException("Visit already created in the ServicePoint! ", eventService, HttpStatus.CONFLICT);
-       }
-
+    if (currentBranch.getServicePoints().containsKey(servicePointId)
+        && currentBranch.getServicePoints().get(servicePointId).getVisit() != null) {
+      Visit currentVisit = currentBranch.getServicePoints().get(servicePointId).getVisit();
+      if (ChronoUnit.SECONDS.between(currentVisit.getCreateDateTime(), ZonedDateTime.now()) < 5) {
+        throw new BusinessException(
+            "Visit already created in the ServicePoint! ", eventService, HttpStatus.CONFLICT);
+      }
     }
 
     if (currentBranch.getServices().keySet().stream()
@@ -3453,16 +3453,8 @@ public class VisitService {
 
     Optional<Queue> queue;
     String servicePointName = "";
-    if (!(visit.getReturnTimeDelay() == null
-        || visit.getReturnTimeDelay() <= visit.getReturningTime()
-            && (visit.getTransferTimeDelay() == null
-                || visit.getTransferTimeDelay() <= visit.getTransferingTime()))) {
-      throw new BusinessException(
-          "Задержка перевода или возвращения еще не завершена",
-          "Delayed translation or return has not yet been completed",
-          eventService,
-          HttpStatus.CONFLICT);
-    }
+    checkTransferOrReturnTime(visit);
+
     visit.setStatus("CALLED");
     visit.setCallDateTime(ZonedDateTime.now());
     visit.getParameterMap().remove("isTransferredToStart");
@@ -3613,16 +3605,7 @@ public class VisitService {
               : "";
       servicePointName = currentBranch.getServicePoints().get(servicePointId).getName();
     }
-    if (!(visit.getReturnTimeDelay() == null
-        || visit.getReturnTimeDelay() <= visit.getReturningTime()
-            && (visit.getTransferTimeDelay() == null
-                || visit.getTransferTimeDelay() <= visit.getTransferingTime()))) {
-      throw new BusinessException(
-          "Задержка перевода или возвращения еще не завершена",
-          "Delayed translation or return has not yet been completed",
-          eventService,
-          HttpStatus.CONFLICT);
-    }
+    checkTransferOrReturnTime(visit);
     // visit.setStatus("CALLED");
     visit.setCallDateTime(ZonedDateTime.now());
     visit.getParameterMap().put("LastQueueId", visit.getQueueId());
@@ -3675,16 +3658,7 @@ public class VisitService {
               : "";
       servicePointName = currentBranch.getServicePoints().get(servicePointId).getName();
     }
-    if (!(visit.getReturnTimeDelay() == null
-        || visit.getReturnTimeDelay() <= visit.getReturningTime()
-            && (visit.getTransferTimeDelay() == null
-                || visit.getTransferTimeDelay() <= visit.getTransferingTime()))) {
-      throw new BusinessException(
-          "Задержка перевода или возвращения еще не завершена",
-          "Delayed translation or return has not yet been completed",
-          eventService,
-          HttpStatus.CONFLICT);
-    }
+    checkTransferOrReturnTime(visit);
     visit.setCallDateTime(ZonedDateTime.now());
     visit.getParameterMap().remove("isTransferredToStart");
     VisitEvent event = VisitEvent.RECALLED;
@@ -3712,6 +3686,27 @@ public class VisitService {
     log.info("Visit {} called!", visit);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     return visit;
+  }
+
+  private void checkTransferOrReturnTime(Visit visit) {
+    if (visit.getReturningTime() != null
+        && visit.getReturnTimeDelay() != null
+        && visit.getReturnTimeDelay() > visit.getReturningTime()) {
+      throw new BusinessException(
+          "Задержка возвращения еще не завершена",
+          "Delayed return has not yet been completed",
+          eventService,
+          HttpStatus.CONFLICT);
+    }
+    if (visit.getTransferDateTime() != null
+        && visit.getTransferTimeDelay() != null
+        && visit.getTransferTimeDelay() > visit.getTransferingTime()) {
+      throw new BusinessException(
+          "Задержка перевода еще не завершена",
+          "Delayed transfer has not yet been completed",
+          eventService,
+          HttpStatus.CONFLICT);
+    }
   }
 
   /**
