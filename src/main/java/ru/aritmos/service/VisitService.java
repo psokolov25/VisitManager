@@ -2048,14 +2048,19 @@ public class VisitService {
               Event.builder()
                   .eventType("QUEUE_REFRESHED")
                   .body(
-                      TinyClass.builder()
-                          .id(visit.getParameterMap().get("LastQueueId"))
-                          .name(
-                              currentBranch
-                                  .getQueues()
-                                  .get(visit.getParameterMap().get("LastQueueId"))
-                                  .getName())
-                          .build())
+                      new HashMap<>(
+                          Map.ofEntries(
+                              Map.entry("id", visit.getParameterMap().get("LastQueueId")),
+                              Map.entry(
+                                  "name",
+                                  currentBranch
+                                      .getQueues()
+                                      .get(visit.getParameterMap().get("LastQueueId"))
+                                      .getName()),
+                              Map.entry("branchId", currentBranch.getId()),
+                              Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                              Map.entry("visitId", visit.getId()),
+                              Map.entry("ticket", visit.getTicket()))))
                   .params(
                       Map.of(
                           "queueId",
@@ -2158,10 +2163,19 @@ public class VisitService {
             Event.builder()
                 .eventType("QUEUE_REFRESHED")
                 .body(
-                    TinyClass.builder()
-                        .id(queueId)
-                        .name(currentBranch.getQueues().get(queueId).getName())
-                        .build())
+                    new HashMap<>(
+                        Map.ofEntries(
+                            Map.entry("id", visit.getParameterMap().get("LastQueueId")),
+                            Map.entry(
+                                "name",
+                                currentBranch
+                                    .getQueues()
+                                    .get(visit.getParameterMap().get("LastQueueId"))
+                                    .getName()),
+                            Map.entry("branchId", currentBranch.getId()),
+                            Map.entry("reason", "TRANSFER_TIME_DELAY_FINISHED"),
+                            Map.entry("visitId", visit.getId()),
+                            Map.entry("ticket", visit.getTicket()))))
                 .params(Map.of("queueId", queueId, "branchId", branchId))
                 .build();
         delayedEvents.delayedEventService(
@@ -2567,10 +2581,19 @@ public class VisitService {
         Event.builder()
             .eventType("QUEUE_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(queueId)
-                    .name(currentBranch.getQueues().get(queueId).getName())
-                    .build())
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", visit.getParameterMap().get("LastQueueId")),
+                        Map.entry(
+                            "name",
+                            currentBranch
+                                .getQueues()
+                                .get(visit.getParameterMap().get("LastQueueId"))
+                                .getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "TRANSFER_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .params(Map.of("queueId", queueId, "branchId", branchId))
             .build();
     delayedEvents.delayedEventService(
@@ -2656,10 +2679,19 @@ public class VisitService {
         Event.builder()
             .eventType("QUEUE_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(queueId)
-                    .name(currentBranch.getQueues().get(queueId).getName())
-                    .build())
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", visit.getParameterMap().get("LastQueueId")),
+                        Map.entry(
+                            "name",
+                            currentBranch
+                                .getQueues()
+                                .get(visit.getParameterMap().get("LastQueueId"))
+                                .getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .params(Map.of("queueId", queueId, "branchId", branchId))
             .build();
     delayedEvents.delayedEventService(
@@ -2769,10 +2801,19 @@ public class VisitService {
         Event.builder()
             .eventType("QUEUE_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(queueId)
-                    .name(currentBranch.getQueues().get(queueId).getName())
-                    .build())
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", visit.getParameterMap().get("LastQueueId")),
+                        Map.entry(
+                            "name",
+                            currentBranch
+                                .getQueues()
+                                .get(visit.getParameterMap().get("LastQueueId"))
+                                .getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "TRANSFER_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .params(Map.of("queueId", queueId, "branchId", branchId))
             .build();
     delayedEvents.delayedEventService(
@@ -2849,10 +2890,16 @@ public class VisitService {
         Event.builder()
             .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(servicePointId)
-                    .name(currentBranch.getServicePoints().get(servicePointId).getName())
-                    .build())
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", servicePointId),
+                        Map.entry(
+                            "name",
+                            currentBranch.getServicePoints().get(poolServicePointId).getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .params(Map.of("servicePointId", servicePointId, "branchId", branchId))
             .build();
     delayedEvents.delayedEventService(
@@ -2948,10 +2995,16 @@ public class VisitService {
         Event.builder()
             .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(servicePointId)
-                    .name(currentBranch.getServicePoints().get(servicePointId).getName())
-                    .build())
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", servicePointId),
+                        Map.entry(
+                            "name",
+                            currentBranch.getServicePoints().get(poolServicePointId).getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .params(Map.of("servicePointId", servicePointId, "branchId", branchId))
             .build();
     delayedEvents.delayedEventService(
@@ -3029,11 +3082,16 @@ public class VisitService {
         Event.builder()
             .eventType("SERVICEPOINT_POOL_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(poolServicePointId)
-                    .name(currentBranch.getServicePoints().get(poolServicePointId).getName())
-                    .build())
-            .params(Map.of("poolServicePointId", poolServicePointId, "branchId", branchId))
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", poolServicePointId),
+                        Map.entry(
+                            "name",
+                            currentBranch.getServicePoints().get(poolServicePointId).getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .build();
     delayedEvents.delayedEventService(
         "frontend", false, delayedEvent, transferTimeDelay, eventService);
@@ -3123,10 +3181,14 @@ public class VisitService {
         Event.builder()
             .eventType("USER_POOL_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(userId)
-                    .name(this.getAllWorkingUsers(branchId).get(userId).getName())
-                    .build())
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", userId),
+                        Map.entry("name", currentBranch.getUsers().get(userId).getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .params(Map.of("poolUserId", userId, "branchId", branchId))
             .build();
     delayedEvents.delayedEventService(
@@ -3201,10 +3263,14 @@ public class VisitService {
         Event.builder()
             .eventType("USER_POOL_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(userId)
-                    .name(this.getAllWorkingUsers(branchId).get(userId).getName())
-                    .build())
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", userId),
+                        Map.entry("name", currentBranch.getUsers().get(userId).getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .params(Map.of("poolUserId", userId, "branchId", branchId))
             .build();
     delayedEvents.delayedEventService(
@@ -3230,7 +3296,7 @@ public class VisitService {
       String sid) {
 
     String oldQueueID = visit.getQueueId();
-
+    Branch currentBranch = branchService.getBranch(branchId);
     if (!this.getAllWorkingUsers(branchId).containsKey(userId)) {
 
       throw new BusinessException(
@@ -3274,10 +3340,14 @@ public class VisitService {
         Event.builder()
             .eventType("USER_POOL_REFRESHED")
             .body(
-                TinyClass.builder()
-                    .id(userId)
-                    .name(this.getAllWorkingUsers(branchId).get(userId).getName())
-                    .build())
+                new HashMap<>(
+                    Map.ofEntries(
+                        Map.entry("id", userId),
+                        Map.entry("name", currentBranch.getUsers().get(userId).getName()),
+                        Map.entry("branchId", currentBranch.getId()),
+                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                        Map.entry("visitId", visit.getId()),
+                        Map.entry("ticket", visit.getTicket()))))
             .params(Map.of("poolUserId", userId, "branchId", branchId))
             .build();
     delayedEvents.delayedEventService(
@@ -4581,10 +4651,14 @@ public class VisitService {
             Event.builder()
                 .eventType("USER_POOL_REFRESHED")
                 .body(
-                    TinyClass.builder()
-                        .id(userId)
-                        .name(getAllWorkingUsers(branchId).get(userId).getName())
-                        .build())
+                    new HashMap<>(
+                        Map.ofEntries(
+                            Map.entry("id", userId),
+                            Map.entry("name", currentBranch.getUsers().get(userId).getName()),
+                            Map.entry("branchId", currentBranch.getId()),
+                            Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                            Map.entry("visitId", visit.getId()),
+                            Map.entry("ticket", visit.getTicket()))))
                 .params(Map.of("userId", userId, "branchId", branchId))
                 .build();
         delayedEvents.delayedEventService(
@@ -4707,10 +4781,16 @@ public class VisitService {
             Event.builder()
                 .eventType("SERVICEPOINT_POOL_REFRESHED")
                 .body(
-                    TinyClass.builder()
-                        .id(poolServicePointId)
-                        .name(currentBranch.getServicePoints().get(poolServicePointId).getName())
-                        .build())
+                    new HashMap<>(
+                        Map.ofEntries(
+                            Map.entry("id", poolServicePointId),
+                            Map.entry(
+                                "name",
+                                currentBranch.getServicePoints().get(poolServicePointId).getName()),
+                            Map.entry("branchId", currentBranch.getId()),
+                            Map.entry("reason", "TRANSFER_TIME_DELAY_FINISHED"),
+                            Map.entry("visitId", visit.getId()),
+                            Map.entry("ticket", visit.getTicket()))))
                 .params(Map.of("poolServicePointId", poolServicePointId, "branchId", branchId))
                 .build();
         delayedEvents.delayedEventService(
@@ -4835,10 +4915,16 @@ public class VisitService {
             Event.builder()
                 .eventType("SERVICEPOINT_POOL_REFRESHED")
                 .body(
-                    TinyClass.builder()
-                        .id(poolServicePointId)
-                        .name(currentBranch.getServicePoints().get(poolServicePointId).getName())
-                        .build())
+                    new HashMap<>(
+                        Map.ofEntries(
+                            Map.entry("id", poolServicePointId),
+                            Map.entry(
+                                "name",
+                                currentBranch.getServicePoints().get(poolServicePointId).getName()),
+                            Map.entry("branchId", currentBranch.getId()),
+                            Map.entry("reason", "TRANSFER_TIME_DELAY_FINISHED"),
+                            Map.entry("visitId", visit.getId()),
+                            Map.entry("ticket", visit.getTicket()))))
                 .params(Map.of("poolServicePointId", poolServicePointId, "branchId", branchId))
                 .build();
         delayedEvents.delayedEventService(
