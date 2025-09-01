@@ -3,7 +3,6 @@ package ru.aritmos.exceptions;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.serde.annotation.Serdeable;
-
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import lombok.Data;
@@ -33,19 +32,25 @@ public class BusinessException extends RuntimeException {
     log.error(errorMessage);
     throw new HttpStatusException(status, errorMessage);
   }
-  public BusinessException(Object errorMessage, EventService eventService, HttpStatus status, io.micronaut.serde.ObjectMapper mapper) throws IOException {
+
+  public BusinessException(
+      Object errorMessage,
+      EventService eventService,
+      HttpStatus status,
+      io.micronaut.serde.ObjectMapper mapper)
+      throws IOException {
     super(mapper.writeValueAsString(errorMessage));
     BusinessError businessError = new BusinessError();
     businessError.setMessage(mapper.writeValueAsString(errorMessage));
     this.eventService = eventService;
     eventService.send(
-            "*",
-            false,
-            Event.builder()
-                    .eventDate(ZonedDateTime.now())
-                    .eventType("BUSINESS_ERROR")
-                    .body(businessError)
-                    .build());
+        "*",
+        false,
+        Event.builder()
+            .eventDate(ZonedDateTime.now())
+            .eventType("BUSINESS_ERROR")
+            .body(businessError)
+            .build());
     log.error(mapper.writeValueAsString(errorMessage));
     throw new HttpStatusException(status, errorMessage);
   }

@@ -540,6 +540,7 @@ public class VisitService {
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
           event.getParameters().put("isVirtual", "false");
+          event.getParameters().put("visitCreator", "terminal");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -670,6 +671,7 @@ public class VisitService {
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
           event.getParameters().put("isVirtual", "false");
+          event.getParameters().put("visitCreator", "terminal");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -799,6 +801,7 @@ public class VisitService {
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
           event.getParameters().put("isVirtual", printTicket ? "false" : "true");
+          event.getParameters().put("visitCreator", "reception");
           event.getParameters().put("staffId", staffId);
           event.getParameters().put("staffName", staffName);
           event
@@ -927,6 +930,7 @@ public class VisitService {
           event.getParameters().put("staffId", staffId);
           event.getParameters().put("staffName", staffName);
           event.getParameters().put("isVirtual", printTicket ? "false" : "true");
+          event.getParameters().put("visitCreator", "reception");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
@@ -1051,6 +1055,7 @@ public class VisitService {
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
           event.getParameters().put("isVirtual", "true");
+          event.getParameters().put("visitCreator", "workstation");
           event
               .getParameters()
               .put("serviceId", !services.isEmpty() ? services.get(0).getId() : null);
