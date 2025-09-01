@@ -8,21 +8,22 @@ include:
   - project: 'aritmosplatform/devops-admin/gitlab-ci-template'
     ref: main
     file: '.deploy-client-template.yml'
+  
+  - project: 'aritmosplatform/devops-admin/gitlab-ci-template'
+    ref: main
+    file: '.deploy-all-in-one-template.yml'
 
 stages:
   - build
   - deploy
 
-variables:
-
-  USER: gitlab-ci-token
-  PASS: $CI_JOB_TOKEN
-  REGISTRY: $CI_REGISTRY
-  REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
-
 Build images:
   variables:
     ENVIRONMENT: "dev"
+    USER: gitlab-ci-token
+    PASS: $CI_JOB_TOKEN
+    REGISTRY: $CI_REGISTRY
+    REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
   stage: build
   image: registry.aritmosplatform.ru/aritmosplatform/devops-admin/images/docker
   services:
@@ -44,4 +45,3 @@ Build images:
         REGISTRY: "https://index.docker.io/v1/"
         REGISTRY_IMAGE: "aritmosplatform/aritmos-platform"
         ENVIRONMENT: $CI_PROJECT_NAME-main
-
