@@ -51,41 +51,96 @@ public class Configuration {
     //                eventService.send("stat", false, eventDeleted);
     //              }
     //            });
-    branchHashMap.forEach(
-        (key, value) -> {
-          if (branchService.branchExists(key)) {
-            try {
-              branchService.delete(key, visitService);
-            } catch (Exception e) {
-              // throw new RuntimeException(e);
-            }
-          }
-          branchService.add(key, value);
-          Event eventDeleted =
-              Event.builder()
-                  .eventType("BRANCH_PUBLIC_COMPLETE")
-                  .eventDate(ZonedDateTime.now())
-                  .body(value)
-                  .params(Map.of("branchId", key))
-                  .build();
-          eventService.send("stat", false, eventDeleted);
-          try {
-            Thread.sleep(20);
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          }
-        });
-    Event eventPublicFinished =
-        Event.builder()
-            .eventType("PUBLIC_COMPLETE")
-            .eventDate(ZonedDateTime.now())
-            .body(branchHashMap)
-            .build();
-    eventService.send("stat", false, eventPublicFinished);
+    HashMap<String, Branch> branchesReserv = new HashMap<>(branchService.getBranches());
     try {
-      Thread.sleep(20);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+      branchHashMap.forEach(
+          (key, value) -> {
+            if (branchService.branchExists(key)) {
+              try {
+                branchService.delete(key, visitService);
+              } catch (Exception e) {
+                // throw new RuntimeException(e);
+              }
+            }
+            branchService.add(key, value);
+            Event eventDeleted =
+                Event.builder()
+                    .eventType("BRANCH_PUBLIC_COMPLETE")
+                    .eventDate(ZonedDateTime.now())
+                    .body(value)
+                    .params(Map.of("branchId", key))
+                    .build();
+            eventService.send("stat", false, eventDeleted);
+            try {
+              Thread.sleep(20);
+            } catch (InterruptedException e) {
+              throw new RuntimeException(e);
+            }
+          });
+      Event eventPublicFinished =
+          Event.builder()
+              .eventType("PUBLIC_COMPLETE")
+              .eventDate(ZonedDateTime.now())
+              .body(branchHashMap)
+              .build();
+      eventService.send("stat", false, eventPublicFinished);
+      try {
+        Thread.sleep(20);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    } catch (Exception ex) {
+      Event eventPublicFailed =
+          Event.builder()
+              .eventType("PUBLIC_FAILED")
+              .eventDate(ZonedDateTime.now())
+              .body(branchHashMap)
+              .build();
+      eventService.send("stat", false, eventPublicFailed);
+      Event eventPublicStartRollback =
+          Event.builder()
+              .eventType("ROLLBACK_PUBLIC_STARTED")
+              .eventDate(ZonedDateTime.now())
+              .body(branchHashMap)
+              .build();
+      eventService.send("stat", false, eventPublicStartRollback);
+      try {
+
+        branchesReserv.forEach(
+            (key, value) -> {
+              if (branchService.branchExists(key)) {
+                try {
+                  branchService.delete(key, visitService);
+                } catch (Exception e) {
+                  // throw new RuntimeException(e);
+                }
+              }
+              branchService.add(key, value);
+              Event eventRollbackComplete =
+                  Event.builder()
+                      .eventType("BRANCH_ROLLBACK_COMPLETE")
+                      .eventDate(ZonedDateTime.now())
+                      .body(value)
+                      .params(Map.of("branchId", key))
+                      .build();
+              eventService.send("stat", false, eventRollbackComplete);
+            });
+      } catch (Exception ex2) {
+        Event eventRollbackFailed =
+            Event.builder()
+                .eventType("BRANCH_ROLLBACK_FAILED")
+                .eventDate(ZonedDateTime.now())
+                .body(ex2)
+                .build();
+        eventService.send("stat", false, eventRollbackFailed);
+      }
+      Event eventRollbackComplete =
+          Event.builder()
+              .eventType("ROLLBACK_COMPLETE")
+              .eventDate(ZonedDateTime.now())
+              .body(branchesReserv)
+              .build();
+      eventService.send("stat", false, eventRollbackComplete);
     }
     return branchService.getDetailedBranches();
   }
