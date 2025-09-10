@@ -539,7 +539,7 @@ public class VisitService {
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
-          event.getParameters().put("isVirtual", "false");
+
           event.getParameters().put("visitCreator", "terminal");
           event
               .getParameters()
@@ -670,7 +670,7 @@ public class VisitService {
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
-          event.getParameters().put("isVirtual", "false");
+
           event.getParameters().put("visitCreator", "terminal");
           event
               .getParameters()
@@ -800,6 +800,7 @@ public class VisitService {
                   + String.format("%03d", serviceQueue.getTicketCounter())));
           VisitEvent event = VisitEvent.CREATED;
           event.getParameters().clear();
+
           event.getParameters().put("isVirtual", printTicket ? "false" : "true");
           event.getParameters().put("visitCreator", "reception");
           event.getParameters().put("staffId", staffId);
@@ -983,7 +984,7 @@ public class VisitService {
   }
 
   /**
-   * Создание визита
+   * Создание виртуального визита
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
@@ -1131,6 +1132,7 @@ public class VisitService {
                           .getCurrentWorkProfileId()
                       : "");
           calledEvent.getParameters().put("queueId", serviceQueue.getId());
+          calledEvent.getParameters().put("callMethod", "virtual");
           calledEvent.dateTime = ZonedDateTime.now();
 
           visit.getParameterMap().put("LastQueueId", serviceQueue.getId());
@@ -3523,7 +3525,7 @@ public class VisitService {
    * @return визит
    */
   public Optional<Visit> visitCall(
-      String branchId, String servicePointId, Visit visit, Boolean isCherryPick) {
+      String branchId, String servicePointId, Visit visit, String callMethod) {
     Branch currentBranch = branchService.getBranch(branchId);
 
     Optional<Queue> queue;
@@ -3614,7 +3616,7 @@ public class VisitService {
                     .getUser()
                     .getCurrentWorkProfileId()
                 : "");
-    event.getParameters().put("isCherryPicked", isCherryPick.toString());
+    event.getParameters().put("callMethod", callMethod);
     event.dateTime = ZonedDateTime.now();
     branchService.updateVisit(visit, event, this);
 
@@ -3640,7 +3642,7 @@ public class VisitService {
   public Optional<Visit> visitCall(String branchId, String servicePointId, String visitId) {
     if (this.getAllVisits(branchId).containsKey(visitId)) {
       Visit visit = this.getAllVisits(branchId).get(visitId);
-      return this.visitCall(branchId, servicePointId, visit, true);
+      return this.visitCall(branchId, servicePointId, visit, "cherryPick");
     }
     return Optional.empty();
   }
@@ -3700,7 +3702,7 @@ public class VisitService {
     event.getParameters().put("staffId", userId);
     event.getParameters().put("staffName", userName);
     event.getParameters().put("workProfileId", workProfileId);
-    event.getParameters().put("isCherryPicked", "true");
+    event.getParameters().put("callMethod", "callNext");
     branchService.updateVisit(visit, event, this);
 
     log.info("Visit {} called!", visit);
@@ -3744,7 +3746,7 @@ public class VisitService {
     event.getParameters().put("queueId", visit.getQueueId());
     event.getParameters().put("staffId", userId);
     event.getParameters().put("staffName", userName);
-    event.getParameters().put("isCherryPicked", "true");
+    event.getParameters().put("callMethod", "cherryPick");
     event
         .getParameters()
         .put(
@@ -3984,7 +3986,7 @@ public class VisitService {
               servicePoint.getUser() != null
                   ? servicePoint.getUser().getCurrentWorkProfileId()
                   : "");
-      event.getParameters().put("isCherryPicked", "false");
+      event.getParameters().put("callMethod", "callNext");
       if (visit.isPresent()) {
         branchService.updateVisit(visit.get(), event, this);
         return visit;
@@ -4049,7 +4051,7 @@ public class VisitService {
               servicePoint.getUser() != null
                   ? servicePoint.getUser().getCurrentWorkProfileId()
                   : "");
-      event.getParameters().put("isCherryPicked", "false");
+      event.getParameters().put("callMethod", "callNext");
       if (visit.isPresent()) {
         branchService.updateVisit(visit.get(), event, this);
         return visit;
@@ -4113,7 +4115,7 @@ public class VisitService {
               servicePoint.getUser() != null
                   ? servicePoint.getUser().getCurrentWorkProfileId()
                   : "");
-      event.getParameters().put("isCherryPicked", "false");
+      event.getParameters().put("callMethod", "callNext");
       if (visit.isPresent()) {
         branchService.updateVisit(visit.get(), event, this);
         return visit;
@@ -4310,7 +4312,7 @@ public class VisitService {
               servicePoint.getUser() != null
                   ? servicePoint.getUser().getCurrentWorkProfileId()
                   : "");
-      event.getParameters().put("isCherryPicked", "false");
+      event.getParameters().put("callMethod", "callNext");
       if (visit.isPresent()) {
         branchService.updateVisit(visit.get(), event, this);
         return visit;
@@ -4365,7 +4367,7 @@ public class VisitService {
               .findFirst();
       if (servicePoint.isPresent()) {
         if (!servicePoint.get().getIsConfirmRequired()) {
-          visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit, false);
+          visit2 = visitCall(visit.getBranchId(), servicePoint.get().getId(), visit, "autoCall");
         } else {
           visit2 =
               visitCallForConfirmWithMaxWaitingTime(
@@ -4398,7 +4400,7 @@ public class VisitService {
         Optional<Visit> visit = waitingTimeCallRule.call(currentBranch, servicePoint);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get(), false);
+          return visitCall(branchId, servicePoint.getId(), visit.get(), "callNext");
         }
 
       } else {
@@ -4438,7 +4440,7 @@ public class VisitService {
         Optional<Visit> visit = waitingTimeCallRule.call(currentBranch, servicePoint, queueIds);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get(), false);
+          return visitCall(branchId, servicePoint.getId(), visit.get(), "callNext");
         }
 
       } else {
@@ -4475,7 +4477,7 @@ public class VisitService {
         Optional<Visit> visit = lifeTimeCallRule.call(currentBranch, servicePoint);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get(), false);
+          return visitCall(branchId, servicePoint.getId(), visit.get(), "callNext");
         }
 
       } else {
@@ -4514,7 +4516,7 @@ public class VisitService {
         Optional<Visit> visit = lifeTimeCallRule.call(currentBranch, servicePoint, queueIds);
         if (visit.isPresent()) {
 
-          return visitCall(branchId, servicePoint.getId(), visit.get(), false);
+          return visitCall(branchId, servicePoint.getId(), visit.get(), "callNext");
         }
 
       } else {
