@@ -30,6 +30,14 @@ public class Service extends BasedService implements Cloneable {
   /** Список идентификаторов оказанных услуг */
   HashMap<String, DeliveredService> deliveredServices = new HashMap<>();
 
+  /**
+   * Конструктор услуги.
+   *
+   * @param key идентификатор услуги
+   * @param name наименование
+   * @param servingSL норматив обслуживания (сек)
+   * @param linkedQueueId идентификатор связанной очереди
+   */
   public Service(String key, String name, Integer servingSL, String linkedQueueId) {
 
     super(key, name);

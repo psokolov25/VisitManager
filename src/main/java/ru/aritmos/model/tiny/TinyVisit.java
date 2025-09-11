@@ -37,8 +37,14 @@ public class TinyVisit {
   /** Время ожидания в секундах */
   Long waitingTime;
 
+  /** Суммарное время ожидания в секундах. */
   Long totalWaitingTime;
 
+  /**
+   * Расчёт текущего времени ожидания в секундах.
+   *
+   * @return время ожидания в секундах
+   */
   @JsonGetter
   public Long getWaitingTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
@@ -47,6 +53,11 @@ public class TinyVisit {
     return waitingTime;
   }
 
+  /**
+   * Расчёт суммарного времени ожидания в секундах.
+   *
+   * @return суммарное время ожидания
+   */
   @JsonGetter
   public Long getTotalWaitingTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());

@@ -32,7 +32,9 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings("unused")
 public class ModuleRole {
 
+  /** Имя JSON‑свойства: имя модуля. */
   public static final String JSON_PROPERTY_NAME = "name";
+  /** Имя JSON‑свойства: требуемая роль. */
   public static final String JSON_PROPERTY_ROLE = "role";
 
   /** Имя модуля который нужно проверить на доступ */
@@ -56,9 +58,10 @@ public class ModuleRole {
   private String role;
 
   /**
-   * Set name in a chainable fashion.
+   * Установить имя модуля (chainable).
    *
-   * @return The same instance of ModuleRole for chaining.
+   * @param name имя модуля
+   * @return текущий экземпляр ModuleRole
    */
   public ModuleRole name(String name) {
     this.name = name;
@@ -66,9 +69,10 @@ public class ModuleRole {
   }
 
   /**
-   * Set role in a chainable fashion.
+   * Установить требуемую роль (chainable).
    *
-   * @return The same instance of ModuleRole for chaining.
+   * @param role роль
+   * @return текущий экземпляр ModuleRole
    */
   public ModuleRole role(String role) {
     this.role = role;

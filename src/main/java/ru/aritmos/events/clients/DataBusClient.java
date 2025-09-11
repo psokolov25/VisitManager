@@ -14,8 +14,22 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Map;
 import org.reactivestreams.Publisher;
 
+/**
+ * HTTP‑клиент для отправки событий на DataBus.
+ */
 @Client(value = "${micronaut.application.dataBusUrl}")
 public interface DataBusClient {
+  /**
+   * Отправить событие на DataBus.
+   *
+   * @param destinationServices получатели (через запятую)
+   * @param sendToOtherBus отправлять на общий bus
+   * @param sendDate дата отправки в формате RFC‑1123
+   * @param senderService имя отправителя
+   * @param type тип события
+   * @param body тело события
+   * @return карта с результатом публикации
+   */
   @Retryable(
       delay = "${micronaut.application.dataBusUrlRetryPeriod:30s}",
       maxDelay = "${micronaut.application.dataBusUrlRetryMaxPeriod:45m}",

@@ -12,11 +12,18 @@ import lombok.*;
 @AllArgsConstructor
 @SuppressWarnings("unused")
 public class BasedService extends BranchEntity implements Cloneable {
+  /** Возможные исходы оказания услуги (по коду исхода). */
   HashMap<String, Outcome> possibleOutcomes = new HashMap<>();
 
-  /** Итог обслуживания */
+  /** Текущий исход оказания услуги. */
   Outcome outcome;
 
+  /**
+   * Конструктор услуги с заданным идентификатором и именем.
+   *
+   * @param id идентификатор услуги
+   * @param name наименование услуги
+   */
   public BasedService(String id, String name) {
     super(id, name);
   }

@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Информация о токене авторизации.
+ */
 @Data
 @Serdeable
 @Builder

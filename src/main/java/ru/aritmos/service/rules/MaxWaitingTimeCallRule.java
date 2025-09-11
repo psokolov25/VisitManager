@@ -18,11 +18,20 @@ import ru.aritmos.model.Queue;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
 
+/** Правило вызова визита по максимальному времени ожидания. */
 @Singleton
 @Named("MaxWaitingTimeCallRule")
 public class MaxWaitingTimeCallRule implements CallRule {
+  /** Сервис событий. */
   @Inject EventService eventService;
 
+  /**
+   * Компаратор визитов по признакам переноса/возврата и времени ожидания.
+   *
+   * @param visit1 первый визит
+   * @param visit2 второй визит
+   * @return результат сравнения для сортировки
+   */
   private Integer visitComparer(Visit visit1, Visit visit2) {
     if (visit1.getParameterMap().containsKey("isTransferredToStart")) {
       if (visit2.getParameterMap().containsKey("isTransferredToStart")) {
@@ -54,6 +63,13 @@ public class MaxWaitingTimeCallRule implements CallRule {
     return ZonedDateTime.parse(date, format);
   }
 
+  /**
+   * Вызов визита исходя из максимального времени ожидания.
+   *
+   * @param branch отделение
+   * @param servicePoint точка обслуживания
+   * @return опционально найденный визит
+   */
   @Override
   public Optional<Visit> call(Branch branch, ServicePoint servicePoint) {
 
@@ -95,6 +111,14 @@ public class MaxWaitingTimeCallRule implements CallRule {
         "User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
   }
 
+  /**
+   * Вызов визита из заданного списка очередей по максимальному ожиданию.
+   *
+   * @param branch отделение
+   * @param servicePoint точка обслуживания
+   * @param queueIds список идентификаторов очередей
+   * @return опционально найденный визит
+   */
   @Override
   public Optional<Visit> call(Branch branch, ServicePoint servicePoint, List<String> queueIds) {
 

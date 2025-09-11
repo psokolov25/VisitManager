@@ -15,6 +15,12 @@ public class DeliveredService extends BasedService implements Cloneable {
   /** Идентификаторы подходящих услуг */
   List<String> serviceIds = new ArrayList<>();
 
+  /**
+   * Создаёт описание оказанной услуги.
+   *
+   * @param id идентификатор услуги
+   * @param name наименование услуги
+   */
   public DeliveredService(String id, String name) {
     super(id, name);
   }

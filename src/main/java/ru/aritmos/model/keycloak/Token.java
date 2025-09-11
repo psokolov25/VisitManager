@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Токен авторизации Keycloak. */
 @Data
 @Serdeable
 @Builder

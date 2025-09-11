@@ -38,8 +38,11 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings("unused")
 public class ModuleRoleAccess {
 
+  /** Имя JSON‑свойства: имя модуля. */
   public static final String JSON_PROPERTY_NAME = "name";
+  /** Имя JSON‑свойства: требуемая роль. */
   public static final String JSON_PROPERTY_ROLE = "role";
+  /** Имя JSON‑свойства: доступ разрешён/запрещён. */
   public static final String JSON_PROPERTY_ACCESS = "access";
 
   /** Имя модуля который нужно проверить на доступ */
@@ -73,9 +76,10 @@ public class ModuleRoleAccess {
   private Boolean access;
 
   /**
-   * Set name in a chainable fashion.
+   * Установить имя модуля (chainable).
    *
-   * @return The same instance of ModuleRoleAccess for chaining.
+   * @param name имя модуля
+   * @return текущий экземпляр ModuleRoleAccess
    */
   public ModuleRoleAccess name(String name) {
     this.name = name;
@@ -83,9 +87,10 @@ public class ModuleRoleAccess {
   }
 
   /**
-   * Set role in a chainable fashion.
+   * Установить роль (chainable).
    *
-   * @return The same instance of ModuleRoleAccess for chaining.
+   * @param role роль
+   * @return текущий экземпляр ModuleRoleAccess
    */
   public ModuleRoleAccess role(String role) {
     this.role = role;
@@ -93,9 +98,10 @@ public class ModuleRoleAccess {
   }
 
   /**
-   * Set access in a chainable fashion.
+   * Установить доступ (chainable).
    *
-   * @return The same instance of ModuleRoleAccess for chaining.
+   * @param access доступ
+   * @return текущий экземпляр ModuleRoleAccess
    */
   public ModuleRoleAccess access(Boolean access) {
     this.access = access;

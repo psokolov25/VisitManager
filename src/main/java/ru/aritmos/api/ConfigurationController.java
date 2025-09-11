@@ -20,8 +20,11 @@ import ru.aritmos.service.VisitService;
 @Controller("/configuration")
 @Slf4j
 public class ConfigurationController {
+  /** Сервис управления отделениями. */
   @Inject BranchService branchService;
+  /** Сервис визитов. */
   @Inject VisitService visitService;
+  /** Сервис формирования конфигурации. */
   @Inject Configuration configuration;
 
   /**
@@ -172,8 +175,8 @@ public class ConfigurationController {
   /**
    * Включение автоматического вызова для отделения
    *
-   * @param branchId идентификатор отделения *
-   * @return @return отделение
+   * @param branchId идентификатор отделения
+   * @return отделение
    */
   @Tag(name = "Автоматический вызов")
   @Tag(name = "Конфигурация отделений")
@@ -187,8 +190,8 @@ public class ConfigurationController {
   /**
    * Выключение автоматического вызова для отделения
    *
-   * @param branchId идентификатор отделения *
-   * @return @return отделение
+   * @param branchId идентификатор отделения
+   * @return отделение
    */
   @Tag(name = "Автоматический вызов")
   @Tag(name = "Конфигурация отделений")

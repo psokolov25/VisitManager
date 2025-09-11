@@ -109,10 +109,22 @@ public class Branch extends BranchEntity {
   /** Список * */
   HashMap<String, String> breakReasons = new HashMap<>();
 
+  /**
+   * Конструктор отделения.
+   *
+   * @param key идентификатор отделения
+   * @param name наименование
+   */
   public Branch(String key, String name) {
     super(key, name);
   }
 
+  /**
+   * Инкремент счётчика талонов очереди.
+   *
+   * @param queue очередь
+   * @return новое значение счётчика или -1, если очередь не принадлежит отделению
+   */
   public Integer incrementTicketCounter(Queue queue) {
     if (this.getQueues().containsKey(queue.getId())) {
       this.queues
@@ -199,10 +211,11 @@ public class Branch extends BranchEntity {
   }
 
   /**
-   * Открытие точки обслуживания
+   * Открытие точки обслуживания.
    *
    * @param user сотрудник, открывший точку обслуживания
    * @param eventService служба рассылки событий
+   * @throws IOException ошибка сериализации при формировании событий
    */
   public void openServicePoint(User user, EventService eventService) throws IOException {
     getUsers().put(user.getName(), user);
@@ -274,11 +287,16 @@ public class Branch extends BranchEntity {
   }
 
   /**
-   * Закрытие точки обслуживания
+   * Закрытие точки обслуживания.
    *
    * @param servicePointId идентификатор точки обслуживания
    * @param eventService служба рассылки событий
+   * @param visitService сервис визитов
    * @param withLogout флаг закрытия сессии сотрудника
+   * @param isBreak флаг начала перерыва
+   * @param breakReason причина перерыва
+   * @param isForced принудительное закрытие визита
+   * @param reason причина принудительного закрытия
    */
   public void closeServicePoint(
       String servicePointId,
@@ -423,6 +441,14 @@ public class Branch extends BranchEntity {
     }
   }
 
+  /**
+   * Обновление визита и рассылка события с произвольным действием.
+   *
+   * @param visit визит
+   * @param eventService сервис событий
+   * @param action действие (будет добавлено к префиксу VISIT_)
+   * @param visitService сервис визитов
+   */
   public void updateVisit(
       Visit visit, EventService eventService, String action, VisitService visitService) {
 
@@ -483,6 +509,15 @@ public class Branch extends BranchEntity {
             .build());
   }
 
+  /**
+   * Обновление визита по событию с выбором позиции начала/конца.
+   *
+   * @param visit визит
+   * @param eventService сервис событий
+   * @param visitEvent событие визита
+   * @param visitService сервис визитов
+   * @param isToStart поместить визит в начало (true) или в конец (false)
+   */
   public void updateVisit(
       Visit visit,
       EventService eventService,
@@ -496,6 +531,15 @@ public class Branch extends BranchEntity {
     }
   }
 
+  /**
+   * Обновление визита по событию с указанием позиции.
+   *
+   * @param visit визит
+   * @param eventService сервис событий
+   * @param visitEvent событие визита
+   * @param visitService сервис визитов
+   * @param index индекс вставки (или -1 для добавления в конец)
+   */
   public void updateVisit(
       Visit visit,
       EventService eventService,
@@ -624,11 +668,27 @@ public class Branch extends BranchEntity {
     visitService.getBranchService().add(this.getId(), this);
   }
 
+  /**
+   * Обновление визита по событию (перегрузка без дополнительных параметров).
+   *
+   * @param visit визит
+   * @param eventService сервис событий
+   * @param visitEvent событие визита
+   * @param visitService сервис визитов
+   */
   public void updateVisit(
       Visit visit, EventService eventService, VisitEvent visitEvent, VisitService visitService) {
     updateVisit(visit, eventService, visitEvent, visitService, true);
   }
 
+  /**
+   * Добавление или обновление услуг отделения.
+   *
+   * @param serviceHashMap карта услуг (id -> услуга)
+   * @param eventService сервис событий
+   * @param checkVisits учитывать активные визиты при изменении услуг
+   * @param visitService сервис визитов
+   */
   public void addUpdateService(
       HashMap<String, Service> serviceHashMap,
       EventService eventService,
@@ -690,6 +750,14 @@ public class Branch extends BranchEntity {
         });
   }
 
+  /**
+   * Удаление услуг отделения.
+   *
+   * @param serviceIds список идентификаторов услуг
+   * @param eventService сервис событий
+   * @param checkVisits учитывать активные визиты при удалении услуг
+   * @param visitService сервис визитов
+   */
   public void deleteServices(
       List<String> serviceIds,
       EventService eventService,
@@ -752,6 +820,12 @@ public class Branch extends BranchEntity {
         });
   }
 
+  /**
+   * Добавление/обновление групп услуг с установкой связей услуг.
+   *
+   * @param serviceGroupHashMap карта групп услуг
+   * @param eventService сервис событий
+   */
   public void adUpdateServiceGroups(
       HashMap<String, ServiceGroup> serviceGroupHashMap, EventService eventService) {
 
@@ -776,6 +850,14 @@ public class Branch extends BranchEntity {
         "Add or update service groups");
   }
 
+  /**
+   * Добавление/обновление точек обслуживания.
+   *
+   * @param servicePointHashMap карта точек обслуживания
+   * @param restoreVisit восстановить визит на точке
+   * @param restoreUser восстановить пользователя на точке
+   * @param eventService сервис событий
+   */
   public void addUpdateServicePoint(
       HashMap<String, ServicePoint> servicePointHashMap,
       Boolean restoreVisit,
@@ -811,6 +893,12 @@ public class Branch extends BranchEntity {
         });
   }
 
+  /**
+   * Удаление точек обслуживания.
+   *
+   * @param servicePointIds список идентификаторов точек
+   * @param eventService сервис событий
+   */
   public void deleteServicePoints(List<String> servicePointIds, EventService eventService) {
     servicePointIds.forEach(
         f -> {
@@ -827,6 +915,13 @@ public class Branch extends BranchEntity {
         });
   }
 
+  /**
+   * Добавление/обновление очередей отделения.
+   *
+   * @param queueHashMap карта очередей
+   * @param restoreVisits восстановить связанные визиты
+   * @param eventService сервис событий
+   */
   public void addUpdateQueues(
       HashMap<String, Queue> queueHashMap, Boolean restoreVisits, EventService eventService) {
     queueHashMap.forEach(
@@ -859,6 +954,12 @@ public class Branch extends BranchEntity {
         });
   }
 
+  /**
+   * Удаление очередей отделения.
+   *
+   * @param queueIds список идентификаторов очередей
+   * @param eventService сервис событий
+   */
   public void deleteQueues(List<String> queueIds, EventService eventService) {
 
     queueIds.forEach(
@@ -869,6 +970,12 @@ public class Branch extends BranchEntity {
         });
   }
 
+  /**
+   * Добавление/обновление правил сегментации отделения.
+   *
+   * @param segmentationRuleDataHashMap карта правил сегментации
+   * @param eventService сервис событий
+   */
   public void adUpdateSegmentRules(
       HashMap<String, SegmentationRuleData> segmentationRuleDataHashMap,
       EventService eventService) {

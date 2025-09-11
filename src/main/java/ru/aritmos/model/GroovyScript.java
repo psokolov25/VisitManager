@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/** Модель скрипта Groovy для сегментации и вызова. */
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,12 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 public class GroovyScript {
+  /** Входные параметры для скрипта. */
   @JsonInclude(JsonInclude.Include.ALWAYS)
   Map<String, Object> inputParameters = new HashMap<>();
 
+  /** Выходные параметры, формируемые скриптом. */
   @JsonInclude(JsonInclude.Include.ALWAYS)
   HashMap<Object, Object> outputParameters = new HashMap<>();
 
+  /** Исходный код скрипта. */
   String ruleCode;
   /* @JsonIgnore
   public void Execute() {

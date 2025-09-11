@@ -128,7 +128,316 @@ Rel(api, redis, "Кэш/сессии")
 
 ---
 
+## Инструкции для разработчиков
+
+### Сборка и тесты (Maven)
+
+- Полная сборка с тестами: `./mvnw clean verify`
+- Сборка без тестов: `./mvnw -DskipTests package`
+- Запуск JAR: `java -jar target/visitmanager.jar`
+- Запуск в dev (если подключен плагин): `./mvnw mn:run`
+- Тесты: `./mvnw test`
+ - Полный набор примеров curl: см. `docs/curl-examples.md`
+
+### Быстрый сценарий (скрипты)
+
+- Bash: `scripts/demo-quickstart.sh` — открытие СП → создание визита → вызов/confirm → итог → завершение
+  - Запуск: `bash scripts/demo-quickstart.sh`
+  - Переменные (опционально): `BASE, BR, SP, WP, ENTRY, USER, SVC, OUTCOME`
+- PowerShell: `scripts/demo-quickstart.ps1` — аналогичный сценарий для Windows
+  - Запуск: `pwsh -File scripts/demo-quickstart.ps1`
+  - Переменные: те же (через `$env:...`)
+
+### Локальная сборка/запуск без Docker и внешних сервисов
+
+Для быстрого локального запуска без Docker/Testcontainers и без реального Keycloak/Kafka/Redis добавлен профиль `local-no-docker`.
+
+- Сборка и проверка без интеграционных тестов: `./mvnw -Plocal-no-docker clean verify`
+- Запуск в dev-режиме (Micronaut):
+  - Linux/macOS: `MICRONAUT_ENVIRONMENTS=local-no-docker ./mvnw mn:run`
+  - Windows PowerShell: `$env:MICRONAUT_ENVIRONMENTS='local-no-docker'; ./mvnw mn:run`
+
+Что делает профиль `local-no-docker`:
+- отключает Micronaut Test Resources (не требуется Docker);
+- отключает генерацию OpenAPI для ускорения локальной сборки;
+- исключает тяжёлые интеграционные тесты (`EntrypointTest`, `*IT.java`, `*ITCase.java`);
+- выключает Kafka‑слушателя и подменяет интеграции заглушками:
+  - `KeyCloackClient` → стаб `LocalNoDockerKeycloakStub` (без сетевых вызовов);
+  - `DataBusClient` → стаб `LocalNoDockerDataBusClientStub` (события «отправляются» локально);
+- отключает Redis/Kafka на уровне конфигурации (`application-local-no-docker.yml`).
+
+Важно: профиль `local-no-docker` предназначен только для локальной разработки. Для интеграционных тестов и стендов используйте полный `verify` и Docker.
+
+### Быстрые примеры curl (local-no-docker)
+
+- Проверка API и списка отделений
+  - `curl http://localhost:8080/managementinformation/branches`
+  - `curl "http://localhost:8080/managementinformation/branches?userName=psokolov"`
+- Детали отделения (демо)
+  - `curl http://localhost:8080/managementinformation/branches/37493d1c-8282-4417-a729-dceac1f3e2b4`
+- Короткий список отделений
+  - `curl http://localhost:8080/managementinformation/branches/tiny`
+- Создание визита через точку входа (демо‑значения)
+  - `curl -X POST \
+    'http://localhost:8080/entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/entryPoints/2/visit' \
+    -H 'Content-Type: application/json' \
+    -d '["c3916e7f-7bea-4490-b9d1-0d4064adbe8b"]'`
+- Swagger UI
+  - `http://localhost:8080/swagger-ui/`
+
+Примеры для зоны обслуживания (демо-идентификаторы из профиля local-no-docker)
+
+- Открыть точку обслуживания для пользователя
+  - `curl -X POST 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/workProfiles/d5a84e60-e605-4527-b065-f4bd7a385790/users/psokolov/open'`
+
+- Вызов визита с ожиданием подтверждения (макс. ожидание) и подтверждение прихода
+  - Вызов: `curl -s -X POST 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/visits/call'`
+  - Получить `visitId`: `VISIT_ID=$(curl -s -X POST 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/visits/call' | jq -r '.id')`
+  - Подтверждение: `curl -X POST "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/confirm/${VISIT_ID}"`
+
+- Повторный вызов (re-call) визита в режиме подтверждения
+  - `curl -X POST "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/recall/${VISIT_ID}"`
+
+- Добавить заметку к текущему визиту
+  - `curl -X POST 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/notes' -H 'Content-Type: text/plain; charset=utf-8' --data 'Краткая заметка по визиту'`
+
+- Добавить итог услуги к текущему визиту (пример outcomeId из демо)
+  - `curl -X POST 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/outcome/462bac1a-568a-4f1f-9548-1c7b61792b4b'`
+
+- Завершить обслуживание
+  - `curl -X PUT 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/visit/end'`
+
+- Отложить визит (postpone) или вернуть в очередь (put back)
+  - Postpone: `curl -X PUT 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/postpone'`
+  - Put back: `curl -X PUT 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/visit/put_back?returnTimeDelay=60'`
+
+- Закрыть точку обслуживания (без выхода из системы)
+  - `curl -X POST 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/close?isBreak=false'`
+
+- Выход пользователя из системы с закрытием точки
+  - `curl -X POST 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/logout?isForced=true&reason=USER_SESSION_KILLED'`
+
+Примеры перевода визита (transfer)
+
+- Перевести визит в другую очередь (в конец)
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visit/transferFromQueue/${VISIT_ID}?isAppend=true&transferTimeDelay=0"`
+- Перевести визит в другую очередь на позицию 0
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visit/transferFromQueue/${VISIT_ID}?index=0&transferTimeDelay=0"`
+- Перевести визит из очереди в пул точки обслуживания (в конец пула)
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/poolServicePoint/099c43c1-40b5-4b80-928a-1d4b363152a8/visits/${VISIT_ID}/transferFromQueue?isAppend=true&transferTimeDelay=0"`
+- Перевести визит из очереди в пул точки обслуживания на позицию 0
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/poolServicePoint/099c43c1-40b5-4b80-928a-1d4b363152a8/visits/${VISIT_ID}/transferFromQueueWithIndex?index=0&transferTimeDelay=0"`
+- Внешняя служба (ресепшен/MI): перевод визита в очередь
+  - `curl -X PUT \
+    'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visits/${VISIT_ID}/externalService/transfer?isAppend=true&transferTimeDelay=0' \
+    -H 'Content-Type: application/json' \
+    -d '{"source":"reception"}'`
+- Внешняя служба: перевод визита в пул точки обслуживания
+  - `curl -X PUT \
+    'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoint/a66ff6f4-4f4a-4009-8602-0dc278024cf2/pool/visits/${VISIT_ID}/externalService/transfer?isAppend=true&transferTimeDelay=0' \
+    -H 'Content-Type: application/json' \
+    -d '{"source":"reception"}'`
+- Вернуть вызванный визит обратно в очередь
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/${VISIT_ID}/put_back?returnTimeDelay=60"`
+
+Примеры работы с пулом сотрудника
+
+- Получить `userId` по логину (например, psokolov)
+  - `USER_ID=$(curl -s 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/users/user/psokolov' | jq -r '.id')`
+- Перевести визит из очереди в пул сотрудника (в конец пула)
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/users/${USER_ID}/visits/${VISIT_ID}?isAppend=true&transferTimeDelay=0"`
+- Перевести визит из очереди в пул сотрудника на позицию 0
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/users/${USER_ID}/visits/${VISIT_ID}/position/0?transferTimeDelay=0"`
+- Перевести текущий визит оператора из СП в пул сотрудника
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/users/${USER_ID}/transfer?transferTimeDelay=0"`
+- Вернуть текущий визит из СП в пул сотрудника с задержкой возврата 60с
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/users/${USER_ID}/put_back?returnTimeDelay=60"`
+
+Примеры работы с пулом точки обслуживания
+
+- Перевести текущий визит из СП в пул точки (в конец пула)
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/poolServicePoint/099c43c1-40b5-4b80-928a-1d4b363152a8/visit/transfer?transferTimeDelay=0"`
+- Вернуть текущий визит из СП в пул точки с задержкой 60с
+  - `curl -X PUT "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/poolServicePoint/099c43c1-40b5-4b80-928a-1d4b363152a8/visit/put_back?returnTimeDelay=60"`
+
 ## Руководство по развертыванию (Docker)
+
+## Кейсы обслуживания (сценарии)
+
+Ниже — типичные сценарии работы оператора. Все примеры совместимы с профилем `local-no-docker`.
+
+- Открытие рабочего места
+  - Оператор выбирает точку и рабочий профиль.
+  - API: POST `/servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open`
+
+- Вызов посетителя
+  - Авто‑вызов (по правилам ожидания/жизни визита) или ручной/“из списка”.
+  - API: POST `/servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` (с подтверждением) или `/servicepoint/branches/{branchId}/servicePoints/{servicePointId}/call`
+
+- Подтверждение прихода
+  - После вызова в режиме подтверждения оператор фиксирует факт прихода.
+  - API: POST `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}`
+
+- Повторный вызов (re‑call)
+  - Если посетитель не подошёл, можно повторить вызов.
+  - API: POST `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}`
+
+- Переводы визита
+  - Между очередями: PUT `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueue/{visitId}`
+  - В пул точки: PUT `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visits/{visitId}/transferFromQueue`
+  - В пул сотрудника: PUT `/servicepoint/branches/{branchId}/users/{userId}/visits/{visitId}`
+  - Внешней службой (ресепшен/MI):
+    - В очередь: PUT `/servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer`
+    - В пул точки: PUT `/servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer`
+
+- Возвраты визита
+  - Возврат вызванного визита в очередь: PUT `/servicepoint/branches/{branchId}/visits/{visitId}/put_back?returnTimeDelay=60`
+  - Возврат текущего визита из точки в очередь: PUT `/servicepoint/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back?returnTimeDelay=60`
+  - Возврат текущего визита в пул точки: PUT `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/put_back?returnTimeDelay=60`
+
+- Итоги и фактические услуги
+  - Итог услуги: POST `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}`
+  - Фактическая услуга + итог: POST `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}`
+  - Заметки по визиту: POST `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/notes`
+
+- Завершение обслуживания
+  - Нормальное завершение: PUT `/servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end`
+  - Принудительное завершение (с причиной): тот же эндпоинт с `?isForced=true&reason=...`
+
+- Перерывы и закрытие точки
+  - Закрыть точку без выхода: POST `/servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close?isBreak=false`
+  - Перерыв (закрыть точку с флагом `isBreak` и `breakReason`): `/close?isBreak=true&breakReason=<...>`
+  - Выход (logout): POST `/servicepoint/branches/{branchId}/servicePoints/{servicePointId}/logout?isForced=false`
+
+Примечания
+- Для демонстрации используйте идентификаторы из раздела “Быстрые примеры curl (local-no-docker)”.
+- Для прод/стендов требуется корректная интеграция с Keycloak/Kafka/Redis и реальные идентификаторы сущностей.
+
+## Ошибки и их причины
+
+- 404 NOT_FOUND
+  - Branch not found — неверный `branchId`
+  - Service point not found — неверный `servicePointId`
+  - Queue not found — неверный `queueId`
+  - Visit not found — неверный `visitId`
+- 403 FORBIDDEN / 401
+  - User not logged in in service point — вызов/операция без открытого рабочего места
+  - Work profile not found — неверный `workProfileId` при открытии/смене профиля
+  - User doesn't have permissions to access branch — нет прав доступа к отделению (роль/branchPrefix)
+- 409 CONFLICT
+  - The service point is already busy — попытка открыть уже занятую точку
+  - ServicePoint already closed — попытка закрыть уже закрытую точку
+- 400 BAD_REQUEST
+  - Некорректные параметры запроса (позиция/флаги/формат тела)
+- 500 INTERNAL_SERVER_ERROR
+  - Системные ошибки интеграций/ошибки сериализации
+
+Диагностика
+- Проверяйте логи (`logback.xml` настроен, уровни можно повысить в `application.yml`)
+- События шины: `EventService` публикует `ENTITY_CHANGED`, `BUSINESS_ERROR`, `SYSTEM_ERROR`, `VisitEvent ...`
+- Для dev профиля `local-no-docker` внешние вызовы подменены заглушками, поэтому 5xx реже связаны с сетью
+
+## Демо идентификаторы (local-no-docker)
+
+- Отделение (branch): `37493d1c-8282-4417-a729-dceac1f3e2b4` (Клиника на Тверской)
+- Точки обслуживания (servicePoint):
+  - Основная: `a66ff6f4-4f4a-4009-8602-0dc278024cf2` (Каб. 121)
+  - Доп.: `099c43c1-40b5-4b80-928a-1d4b363152a8` (Каб. 101), `090bd53d-96ba-466b-9845-d64e81894964` (Каб. 114),
+    `f9e60eaf-b4af-4bf8-8d64-e70d2e949829` (Каб. 120), `043536cc-62bb-43df-bdc6-d0b9df9ff961` (Каб. 102 Касса)
+- Рабочие профили (workProfile):
+  - Хирург: `d5a84e60-e605-4527-b065-f4bd7a385790`
+  - Офтальмолог: `76e4d31e-1787-476a-9668-9ff5c50c6855`
+- Очереди (queue):
+  - Хирург: `55da9b66-c928-4d47-9811-dbbab20d3780`
+  - Офтальмолог: `c211ae6b-de7b-4350-8a4c-cff7ff98104e`
+  - В кассу: `8eee7e6e-345a-4f9b-9743-ff30a4322ef5`
+- Услуги (service):
+  - Хирург: `c3916e7f-7bea-4490-b9d1-0d4064adbe8b`
+  - Офтальмолог: `569769e8-3bb3-4263-bd2e-42d8b3ec0bd2`
+  - Травматолог: `856e8e77-aa8e-4feb-b947-566f6164e46f`
+  - Касса: `9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66`
+- Итоги и фактические услуги:
+  - Итог «Запись на повторный приём»: `462bac1a-568a-4f1f-9548-1c7b61792b4b`
+  - Итог «Получена»: `8dc29622-cd87-4384-85a7-04b66b28dd0f`
+  - DS «Консультация»: `35d73fdd-1597-4d94-a087-fd8a99c9d1ed`
+  - DS «Подготовка к операции»: `daa17035-7bd7-403f-a036-6c14b81e666f`
+- Точка входа (entryPoint): `2`, принтер: `eb7ea46d-c995-4ca0-ba92-c92151473214`
+
+### Управление режимом авто‑вызова (пример)
+
+- Включить авто‑вызов: `curl -X PUT 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoins/a66ff6f4-4f4a-4009-8602-0dc278024cf2/startAutoCall'`
+- Отключить авто‑вызов: `curl -X PUT 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoins/a66ff6f4-4f4a-4009-8602-0dc278024cf2/cancelAutoCall'`
+- Смена рабочего профиля: `curl -X PUT 'http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/workProfiles/d5a84e60-e605-4527-b065-f4bd7a385790'`
+
+## Диаграмма последовательности (PlantUML)
+
+```plantuml
+@startuml
+actor Operator
+participant API as "ServicePointController"
+participant VS as "VisitService"
+participant BS as "BranchService"
+participant ES as "EventService"
+
+== Открытие рабочего места ==
+Operator -> API: POST /servicepoint/.../users/{user}/open
+API -> BS: openServicePoint(...)
+BS -> ES: send(USER_SERVICE_POINT_CHANGED)
+BS --> API: User
+API --> Operator: 200 OK
+
+== Вызов и подтверждение ==
+Operator -> API: POST /servicepoint/.../confirmed/visits/call
+API -> VS: visitCallForConfirmWithMaxWaitingTime(...)
+VS --> API: Optional<Visit>
+API --> Operator: Visit (WAITING_CONFIRM)
+Operator -> API: POST /servicepoint/.../confirmed/confirm/{visitId}
+API -> VS: visitConfirm(...)
+VS -> ES: send(VisitEvent START)
+VS --> API: Visit (IN_PROGRESS)
+
+== Итог и завершение ==
+Operator -> API: POST /servicepoint/.../outcome/{outcomeId}
+API -> VS: addOutcomeService(...)
+VS -> ES: send(OUTCOME_ADDED)
+Operator -> API: PUT /servicepoint/.../visit/end
+API -> VS: visitEnd(...)
+VS -> ES: send(VisitEvent END)
+VS --> API: Visit (ENDED)
+API --> Operator: 200 OK
+@enduml
+```
+
+### Диаграмма: перевод визита в пул точки/сотрудника
+
+```plantuml
+@startuml
+actor Operator
+participant API as "ServicePointController"
+participant VS as "VisitService"
+participant BS as "BranchService"
+participant ES as "EventService"
+
+== Перевод в пул точки обслуживания ==
+Operator -> API: PUT /servicepoint/.../poolServicePoint/{poolSpId}/visit/transfer
+API -> BS: getBranch / validate(poolSpId)
+API -> VS: visitTransferToServicePointPool(...)
+VS -> ES: send(VisitEvent TRANSFER_TO_SERVICE_POINT_POOL)
+VS --> API: Visit (POOL_OF_SP)
+API --> Operator: 200 OK
+
+== Перевод в пул сотрудника ==
+Operator -> API: PUT /servicepoint/.../users/{userId}/transfer
+API -> VS: visitTransferToUserPool(...)
+VS -> ES: send(VisitEvent TRANSFER_TO_USER_POOL)
+VS --> API: Visit (POOL_OF_USER)
+API --> Operator: 200 OK
+@enduml
+```
+
+Примечание: если `jq` недоступен на Windows, используйте PowerShell:
+- `(Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/.../confirmed/visits/call').id`
+- или: `((Invoke-WebRequest -Method Post -Uri 'http://...').Content | ConvertFrom-Json).id`
 
 Вариант 1. Нативный jar
 
@@ -238,9 +547,24 @@ docker-compose.local.yml (локальная разработка)
 
 Переменные окружения (.env)
 
-- Используйте `.env` для безопасной подстановки значений (см. список в разделе «Переменные окружения» ниже).
-- Не коммитьте реальные секреты: используйте `.env.local`/`.env.dev` в локальной среде и секреты в CI/CD/оркестраторе в
-  проде.
+- Используйте `.env` для безопасной подстановки значений (см. список ниже).
+- Не коммитьте реальные секреты: используйте `.env.local`/`.env.dev` в локальной среде и секреты в CI/CD/оркестраторе в проде.
+
+Основные переменные окружения (примеры и соответствия):
+
+- `MICRONAUT_ENVIRONMENTS` — активные профили Micronaut (например, `local-no-docker`)
+- `REDIS_SERVER` — URI Redis (по умолчанию в `application.yml`: `redis://192.168.8.45:7379`)
+- `KAFKA_SERVER` — адрес Kafka bootstrap servers (по умолчанию: `192.168.8.45:29092`)
+- `LOKI_SERVER` — URL приёмника Loki (`http://.../loki/api/v1/push`)
+- `DATABUS_SERVER` — URL шины данных → `micronaut.application.dataBusUrl`
+- `CONFIG_SERVER` — URL конфигурационного сервиса → `micronaut.application.configurationURL`
+- `PRINTER_SERVER` — URL сервиса печати → `micronaut.application.printerServiceURL`
+- `OIDC_ISSUER_URL` / `OIDC_ISSUER_DOMAIN` — базовые URL Keycloak (issuer)
+- `OAUTH_CLIENT_ID` / `OAUTH_CLIENT_SECRET` — OAuth2 client id/secret
+- `KEYCLOAK_TECHLOGIN` / `KEYCLOAK_TECHPASSWORD` — сервисный логин/пароль для Keycloak API
+
+Подстановка переменных выполнена в `application.yml` через `${VAR:
+ DEFAULT}`. Значения из `.env` и окружения перекрывают дефолты.
 
 Внешние зависимости (ожидаемые эндпоинты)
 

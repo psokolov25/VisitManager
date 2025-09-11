@@ -3,6 +3,7 @@ package ru.aritmos.handlers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.context.annotation.Context;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import jakarta.annotation.PostConstruct;
@@ -25,14 +26,24 @@ import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
 
+/** Контекст регистрации обработчиков событий и их привязки к KafkaListener. */
 @Slf4j
+@Requires(notEnv = "test")
 @Context
 public class EventHandlerContext {
+  /** Сервис конфигурации отделений. */
   @Inject Configuration configuration;
+
+  /** Сервис работы с визитами. */
   @Inject VisitService visitService;
+
+  /** Сервис отправки событий. */
   @Inject EventService eventService;
+
+  /** Сервис управления отделениями. */
   @Inject BranchService branchService;
 
+  /** Регистрация обработчиков событий и публикация начальной конфигурации. */
   @Singleton
   @PostConstruct
   void AddHandlers() {
@@ -58,6 +69,7 @@ public class EventHandlerContext {
     configuration.createBranchConfiguration(configuration.createDemoBranch());
   }
 
+  /** Обработчик бизнес-ошибок. */
   static class BusinesErrorHandler implements EventHandler {
 
     @Override
@@ -67,6 +79,7 @@ public class EventHandlerContext {
     }
   }
 
+  /** Обработчик системных ошибок. */
   static class SystemErrorHandler implements EventHandler {
 
     @Override
@@ -76,6 +89,7 @@ public class EventHandlerContext {
     }
   }
 
+  /** Обработчик событий изменения сущностей. */
   static class EntityChangedHandler implements EventHandler {
 
     @Override
@@ -85,15 +99,31 @@ public class EventHandlerContext {
     }
   }
 
+  /** Обработчик мягкого завершения пользовательской сессии. */
   static class NotForceUserLogoutHandler implements EventHandler {
+    /** Сервис визитов. */
     VisitService visitService;
+
+    /** Сервис событий. */
     EventService eventService;
 
+    /**
+     * Конструктор.
+     *
+     * @param visitService сервис визитов
+     * @param eventService сервис событий
+     */
     NotForceUserLogoutHandler(VisitService visitService, EventService eventService) {
       this.visitService = visitService;
       this.eventService = eventService;
     }
 
+    /**
+     * Обработка события о мягком завершении сессии пользователя.
+     *
+     * @param event событие
+     * @throws JsonProcessingException ошибка сериализации/десериализации
+     */
     @Override
     @ExecuteOn(TaskExecutors.IO)
     public void Handle(Event event) throws JsonProcessingException {
@@ -148,15 +178,31 @@ public class EventHandlerContext {
     }
   }
 
+  /** Обработчик принудительного завершения пользовательской сессии. */
   static class ForceUserLogoutHandler implements EventHandler {
+    /** Сервис визитов. */
     VisitService visitService;
+
+    /** Сервис событий. */
     EventService eventService;
 
+    /**
+     * Конструктор.
+     *
+     * @param visitService сервис визитов
+     * @param eventService сервис событий
+     */
     public ForceUserLogoutHandler(VisitService visitService, EventService eventService) {
       this.visitService = visitService;
       this.eventService = eventService;
     }
 
+    /**
+     * Обработка события о принудительном завершении сессии пользователя.
+     *
+     * @param event событие
+     * @throws JsonProcessingException ошибка сериализации/десериализации
+     */
     @Override
     @ExecuteOn(TaskExecutors.IO)
     public void Handle(Event event) throws JsonProcessingException {
@@ -196,12 +242,28 @@ public class EventHandlerContext {
     }
   }
 
+  /** Обработчик публикации конфигурации отделения. */
   static class BranchPublicHandler implements EventHandler {
+    /** Сервис визитов. */
     VisitService visitService;
+
+    /** Сервис событий. */
     EventService eventService;
+
+    /** Сервис отделений. */
     BranchService branchService;
+
+    /** Сервис конфигурации. */
     Configuration configuration;
 
+    /**
+     * Конструктор.
+     *
+     * @param visitService сервис визитов
+     * @param eventService сервис событий
+     * @param branchService сервис отделений
+     * @param configuration сервис конфигурации
+     */
     BranchPublicHandler(
         VisitService visitService,
         EventService eventService,
@@ -213,6 +275,13 @@ public class EventHandlerContext {
       this.configuration = configuration;
     }
 
+    /**
+     * Конвертация объекта в карту при помощи рефлексии.
+     *
+     * @param object объект для конвертации
+     * @return карта "поле -> значение"
+     * @throws IllegalAccessException ошибка доступа к приватным полям
+     */
     private Map<String, Object> convertUsingReflection(Object object)
         throws IllegalAccessException {
       Map<String, Object> map = new HashMap<>();
@@ -226,6 +295,12 @@ public class EventHandlerContext {
       return map;
     }
 
+    /**
+     * Обработка события публикации конфигурации отделений.
+     *
+     * @param event событие
+     * @throws IllegalAccessException ошибка доступа при конвертации
+     */
     @Override
     public void Handle(Event event) throws IllegalAccessException {
 

@@ -3,6 +3,7 @@ package ru.aritmos.events.services;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.ObjectMapper;
@@ -14,27 +15,48 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
 import ru.aritmos.exceptions.SystemException;
 
+/**
+ * Подписчик Kafka для обработки событий шины данных.
+ */
 @Slf4j
+@Requires(notEnv = "local-no-docker")
 @io.micronaut.configuration.kafka.annotation.KafkaListener(offsetReset = OffsetReset.LATEST)
 public class KafkaListener {
+  /** Обработчики общих событий (topic `events`). */
   private static final HashMap<String, EventHandler> allHandlers = new HashMap<>();
+  /** Обработчики событий для сервиса (topic `event_${micronaut.application.name}`). */
   private static final HashMap<String, EventHandler> serviceHandlers = new HashMap<>();
+  /** Сериализатор/десериализатор JSON. */
   @Inject ObjectMapper objectMapper;
 
+  /**
+   * Регистрация обработчика для общих событий (topic `events`).
+   *
+   * @param eventType тип события
+   * @param handler обработчик события
+   */
   public static void addAllEventHandler(String eventType, EventHandler handler) {
     allHandlers.put(eventType, handler);
   }
 
+  /**
+   * Регистрация обработчика событий сервиса (topic `event_${micronaut.application.name}`).
+   *
+   * @param eventType тип события
+   * @param handler обработчик события
+   */
   public static void addServiceEventHandler(String eventType, EventHandler handler) {
     serviceHandlers.put(eventType, handler);
   }
 
   /**
-   * Получает сообщения от шины дынных адресованные данной службе
+   * Получает сообщения от шины данных, адресованные данной службе.
    *
-   * @param key Ключ сообщения кафка
-   * @param event Тело события класса Event
-   * @throws IOException Обрабатываемые исключения
+   * @param key ключ сообщения Kafka
+   * @param event тело события класса {@link Event}
+   * @throws IOException ошибка десериализации события
+   * @throws SystemException системная ошибка обработчика
+   * @throws IllegalAccessException ошибка доступа при рефлексии в обработчике
    */
   @Topic("event_${micronaut.application.name}")
   @ExecuteOn(TaskExecutors.IO)
@@ -49,11 +71,13 @@ public class KafkaListener {
   }
 
   /**
-   * Получает сообщения от шины дынных адресованные для всех служб
+   * Получает сообщения от шины данных, адресованные для всех служб.
    *
-   * @param key Ключ сообщения кафка
-   * @param event Тело события класса Event
-   * @throws IOException Обрабатываемые исключения
+   * @param key ключ сообщения Kafka
+   * @param event тело события класса {@link Event}
+   * @throws IOException ошибка десериализации события
+   * @throws SystemException системная ошибка обработчика
+   * @throws IllegalAccessException ошибка доступа при рефлексии в обработчике
    */
   @Topic("events")
   @ExecuteOn(TaskExecutors.IO)

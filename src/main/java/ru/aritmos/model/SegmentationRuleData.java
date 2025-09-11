@@ -7,6 +7,9 @@ import java.util.HashMap;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Параметры правила сегментации визитов.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Introspected

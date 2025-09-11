@@ -12,6 +12,12 @@ public class Outcome extends BranchEntity implements Cloneable {
   /** Код итога обслуживания */
   Long code;
 
+  /**
+   * Конструктор итога обслуживания.
+   *
+   * @param id идентификатор
+   * @param name наименование
+   */
   public Outcome(String id, String name) {
     super(id, name);
   }

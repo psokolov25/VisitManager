@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Доступы (роли) пользователя в реалме Keycloak.
+ */
 @Data
 @Serdeable
 @Builder

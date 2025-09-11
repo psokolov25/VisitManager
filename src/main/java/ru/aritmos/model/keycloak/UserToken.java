@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Пользователь и связанные с ним токены.
+ */
 @Serdeable
 @Data
 @Builder

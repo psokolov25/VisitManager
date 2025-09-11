@@ -1,0 +1,244 @@
+{
+  "info": {
+    "name": "VisitManager API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Коллекция основных REST-эндпоинтов VisitManager"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8080"},
+    {"key": "branchId", "value": "37493d1c-8282-4417-a729-dceac1f3e2b4"},
+    {"key": "servicePointId", "value": "a66ff6f4-4f4a-4009-8602-0dc278024cf2"},
+    {"key": "queueId", "value": "c211ae6b-de7b-4350-8a4c-cff7ff98104e"},
+    {"key": "entryPointId", "value": "2"},
+    {"key": "printerId", "value": "eb7ea46d-c995-4ca0-ba92-c92151473614"},
+    {"key": "workProfileId", "value": "d5a84e60-e605-4527-b065-f4bd7a385790"},
+    {"key": "serviceId", "value": "c3916e7f-7bea-4490-b9d1-0d4064adbe8b"},
+    {"key": "visitId", "value": "55da9b66-c928-4d47-9811-dbbab20d3780"},
+    {"key": "outcomeId", "value": "462bac1a-568a-4f1f-9548-1c7b61792b4b"},
+    {"key": "deliveredServiceId", "value": "35d73fdd-1597-4d94-a087-fd8a99c9d1ed"},
+    {"key": "markId", "value": "04992364-9e96-4ec9-8a05-923766aa57e7"},
+    {"key": "userId", "value": "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89"},
+    {"key": "userName", "value": "ivanov"},
+    {"key": "poolServicePointId", "value": "a66ff6f4-4f4a-4009-8602-0dc278024cf2"},
+    {"key": "sid", "value": "SID-STAFF"}
+  ],
+  "item": [
+    {
+      "name": "ServicePoint",
+      "item": [
+        {
+          "name": "Get free service points",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/servicePoints/getFree"
+          }
+        },
+        {
+          "name": "Open service point",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/servicePoints/{{servicePointId}}/workProfiles/{{workProfileId}}/users/{{userName}}/open"
+          }
+        },
+        {
+          "name": "Close service point",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/servicePoints/{{servicePointId}}/close?isBreak=false&isForced=false&reason="
+          }
+        },
+        {
+          "name": "Logout from service point",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/servicePoints/{{servicePointId}}/logout?isBreak=false&isForced=false&reason="
+          }
+        },
+        {
+          "name": "Get visits of queue",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/queues/{{queueId}}/visits/"
+          }
+        },
+        {
+          "name": "Call visit by id",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/visits/servicePoints/{{servicePointId}}/visits/{{visitId}}/call"
+          }
+        },
+        {
+          "name": "Call max waiting",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/servicePoints/{{servicePointId}}/call"
+          }
+        },
+        {
+          "name": "Call from queues",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "[\"{{queueId}}\"]"},
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/servicePoints/{{servicePointId}}/callfromQueues"
+          }
+        },
+        {
+          "name": "Confirm visit (by id)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/visits/servicePoints/{{servicePointId}}/confirmed/confirm/{{visitId}}"
+          }
+        },
+        {
+          "name": "No-show (by id)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/visits/servicePoints/{{servicePointId}}/confirmed/noshow/{{visitId}}"
+          }
+        },
+        {
+          "name": "Visit end",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/visits/servicePoints/{{servicePointId}}/visit/end?isForced=false&reason="
+          }
+        },
+        {
+          "name": "Put back visit",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/visits/{{visitId}}/put_back?returnTimeDelay=60"
+          }
+        },
+        {
+          "name": "SP -> Queue",
+          "request": {
+            "method": "PUT",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{}"},
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/visits/servicePoints/{{servicePointId}}/queue/{{queueId}}/visit/transferFromServicePoint?isAppend=true&transferTimeDelay=0"
+          }
+        },
+        {
+          "name": "Queue -> Queue",
+          "request": {
+            "method": "PUT",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{}"},
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/visits/servicePoints/{{servicePointId}}/queue/{{queueId}}/visit/transferFromQueue?isAppend=true&transferTimeDelay=0"
+          }
+        },
+        {
+          "name": "Queue -> SP Pool",
+          "request": {
+            "method": "PUT",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{}"},
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/visits/servicePoints/{{servicePointId}}/poolServicePoint/{{poolServicePointId}}/visit/transferFromQueue?isAppend=true&transferTimeDelay=0"
+          }
+        },
+        {
+          "name": "Queue -> User Pool",
+          "request": {
+            "method": "PUT",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{}"},
+            "url": "{{baseUrl}}/servicepoint/branches/{{branchId}}/users/{{userId}}?isAppend=true&transferTimeDelay=0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Entrypoint",
+      "item": [
+        {
+          "name": "Create visit",
+          "request": {
+            "method": "POST",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "[\"{{serviceId}}\"]"},
+            "url": "{{baseUrl}}/entrypoint/branches/{{branchId}}/entryPoints/{{entryPointId}}/visit?printTicket=true"
+          }
+        },
+        {
+          "name": "Create visit with parameters",
+          "request": {
+            "method": "POST",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{\n  \"serviceIds\": [\"{{serviceId}}\"],\n  \"parameters\": {\n    \"sex\": \"male\",\n    \"age\": \"33\"\n  }\n}"},
+            "url": "{{baseUrl}}/entrypoint/branches/{{branchId}}/entryPoints/{{entryPointId}}/visitWithParameters?printTicket=false"
+          }
+        },
+        {
+          "name": "Available services",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/entrypoint/branches/{{branchId}}/services"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Configuration",
+      "item": [
+        {
+          "name": "Update branches",
+          "request": {
+            "method": "POST",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{\n  \"{{branchId}}\": {\n    \"id\": \"{{branchId}}\",\n    \"name\": \"Demo\"\n  }\n}"},
+            "url": "{{baseUrl}}/configuration/branches"
+          }
+        },
+        {
+          "name": "Update services",
+          "request": {
+            "method": "PUT",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{\n  \"{{serviceId}}\": {\n    \"id\": \"{{serviceId}}\",\n    \"name\": \"Услуга\"\n  }\n}"},
+            "url": "{{baseUrl}}/configuration/branches/{{branchId}}/services?checkVisits=true"
+          }
+        },
+        {
+          "name": "Toggle branch autocall on",
+          "request": {"method": "PUT", "url": "{{baseUrl}}/configuration/branches/{{branchId}}/autocallModeOn"}
+        },
+        {
+          "name": "Toggle branch autocall off",
+          "request": {"method": "PUT", "url": "{{baseUrl}}/configuration/branches/{{branchId}}/autocallModeOff"}
+        }
+      ]
+    },
+    {
+      "name": "Management",
+      "item": [
+        {"name": "Get branch", "request": {"method": "GET", "url": "{{baseUrl}}/managementinformation/branches/{{branchId}}"}},
+        {"name": "Get branches", "request": {"method": "GET", "url": "{{baseUrl}}/managementinformation/branches"}},
+        {"name": "Get branches tiny", "request": {"method": "GET", "url": "{{baseUrl}}/managementinformation/branches/tiny"}}
+      ]
+    },
+    {
+      "name": "Keycloak",
+      "item": [
+        {
+          "name": "Auth",
+          "request": {
+            "method": "POST",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{\n  \"username\": \"user\",\n  \"password\": \"pass\"\n}"},
+            "url": "{{baseUrl}}/keycloak"
+          }
+        },
+        {
+          "name": "Logout user",
+          "request": {"method": "POST", "url": "{{baseUrl}}/keycloak/users/{{userName}}?isForced=true&reason=security"}
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VisitManager — Шпаргалка по curl</title>
+  <style>
+    :root { --bg:#0f1218; --fg:#e6edf3; --sec:#1f6feb; --mut:#9aa6b2; }
+    body { margin:0; font:14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:var(--bg); color:var(--fg); }
+    header { padding:20px 24px; background:#0b0f14; position:sticky; top:0; border-bottom:1px solid #222; }
+    header h1 { margin:0; font-size:18px; }
+    main { padding: 20px 24px 60px; max-width: 1200px; }
+    section { margin: 28px 0; }
+    h2 { margin: 16px 0; border-left:3px solid var(--sec); padding-left:10px; }
+    h3 { font-size: 15px; color: var(--sec); margin: 18px 0 8px; }
+    article { background:#0b0f14; border:1px solid #1e232b; border-radius:6px; padding:12px 12px; margin:12px 0; }
+    pre { background:#0c1117; border:1px solid #1f242c; padding:10px; border-radius:6px; overflow:auto; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 13px; }
+    .file { color: var(--mut); font-size: 12px; margin: 4px 0 12px; }
+    .legend { color: var(--mut); font-size: 13px; margin-top: 6px; }
+    a { color: var(--sec); text-decoration: none; }
+  </style>
+  <meta name="robots" content="noindex" />
+</head>
+<body>
+  <header>
+    <h1>VisitManager — Шпаргалка по curl (из JavaDoc)</h1>
+    <div class="legend">Генерация на основе комментариев «Пример curl» в контроллерах ru.aritmos.api</div>
+  </header>
+  <main>
+  <section>
+    <h2>ConfigurationController.java</h2>
+    <div class="file">src/main/java/ru/aritmos/api/ConfigurationController.java</div>
+    <article>
+      <h3>POST /branches</h3>
+      <pre><code>
+   * curl -X POST "http://localhost:8080/configuration/branches" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"37493d1c-...": {"id":"37493d1c-...","name":"Main Branch"}}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/hardcode</h3>
+      <pre><code>
+   * curl -X POST "http://localhost:8080/configuration/branches/hardcode"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/services</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/services?checkVisits=true" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"svc1":{"id":"svc1","name":"Подача заявления"}}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/break/reasons</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/break/reasons"
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE /branches/{branchId}/services</h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/services?checkVisits=false" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["svc1","svc2"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/servicePoints</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints?restoreVisit=true&amp;restoreUser=true" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"sp1":{"id":"sp1","name":"SP-1"}}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/serviceGroups</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/serviceGroups" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"grp1":{"id":"grp1","name":"Справки"}}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/segmentationRules</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/segmentationRules" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"rule1":{"id":"rule1","name":"VIP first"}}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE /branches/{branchId}/servicePoints</h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["sp1","sp2"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/autocallModeOn</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/autocallModeOn"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/autocallModeOff</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/autocallModeOff"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/queues</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queues?restoreVisits=false" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"q1":{"id":"q1","name":"Общая"}}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE /branches/{branchId}/queues</h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/configuration/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queues" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["q1","q2"]'
+      </code></pre>
+    </article>
+  </section>
+  <section>
+    <h2>EntrypointController.java</h2>
+    <div class="file">src/main/java/ru/aritmos/api/EntrypointController.java</div>
+    <article>
+      <h3>POST /branches/{branchId}/servicePoint/{servicePointId}/virtualVisit</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoint/a66ff6f4-4f4a-4009-8602-0dc278024cf2/virtualVisit" \
+   *  -H "Content-Type: application/json" \
+   *  -H "Cookie: sid=SID-123" \
+   *  -d '["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/entryPoints/{entryPointId}/visit</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/entryPoints/2/visit?printTicket=true" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/entryPoints/2/visitWithParameters?printTicket=false" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{
+   *        "serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b"],
+   *        "parameters":{"sex":"male","age":"33"}
+   *      }'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/printer/{printerId}/visitWithParameters</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/printer/eb7ea46d-c995-4ca0-ba92-c92151473614/visitWithParameters?printTicket=true" \
+   *  -H "Content-Type: application/json" \
+   *  -H "Cookie: sid=SID-STAFF" \
+   *  -d '{
+   *        "serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b"],
+   *        "parameters":{"sex":"male","age":"33"}
+   *      }'
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/visits/{visitId}</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/55da9b66-c928-4d47-9811-dbbab20d3780" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"priority":"vip","lang":"ru"}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/services</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/services"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/services/all</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/services/all"
+      </code></pre>
+    </article>
+  </section>
+  <section>
+    <h2>KeyCloakController.java</h2>
+    <div class="file">src/main/java/ru/aritmos/api/KeyCloakController.java</div>
+    <article>
+      <h3>POST /keycloak</h3>
+      <pre><code>
+   * curl -X POST "http://localhost:8080/keycloak" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"username":"user","password":"pass"}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /keycloak/users/{login}</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/keycloak/users/ivanov?isForced=true&amp;reason=security"
+      </code></pre>
+    </article>
+  </section>
+  <section>
+    <h2>ManagementController.java</h2>
+    <div class="file">src/main/java/ru/aritmos/api/ManagementController.java</div>
+    <article>
+      <h3>GET /branches/{id}</h3>
+      <pre><code>
+   * curl -X GET "http://localhost:8080/managementinformation/branches/37493d1c-8282-4417-a729-dceac1f3e2b4"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches</h3>
+      <pre><code>
+   * curl -X GET "http://localhost:8080/managementinformation/branches"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches</h3>
+      <pre><code>
+   * curl -X GET "http://localhost:8080/managementinformation/branches?userName=ivanov"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/tiny</h3>
+      <pre><code>
+   * curl -X GET "http://localhost:8080/managementinformation/branches/tiny"
+      </code></pre>
+    </article>
+  </section>
+  <section>
+    <h2>ServicePointController.java</h2>
+    <div class="file">src/main/java/ru/aritmos/api/ServicePointController.java</div>
+    <article>
+      <h3>GET /branches/{branchId}/servicePoints/getFree</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/getFree"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/printers</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/printers"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/queues</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queues"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/queues/full</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queues/full"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/servicePoints</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/servicePoints/detailed</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/detailed"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/servicePoints/user/{userName}</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/user/ivanov"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/users</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/users"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/workingusers</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/workingusers"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /servicePoints/user/{userName}</h3>
+      <pre><code>
+   * curl -X GET "http://localhost:8080/servicepoint/servicePoints/user/ivanov"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/users/user/{userName}</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/users/user/ivanov"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/workProfiles</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/workProfiles"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/workProfiles/d5a84e60-e605-4527-b065-f4bd7a385790"
+      </code></pre>
+    </article>
+    <article>
+      <h3>Пример curl</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/workProfiles/d5a84e60-e605-4527-b065-f4bd7a385790/users/ivanov/open"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/servicePoints/{servicePointId}/close</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/close?isBreak=false&amp;isForced=false&amp;reason="
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/servicePoints/{servicePointId}/logout</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/logout?isBreak=false&amp;isForced=false&amp;reason="
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/queues/{queueId}/visits/limit/{limit}</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queues/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visits/limit/10"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/queues/{queueId}/visits/</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queues/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visits/"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/visits/all</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/all"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/visits/{visitId}</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/55da9b66-c928-4d47-9811-dbbab20d3780"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/statuses</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/statuses" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["WAITING","CALLED"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/queues/{queueId}/visits/{visitId}</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queues/55da9b66-c928-4d47-9811-dbbab20d3780/visits/55da9b66-c928-4d47-9811-dbbab20d3780"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}/call</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/visits/55da9b66-c928-4d47-9811-dbbab20d3780/call"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/call/visit" \
+   *  -H "Content-Type: application/json" \
+   *  -d @visit.json
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/call/55da9b66-c928-4d47-9811-dbbab20d3780"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/servicePoints/{servicePointId}/call</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/call"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/visits/call"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/servicePoints/{servicePointId}/callfromQueues</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/callfromQueues" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["c211ae6b-de7b-4350-8a4c-cff7ff98104e"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/visits/callfromQueues" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["c211ae6b-de7b-4350-8a4c-cff7ff98104e"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/visits/callfromQueues/maxLifeTime" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["c211ae6b-de7b-4350-8a4c-cff7ff98104e"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/visits/call/maxLifeTime"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/callfromQueues/maxLifeTime" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["c211ae6b-de7b-4350-8a4c-cff7ff98104e"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/call/maxLifeTime"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/noshow" \
+   *  -H "Content-Type: application/json" \
+   *  -d @visit.json
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow/{visitId}</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/noshow/55da9b66-c928-4d47-9811-dbbab20d3780"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/recall" \
+   *  -H "Content-Type: application/json" \
+   *  -d @visit.json
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/recall/55da9b66-c928-4d47-9811-dbbab20d3780"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/confirm" \
+   *  -H "Content-Type: application/json" \
+   *  -d @visit.json
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST </h3>
+      <pre><code>
+   * curl -X POST \
+   *  "/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/confirmed/confirm/55da9b66-c928-4d47-9811-dbbab20d3780"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoins/a66ff6f4-4f4a-4009-8602-0dc278024cf2/cancelAutoCall"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/servicePoins/{servicePointId}/startAutoCall</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoins/a66ff6f4-4f4a-4009-8602-0dc278024cf2/startAutoCall"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/services/{serviceId}/deliveredServices</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/services/c3916e7f-7bea-4490-b9d1-0d4064adbe8b/deliveredServices"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/servicePoins/{servicePointId}/deliveredServices</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoins/a66ff6f4-4f4a-4009-8602-0dc278024cf2/deliveredServices"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/workProfile/{workProfileId}/services</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/workProfile/d5a84e60-e605-4527-b065-f4bd7a385790/services"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/queue/{queueId}/services</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queue/55da9b66-c928-4d47-9811-dbbab20d3780/services"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/possibleDeliveredServices</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/possibleDeliveredServices"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/services/{serviceId}/outcomes</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/services/c3916e7f-7bea-4490-b9d1-0d4064adbe8b/outcomes"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST </h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/deliveredservice/35d73fdd-1597-4d94-a087-fd8a99c9d1ed"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/visits/{visitId}/marks</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/55da9b66-c928-4d47-9811-dbbab20d3780/marks"
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE /branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}</h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/mark/04992364-9e96-4ec9-8a05-923766aa57e7"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/marks/</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/marks/"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/mark/04992364-9e96-4ec9-8a05-923766aa57e7"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/notes</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/notes" \
+   *  -H "Content-Type: application/json" \
+   *  -d '"Комментарий"'
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/visits/{visitId}/notes</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/55da9b66-c928-4d47-9811-dbbab20d3780/notes"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/outcome/462bac1a-568a-4f1f-9548-1c7b61792b4b"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/services/{serviceId}</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/services/c3916e7f-7bea-4490-b9d1-0d4064adbe8b"
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST /branches/{branchId}/visits/servicePoints/{servicePointId}/services</h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/services" \
+   *  -H "Content-Type: application/json" \
+   *  -d '["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]'
+      </code></pre>
+    </article>
+    <article>
+      <h3>POST </h3>
+      <pre><code>
+   * curl -X POST \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/deliveredService/35d73fdd-1597-4d94-a087-fd8a99c9d1ed/outcome/8dc29622-cd87-4384-85a7-04b66b28dd0f"
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE </h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/deliveredServices/35d73fdd-1597-4d94-a087-fd8a99c9d1ed/outcome"
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE </h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/service/c3916e7f-7bea-4490-b9d1-0d4064adbe8b/outcome"
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE </h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/deliveredServices/35d73fdd-1597-4d94-a087-fd8a99c9d1ed"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/servicePoints/{servicePointId}</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2"
+      </code></pre>
+    </article>
+    <article>
+      <h3>GET /branches/{branchId}/servicePoints/{servicePointId}/queues</h3>
+      <pre><code>
+   * curl -X GET \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/queues"
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE /branches/{branchId}/visits/servicePoints/{servicePointId}</h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2" \
+   *  -H "Content-Type: application/json" \
+   *  -d @visit.json
+      </code></pre>
+    </article>
+    <article>
+      <h3>DELETE /branches/{branchId}/visits/{visitId}</h3>
+      <pre><code>
+   * curl -X DELETE \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/55da9b66-c928-4d47-9811-dbbab20d3780"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT </h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visit/transferFromServicePoint?isAppend=true&amp;transferTimeDelay=0"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT </h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/poolServicePoint/a66ff6f4-4f4a-4009-8602-0dc278024cf2/visit/put_back?returnTimeDelay=60"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT </h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/poolServicePoint/a66ff6f4-4f4a-4009-8602-0dc278024cf2/visit/transfer?transferTimeDelay=0"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT </h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visit/transferFromQueue?isAppend=true&amp;transferTimeDelay=0" \
+   *  -H "Content-Type: application/json" \
+   *  -d @visit.json
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT </h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visit/transferFromQueueToStartOrToEnd/55da9b66-c928-4d47-9811-dbbab20d3780?isAppend=true&amp;transferTimeDelay=0"
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT /branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer</h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visits/55da9b66-c928-4d47-9811-dbbab20d3780/externalService/transfer?isAppend=true&amp;transferTimeDelay=0" \
+   *  -H "Content-Type: application/json" \
+   *  -d '{"staff":"reception"}'
+      </code></pre>
+    </article>
+    <article>
+      <h3>PUT </h3>
+      <pre><code>
+   * curl -X PUT \
+   *  "http://localhost:8080/servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visit/transferFromQueue/position/0?transferTimeDelay=0" \
+   *  -H "Content-Type: application/json" \
+   *  -d @visit.json
+      </code></pre>
+    </article>
+  </section>
+    <section>
+      <h2>Сводные материалы</h2>
+      <article>
+        <div class="legend">См. также:</div>
+        <ul>
+          <li><a href="../REST-Examples.md">REST-Examples.md</a> — примеры с переменными окружения</li>
+          <li><a href="../postman/VisitManager.postman_collection.json">Postman collection</a> и <a href="../postman/VisitManager.env.postman_environment.json">environment</a></li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

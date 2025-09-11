@@ -20,20 +20,31 @@ import lombok.extern.jackson.Jacksonized;
 @NoArgsConstructor
 @Serdeable
 public class BranchEntity implements Cloneable {
-  /** Идентификатор */
+  /** Идентификатор сущности. */
   String id;
 
-  /** Название */
+  /** Наименование. */
   String name;
 
-  /** Идентификатор отделения */
+  /** Идентификатор филиала. */
   String branchId;
 
+  /**
+   * Конструктор сущности с авто‑генерацией идентификатора.
+   *
+   * @param name наименование сущности
+   */
   public BranchEntity(String name) {
     this.id = UUID.randomUUID().toString();
     this.name = name;
   }
 
+  /**
+   * Конструктор сущности.
+   *
+   * @param id идентификатор
+   * @param name наименование сущности
+   */
   public BranchEntity(String id, String name) {
     this.id = id;
     this.name = name;

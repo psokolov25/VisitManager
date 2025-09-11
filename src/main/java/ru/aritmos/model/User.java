@@ -69,6 +69,13 @@ public class User extends BranchEntityWithVisits {
 
   List<GroupRepresentation> allBranches;
 
+  /**
+   * Конструктор пользователя.
+   *
+   * @param id идентификатор пользователя
+   * @param name имя пользователя
+   * @param keyCloackClient клиент Keycloak для получения ролей/групп
+   */
   @JsonIgnore
   public User(String id, String name, KeyCloackClient keyCloackClient) {
 
@@ -80,6 +87,12 @@ public class User extends BranchEntityWithVisits {
     }
   }
 
+  /**
+   * Конструктор пользователя с автогенерацией идентификатора.
+   *
+   * @param name имя пользователя
+   * @param keyCloackClient клиент Keycloak для получения ролей/групп
+   */
   @JsonIgnore
   public User(String name, KeyCloackClient keyCloackClient) {
     super(name);
@@ -90,6 +103,11 @@ public class User extends BranchEntityWithVisits {
     }
   }
 
+  /**
+   * Имя пользователя.
+   *
+   * @return имя
+   */
   @Override
   @JsonProperty("name")
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -97,6 +115,11 @@ public class User extends BranchEntityWithVisits {
     return this.name;
   }
 
+  /**
+   * Признак, что пользователь сейчас на перерыве.
+   *
+   * @return true, если перерыв начат и не завершён
+   */
   @JsonProperty
   public Boolean isOnBreak() {
     return this.lastBreakStartTime != null && this.lastBreakEndTime == null;

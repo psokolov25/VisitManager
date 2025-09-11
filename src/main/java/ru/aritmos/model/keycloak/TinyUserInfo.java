@@ -39,9 +39,13 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings("unused")
 public class TinyUserInfo {
 
+  /** Имя JSON‑свойства: полное имя. */
   public static final String JSON_PROPERTY_NAME = "name";
+  /** Имя JSON‑свойства: описание. */
   public static final String JSON_PROPERTY_DESCRIPTION = "description";
+  /** Имя JSON‑свойства: почта. */
   public static final String JSON_PROPERTY_EMAIL = "email";
+  /** Имя JSON‑свойства: логин. */
   public static final String JSON_PROPERTY_LOGIN = "login";
 
   /** полное имя залогиненного пользователя */
@@ -86,9 +90,10 @@ public class TinyUserInfo {
   private String login;
 
   /**
-   * Set name in a chainable fashion.
+   * Установить имя (chainable).
    *
-   * @return The same instance of TinyUserInfo for chaining.
+   * @param name имя пользователя
+   * @return текущий экземпляр TinyUserInfo
    */
   public TinyUserInfo name(String name) {
     this.name = name;
@@ -96,9 +101,10 @@ public class TinyUserInfo {
   }
 
   /**
-   * Set description in a chainable fashion.
+   * Установить описание (chainable).
    *
-   * @return The same instance of TinyUserInfo for chaining.
+   * @param description описание
+   * @return текущий экземпляр TinyUserInfo
    */
   public TinyUserInfo description(String description) {
     this.description = description;
@@ -106,9 +112,10 @@ public class TinyUserInfo {
   }
 
   /**
-   * Set email in a chainable fashion.
+   * Установить email (chainable).
    *
-   * @return The same instance of TinyUserInfo for chaining.
+   * @param email почта
+   * @return текущий экземпляр TinyUserInfo
    */
   public TinyUserInfo email(String email) {
     this.email = email;
@@ -116,9 +123,10 @@ public class TinyUserInfo {
   }
 
   /**
-   * Set login in a chainable fashion.
+   * Установить логин (chainable).
    *
-   * @return The same instance of TinyUserInfo for chaining.
+   * @param login логин
+   * @return текущий экземпляр TinyUserInfo
    */
   public TinyUserInfo login(String login) {
     this.login = login;

@@ -11,26 +11,33 @@ import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.keycloack.model.Credentials;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
+/** REST API для операций авторизации в Keycloak. */
 @Slf4j
 @Controller
 @SerdeImport(AuthorizationResponse.class)
 @SuppressWarnings("unused")
 public class KeyCloakController {
+  /** Технический логин Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.techlogin")
   String techlogin;
 
+  /** Технический пароль Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.techpassword")
   String techpassword;
 
+  /** Идентификатор клиента Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.client-id")
   String clientId;
 
+  /** Realm Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.realm")
   String realm;
 
+  /** URL сервера Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.keycloakurl")
   String keycloakUrl;
 
+  /** Клиент для взаимодействия с Keycloak. */
   @Inject KeyCloackClient keyCloackClient;
 
   /**
@@ -48,9 +55,11 @@ public class KeyCloakController {
   }
 
   /**
-   * Удаления сеанса сотрудника
+   * Удаление сеанса сотрудника.
    *
    * @param login логин сотрудника
+   * @param isForced принудительно завершить сессию
+   * @param reason причина завершения
    */
   @Tag(name = "Полный список")
   @Tag(name = "Взаимодействие с Keycloak")

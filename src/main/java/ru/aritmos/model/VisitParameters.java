@@ -10,27 +10,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Параметры визита. */
 @Data
 @Introspected
 @Serdeable
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-/*
- * Параметры визита
- */
 public class VisitParameters {
+  /** Идентификаторы услуг. */
   @JsonInclude(JsonInclude.Include.NON_NULL)
   @Builder.Default
-  /*
-   * Идентификаторы услуг
-   */
   ArrayList<String> serviceIds = new ArrayList<>();
 
+  /** Параметры визита. */
   @Builder.Default
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  /*
-   * Параметры визита
-   */
   HashMap<String, String> parameters = new HashMap<>();
 }

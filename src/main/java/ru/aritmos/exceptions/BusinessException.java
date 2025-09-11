@@ -10,12 +10,24 @@ import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 
+/**
+ * Исключение уровня бизнес‑логики с публикацией события об ошибке.
+ */
 @Slf4j
 @SuppressWarnings("unused")
 public class BusinessException extends RuntimeException {
 
+  /** Сервис отправки событий. */
   final EventService eventService;
 
+  /**
+   * Создать исключение с сообщением и HTTP‑статусом.
+   * Публикует событие BUSINESS_ERROR и выбрасывает {@link HttpStatusException}.
+   *
+   * @param errorMessage сообщение об ошибке
+   * @param eventService сервис событий
+   * @param status HTTP‑статус
+   */
   public BusinessException(String errorMessage, EventService eventService, HttpStatus status) {
     super(errorMessage);
     BusinessError businessError = new BusinessError();
@@ -33,6 +45,15 @@ public class BusinessException extends RuntimeException {
     throw new HttpStatusException(status, errorMessage);
   }
 
+  /**
+   * Создать исключение с произвольным телом и HTTP‑статусом.
+   *
+   * @param errorMessage тело ошибки (будет сериализовано)
+   * @param eventService сервис событий
+   * @param status HTTP‑статус
+   * @param mapper сериализатор
+   * @throws IOException ошибка сериализации
+   */
   public BusinessException(
       Object errorMessage,
       EventService eventService,
@@ -55,6 +76,14 @@ public class BusinessException extends RuntimeException {
     throw new HttpStatusException(status, errorMessage);
   }
 
+  /**
+   * Создать исключение с сообщением и отдельным сообщением для лога.
+   *
+   * @param errorMessage сообщение для клиента
+   * @param errorLogMessage сообщение для лога
+   * @param eventService сервис событий
+   * @param status HTTP‑статус
+   */
   public BusinessException(
       String errorMessage, String errorLogMessage, EventService eventService, HttpStatus status) {
     super(errorMessage);
@@ -73,6 +102,14 @@ public class BusinessException extends RuntimeException {
     throw new HttpStatusException(status, errorMessage);
   }
 
+  /**
+   * Создать исключение с произвольным телом и отдельным сообщением для лога.
+   *
+   * @param errorMessage тело ошибки
+   * @param errorLogMessage сообщение для лога
+   * @param eventService сервис событий
+   * @param status HTTP‑статус
+   */
   public BusinessException(
       Object errorMessage, String errorLogMessage, EventService eventService, HttpStatus status) {
     super(errorLogMessage);
@@ -91,6 +128,15 @@ public class BusinessException extends RuntimeException {
     throw new HttpStatusException(status, errorMessage);
   }
 
+  /**
+   * Создать исключение с отдельным сообщением для клиента, лога и события.
+   *
+   * @param errorMessage сообщение для клиента
+   * @param errorLogMessage сообщение для лога
+   * @param errorEventMessage сообщение для события
+   * @param eventService сервис событий
+   * @param status HTTP‑статус
+   */
   public BusinessException(
       String errorMessage,
       String errorLogMessage,

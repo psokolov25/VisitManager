@@ -29,7 +29,7 @@ kafka:
 micronaut:
   test:
     resources:
-      enabled: true
+      enabled: false
 
   server:
     port: 8080
@@ -72,21 +72,7 @@ micronaut:
         mapping: /swagger-ui/**
 
 redis:
-  #uri: redis://192.168.8.45:6379
-  #uri: redis://localhost:6379
-  #uri: redis://192.168.8.45:7379/5
-  uri: '${REDIS_SERVER_TEST:`redis://192.168.8.45:7379`}'
-  cache:
-    key-serializer: io.micronaut.core.serialize.ObjectSerializer
-    value-serializer: io.micronaut.core.serialize.ObjectSerializer
-
-  caches:
-    branches:
-      charset: UTF-8
-      key-serializer: io.micronaut.core.serialize.ObjectSerializer
-      value-serializer: io.micronaut.core.serialize.ObjectSerializer
-      expire-after-access: 30d
-      expire-after-write: 30d
+  enabled: false
 
 
 

@@ -30,24 +30,43 @@ import ru.aritmos.model.visit.VisitEventInformation;
 import ru.aritmos.service.rules.CallRule;
 import ru.aritmos.service.rules.SegmentationRule;
 
+/** Сервис операций с визитами: создание, перевод, события и печать талонов. */
 @Slf4j
 @Singleton
 @SuppressWarnings("unused")
 public class VisitService {
+  /** Клиент Keycloak для получения сведений о пользователях. */
   @Inject public KeyCloackClient keyCloackClient;
+  /** Сервис отделений. */
   @Getter @Inject BranchService branchService;
+  /** Сервис событий. */
   @Inject EventService eventService;
+  /** Планировщик отложенных событий. */
   @Inject DelayedEvents delayedEvents;
+  /** Сервис печати талонов. */
   @Inject PrinterService printerService;
+  /** Правило вызова по максимальному времени ожидания. */
   CallRule waitingTimeCallRule;
+  /** Правило вызова по максимальному времени жизни визита. */
   CallRule lifeTimeCallRule;
+  /** Правило сегментации визитов. */
   @Inject SegmentationRule segmentationRule;
 
+  /**
+   * Инъекция правила вызова по максимальному времени ожидания.
+   *
+   * @param callRule реализация правила
+   */
   @Inject
   public void setWaitingTimeCallRule(@Named("MaxWaitingTimeCallRule") CallRule callRule) {
     this.waitingTimeCallRule = callRule;
   }
 
+  /**
+   * Инъекция правила вызова по максимальному времени жизни визита.
+   *
+   * @param callRule реализация правила
+   */
   @Inject
   public void setLifeTimeCallRule(@Named("MaxLifeTimeCallRule") CallRule callRule) {
     this.lifeTimeCallRule = callRule;
@@ -178,6 +197,7 @@ public class VisitService {
    * @param visitParameters передаваемые список услуг и дополнительные параметры визита
    * @param printTicket флаг печати талона
    * @return созданный визит
+   * @throws SystemException системная ошибка обработки визита
    */
   public Visit createVisit(
       String branchId, String entryPointId, VisitParameters visitParameters, Boolean printTicket)
@@ -244,7 +264,9 @@ public class VisitService {
    * @param printerId идентификатор энтри поинта
    * @param visitParameters передаваемые список услуг и дополнительные параметры визита
    * @param printTicket флаг печати талона
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return созданный визит
+   * @throws SystemException системная ошибка обработки визита
    */
   public Visit createVisitFromReception(
       String branchId,
@@ -277,6 +299,8 @@ public class VisitService {
    * @param printerId идентификатор энтри поинта
    * @param visitParameters передаваемые список услуг и дополнительные параметры визита
    * @param printTicket флаг печати талона
+   * @param segmentationRuleId идентификатор правила сегментации
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return созданный визит
    */
   public Visit createVisitFromReception(
@@ -309,6 +333,16 @@ public class VisitService {
     }
   }
 
+  /**
+   * Создание виртуального визита на указанной точке обслуживания.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param visitParameters параметры и список услуг визита
+   * @param sid идентификатор сессии сотрудника (cookie sid)
+   * @return созданный визит
+   * @throws SystemException системная ошибка обработки визита
+   */
   public Visit createVirtualVisit(
       String branchId, String servicePointId, VisitParameters visitParameters, String sid)
       throws SystemException {
@@ -472,8 +506,10 @@ public class VisitService {
    * @param branchId идентификатор отделения
    * @param entryPointId идентификатор энтри поинта
    * @param services список услуг
+   * @param parametersMap параметры визита
    * @param printTicket флаг печати талона
    * @return визит
+   * @throws SystemException системная ошибка
    */
   public Visit createVisit2(
       String branchId,
@@ -602,7 +638,9 @@ public class VisitService {
    * @param branchId идентификатор отделения
    * @param entryPointId идентификатор энтри поинта
    * @param services список услуг
+   * @param parametersMap параметры визита
    * @param printTicket флаг печати талона
+   * @param segmentationRuleId идентификатор правила сегментации
    * @return визит
    */
   public Visit createVisit2(
@@ -734,7 +772,10 @@ public class VisitService {
    * @param branchId идентификатор отделения
    * @param printerId идентификатор принтера
    * @param services список услуг
+   * @param parametersMap параметры визита
    * @param printTicket флаг печати талона
+   * @param segmentationRuleId идентификатор правила сегментации
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
   public Visit createVisit2FromReception(
@@ -863,8 +904,11 @@ public class VisitService {
    * @param branchId идентификатор отделения
    * @param printerId идентификатор принтера
    * @param services список услуг
+   * @param parametersMap параметры визита
    * @param printTicket флаг печати талона
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
+   * @throws SystemException системная ошибка
    */
   public Visit createVisit2FromReception(
       String branchId,
@@ -990,7 +1034,9 @@ public class VisitService {
    * @param servicePointId идентификатор точки обслуживания
    * @param services список услуг
    * @param parametersMap параметры визита
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
+   * @throws SystemException системная ошибка
    */
   public Visit createVirtualVisit2(
       String branchId,
@@ -1985,7 +2031,14 @@ public class VisitService {
     }
   }
 
-  /** Возвращение вызванного визита в очередь */
+  /**
+   * Возвращение вызванного визита в очередь.
+   *
+   * @param branchId идентификатор отделения
+   * @param visitId идентификатор визита
+   * @param returnTimeDelay задержка возвращения (сек)
+   * @return визит
+   */
   public Visit backCalledVisit(String branchId, String visitId, Long returnTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getAllVisits().containsKey(visitId)) {
@@ -2100,11 +2153,13 @@ public class VisitService {
   }
 
   /**
-   * Перевод визита в очередь
+   * Перевод визита в очередь.
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @param queueId идентификатор очереди
+   * @param isAppend вставка в конец (true) или начало (false)
+   * @param transferTimeDelay задержка перевода в секундах
    * @return визит
    */
   public Visit visitTransfer(
@@ -2209,6 +2264,7 @@ public class VisitService {
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @param queueId идентификатор очереди
+   * @param returnTimeDelay задержка возвращения в секундах
    * @return визит
    */
   public Visit visitBack(
@@ -2363,6 +2419,14 @@ public class VisitService {
     }
   }
 
+  /**
+   * Вернуть визит из точки обслуживания в предыдущий пул (точки или сотрудника).
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param returnTimeDelay задержка возвращения (сек)
+   * @return визит
+   */
   public Visit visitPutBack(String branchId, String servicePointId, Long returnTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
 
@@ -2734,14 +2798,15 @@ public class VisitService {
   }
 
   /**
-   * Перевод визита из очереди в очередь внешней службой
+   * Перевод визита из очереди в очередь внешней службой.
    *
    * @param branchId идентификатор отделения
    * @param queueId идентификатор очереди
    * @param visit визит
-   * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
-   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
-   *     перевода)
+   * @param isAppend вставка в конец (true) или начало (false)
+   * @param serviceInfo данные внешней службы
+   * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после перевода)
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
   public Visit visitTransfer(
@@ -3029,6 +3094,7 @@ public class VisitService {
    * @param serviceInfo данные о внешней службе
    * @param transferTimeDelay задержка визита после перевода (период запрета на вызов после
    *     перевода)
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
   public Visit visitTransferFromQueueToServicePointPool(
@@ -3109,6 +3175,7 @@ public class VisitService {
    * Получение списка всех сотрудников работающих в отделении
    *
    * @param branchId идентификатор отделения
+   * @return карта пользователей (логин -> пользователь)
    */
   public HashMap<String, User> getAllWorkingUsers(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
@@ -3131,6 +3198,8 @@ public class VisitService {
    * @param userId идентификатор сотрудника
    * @param visit визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
+   * @param transferTimeDelay задержка перевода
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
   public Visit visitTransferFromQueueToUserPool(
@@ -3211,6 +3280,8 @@ public class VisitService {
    * @param visit визит
    * @param isAppend флаг вставки визита в начало или в конец (по умолчанию в конец)
    * @param serviceInfo данные о внешней службе
+   * @param transferTimeDelay задержка перевода
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
   public Visit visitTransferFromQueueToUserPool(
@@ -3292,6 +3363,8 @@ public class VisitService {
    * @param userId идентификатор cотрудника
    * @param visit визит
    * @param index позиция визита в списке
+   * @param transferTimeDelay задержка перевода
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
   public Visit visitTransferFromQueueToUserPool(
@@ -3367,6 +3440,8 @@ public class VisitService {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
+   * @param isForced принудительное завершение обслуживания
+   * @param reason причина завершения
    * @return визит
    */
   public Visit visitEnd(String branchId, String servicePointId, Boolean isForced, String reason) {
@@ -3522,6 +3597,7 @@ public class VisitService {
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
    * @param visit визит
+   * @param callMethod способ вызова
    * @return визит
    */
   public Optional<Visit> visitCall(
@@ -4563,6 +4639,15 @@ public class VisitService {
     // changedVisitEventSend("DELETED", visit, null, new HashMap<>());
   }
 
+  /**
+   * Перевод визита из точки обслуживания в пул сотрудника.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param userId идентификатор сотрудника
+   * @param transferTimeDelay задержка перевода (сек)
+   * @return визит
+   */
   public Visit visitTransferToUserPool(
       String branchId, String servicePointId, String userId, Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
@@ -4687,6 +4772,15 @@ public class VisitService {
     }
   }
 
+  /**
+   * Перевод визита из точки обслуживания в пул другой точки обслуживания.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания-источника
+   * @param poolServicePointId идентификатор точки обслуживания-пула
+   * @param transferTimeDelay задержка перевода (сек)
+   * @return визит
+   */
   public Visit visitTransferToServicePointPool(
       String branchId, String servicePointId, String poolServicePointId, Long transferTimeDelay) {
     Branch currentBranch = branchService.getBranch(branchId);
@@ -4817,6 +4911,16 @@ public class VisitService {
     }
   }
 
+  /**
+   * Перевод визита из точки обслуживания в пул точки обслуживания с указанием внешней службы.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания-источника
+   * @param poolServicePointId идентификатор точки обслуживания-пула
+   * @param serviceInfo данные внешней службы
+   * @param transferTimeDelay задержка перевода (сек)
+   * @return визит
+   */
   public Visit visitTransferToServicePointPool(
       String branchId,
       String servicePointId,
@@ -4951,6 +5055,12 @@ public class VisitService {
     }
   }
 
+  /**
+   * Получить список очередей (id, name) отделения.
+   *
+   * @param branchId идентификатор отделения
+   * @return список сущностей очередей
+   */
   public List<Entity> getQueus(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
     return currentBranch.getQueues().values().stream()
@@ -4958,11 +5068,23 @@ public class VisitService {
         .toList();
   }
 
+  /**
+   * Получить полный список очередей отделения.
+   *
+   * @param branchId идентификатор отделения
+   * @return список очередей
+   */
   public List<Queue> getFullQueus(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
     return currentBranch.getQueues().values().stream().toList();
   }
 
+  /**
+   * Получить список принтеров отделения.
+   *
+   * @param branchId идентификатор отделения
+   * @return список принтеров (id, name)
+   */
   public List<Entity> getPrinters(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
     List<Entity> printers =
@@ -4972,6 +5094,14 @@ public class VisitService {
     return printers.stream().distinct().toList();
   }
 
+  /**
+   * Добавить заметку к визиту на точке обслуживания.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param noteText текст заметки
+   * @return визит с добавленной заметкой
+   */
   public Visit addNote(String branchId, String servicePointId, String noteText) {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServicePoints().containsKey(servicePointId)) {

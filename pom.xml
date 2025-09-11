@@ -39,6 +39,7 @@
         <exec.mainClass>ru.aritmos.Application</exec.mainClass>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <skip.openapi.generation>false</skip.openapi.generation>
     </properties>
 
     <repositories>
@@ -321,6 +322,23 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.3</version>
+                <configuration>
+                    <!-- Базовые настройки Javadoc -->
+                    <source>${maven.compiler.source}</source>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <charset>UTF-8</charset>
+                    <locale>ru</locale>
+                    <!-- По умолчанию показываем только публичное API, предупреждения не валят сборку -->
+                    <show>public</show>
+                    <doclint>all,-missing</doclint>
+                    <failOnWarnings>false</failOnWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.12.1</version>
                 <configuration>
@@ -455,5 +473,116 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>local-no-docker</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <micronaut.test.resources.enabled>false</micronaut.test.resources.enabled>
+                <skip.openapi.generation>true</skip.openapi.generation>
+            </properties>
+            <build>
+                <plugins>
+                    <!-- Отключаем генерацию OpenAPI и прочие задачи micronaut-maven-plugin -->
+                    <plugin>
+                        <groupId>io.micronaut.maven</groupId>
+                        <artifactId>micronaut-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>${skip.openapi.generation}</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.2.5</version>
+                        <configuration>
+                            <excludes>
+                                <!-- Исключаем тяжёлые интеграционные тесты для локального окружения без Docker -->
+                                <exclude>**/EntrypointTest.java</exclude>
+                                <exclude>**/*IT.java</exclude>
+                                <exclude>**/*ITCase.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <!-- Убираем annotation processor micronaut-openapi для ускорения локальной сборки -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <annotationProcessorPaths combine.self="override">
+                                <path>
+                                    <groupId>io.micronaut.security</groupId>
+                                    <artifactId>micronaut-security-annotations</artifactId>
+                                    <version>${micronaut.security.version}</version>
+                                    <exclusions>
+                                        <exclusion>
+                                            <groupId>io.micronaut</groupId>
+                                            <artifactId>micronaut-inject</artifactId>
+                                        </exclusion>
+                                    </exclusions>
+                                </path>
+                                <path>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                    <version>${lombok.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>io.micronaut</groupId>
+                                    <artifactId>micronaut-inject-java</artifactId>
+                                    <version>${micronaut.core.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>io.micronaut</groupId>
+                                    <artifactId>micronaut-graal</artifactId>
+                                    <version>${micronaut.core.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>io.micronaut</groupId>
+                                    <artifactId>micronaut-http-validation</artifactId>
+                                    <version>${micronaut.core.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>io.micronaut.serde</groupId>
+                                    <artifactId>micronaut-serde-processor</artifactId>
+                                    <version>${micronaut.serialization.version}</version>
+                                    <exclusions>
+                                        <exclusion>
+                                            <groupId>io.micronaut</groupId>
+                                            <artifactId>micronaut-inject</artifactId>
+                                        </exclusion>
+                                    </exclusions>
+                                </path>
+                            </annotationProcessorPaths>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Строгая генерация JavaDocs: все предупреждения считаются ошибками -->
+        <profile>
+            <id>javadoc-strict</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.11.3</version>
+                        <configuration>
+                            <!-- Строгий режим для CI: требуем полный doclint и валим сборку на предупреждениях -->
+                            <show>private</show>
+                            <doclint>all</doclint>
+                            <failOnWarnings>true</failOnWarnings>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

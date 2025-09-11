@@ -1,0 +1,9 @@
+micronaut:
+  test:
+    resources:
+      enabled: false
+
+redis:
+  enabled: false
+  caches: { }
+

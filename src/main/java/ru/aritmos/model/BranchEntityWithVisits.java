@@ -21,11 +21,22 @@ public class BranchEntityWithVisits extends BranchEntity {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   List<Visit> visits = new ArrayList<>();
 
+  /**
+   * Конструктор сущности отделения с визитами с авто‑генерацией идентификатора.
+   *
+   * @param name наименование
+   */
   public BranchEntityWithVisits(String name) {
     this.id = UUID.randomUUID().toString();
     this.name = name;
   }
 
+  /**
+   * Конструктор сущности отделения с визитами.
+   *
+   * @param id идентификатор
+   * @param name наименование
+   */
   public BranchEntityWithVisits(String id, String name) {
     this.id = id;
     this.name = name;

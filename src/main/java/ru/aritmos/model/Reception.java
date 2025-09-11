@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/* Приемная */
+/** Приёмная. */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 @Serdeable
 @SuppressWarnings("unused")
 public class Reception {
-  /* Идентификатор отделения */
+  /** Идентификатор отделения. */
   String branchId;
-  /* Перечень идентификаторов принтера */
+  /** Перечень идентификаторов принтера. */
   List<Entity> printers;
 
-  /* Перечень сеансов работы сотрудника */
+  /** Перечень сеансов работы сотрудника. */
   @JsonInclude(JsonInclude.Include.NON_NULL)
   List<ReceptionSession> receptionSessions = new ArrayList<>();
 }

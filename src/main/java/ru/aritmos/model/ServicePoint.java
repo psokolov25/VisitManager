@@ -27,10 +27,21 @@ public class ServicePoint extends BranchEntityWithVisits {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   Boolean isConfirmRequired = false;
 
+  /**
+   * Конструктор точки обслуживания.
+   *
+   * @param id идентификатор точки
+   * @param name наименование точки
+   */
   public ServicePoint(String id, String name) {
     super(id, name);
   }
 
+  /**
+   * Конструктор точки обслуживания с авто‑генерацией идентификатора.
+   *
+   * @param name наименование точки
+   */
   public ServicePoint(String name) {
     super(name);
   }

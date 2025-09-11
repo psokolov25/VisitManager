@@ -23,16 +23,25 @@ import reactor.core.publisher.Mono;
 @Named("keycloak")
 @Singleton
 @Replaces(DefaultOpenIdAuthenticationMapper.class)
+@SuppressWarnings("unused")
 public class UserMapper implements OpenIdAuthenticationMapper {
+  /** Клиент Keycloak для получения данных пользователя. */
   final KeyCloackClient keyCloackClient;
 
   // public class UserMapper {
+  /** Идентификатор клиента Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.client-id")
   String clientId;
 
+  /** Секрет клиента Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.client-secret")
   String secret;
 
+  /**
+   * Конструктор маппера пользователя.
+   *
+   * @param keyCloackClient клиент Keycloak
+   */
   public UserMapper(KeyCloackClient keyCloackClient) {
     this.keyCloackClient = keyCloackClient;
   }

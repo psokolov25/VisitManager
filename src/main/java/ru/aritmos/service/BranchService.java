@@ -31,10 +31,20 @@ import ru.aritmos.model.visit.VisitEvent;
 @SerdeImport(ParametersKey.class)
 public class BranchService {
 
+  /** Текущее состояние отделений (id -> отделение). */
   HashMap<String, Branch> branches = new HashMap<>();
+  /** Сервис отправки событий. */
   @Inject EventService eventService;
+  /** Клиент Keycloak для работы с пользователями. */
   @Inject KeyCloackClient keyCloackClient;
 
+  /**
+   * Получение детальной информации об отделении по идентификатору.
+   *
+   * @param key идентификатор отделения
+   * @return отделение
+   * @throws BusinessException если отделение не найдено
+   */
   @CachePut(parameters = {"key"})
   public Branch getBranch(String key) throws BusinessException {
 
@@ -47,6 +57,11 @@ public class BranchService {
   }
 
   // @Cacheable(parameters = {"id"}, value = {"branches"})
+  /**
+   * Получение списка отделений (без детальной информации).
+   *
+   * @return карта отделений (id -> отделение)
+   */
   public HashMap<String, Branch> getBranches() {
 
     HashMap<String, Branch> result = new HashMap<>();
@@ -61,6 +76,11 @@ public class BranchService {
     return result;
   }
 
+  /**
+   * Получение списка отделений с детальной информацией.
+   *
+   * @return карта отделений (id -> отделение)
+   */
   public HashMap<String, Branch> getDetailedBranches() {
 
     HashMap<String, Branch> result = new HashMap<>();
@@ -74,6 +94,15 @@ public class BranchService {
     return result;
   }
 
+  /**
+   * Создание или обновление отделения.
+   *
+   * Отправляет событие об изменении сущности.
+   *
+   * @param key идентификатор отделения
+   * @param value модель отделения
+   * @return сохранённое отделение
+   */
   @CachePut(parameters = {"key"})
   public Branch add(String key, Branch value) {
 
@@ -117,6 +146,13 @@ public class BranchService {
     }
   }
 
+  /**
+   * Удаление отделения.
+   *
+   * @param key идентификатор отделения
+   * @param visitService сервис визитов (для корректного закрытия точек)
+   * @throws BusinessException если отделение не найдено
+   */
   @CacheInvalidate
   public void delete(String key, VisitService visitService) {
     Branch oldBranch;
@@ -149,18 +185,40 @@ public class BranchService {
     branches.remove(key);
   }
 
+  /**
+   * Обновление визита и рассылка соответствующего события.
+   *
+   * @param visit визит
+   * @param action действие для имени события
+   * @param visitService сервис визитов
+   */
   public void updateVisit(Visit visit, String action, VisitService visitService) {
 
     Branch branch = this.getBranch(visit.getBranchId());
     branch.updateVisit(visit, eventService, action, visitService);
   }
 
+  /**
+   * Обновление визита по событию.
+   *
+   * @param visit визит
+   * @param visitEvent событие визита
+   * @param visitService сервис визитов
+   */
   public void updateVisit(Visit visit, VisitEvent visitEvent, VisitService visitService) {
 
     Branch branch = this.getBranch(visit.getBranchId());
     branch.updateVisit(visit, eventService, visitEvent, visitService);
   }
 
+  /**
+   * Обновление визита по событию с возможностью задать начало списка.
+   *
+   * @param visit визит
+   * @param visitEvent событие визита
+   * @param visitService сервис визитов
+   * @param isToStart поместить визит в начало списка очереди/пула
+   */
   public void updateVisit(
       Visit visit, VisitEvent visitEvent, VisitService visitService, Boolean isToStart) {
 
@@ -168,6 +226,14 @@ public class BranchService {
     branch.updateVisit(visit, eventService, visitEvent, visitService, isToStart);
   }
 
+  /**
+   * Обновление визита по событию с указанием позиции.
+   *
+   * @param visit визит
+   * @param visitEvent событие визита
+   * @param visitService сервис визитов
+   * @param index позиция вставки (или -1 для добавления в конец)
+   */
   public void updateVisit(
       Visit visit, VisitEvent visitEvent, VisitService visitService, Integer index) {
 
@@ -175,6 +241,15 @@ public class BranchService {
     branch.updateVisit(visit, eventService, visitEvent, visitService, index);
   }
 
+  /**
+   * Смена рабочего профиля пользователя на точке обслуживания.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param workProfileId идентификатор рабочего профиля
+   * @return пользователь с обновлённым рабочим профилем
+   * @throws BusinessException если профиль, точка или пользователь не найдены
+   */
   public User changeUserWorkProfileInServicePoint(
       String branchId, String servicePointId, String workProfileId) {
     Branch branch = this.getBranch(branchId);
@@ -197,6 +272,18 @@ public class BranchService {
     return branch.getServicePoints().get(servicePointId).getUser();
   }
 
+  /**
+   * Открытие точки обслуживания пользователем.
+   *
+   * @param branchId идентификатор отделения
+   * @param userName логин пользователя
+   * @param servicePointId идентификатор точки обслуживания
+   * @param workProfileId идентификатор рабочего профиля
+   * @param visitService сервис визитов
+   * @return пользователь, открывший точку
+   * @throws IOException при ошибке интеграции
+   * @throws BusinessException при нарушении бизнес‑правил
+   */
   public User openServicePoint(
       String branchId,
       String userName,
@@ -322,6 +409,13 @@ public class BranchService {
     }
   }
 
+  /**
+   * Отправка события о смене точки обслуживания пользователем.
+   *
+   * @param servicePointId новая точка обслуживания
+   * @param user пользователь
+   * @param oldServicePointId предыдущая точка обслуживания
+   */
   private void checkServicePointChange(String servicePointId, User user, String oldServicePointId) {
     if (!oldServicePointId.equals(servicePointId)) {
       eventService.send(
@@ -342,6 +436,13 @@ public class BranchService {
     }
   }
 
+  /**
+   * Отправка события о смене рабочего профиля пользователем.
+   *
+   * @param workProfileId новый рабочий профиль
+   * @param user пользователь
+   * @param oldWorkProfileId предыдущий рабочий профиль
+   */
   private void checkWorkProfileChange(String workProfileId, User user, String oldWorkProfileId) {
     user.setCurrentWorkProfileId(workProfileId);
     if (!oldWorkProfileId.equals(workProfileId)) {
@@ -363,6 +464,18 @@ public class BranchService {
     }
   }
 
+  /**
+   * Закрытие точки обслуживания.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointId идентификатор точки обслуживания
+   * @param visitService сервис визитов
+   * @param isWithLogout флаг завершения сессии пользователя
+   * @param isBreak флаг начала перерыва
+   * @param breakReason причина перерыва
+   * @param isForced принудительное закрытие визита
+   * @param reason причина принудительного закрытия
+   */
   public void closeServicePoint(
       String branchId,
       String servicePointId,
@@ -386,12 +499,25 @@ public class BranchService {
     this.add(branch.getId(), branch);
   }
 
+  /**
+   * Получение пользователей отделения.
+   *
+   * @param branchId идентификатор отделения
+   * @return карта пользователей (логин -> пользователь)
+   */
   public HashMap<String, User> getUsers(String branchId) {
     Branch branch = this.getBranch(branchId);
 
     return branch.getUsers();
   }
 
+  /**
+   * Инкремент счётчика талонов очереди.
+   *
+   * @param branchId идентификатор отделения
+   * @param queue очередь
+   * @return новое значение счётчика либо -1, если очередь не найдена
+   */
   public Integer incrementTicketCounter(String branchId, Queue queue) {
 
     Branch branch = this.getBranch(branchId);
@@ -400,6 +526,14 @@ public class BranchService {
     return result;
   }
 
+  /**
+   * Добавление/обновление услуг отделения.
+   *
+   * @param branchId идентификатор отделения
+   * @param serviceHashMap карта услуг (id -> услуга)
+   * @param checkVisits учитывать активные визиты при изменении
+   * @param visitService сервис визитов
+   */
   public void addUpdateService(
       String branchId,
       HashMap<String, Service> serviceHashMap,
@@ -410,12 +544,28 @@ public class BranchService {
     this.add(branch.getId(), branch);
   }
 
+  /**
+   * Удаление услуг отделения.
+   *
+   * @param branchId идентификатор отделения
+   * @param serviceIds список идентификаторов услуг
+   * @param checkVisits учитывать активные визиты при удалении
+   * @param visitService сервис визитов
+   */
   public void deleteServices(
       String branchId, List<String> serviceIds, Boolean checkVisits, VisitService visitService) {
     Branch branch = this.getBranch(branchId);
     branch.deleteServices(serviceIds, eventService, checkVisits, visitService);
   }
 
+  /**
+   * Добавление/обновление точек обслуживания.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointHashMap карта точек обслуживания
+   * @param restoreVisit восстановить визит на точке
+   * @param restoreUser восстановить пользователя на точке
+   */
   public void addUpdateServicePoint(
       String branchId,
       HashMap<String, ServicePoint> servicePointHashMap,
@@ -426,6 +576,12 @@ public class BranchService {
     this.add(branch.getId(), branch);
   }
 
+  /**
+   * Добавление/обновление групп услуг.
+   *
+   * @param branchId идентификатор отделения
+   * @param serviceGroupsHashMap карта групп услуг
+   */
   public void addUpdateServiceGroups(
       String branchId, HashMap<String, ServiceGroup> serviceGroupsHashMap) {
     Branch branch = this.getBranch(branchId);
@@ -433,12 +589,25 @@ public class BranchService {
     this.add(branch.getId(), branch);
   }
 
+  /**
+   * Удаление точек обслуживания.
+   *
+   * @param branchId идентификатор отделения
+   * @param servicePointIds список идентификаторов точек обслуживания
+   */
   public void deleteServicePoints(String branchId, List<String> servicePointIds) {
     Branch branch = this.getBranch(branchId);
     branch.deleteServicePoints(servicePointIds, eventService);
     this.add(branch.getId(), branch);
   }
 
+  /**
+   * Добавление/обновление очередей.
+   *
+   * @param branchId идентификатор отделения
+   * @param queueHashMap карта очередей
+   * @param restoreVisits восстановить визиты очередей
+   */
   public void addUpdateQueues(
       String branchId, HashMap<String, Queue> queueHashMap, Boolean restoreVisits) {
     Branch branch = this.getBranch(branchId);
@@ -446,12 +615,24 @@ public class BranchService {
     this.add(branch.getId(), branch);
   }
 
+  /**
+   * Удаление очередей.
+   *
+   * @param branchId идентификатор отделения
+   * @param queueIds список идентификаторов очередей
+   */
   public void deleteQueues(String branchId, List<String> queueIds) {
     Branch branch = this.getBranch(branchId);
     branch.deleteQueues(queueIds, eventService);
     this.add(branch.getId(), branch);
   }
 
+  /**
+   * Добавление/обновление правил сегментации.
+   *
+   * @param branchId идентификатор отделения
+   * @param segmentationRuleDataHashMap карта правил сегментации
+   */
   public void addUpdateSegmentationRules(
       String branchId, HashMap<String, SegmentationRuleData> segmentationRuleDataHashMap) {
     Branch branch = this.getBranch(branchId);
@@ -503,6 +684,12 @@ public class BranchService {
             .toList());
   }
 
+  /**
+   * Получение перечня возможных оказанных услуг отделения.
+   *
+   * @param branchId идентификатор отделения
+   * @return список возможных оказанных услуг
+   */
   public List<DeliveredService> getDeliveredServicesByBranchId(String branchId) {
     Branch branch = this.getBranch(branchId);
     return branch.getPossibleDeliveredServices().values().stream().toList();

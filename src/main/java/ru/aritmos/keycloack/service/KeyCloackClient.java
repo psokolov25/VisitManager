@@ -27,31 +27,42 @@ import ru.aritmos.model.UserInfo;
 import ru.aritmos.model.UserSession;
 import ru.aritmos.model.UserToken;
 
+/**
+ * Клиент для взаимодействия с Keycloak: пользователи, группы, сессии.
+ */
 @Slf4j
 @Singleton
 @SuppressWarnings("all")
 public class KeyCloackClient {
+  /** Сервис отправки событий. */
   @Inject EventService eventService;
 
+  /** Технический логин для доступа к Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.techlogin")
   String techlogin;
 
+  /** Технический пароль для доступа к Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.techpassword")
   String techpassword;
 
+  /** Идентификатор клиента Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.client-id")
   String clientId;
 
+  /** Секрет клиента Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.client-secret")
   String secret;
 
   @Getter
+  /** Realm Keycloak, в котором выполняются операции. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.realm")
   String realm;
 
+  /** URL сервера Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.keycloakurl")
   String keycloakUrl;
 
+  /** Экземпляр клиента Keycloak (ленивая инициализация). */
   Keycloak keycloak;
 
   //  private static void keycloakLogout(Keycloak keycloak) {
@@ -65,6 +76,15 @@ public class KeyCloackClient {
   //    keycloak.close();
   //  }
 
+  /**
+   * Создать клиент авторизации Keycloak.
+   *
+   * @param secret секрет клиента
+   * @param keycloakUrl URL сервера Keycloak
+   * @param realm realm
+   * @param clientId идентификатор клиента
+   * @return клиент авторизации
+   */
   public static AuthzClient getAuthzClient(
       String secret, String keycloakUrl, String realm, String clientId) {
     Map<String, Object> clientCredentials = new HashMap<>();
@@ -77,6 +97,13 @@ public class KeyCloackClient {
     return AuthzClient.create(configuration);
   }
 
+  /**
+   * Получить все отделения по имени региона.
+   *
+   * @param regionName имя региона
+   * @param keycloak клиент Keycloak
+   * @return список групп
+   */
   public List<GroupRepresentation> getAllBranchesByRegionName(
       String regionName, Keycloak keycloak) {
 
@@ -95,6 +122,13 @@ public class KeyCloackClient {
     return getAllBranchesByRegionId(regionId, keycloak);
   }
 
+  /**
+   * Получить путь группы отделения по префиксу.
+   *
+   * @param regionName имя региона
+   * @param prefix префикс отделения
+   * @return путь группы
+   */
   public String getBranchPathByBranchPrefix(String regionName, String prefix) {
 
     String result =
@@ -110,6 +144,13 @@ public class KeyCloackClient {
     return result;
   }
 
+  /**
+   * Получить все отделения рекурсивно по идентификатору региона.
+   *
+   * @param regionId идентификатор региона
+   * @param keycloak клиент Keycloak
+   * @return список групп
+   */
   public List<GroupRepresentation> getAllBranchesByRegionId(String regionId, Keycloak keycloak) {
 
     RealmResource resource = keycloak.realm(getRealm());
@@ -160,6 +201,12 @@ public class KeyCloackClient {
     return result;
   }
 
+  /**
+   * Найти пользователя по идентификатору сессии.
+   *
+   * @param sid идентификатор сессии
+   * @return пользователь, если найден
+   */
   public Optional<UserRepresentation> getUserBySid(String sid) {
 
     RealmResource realmResource = getKeycloak().realm(realm);
@@ -185,6 +232,13 @@ public class KeyCloackClient {
     return Optional.empty();
   }
 
+  /**
+   * Проверить принадлежность пользователя к типу модуля.
+   *
+   * @param userName логин пользователя
+   * @param type тип модуля (например, admin)
+   * @return признак принадлежности
+   */
   public Boolean isUserModuleTypeByUserName(String userName, String type) {
 
     RealmResource realmResource = getKeycloak().realm(realm);
@@ -230,6 +284,12 @@ public class KeyCloackClient {
             .authorize());
   }
 
+  /**
+   * Получить информацию о пользователе.
+   *
+   * @param userName логин
+   * @return пользователь, если найден
+   */
   public Optional<UserRepresentation> getUserInfo(String userName) {
 
     List<UserRepresentation> userRepresentationList =
@@ -244,6 +304,12 @@ public class KeyCloackClient {
     return Optional.empty();
   }
 
+  /**
+   * Получить информацию о сессии пользователя.
+   *
+   * @param user пользователь Keycloak
+   * @return сессия пользователя, если есть
+   */
   public Optional<UserSession> getUserSessionByLogin(UserRepresentation user) {
     RealmResource realmResource = getKeycloak().realm(realm);
     Optional<UserSessionRepresentation> userSessionRepresentation =
@@ -282,9 +348,11 @@ public class KeyCloackClient {
   }
 
   /**
-   * Выход сотрудника
+   * Выход сотрудника.
    *
    * @param login логин сотрудника
+   * @param isForced принудительный выход
+   * @param reason причина
    */
   public void userLogout(@PathVariable String login, Boolean isForced, String reason) {
     AuthzClient authzClient = getAuthzClient(secret, keycloakUrl, realm, clientId);
@@ -331,6 +399,11 @@ public class KeyCloackClient {
     // keycloak.close();
   }
 
+  /**
+   * Получить/инициализировать клиент Keycloak.
+   *
+   * @return клиент Keycloak
+   */
   public Keycloak getKeycloak() {
     if (keycloak == null || keycloak.isClosed()) {
       keycloak =

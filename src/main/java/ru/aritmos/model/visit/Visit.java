@@ -151,6 +151,7 @@ public class Visit {
   /** Массив событий */
   List<VisitEvent> visitEvents;
 
+  /** История событий визита. */
   List<VisitEventInformation> events;
 
   /** Лимит ожидания после возвращения визита в очередь или пул сотрудника или точки обслуживания */
@@ -159,6 +160,11 @@ public class Visit {
   /** Лимит ожидания после перевода визита в очередь или пул сотрудника или точки обслуживания */
   private Long transferTimeDelay;
 
+  /**
+   * Расчёт текущего времени ожидания в секундах.
+   *
+   * @return время ожидания в секундах
+   */
   @JsonGetter
   public Long getWaitingTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
@@ -181,7 +187,8 @@ public class Visit {
   /**
    * Разница между текущим временем и временем возвращения, если времени возвращения нет -
    * возвращаем 0
-   */
+  * @return время ожидания с момента возвращения
+  */
   @JsonGetter
   public Long getReturningTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
@@ -194,7 +201,8 @@ public class Visit {
 
   /**
    * Разница между текущим временем и временем перевода, если времени перевода нет - возвращаем 0
-   */
+  * @return время ожидания с момента перевода
+  */
   @JsonGetter
   public Long getTransferingTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
@@ -205,7 +213,11 @@ public class Visit {
     return 0L;
   }
 
-  /** Время жизни визита * */
+  /**
+   * Время жизни визита.
+   *
+   * @return общее время от создания до завершения
+   */
   @JsonGetter
   public Long getVisitLifeTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());
@@ -217,7 +229,11 @@ public class Visit {
     return visitLifeTime;
   }
 
-  /** Время обслуживания визита * */
+  /**
+   * Время обслуживания визита.
+   *
+   * @return длительность обслуживания в секундах
+   */
   @JsonGetter
   public Long getServingTime() {
     final ChronoUnit unit = ChronoUnit.valueOf(ChronoUnit.SECONDS.name());

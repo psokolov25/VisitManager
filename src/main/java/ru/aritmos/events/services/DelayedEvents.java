@@ -10,14 +10,32 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import ru.aritmos.events.model.Event;
 
+/**
+ * Планировщик отложенной отправки событий в шину.
+ */
 @Singleton
 public class DelayedEvents {
+  /** Планировщик задач. */
   protected final TaskScheduler taskScheduler;
 
+  /**
+   * Конструктор.
+   *
+   * @param taskScheduler планировщик задач Micronaut
+   */
   public DelayedEvents(@Named(TaskExecutors.SCHEDULED) TaskScheduler taskScheduler) {
     this.taskScheduler = taskScheduler;
   }
 
+  /**
+   * Отправить событие через заданную задержку.
+   *
+   * @param destinationService адресат события
+   * @param sendToOtherBus признак отправки во внешнюю шину
+   * @param event событие
+   * @param delayInSeconds задержка в секундах
+   * @param eventService сервис отправки событий
+   */
   @ExecuteOn(TaskExecutors.IO)
   public void delayedEventService(
       String destinationService,
@@ -30,6 +48,16 @@ public class DelayedEvents {
     taskScheduler.schedule(Duration.ofSeconds(delayInSeconds), eventTask);
   }
 
+  /**
+   * Отправить событие нескольким адресатам через заданную задержку.
+   *
+   * @param destinationServices список адресатов
+   * @param sendToOtherBus признак отправки во внешнюю шину
+   * @param event событие
+   * @param delayInSeconds задержка в секундах
+   * @param eventService сервис отправки событий
+   */
+  @SuppressWarnings("unused")
   @ExecuteOn(TaskExecutors.IO)
   public void delayedEventService(
       List<String> destinationServices,

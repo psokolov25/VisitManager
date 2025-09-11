@@ -45,7 +45,9 @@ public class EntrypointController {
    * @param servicePointId идентификатор точки обслуживания
    * @param serviceIds массив идентификаторов услуг (на пример [
    *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ] )
+   * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return созданный визит
+   * @throws SystemException системная ошибка
    */
   @Tag(name = "Зона ожидания")
   @Tag(name = "Зона обслуживания")
@@ -96,14 +98,16 @@ public class EntrypointController {
   }
 
   /**
-   * Создание визита
+   * Создание визита.
    *
    * @param branchId идентификатор отделения
    * @param entryPointId идентификатор точки создания визита
    * @param serviceIds массив идентификаторов услуг (на пример [
    *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ] )
    * @param printTicket флаг печати талона
+   * @param segmentationRuleId идентификатор правила сегментации (опционально)
    * @return созданный визит
+   * @throws SystemException системная ошибка
    */
   @Tag(name = "Зона ожидания")
   @Tag(name = "Полный список")
@@ -159,7 +163,7 @@ public class EntrypointController {
   }
 
   /**
-   * Создание визита с передачей параметров визита и перечня услуг
+   * Создание визита с передачей параметров визита и перечня услуг.
    *
    * @param branchId идентификатор отделения
    * @param entryPointId идентификатор точки создания визита
@@ -167,7 +171,9 @@ public class EntrypointController {
    * @param parameters услуги и параметры визита (пример { "serviceIds": [
    *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ],
    *     "parameters": { "sex": "male", "age": "33" } }
+   * @param segmentationRuleId идентификатор правила сегментации (опционально)
    * @return визит
+   * @throws SystemException системная ошибка
    */
   @Tag(name = "Зона ожидания")
   @Tag(name = "Полный список")
@@ -234,7 +240,10 @@ public class EntrypointController {
    * @param parameters услуги и параметры визита (пример { "serviceIds": [
    *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ],
    *     "parameters": { "description": "Визит на получение кредита", "age": "48" } }
+   * @param segmentationRuleId идентификатор правила сегментации (опционально)
+   * @param staffId идентификатор сессии сотрудника (cookie sid)
    * @return визит
+   * @throws SystemException системная ошибка обработки визита
    */
   @Tag(name = "Зона ожидания")
   @Tag(name = "Полный список")

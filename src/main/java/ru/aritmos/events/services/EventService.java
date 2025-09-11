@@ -20,8 +20,10 @@ import ru.aritmos.events.model.Event;
 @Slf4j
 @Singleton
 public class EventService {
+  /** Клиент для отправки событий в шину данных. */
   @Inject DataBusClient dataBusClient;
 
+  /** Имя текущего сервиса-источника событий. */
   @Value("${micronaut.application.name}")
   String applicationName;
 

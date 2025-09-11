@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Информация о пользователе из Keycloak.
+ */
 @Data
 @Serdeable
 @Builder

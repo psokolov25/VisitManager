@@ -6,6 +6,9 @@ import java.util.Map;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Информация о событии визита.
+ */
 @Data
 @Builder
 @Serdeable

@@ -1,0 +1,22 @@
+micronaut:
+  application:
+    name: visitmanager
+  server:
+    port: 8080
+
+# Отключаем интеграции, требующие внешние сервисы
+kafka:
+  enabled: false
+
+redis:
+  enabled: false
+
+# Безопасные локальные значения для ссылок (не используются при stub-клиенте)
+application:
+  api:
+    swagger:
+      path: /api-docs/swagger
+  dataBusUrl: http://localhost:8082
+  configurationURL: http://localhost:8081
+  printerServiceURL: http://localhost:8084
+

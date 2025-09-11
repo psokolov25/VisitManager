@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/** Перечень событий жизненного цикла визита. */
 @Serdeable
 @JsonFormat
 @AllArgsConstructor
@@ -191,27 +192,49 @@ public enum VisitEvent {
           Map.entry(DELETED_DELIVERED_SERVICE_RESULT, VisitState.SERVING),
           Map.entry(DELETED_SERVICE_RESULT, VisitState.SERVING));
 
+  /** Дополнительные параметры события. */
   @Getter final Map<String, String> parameters = new HashMap<>();
+  /** Время наступления события. */
   @JsonFormat public ZonedDateTime dateTime;
   VisitState visitState;
 
-  /** Проверка на начало новой транзакции * */
+  /**
+   * Проверка: является ли событие началом новой транзакции.
+   *
+   * @param visitEvent событие визита
+   * @return истина, если после события начинается новая транзакция
+   */
   @SuppressWarnings("unused")
   public static Boolean isNewOfTransaction(VisitEvent visitEvent) {
     return VisitEvent.newTransactionEvents.stream().anyMatch(am -> am.equals(visitEvent));
   }
 
-  /** Проверка на необходимость не отправлять в статистику */
+  /**
+   * Проверка, исключается ли событие из статистики.
+   *
+   * @param visitEvent событие визита
+   * @return истина, если событие не отправляется в статистику
+   */
   public static Boolean isIgnoredInStat(VisitEvent visitEvent) {
     return notSendToStat.contains(visitEvent);
   }
 
-  /** Проверка на необходимость отправки на фронт */
+  /**
+   * Проверка необходимости отправки события на фронтенд.
+   *
+   * @param visitEvent событие визита
+   * @return истина, если событие отправляется на фронтенд
+   */
   public static Boolean isFrontEndEvent(VisitEvent visitEvent) {
     return frontEndVisitEvents.contains(visitEvent);
   }
 
-  /** Получение статуса визита соответствующего событию */
+  /**
+   * Получить статус завершения транзакции для события, если применимо.
+   *
+   * @param visitEvent событие визита
+   * @return статус завершения или null
+   */
   @SuppressWarnings("unused")
   public static TransactionCompletionStatus getStatus(VisitEvent visitEvent) {
     if (transactionStatus.containsKey(visitEvent)) {
@@ -220,7 +243,12 @@ public enum VisitEvent {
     return null;
   }
 
-  /** Проверка на возможность следующего события после текущего */
+  /**
+   * Проверка на возможность следующего события после текущего.
+   *
+   * @param next следующее событие
+   * @return истина, если событие допустимо
+   */
   public boolean canBeNext(VisitEvent next) {
     if (nextStates.containsKey(this.visitState)) {
       return nextStates.get(this.getState()).stream().anyMatch(e -> e.equals(next.getState()))
@@ -229,7 +257,11 @@ public enum VisitEvent {
     return true;
   }
 
-  /** Получение статуса визита соответствующего событию */
+  /**
+   * Получение состояния визита, соответствующего текущему событию.
+   *
+   * @return состояние визита
+   */
   public VisitState getState() {
     visitState = visitStateMap.get(this);
     return visitState;

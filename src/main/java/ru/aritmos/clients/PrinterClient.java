@@ -11,8 +11,19 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import org.reactivestreams.Publisher;
 import ru.aritmos.model.visit.Visit;
 
+/**
+ * HTTP‑клиент печати талонов.
+ */
 @Client(value = "${micronaut.application.printerServiceURL}")
 public interface PrinterClient {
+  /**
+   * Напечатать талон по визиту.
+   *
+   * @param charset кодировка контента
+   * @param responseRequired требуется ли получить ответ
+   * @param visit визит
+   * @return реактивный ответ печати
+   */
   @Retryable(
       delay = "${micronaut.application.printerRetryPeriod:5s}",
       maxDelay = "${micronaut.application.printerRetryMaxPeriod:45m}",

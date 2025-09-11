@@ -12,14 +12,27 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 
+/**
+ * Сервис формирования и публикации конфигурации отделений.
+ */
 @Slf4j
 @Context
 public class Configuration {
+  /** Сервис управления отделениями. */
   @Inject BranchService branchService;
+  /** Клиент Keycloak. */
   @Inject KeyCloackClient keyCloackClient;
+  /** Сервис визитов. */
   @Inject VisitService visitService;
+  /** Сервис отправки событий. */
   @Inject EventService eventService;
 
+  /**
+   * Создать и опубликовать конфигурацию отделений.
+   *
+   * @param branchHashMap карта отделений (id -> отделение)
+   * @return карта детализированных отделений
+   */
   public HashMap<String, Branch> createBranchConfiguration(Map<String, Branch> branchHashMap) {
     Event eventPublicStart =
         Event.builder()
@@ -145,6 +158,11 @@ public class Configuration {
     return branchService.getDetailedBranches();
   }
 
+  /**
+   * Создать демонстрационную конфигурацию отделений.
+   *
+   * @return карта отделений (демо)
+   */
   public Map<String, Branch> createDemoBranch() {
     Map<String, Branch> branches = new HashMap<>();
     Branch branch = new Branch("37493d1c-8282-4417-a729-dceac1f3e2b4", "Клиника на Тверской");

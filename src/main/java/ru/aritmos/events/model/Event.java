@@ -7,17 +7,20 @@ import java.util.Map;
 import lombok.Builder;
 import lombok.Data;
 
+/** Событие шины данных между сервисами. */
 @Data
 @Builder
 @Serdeable
 @Introspected
-/*
-Класс события
- */
 public class Event {
+  /** Имя сервиса-отправителя события. */
   String senderService;
+  /** Дата и время события. */
   ZonedDateTime eventDate;
+  /** Тип события. */
   String eventType;
+  /** Дополнительные параметры события. */
   Map<String, String> params;
+  /** Тело события (произвольный объект). */
   Object body;
 }

@@ -16,10 +16,21 @@ public class WorkProfile extends BranchEntity {
   /** Идентификаторы очередей */
   List<String> queueIds = new ArrayList<>();
 
+  /**
+   * Конструктор рабочего профиля с автогенерацией идентификатора.
+   *
+   * @param name наименование профиля
+   */
   public WorkProfile(String name) {
     super(name);
   }
 
+  /**
+   * Конструктор рабочего профиля.
+   *
+   * @param id идентификатор профиля
+   * @param name наименование профиля
+   */
   public WorkProfile(String id, String name) {
     super(id, name);
   }

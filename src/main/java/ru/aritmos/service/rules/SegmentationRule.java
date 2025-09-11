@@ -15,21 +15,28 @@ import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.GroovyScriptService;
 
+/**
+ * Правила сегментации для выбора очереди на основании параметров визита.
+ */
 @Introspected(classes = GroovyScript.class)
 @Singleton
 @SuppressWarnings("unchecked")
 public class SegmentationRule {
+  /** Сервис отделений. */
   @Inject BranchService branchService;
+  /** Сервис событий. */
   @Inject EventService eventService;
+  /** Текущий исполняемый скрипт сегментации. */
   GroovyScript groovyScript;
 
   /**
-   * Возвращает очередь согласно текущей услуги визита, если у услуги предусмотрено правило -
-   * выполняется оно, если нет - берется очередь с указанной для очереди услугой
+   * Возвращает очередь согласно текущей услуге визита. Если у услуги есть правило сегментации —
+   * применяется оно, иначе берётся очередь, привязанная к услуге.
    *
-   * @param visit визитё
+   * @param visit визит
    * @param branch отделение
-   * @return Очередь
+   * @return очередь (если определена)
+   * @throws SystemException ошибка выполнения правила сегментации
    */
   public Optional<Queue> getQueue(Visit visit, Branch branch) throws SystemException {
     if (visit.getCurrentService() != null
@@ -72,6 +79,14 @@ public class SegmentationRule {
     return Optional.empty();
   }
 
+  /**
+   * Получить очередь по идентификатору правила сегментации (Groovy).
+   *
+   * @param visit визит
+   * @param branch отделение
+   * @param segmentationRuleId идентификатор правила сегментации
+   * @return очередь (если определена)
+   */
   public Optional<Queue> getQueue(Visit visit, Branch branch, String segmentationRuleId) {
     Branch currentBranch = branchService.getBranch(branch.getId());
     if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {

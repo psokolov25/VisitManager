@@ -15,21 +15,30 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import lombok.Getter;
 
+/** Реализация резолвера URL завершения сессии с учётом Okta/Keycloak. */
 @Singleton
 @Replaces(EndSessionEndpointResolver.class)
 @Getter
 public class EndSessionEndpointResolverReplacement extends EndSessionEndpointResolver {
+  /** Контекст бинов Micronaut. */
   private final BeanContext beanContext;
 
+
+  /** Резолвер токена в запросе. */
   @SuppressWarnings("rawtypes")
   private final TokenResolver tokenResolver;
 
+  /** Конфигурация безопасности. */
   private final SecurityConfiguration securityConfiguration;
 
   /**
-   * @param beanContext The bean context
+   * Конструктор.
+   *
+   * @param beanContext контекст бинов Micronaut
+   * @param securityConfiguration конфигурация безопасности
+   * @param tokenResolver резолвер токена
    */
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings("all")
   public EndSessionEndpointResolverReplacement(
       BeanContext beanContext,
       SecurityConfiguration securityConfiguration,

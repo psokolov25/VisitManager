@@ -7,11 +7,18 @@ import reactor.core.publisher.Mono;
 import ru.aritmos.clients.PrinterClient;
 import ru.aritmos.model.visit.Visit;
 
+/** Сервис печати талонов. */
 @Singleton
 @Slf4j
 public class PrinterService {
   @Inject PrinterClient printerClient;
 
+  /**
+   * Отправить визит на печать.
+   *
+   * @param id идентификатор принтера
+   * @param visit визит
+   */
   public void print(String id, Visit visit) {
     log.info("Sending to printer client {}", id);
     Mono.from(printerClient.print("UTF-8", true, visit))

@@ -15,11 +15,22 @@ import ru.aritmos.model.Queue;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
 
+/**
+ * Правило вызова визита по максимальному времени жизни.
+ */
 @Singleton
 @Named("MaxLifeTimeCallRule")
 public class MaxLifeTimeCallRule implements CallRule {
   @Inject EventService eventService;
 
+
+  /**
+   * Вызов визита исходя из максимального времени ожидания/возврата.
+   *
+   * @param branch отделение
+   * @param servicePoint точка обслуживания
+   * @return опционально найденный визит
+   */
   @Override
   public Optional<Visit> call(Branch branch, ServicePoint servicePoint) {
 
@@ -67,6 +78,15 @@ public class MaxLifeTimeCallRule implements CallRule {
     return Optional.empty();
   }
 
+
+  /**
+   * Вызов визита из заданного списка очередей.
+   *
+   * @param branch отделение
+   * @param servicePoint точка обслуживания
+   * @param queueIds список идентификаторов очередей
+   * @return опционально найденный визит
+   */
   @Override
   public Optional<Visit> call(Branch branch, ServicePoint servicePoint, List<String> queueIds) {
     if (servicePoint.getUser() != null) {

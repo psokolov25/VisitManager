@@ -14,6 +14,13 @@ public class TinyServicePoint extends TinyClass {
   /** Флаг доступности рабочей станциии */
   Boolean isAvailable;
 
+  /**
+   * Конструктор сокращённого представления точки обслуживания.
+   *
+   * @param id идентификатор
+   * @param name наименование
+   * @param isAvailable доступность точки обслуживания
+   */
   public TinyServicePoint(String id, String name, Boolean isAvailable) {
     super(id, name);
     this.isAvailable = isAvailable;
