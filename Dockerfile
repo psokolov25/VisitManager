@@ -5,9 +5,16 @@
 #COPY pom.xml .
 #COPY src ./src
 FROM maven:3.9.9-eclipse-temurin-17 AS builder
+ARG MAVEN_PROXY_ACTIVE=false
+ARG MAVEN_PROXY_HOST
+ARG MAVEN_PROXY_PORT
+ARG MAVEN_NON_PROXY_HOSTS=localhost|127.0.0.1|::1
+ENV MAVEN_PROXY_ACTIVE=${MAVEN_PROXY_ACTIVE} \
+    MAVEN_PROXY_HOST=${MAVEN_PROXY_HOST} \
+    MAVEN_PROXY_PORT=${MAVEN_PROXY_PORT} \
+    MAVEN_NON_PROXY_HOSTS=${MAVEN_NON_PROXY_HOSTS}
 COPY . /app
 WORKDIR /app
-
 
 #ENV REDIS_SERVER="redis://redis:6379"
 #ENV REDIS_SERVER_TEST="redis://localhost:6379"
@@ -22,7 +29,6 @@ WORKDIR /app
 #RUN sed -i 's/\r$//' mvnw
 #RUN --mount=type=cache,target=/root/.m2 ./mvnw clean package -Dmaven.test.skip=true
 RUN mvn clean package -Dmaven.test.skip=true
-
 
 
 #FROM amazoncorretto:17.0.4-alpine3.15 AS packager
@@ -52,6 +58,14 @@ RUN mvn clean package -Dmaven.test.skip=true
 #ENV LOKI_SERVER="http://192.168.3.13:3100/loki/api/v1/push"
 #COPY --from=packager "$JAVA_HOME" "$JAVA_HOME"
 FROM bellsoft/liberica-openjdk-alpine:17
+ARG MAVEN_PROXY_ACTIVE=false
+ARG MAVEN_PROXY_HOST
+ARG MAVEN_PROXY_PORT
+ARG MAVEN_NON_PROXY_HOSTS=localhost|127.0.0.1|::1
+ENV MAVEN_PROXY_ACTIVE=${MAVEN_PROXY_ACTIVE} \
+    MAVEN_PROXY_HOST=${MAVEN_PROXY_HOST} \
+    MAVEN_PROXY_PORT=${MAVEN_PROXY_PORT} \
+    MAVEN_NON_PROXY_HOSTS=${MAVEN_NON_PROXY_HOSTS}
 COPY --from=builder "/app/target/visitmanager.jar" "app.jar"
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
