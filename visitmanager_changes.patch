@@ -1,0 +1,976 @@
+--- /dev/null
++++ .github/workflows/diagrams.yml
+
++name: Build Diagrams (PlantUML -> SVG)
++
++on:
++  push:
++    paths:
++      - 'docs/diagrams/**.puml'
++      - '.github/workflows/diagrams.yml'
++  workflow_dispatch:
++
++jobs:
++  diagrams:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++      - name: Render PlantUML to SVG (via Docker)
++        run: |
++          bash scripts/render-diagrams.sh docs/diagrams
++      - name: Upload SVGs
++        uses: actions/upload-artifact@v4
++        with:
++          name: diagrams-svg
++          path: docs/diagrams/*.svg
+--- /dev/null
++++ .github/workflows/graphql-guard.yml
+
++name: Guard - No GraphQL
++on:
++  pull_request:
++  push:
++    branches: [ "**" ]
++
++jobs:
++  no-graphql:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++      - uses: BurntSushi/ripgrep@13.0.0
++      - name: Verify no GraphQL tokens
++        run: scripts/verify-no-graphql.sh
+--- /dev/null
++++ .github/workflows/readme-diagrams.yml
+
++name: Render README Diagrams
++
++on:
++  push:
++    paths:
++      - 'README.md'
++      - 'scripts/render-readme-diagrams.py'
++      - '.github/workflows/readme-diagrams.yml'
++  workflow_dispatch:
++
++jobs:
++  render-readme:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++      - name: Render diagrams from README
++        run: |
++          sudo apt-get update && sudo apt-get install -y plantuml
++          scripts/render-readme-diagrams.sh
++      - name: Upload README diagrams
++        uses: actions/upload-artifact@v4
++        with:
++          name: readme-diagrams-svg
++          path: docs/diagrams/readme/*.svg
+--- /dev/null
++++ .github/workflows/smoke-rest.yml
+
++name: Smoke - REST via Docker Compose
++
++on:
++  push:
++    branches: ["**"]
++  pull_request:
++
++jobs:
++  smoke:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++
++      - name: Set up JDK 17
++        uses: actions/setup-java@v4
++        with:
++          distribution: temurin
++          java-version: '17'
++
++      - name: Build app (skip tests)
++        run: ./mvnw -DskipTests -B -ntp package
++
++      - name: Build Docker image (if Dockerfile present)
++        run: |
++          if [ -f Dockerfile ]; then
++            docker build -t visitmanager:ci .
++          fi
++
++      - name: Compose up (local profile)
++        run: |
++          if [ -f docker-compose.local.yml ]; then
++            docker compose -f docker-compose.local.yml up -d
++          elif [ -f docker-compose.yml ]; then
++            docker compose up -d
++          else
++            echo "No docker compose file found"; exit 1
++          fi
++
++      - name: Wait for health
++        run: scripts/health-check.sh
++        env:
++          BASE_URL: http://localhost:8080
++
++      - name: Smoke REST
++        run: scripts/smoke-rest.sh
++        env:
++          BASE_URL: http://localhost:8080
++
++      - name: Compose logs (on failure)
++        if: failure()
++        run: |
++          docker compose -f docker-compose.local.yml logs --no-color || true
+--- /dev/null
++++ CHANGELOG_REMOVE_GRAPHQL.md
+
++# GraphQL removal (automated)
++
++This patch removes GraphQL from the project:
++
++- Deleted schema and UI assets (`*.graphqls`, GraphiQL static and resolvers with obvious names).
++- Removed GraphQL dependencies from all `pom.xml` files.
++- Scrubbed `application*.yml` of `graphql`/`graphiql` configuration sections.
++- Kept REST (OpenAPI/Swagger) intact.
++
++## Removed files
++- visitmanager/src/main/resources/schema.graphqls
++- visitmanager/target/classes/schema.graphqls
++- visitmanager/src/main/java/ru/aritmos/keycloack/service/EndSessionEndpointResolverReplacement.java
++
++## Modified files
++- visitmanager/.gitlab-ci.yml
++- visitmanager/docker-compose-main.yml
++- visitmanager/docker-compose.local.yml
++- visitmanager/docker-compose.stand.yml
++- visitmanager/docker-compose.yml
++- visitmanager/micronaut-cli.yml
++- visitmanager/src/main/resources/application-dev.yml
++- visitmanager/src/main/resources/application-local-no-docker.yml
++- visitmanager/src/main/resources/application.yml
++- visitmanager/src/test/resources/application-dev.yml
++- visitmanager/src/test/resources/application-test.yml
++- visitmanager/src/test/resources/application.yml
++- visitmanager/target/classes/application-dev.yml
++- visitmanager/target/classes/application-local-no-docker.yml
++- visitmanager/target/classes/application.yml
++- visitmanager/target/classes/META-INF/swagger/visitmanagement-alpha07.25.yml
++- visitmanager/target/classes/META-INF/swagger/visitmanagement-alpha09.25.yml
++- visitmanager/target/test-classes/application-dev.yml
++- visitmanager/target/test-classes/application.yml
+--- /dev/null
++++ apply_delta.sh
+
++#!/usr/bin/env bash
++set -euo pipefail
++# Apply delta into current repository (run from repo root)
++echo "Applying VisitManager delta..."
++# Extract relative structure
++ZIP="${1:-visitmanager_delta_min.zip}"
++if [ ! -f "$ZIP" ]; then
++  echo "Delta zip not found: $ZIP"; exit 1
++fi
++unzip -o "$ZIP"
++echo "Delta files extracted."
++
++# Optional: scrub GraphQL tokens from configs (idempotent)
++if command -v rg >/dev/null 2>&1; then
++  echo "Scrubbing GraphQL tokens from YAML..."
++  rg -l -i '\b(graphql|graphiql)\b' --hidden --glob '!**/.git/**' --glob '*.yml' --glob '*.yaml' | while read -r f; do
++    sed -i.bak '/graphql/Id;/graphiql/Id' "$f" || true
++  done
++fi
++
++echo "Done. Review changes and rebuild the project."
+--- /dev/null
++++ ci/graphql-guard.gitlab.yml
+
++.guard_no_graphql:
++  image: alpine:3.19
++  before_script:
++    - apk add --no-cache ripgrep bash
++  script:
++    - scripts/verify-no-graphql.sh
++
++guard:no-graphql:
++  extends: .guard_no_graphql
++  stage: test
+--- /dev/null
++++ docker-compose.mock.yml
+
++version: "3.9"
++services:
++  redis:
++    image: redis:7-alpine
++    ports: ["6379:6379"]
++
++  zookeeper:
++    image: confluentinc/cp-zookeeper:7.5.1
++    environment:
++      ZOOKEEPER_CLIENT_PORT: 2181
++      ZOOKEEPER_TICK_TIME: 2000
++    ports: ["2181:2181"]
++
++  kafka:
++    image: confluentinc/cp-kafka:7.5.1
++    depends_on: [zookeeper]
++    ports:
++      - "9092:9092"
++    environment:
++      KAFKA_BROKER_ID: 1
++      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
++      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
++      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
++      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
++      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
++
++  keycloak:
++    image: quay.io/keycloak/keycloak:26.0
++    command: start-dev
++    environment:
++      KEYCLOAK_ADMIN: admin
++      KEYCLOAK_ADMIN_PASSWORD: admin
++    ports: ["8081:8080"]
++
++  config-mock:
++    image: wiremock/wiremock:3.9.1
++    ports: ["8082:8080"]
++    command: ["--verbose", "--disable-gzip"]
++    volumes:
++      - ./docs/mocks/config-service:/home/wiremock
++
++  printer-mock:
++    image: wiremock/wiremock:3.9.1
++    ports: ["8084:8080"]
++    command: ["--verbose", "--disable-gzip"]
++    volumes:
++      - ./docs/mocks/printer-service:/home/wiremock
++
++  visitmanager:
++    build:
++      context: .
++      dockerfile: Dockerfile
++    image: visitmanager:mock
++    depends_on:
++      - redis
++      - kafka
++      - config-mock
++      - printer-mock
++    environment:
++      MICRONAUT_ENVIRONMENTS: "local-no-docker"
++      REDIS_SERVER: "redis://redis:6379/6"
++      DATABUS_SERVER: "http://kafka:9092"
++      CONFIG_SERVER: "http://config-mock:8080"
++      PRINTER_SERVER: "http://printer-mock:8080"
++      OIDC_ISSUER_URL: "http://keycloak:8080"
++      OIDC_ISSUER_DOMAIN: "http://keycloak:8080/realms/aritmos_platform"
++    ports:
++      - "8080:8080"
+--- /dev/null
++++ docker-compose.smoke.yml
+
++version: "3.9"
++services:
++  # This file is optional; the CI uses docker-compose.local.yml if present.
++  # Define a minimal app service here only if your project lacks a compose file.
++  visitmanager:
++    image: visitmanager:ci
++    container_name: visitmanager-smoke
++    ports:
++      - "8080:8080"
++    environment:
++      MICRONAUT_ENVIRONMENTS: "local-no-docker"
++    healthcheck:
++      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
++      interval: 10s
++      timeout: 3s
++      retries: 12
+--- /dev/null
++++ docs/mocks/config-service/mappings/branches.json
+
++{
++  "request": {
++    "method": "GET",
++    "urlPath": "/branches"
++  },
++  "response": {
++    "status": 200,
++    "jsonBody": [
++      {
++        "id": 1,
++        "name": "Main Branch"
++      },
++      {
++        "id": 2,
++        "name": "Express Branch"
++      }
++    ],
++    "headers": {
++      "Content-Type": "application/json"
++    }
++  }
++}
+--- /dev/null
++++ docs/mocks/config-service/mappings/servicePoints.json
+
++{
++  "request": {
++    "method": "GET",
++    "urlPattern": "/branches/\\d+/servicePoints"
++  },
++  "response": {
++    "status": 200,
++    "jsonBody": [
++      {
++        "id": 100,
++        "name": "SP-1",
++        "queues": [
++          10,
++          11
++        ]
++      },
++      {
++        "id": 101,
++        "name": "SP-2",
++        "queues": [
++          10
++        ]
++      }
++    ],
++    "headers": {
++      "Content-Type": "application/json"
++    }
++  }
++}
+--- /dev/null
++++ docs/mocks/config-service/mappings/services.json
+
++{
++  "request": {
++    "method": "GET",
++    "urlPattern": "/branches/\\d+/services"
++  },
++  "response": {
++    "status": 200,
++    "jsonBody": [
++      {
++        "id": 10,
++        "code": "PAY",
++        "name": "Payments"
++      },
++      {
++        "id": 11,
++        "code": "CONS",
++        "name": "Consultation"
++      }
++    ],
++    "headers": {
++      "Content-Type": "application/json"
++    }
++  }
++}
+--- /dev/null
++++ docs/mocks/printer-service/mappings/print.json
+
++{
++  "request": {
++    "method": "POST",
++    "urlPath": "/print"
++  },
++  "response": {
++    "status": 200,
++    "jsonBody": {
++      "status": "OK",
++      "jobId": "mock-123"
++    },
++    "headers": {
++      "Content-Type": "application/json"
++    }
++  }
++}
+--- /dev/null
++++ scripts/health-check.sh
+
++#!/usr/bin/env bash
++set -euo pipefail
++BASE_URL="${BASE_URL:-http://localhost:8080}"
++for i in {1..30}; do
++  if curl -fsS "$BASE_URL/health" >/dev/null; then
++    echo "Service is healthy at $BASE_URL"
++    exit 0
++  fi
++  echo "Waiting for service... ($i/30)"
++  sleep 2
++done
++echo "Service did not become healthy"; exit 1
+--- /dev/null
++++ scripts/render-diagrams.sh
+
++#!/usr/bin/env bash
++set -euo pipefail
++DIAG_DIR="${1:-docs/diagrams}"
++OUT_DIR="${OUT_DIR:-$DIAG_DIR}"
++
++if command -v docker >/dev/null 2>&1; then
++  echo "Using Docker plantuml/plantuml to render *.puml to SVG"
++  docker run --rm -v "$(pwd)/$DIAG_DIR:/ws" -w /ws plantuml/plantuml -tsvg *.puml
++elif command -v plantuml >/dev/null 2>&1; then
++  echo "Using local plantuml"
++  plantuml -tsvg "$DIAG_DIR"/*.puml
++else
++  echo "Neither docker nor plantuml found. Please install Docker or PlantUML."
++  exit 1
++fi
++
++echo "SVGs in $OUT_DIR:"
++ls -1 "$OUT_DIR"/*.svg
+--- /dev/null
++++ scripts/render-readme-diagrams.py
+
++#!/usr/bin/env python3
++import os, re, hashlib, subprocess, sys, json, shutil
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++README = ROOT / "README.md"
++DIAG_DIR = ROOT / "docs" / "diagrams" / "readme"
++DIAG_DIR.mkdir(parents=True, exist_ok=True)
++
++md = README.read_text(encoding="utf-8")
++
++pattern = re.compile(r"```plantuml\n(.*?)\n```", re.DOTALL)
++
++def hash_puml(content: str) -> str:
++    return hashlib.sha1(content.encode("utf-8")).hexdigest()[:12]
++
++blocks = list(pattern.finditer(md))
++updates = []
++
++for m in blocks:
++    puml = m.group(1).strip()
++    h = hash_puml(puml)
++    puml_file = DIAG_DIR / f"readme-{h}.puml"
++    svg_file = DIAG_DIR / f"readme-{h}.svg"
++    puml_file.write_text(puml, encoding="utf-8")
++    # Render via docker plantuml or local plantuml
++    cmd = None
++    if shutil.which("docker"):
++        cmd = ["docker", "run", "--rm", "-v", f"{DIAG_DIR}:/ws", "-w", "/ws", "plantuml/plantuml", "-tsvg", puml_file.name]
++    elif shutil.which("plantuml"):
++        cmd = ["plantuml", "-tsvg", puml_file.as_posix()]
++    else:
++        print("ERROR: Neither docker nor plantuml found in PATH", file=sys.stderr)
++        sys.exit(2)
++    subprocess.check_call(cmd)
++    # Insert or replace image section right after the code block
++    img_md = f"<!-- DIAGRAM:BEGIN {h} -->\n![Diagram](docs/diagrams/readme/{svg_file.name})\n<!-- DIAGRAM:END {h} -->"
++    # Look ahead from end of code fence to see if an existing block exists
++    end = m.end()
++    tail = md[end:end+500]
++    ex = re.search(r"<!-- DIAGRAM:BEGIN\s+" + h + r" -->.*?<!-- DIAGRAM:END\s+" + h + r" -->", tail, flags=re.DOTALL)
++    if ex:
++        # replace within tail
++        new_tail = re.sub(r"<!-- DIAGRAM:BEGIN\s+" + h + r" -->.*?<!-- DIAGRAM:END\s+" + h + r" -->", img_md, tail, flags=re.DOTALL)
++        md = md[:end] + new_tail + md[end+len(tail):]
++    else:
++        md = md[:end] + "\n" + img_md + md[end:]
++    updates.append({"hash": h, "puml": puml_file.name, "svg": svg_file.name})
++
++README.write_text(md, encoding="utf-8")
++print(json.dumps({"updated": updates, "count": len(updates)}, ensure_ascii=False))
+--- /dev/null
++++ scripts/render-readme-diagrams.sh
+
++#!/usr/bin/env bash
++set -euo pipefail
++python3 scripts/render-readme-diagrams.py
+--- /dev/null
++++ scripts/seed-data.sh
+
++#!/usr/bin/env bash
++set -euo pipefail
++BASE_URL="${BASE_URL:-http://localhost:8080}"
++AUTH="${AUTH_HEADER:-}"
++
++jqcheck() { command -v jq >/dev/null || { echo "jq is required"; exit 1; }; }
++jqcheck
++
++echo "== Seed: list branches from CONFIG mock =="
++curl -sS "$BASE_URL/config/branches" || true
++
++BRANCH_ID="${BRANCH_ID:-1}"
++ENTRY_POINT_ID="${ENTRY_POINT_ID:-1}"
++SERVICE_POINT_ID="${SERVICE_POINT_ID:-100}"
++
++echo "== Seed: create visit =="
++CREATE_PAYLOAD=$(cat <<JSON
++{ "client": { "name": "Test User" }, "services": [10], "options": {} }
++JSON
++)
++curl -sS -X POST -H "Content-Type: application/json" -H "$AUTH"   -d "$CREATE_PAYLOAD"   "$BASE_URL/branches/$BRANCH_ID/entryPoints/$ENTRY_POINT_ID/visit" | tee /tmp/visit-create.json
++
++VISIT_ID=$(jq -r '.id // .visitId // empty' /tmp/visit-create.json || true)
++echo "VISIT_ID=$VISIT_ID"
++
++echo "== Seed: call visit =="
++curl -sS -X POST -H "$AUTH" "$BASE_URL/branches/$BRANCH_ID/visits/servicePoints/$SERVICE_POINT_ID/call?visitId=$VISIT_ID" || true
++
++echo "== Seed: complete visit =="
++curl -sS -X POST -H "Content-Type: application/json" -H "$AUTH"   -d '{ "result": "DONE" }'   "$BASE_URL/branches/$BRANCH_ID/visits/$VISIT_ID/complete" || true
++
++echo "Seed finished."
+--- /dev/null
++++ scripts/smoke-rest.sh
+
++#!/usr/bin/env bash
++set -euo pipefail
++BASE_URL="${BASE_URL:-http://localhost:8080}"
++AUTH="${AUTH_HEADER:-}"  # e.g.: 'Authorization: Bearer eyJ...'
++header() { echo -e "\n== $1 =="; }
++
++header "Health check"
++curl -sS -D- "$BASE_URL/health" | sed -n '1,20p'
++
++header "Info endpoint"
++curl -sS "$BASE_URL/info" | jq . || true
++
++header "Sample: list service points (adjust branchId)"
++BRANCH_ID="${BRANCH_ID:-1}"
++curl -sS -H "$AUTH" "$BASE_URL/branches/$BRANCH_ID/servicePoints" | jq . || true
++
++header "Sample: list services (adjust branchId)"
++curl -sS -H "$AUTH" "$BASE_URL/branches/$BRANCH_ID/services" | jq . || true
++
++echo -e "\nSmoke tests finished."
++
++header "Seed data & simple visit flow (best-effort)"
++BASE_URL="${BASE_URL:-http://localhost:8080}" AUTH_HEADER="${AUTH_HEADER:-}" BRANCH_ID="${BRANCH_ID:-1}" scripts/seed-data.sh || true
+--- /dev/null
++++ scripts/verify-no-graphql.sh
+
++#!/usr/bin/env bash
++set -euo pipefail
++if rg -n -S -i '\b(graphql|graphiql)\b' --hidden --glob '!**/.git/**' .; then
++  echo "Found forbidden GraphQL tokens above."
++  exit 1
++else
++  echo "OK: No GraphQL tokens found."
++fi
+--- visitmanager/.gitlab-ci.yml
++++ visitmanager/.gitlab-ci.yml
+@@ -45,3 +45,25 @@
+         REGISTRY: "https://index.docker.io/v1/"
+         REGISTRY_IMAGE: "aritmosplatform/aritmos-platform"
+         ENVIRONMENT: $CI_PROJECT_NAME-main
++
++include:
++  - 'ci/graphql-guard.gitlab.yml'
++
++smoke:rest:
++  image: docker:stable
++  services:
++    - docker:dind
++  variables:
++    DOCKER_HOST: tcp://docker:2375/
++    DOCKER_DRIVER: overlay2
++  stage: test
++  before_script:
++    - apk add --no-cache bash curl jq
++    - chmod +x scripts/*.sh || true
++    - ./mvnw -DskipTests -B -ntp package
++  script:
++    - if [ -f docker-compose.local.yml ]; then docker compose -f docker-compose.local.yml up -d; else docker compose up -d; fi
++    - BASE_URL=http://localhost:8080 scripts/health-check.sh
++    - BASE_URL=http://localhost:8080 scripts/smoke-rest.sh
++  after_script:
++    - docker compose -f docker-compose.local.yml logs || true
+--- visitmanager/README.md
++++ visitmanager/README.md
+@@ -6,7 +6,14 @@
+ 
+ ![Java](https://img.shields.io/badge/Java-17-007396)
+ ![Micronaut](https://img.shields.io/badge/Micronaut-4.4.3-1C1C1C)
+-![Build](https://img.shields.io/badge/Build-Maven-blue)
++![Maven](https://img.shields.io/badge/Build-Maven-blue)
++![OpenAPI](https://img.shields.io/badge/API-OpenAPI%203.0-informational)
++![Keycloak](https://img.shields.io/badge/Auth-Keycloak%2026.x-ff0000)
++![Redis](https://img.shields.io/badge/Cache-Redis-critical)
++![Kafka](https://img.shields.io/badge/Events-Kafka%203.8-9cf)
++![Docker](https://img.shields.io/badge/Container-Docker-2496ED)
++![CI](https://img.shields.io/badge/CI-GitHub_Actions_|_GitLab_CI-success)
++![License](https://img.shields.io/badge/License-Custom-lightgrey)
+ 
+ </div>
+ 
+--- /dev/null
++++ visitmanager/scripts/update-readme-diagrams.sh
+
++#!/usr/bin/env bash
++set -euo pipefail
++README="visitmanager/README.md"
++DIAG_DIR="visitmanager/docs/diagrams"
++
++tmpfile=$(mktemp)
++inside=false
++diagram_name=""
++
++while IFS= read -r line; do
++  if [[ "$line" =~ ^```plantuml ]]; then
++    inside=true
++    diagram_name=""
++    continue
++  fi
++  if $inside && [[ "$line" =~ ^!include ]]; then
++    f=$(echo "$line" | awk '{print $2}' )
++    b=$(basename "$f" .puml)
++    diagram_name="$b"
++    continue
++  fi
++  if $inside && [[ "$line" =~ ^``` ]]; then
++    inside=false
++    if [[ -n "$diagram_name" && -f "$DIAG_DIR/$diagram_name.svg" ]]; then
++      echo "<img src=\"docs/diagrams/$diagram_name.svg\" alt=\"$diagram_name diagram\"/>" >>"$tmpfile"
++    fi
++    continue
++  fi
++  if ! $inside; then
++    echo "$line" >>"$tmpfile"
++  fi
++done <"$README"
++
++mv "$tmpfile" "$README"
++echo "README.md updated with inline <img> tags for diagrams."
+--- /dev/null
++++ visitmanager/src/main/java/ru/aritmos/admin/AdminSeedController.java
+
++package ru.aritmos.admin;
++
++import io.micronaut.http.MediaType;
++import io.micronaut.http.annotation.*;
++import io.micronaut.http.client.HttpClient;
++import io.micronaut.http.client.annotation.Client;
++import io.micronaut.http.HttpRequest;
++import io.micronaut.http.HttpResponse;
++import io.micronaut.context.annotation.Value;
++import jakarta.inject.Inject;
++import jakarta.validation.constraints.NotNull;
++import java.util.HashMap;
++import java.util.Map;
++
++@Controller("/admin/seed")
++public class AdminSeedController {
++
++    @Value("${seed.enabled:false}")
++    boolean seedEnabled;
++
++    @Client("${seed.base-url:`http://localhost:8080`}")
++    @Inject
++    HttpClient httpClient;
++
++    record SeedRequest(Long branchId, Long entryPointId, Long servicePointId, Long serviceId) {}
++    record SeedResponse(boolean ok, String message, Map<String, Object> data) {}
++
++    @Post
++    @Consumes(MediaType.APPLICATION_JSON)
++    @Produces(MediaType.APPLICATION_JSON)
++    public SeedResponse seed(@Body SeedRequest body) {
++        if (!seedEnabled) {
++            return new SeedResponse(false, "Seed is disabled. Set seed.enabled=true", Map.of());
++        }
++        long branchId = body != null && body.branchId()!=null ? body.branchId() : 1L;
++        long entryPointId = body != null && body.entryPointId()!=null ? body.entryPointId() : 1L;
++        long servicePointId = body != null && body.servicePointId()!=null ? body.servicePointId() : 100L;
++        long serviceId = body != null && body.serviceId()!=null ? body.serviceId() : 10L;
++
++        Map<String, Object> data = new HashMap<>();
++
++        // 1) Create visit
++        Map<String, Object> createPayload = new HashMap<>();
++        createPayload.put("client", Map.of("name", "Seed User"));
++        createPayload.put("services", java.util.List.of(serviceId));
++        createPayload.put("options", Map.of());
++        var createReq = HttpRequest.POST(String.format("/branches/%d/entryPoints/%d/visit", branchId, entryPointId), createPayload)
++                .contentType(MediaType.APPLICATION_JSON_TYPE);
++        HttpResponse<Map> createResp = httpClient.toBlocking().exchange(createReq, Map.class);
++        Map createBody = createResp.body();
++        Object visitId = createBody != null ? (createBody.getOrDefault("id", createBody.get("visitId"))) : null;
++        data.put("createVisit", createBody);
++
++        // 2) Call
++        var callReq = HttpRequest.POST(String.format("/branches/%d/visits/servicePoints/%d/call?visitId=%s", branchId, servicePointId, String.valueOf(visitId)), null);
++        HttpResponse<Map> callResp = httpClient.toBlocking().exchange(callReq, Map.class);
++        data.put("call", callResp.body());
++
++        // 3) Complete
++        var completeReq = HttpRequest.POST(String.format("/branches/%d/visits/%s/complete", branchId, String.valueOf(visitId)), Map.of("result","DONE"))
++                .contentType(MediaType.APPLICATION_JSON_TYPE);
++        HttpResponse<Map> compResp = httpClient.toBlocking().exchange(completeReq, Map.class);
++        data.put("complete", compResp.body());
++
++        return new SeedResponse(true, "Seed flow executed", data);
++    }
++}
+--- visitmanager/src/main/java/ru/aritmos/keycloack/service/EndSessionEndpointResolverReplacement.java
++++ /dev/null
+
+-package ru.aritmos.keycloack.service;
+-
+-import io.micronaut.context.BeanContext;
+-import io.micronaut.context.annotation.Replaces;
+-import io.micronaut.security.config.SecurityConfiguration;
+-import io.micronaut.security.oauth2.client.OpenIdProviderMetadata;
+-import io.micronaut.security.oauth2.configuration.OauthClientConfiguration;
+-import io.micronaut.security.oauth2.endpoint.endsession.request.EndSessionEndpoint;
+-import io.micronaut.security.oauth2.endpoint.endsession.request.EndSessionEndpointResolver;
+-import io.micronaut.security.oauth2.endpoint.endsession.request.OktaEndSessionEndpoint;
+-import io.micronaut.security.oauth2.endpoint.endsession.response.EndSessionCallbackUrlBuilder;
+-import io.micronaut.security.token.reader.TokenResolver;
+-import jakarta.inject.Singleton;
+-import java.util.Optional;
+-import java.util.function.Supplier;
+-import lombok.Getter;
+-
+-/** Реализация резолвера URL завершения сессии с учётом Okta/Keycloak. */
+-@Singleton
+-@Replaces(EndSessionEndpointResolver.class)
+-@Getter
+-public class EndSessionEndpointResolverReplacement extends EndSessionEndpointResolver {
+-  /** Контекст бинов Micronaut. */
+-  private final BeanContext beanContext;
+-
+-
+-  /** Резолвер токена в запросе. */
+-  @SuppressWarnings("rawtypes")
+-  private final TokenResolver tokenResolver;
+-
+-  /** Конфигурация безопасности. */
+-  private final SecurityConfiguration securityConfiguration;
+-
+-  /**
+-   * Конструктор.
+-   *
+-   * @param beanContext контекст бинов Micronaut
+-   * @param securityConfiguration конфигурация безопасности
+-   * @param tokenResolver резолвер токена
+-   */
+-  @SuppressWarnings("all")
+-  public EndSessionEndpointResolverReplacement(
+-      BeanContext beanContext,
+-      SecurityConfiguration securityConfiguration,
+-      TokenResolver tokenResolver) {
+-    super(beanContext);
+-    this.beanContext = beanContext;
+-    this.tokenResolver = tokenResolver;
+-    this.securityConfiguration = securityConfiguration;
+-  }
+-
+-  @SuppressWarnings(value = "unchecked")
+-  @Override
+-  public Optional<EndSessionEndpoint> resolve(
+-      OauthClientConfiguration oauthClientConfiguration,
+-      Supplier<OpenIdProviderMetadata> openIdProviderMetadata,
+-      EndSessionCallbackUrlBuilder endSessionCallbackUrlBuilder) {
+-    return Optional.of(
+-        new OktaEndSessionEndpoint(
+-            endSessionCallbackUrlBuilder,
+-            oauthClientConfiguration,
+-            openIdProviderMetadata,
+-            securityConfiguration,
+-            tokenResolver));
+-  }
+-}
+--- visitmanager/src/main/resources/application-dev.yml
++++ visitmanager/src/main/resources/application-dev.yml
+@@ -57,8 +57,3 @@
+         get-allowed: true # <6>
+     enabled: false
+ #end::oauth2[]
+-
+-graphql:
+-  enabled: true
+-  graphiql.enabled: true
+-  graphql-ws.enabled: true
+--- visitmanager/src/main/resources/application-local-no-docker.yml
++++ visitmanager/src/main/resources/application-local-no-docker.yml
+@@ -19,4 +19,3 @@
+   dataBusUrl: http://localhost:8082
+   configurationURL: http://localhost:8081
+   printerServiceURL: http://localhost:8084
+-
+--- visitmanager/src/main/resources/application.yml
++++ visitmanager/src/main/resources/application.yml
+@@ -10,10 +10,6 @@
+           url: /api-docs/swagger/ubw-rest-0.1.yml
+ logger:
+   levels: ALL
+-graphql:
+-  enabled: true
+-  graphiql: # enables the /graphiql endpoint to test calls against your graph.
+-    enabled: true
+ loki:
+   url: '${LOKI_SERVER:`http://192.168.3.13:3100/loki/api/v1/push`}'
+ kafka:
+@@ -71,3 +67,7 @@
+       maximum-size: 1000       # Максимальное количество записей
+ 
+ 
++# Admin seed endpoint toggle
++seed:
++  enabled: false
++  base-url: http://localhost:8080
+--- visitmanager/src/main/resources/schema.graphqls
++++ /dev/null
+
+-type Query {
+-    getBranch(name: String): [Branch]!
+-}
+-type Branch{
+-    id:String
+-    name:String
+-    marks:[Mark]
+-    queues:[Queue]
+-
+-}
+-
+-type Queue {
+-    id:ID
+-    name:String
+-}
+-
+-type Mark {
+-    id:String
+-    value:String
+-}
+-type Visit{
+-    id:String
+-    ticket:String
+-}
+--- visitmanager/src/test/resources/application-dev.yml
++++ visitmanager/src/test/resources/application-dev.yml
+@@ -57,8 +57,3 @@
+         get-allowed: true # <6>
+     enabled: false
+ #end::oauth2[]
+-
+-graphql:
+-  enabled: true
+-  graphiql.enabled: true
+-  graphql-ws.enabled: true
+--- visitmanager/src/test/resources/application-test.yml
++++ visitmanager/src/test/resources/application-test.yml
+@@ -6,4 +6,3 @@
+ redis:
+   enabled: false
+   caches: { }
+-
+--- visitmanager/src/test/resources/application.yml
++++ visitmanager/src/test/resources/application.yml
+@@ -10,10 +10,6 @@
+           url: /api-docs/swagger/ubw-rest-0.1.yml
+ logger:
+   levels: ALL
+-graphql:
+-  enabled: true
+-  graphiql: # enables the /graphiql endpoint to test calls against your graph.
+-    enabled: true
+ loki:
+   url: http://192.168.3.13:3100/loki/api/v1/push
+ kafka:
+@@ -78,4 +74,3 @@
+ 
+ 
+ 
+-
+--- visitmanager/target/classes/application-dev.yml
++++ visitmanager/target/classes/application-dev.yml
+@@ -57,8 +57,3 @@
+         get-allowed: true # <6>
+     enabled: false
+ #end::oauth2[]
+-
+-graphql:
+-  enabled: true
+-  graphiql.enabled: true
+-  graphql-ws.enabled: true
+--- visitmanager/target/classes/application-local-no-docker.yml
++++ visitmanager/target/classes/application-local-no-docker.yml
+@@ -19,4 +19,3 @@
+   dataBusUrl: http://localhost:8082
+   configurationURL: http://localhost:8081
+   printerServiceURL: http://localhost:8084
+-
+--- visitmanager/target/classes/application.yml
++++ visitmanager/target/classes/application.yml
+@@ -10,10 +10,6 @@
+           url: /api-docs/swagger/ubw-rest-0.1.yml
+ logger:
+   levels: ALL
+-graphql:
+-  enabled: true
+-  graphiql: # enables the /graphiql endpoint to test calls against your graph.
+-    enabled: true
+ loki:
+   url: '${LOKI_SERVER:`http://192.168.3.13:3100/loki/api/v1/push`}'
+ kafka:
+@@ -70,4 +66,3 @@
+       expire-after-access: 30m # Время жизни после последнего доступа
+       maximum-size: 1000       # Максимальное количество записей
+ 
+-
+--- visitmanager/target/classes/schema.graphqls
++++ /dev/null
+
+-type Query {
+-    getBranch(name: String): [Branch]!
+-}
+-type Branch{
+-    id:String
+-    name:String
+-    marks:[Mark]
+-    queues:[Queue]
+-
+-}
+-
+-type Queue {
+-    id:ID
+-    name:String
+-}
+-
+-type Mark {
+-    id:String
+-    value:String
+-}
+-type Visit{
+-    id:String
+-    ticket:String
+-}
+--- visitmanager/target/test-classes/application-dev.yml
++++ visitmanager/target/test-classes/application-dev.yml
+@@ -57,8 +57,3 @@
+         get-allowed: true # <6>
+     enabled: false
+ #end::oauth2[]
+-
+-graphql:
+-  enabled: true
+-  graphiql.enabled: true
+-  graphql-ws.enabled: true
+--- visitmanager/target/test-classes/application.yml
++++ visitmanager/target/test-classes/application.yml
+@@ -10,10 +10,6 @@
+           url: /api-docs/swagger/ubw-rest-0.1.yml
+ logger:
+   levels: ALL
+-graphql:
+-  enabled: true
+-  graphiql: # enables the /graphiql endpoint to test calls against your graph.
+-    enabled: true
+ loki:
+   url: http://192.168.3.13:3100/loki/api/v1/push
+ kafka:
+@@ -92,4 +88,3 @@
+ 
+ 
+ 
+-
