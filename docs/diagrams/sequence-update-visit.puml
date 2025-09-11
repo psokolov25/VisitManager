@@ -1,0 +1,13 @@
+@startuml
+actor Operator
+participant API as "ServicePointController"
+participant Visit as "VisitService"
+database Redis
+queue Kafka
+Operator -> API: PUT /servicepoint/.../visit/end
+API -> Visit: endVisit(branchId, servicePointId, visitId)
+Visit -> Redis: remove from cache
+Visit -> Kafka: VISIT_ENDED
+Visit --> API: Visit
+API --> Operator: 200 OK
+@enduml

@@ -4,7 +4,10 @@ actor Client
 actor Operator
 Client --> (Создать визит)
 Client --> (Получить талон)
+Client --> (Отменить визит)
+Client --> (Проверить статус)
 Operator --> (Открыть точку)
 Operator --> (Вызвать визит)
 Operator --> (Подтвердить/Завершить визит)
+Operator --> (Перевести визит)
 @enduml
