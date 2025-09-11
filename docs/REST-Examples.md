@@ -69,3 +69,18 @@
 - Вкл/выкл авто‑вызов отделения: `curl -X PUT "$BASE_URL/configuration/branches/$BRANCH_ID/autocallModeOn"` / `curl -X PUT "$BASE_URL/configuration/branches/$BRANCH_ID/autocallModeOff"`
 
 Больше примеров см. JavaDoc в контроллерах.
+
+## 📘 Пример Micronaut HttpClient
+
+```java
+import io.micronaut.http.client.HttpClient;
+import io.micronaut.http.client.BlockingHttpClient;
+import io.micronaut.http.HttpRequest;
+
+try (HttpClient client = HttpClient.create(new URL(BASE_URL))) {
+    BlockingHttpClient blocking = client.toBlocking();
+    HttpRequest<?> req = HttpRequest.GET("/managementinformation/branches");
+    String json = blocking.retrieve(req);
+    System.out.println(json);
+}
+```
