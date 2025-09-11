@@ -1,0 +1,18 @@
+@startuml
+actor Client
+participant UI as "Терминал/UI"
+participant API as "VisitManager API"
+participant Branch as "BranchService"
+participant Visit as "VisitService"
+database Redis
+queue Kafka
+Client -> UI: Выбор услуг
+UI -> API: POST /entrypoint/.../visit
+API -> Branch: Получить конфигурацию
+Branch --> API: Услуги существуют
+API -> Visit: Создать визит
+Visit -> Redis: Обновить кэш
+Visit -> Kafka: VISIT_CREATED
+Visit --> API: Visit{id,ticket,queue}
+API --> UI: 200 + визит
+@enduml

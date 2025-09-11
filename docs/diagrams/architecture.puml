@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Component.puml>
+Container_Boundary(api, "VisitManager API") {
+  Component(entry, "EntrypointController", "REST")
+  Component(sp, "ServicePointController", "REST")
+  Component(cfg, "ConfigurationController", "REST")
+  Component(mgmt, "ManagementController", "REST")
+  Component(kc, "KeyCloakController", "REST")
+  Component(svcBranch, "BranchService", "BL")
+  Component(svcVisit, "VisitService", "BL")
+}
+System_Ext(kc_ext, "Keycloak")
+ContainerDb(redis, "Redis", "Кэш/сессии")
+Container(queue, "Kafka", "Шина событий")
+Rel(entry, svcVisit, "Создание визитов")
+Rel(sp, svcVisit, "Обслуживание визитов")
+Rel(cfg, svcBranch, "Изменение конфигурации")
+Rel(mgmt, svcBranch, "Чтение состояния")
+Rel(kc, kc_ext, "Аутентификация", "OIDC")
+Rel(svcVisit, redis, "Кэш")
+Rel(svcBranch, redis, "Кэш конфигурации")
+Rel(svcVisit, queue, "События")
+@enduml

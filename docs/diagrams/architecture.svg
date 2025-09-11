@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="483px" preserveAspectRatio="none" style="width:1413px;height:483px;" version="1.1" viewBox="0 0 1413 483" width="1413px" zoomAndPan="magnify"><defs/><g><!--MD5=[7442f3b126ee602ae02566c1a49e158a]
+cluster api--><rect fill="#FFFFFF" height="309" style="stroke: #444444; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;" width="1229" x="22" y="24"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="84" x="594.5" y="38.9951">«boundary»</text><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="151" x="561" y="57.1484">VisitManager API</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="80" x="596.5" y="72.0605">[Container]</text><!--MD5=[e3476fda087b0512b1cf4e3a66ca5e59]
+entity entry--><rect fill="#85BBF0" height="66.5625" style="stroke: #78A8D8; stroke-width: 1.5;" width="200" x="812" y="91"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="85" x="869.5" y="112.1387">«component»</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="180" x="822" y="129.8203">EntrypointController</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="41" x="891.5" y="144.7324">[REST]</text><!--MD5=[694f580618a8ff0a20e3fd904d058a88]
+entity sp--><rect fill="#85BBF0" height="66.5625" style="stroke: #78A8D8; stroke-width: 1.5;" width="219" x="557.5" y="91"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="85" x="624.5" y="112.1387">«component»</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="199" x="567.5" y="129.8203">ServicePointController</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="41" x="646.5" y="144.7324">[REST]</text><!--MD5=[6a88aea038141ee488e61f39bf1ca119]
+entity cfg--><rect fill="#85BBF0" height="66.5625" style="stroke: #78A8D8; stroke-width: 1.5;" width="227" x="295.5" y="91"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="85" x="366.5" y="112.1387">«component»</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="207" x="305.5" y="129.8203">ConfigurationController</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="41" x="388.5" y="144.7324">[REST]</text><!--MD5=[52025288e216a85a7b6b26f1ab881e5a]
+entity mgmt--><rect fill="#85BBF0" height="66.5625" style="stroke: #78A8D8; stroke-width: 1.5;" width="223" x="37.5" y="91"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="85" x="106.5" y="112.1387">«component»</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="203" x="47.5" y="129.8203">ManagementController</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="41" x="128.5" y="144.7324">[REST]</text><!--MD5=[99db986d38fb499b252ed01955165f04]
+entity kc--><rect fill="#85BBF0" height="66.5625" style="stroke: #78A8D8; stroke-width: 1.5;" width="188" x="1047" y="91"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="85" x="1098.5" y="112.1387">«component»</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="168" x="1057" y="129.8203">KeyCloakController</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="41" x="1120.5" y="144.7324">[REST]</text><!--MD5=[523fd96908826d849410196abc1c7d49]
+entity svcBranch--><rect fill="#85BBF0" height="66.5625" style="stroke: #78A8D8; stroke-width: 1.5;" width="147" x="330.5" y="250"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="85" x="361.5" y="271.1387">«component»</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="127" x="340.5" y="288.8203">BranchService</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="25" x="391.5" y="303.7324">[BL]</text><!--MD5=[618c373021ba7c866a1d4a46a5afaeb7]
+entity svcVisit--><rect fill="#85BBF0" height="66.5625" style="stroke: #78A8D8; stroke-width: 1.5;" width="123" x="607.5" y="250"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="85" x="626.5" y="271.1387">«component»</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="103" x="617.5" y="288.8203">VisitService</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="25" x="656.5" y="303.7324">[BL]</text><!--MD5=[435c9e17ecb702d5940f01456593c294]
+entity kc_ext--><rect fill="#999999" height="52.5938" style="stroke: #8A8A8A; stroke-width: 1.5;" width="135" x="1267.5" y="257"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="115" x="1277.5" y="278.1387">«external_system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="78" x="1296" y="295.8203">Keycloak</text><!--MD5=[de5dc476b5cd49b5a92d294ad2af7d70]
+entity redis--><path d="M409,406 C409,396 462,396 462,396 C462,396 515,396 515,406 L515,461.5625 C515,471.5625 462,471.5625 462,471.5625 C462,471.5625 409,471.5625 409,461.5625 L409,406 " fill="#438DD5" style="stroke: #3C7FC0; stroke-width: 1.5;"/><path d="M409,406 C409,416 462,416 462,416 C462,416 515,416 515,406 " fill="none" style="stroke: #3C7FC0; stroke-width: 1.5;"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="74" x="425" y="431.1387">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="48" x="438" y="448.8203">Redis</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="86" x="419" y="463.7324">[Кэш/сессии]</text><!--MD5=[799e9543975076390d2a6ceafec8df6c]
+entity queue--><rect fill="#438DD5" height="66.5625" style="stroke: #3C7FC0; stroke-width: 1.5;" width="125" x="607.5" y="400.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="74" x="633" y="421.6387">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="49" x="645.5" y="439.3203">Kafka</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="105" x="617.5" y="454.2324">[Шина событий]</text><!--MD5=[17667688d5d09945c7d9a89492713168]
+link entry to svcVisit--><path d="M875.9,158.11 C853.53,177.42 823.69,201.61 795,220 C776.43,231.9 755.27,243.19 735.67,252.81 " fill="none" id="entry-&gt;svcVisit" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="730.72,255.22,740.5628,254.8736,735.2148,253.0299,737.0585,247.6819,730.72,255.22" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="138" x="839" y="208.5669">Создание визитов</text><!--MD5=[9aff3a60c74092ad506f64695537e63c]
+link sp to svcVisit--><path d="M667.41,158.03 C667.74,183.21 668.18,218.12 668.52,244.57 " fill="none" id="sp-&gt;svcVisit" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="668.58,249.74,672.4769,240.6949,668.5229,244.7403,664.4774,240.7863,668.58,249.74" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="112" x="669" y="201.0669">Обслуживание</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="59" x="698" y="216.1997">визитов</text><!--MD5=[87ed8d85ba4d76527336712aeef6e97e]
+link cfg to svcBranch--><path d="M407.96,158.03 C407.16,183.21 406.05,218.12 405.21,244.57 " fill="none" id="cfg-&gt;svcBranch" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="405.04,249.74,409.3207,240.8701,405.1971,244.7425,401.3247,240.6188,405.04,249.74" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="84" x="418" y="201.0669">Изменение</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="111" x="407" y="216.1997">конфигурации</text><!--MD5=[6d2bd8e473988edba585f6c55bf53307]
+link mgmt to svcBranch--><path d="M181.94,158.1 C203.02,177.76 231.65,202.33 260,220 C280.4,232.72 303.85,244.09 325.81,253.54 " fill="none" id="mgmt-&gt;svcBranch" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="330.47,255.53,323.7544,248.3258,325.8691,253.5725,320.6224,255.6872,330.47,255.53" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="136" x="261" y="208.5669">Чтение состояния</text><!--MD5=[03a5af181ac7ab3a42b0d2ae2e3d2808]
+link kc to kc_ext--><path d="M1181.2,158.03 C1216.07,186.25 1266.07,226.72 1299.49,253.77 " fill="none" id="kc-&gt;kc_ext" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="1303.48,257,1298.9979,248.2301,1299.5924,253.8557,1293.9669,254.4502,1303.48,257" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="128" x="1256" y="201.5669">Аутентификация</text><text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="39" x="1300.5" y="215.7715">[OIDC]</text><!--MD5=[08e3132f60e2408b14894e6a9e327fed]
+link svcVisit to redis--><path d="M623.95,317.08 C603.27,332.01 578.41,349.93 556,366 C543.85,374.71 530.81,384.03 518.42,392.86 " fill="none" id="svcVisit-&gt;redis" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="514.24,395.84,523.8912,393.8766,518.3125,392.9392,519.2499,387.3606,514.24,395.84" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="33" x="578" y="362.0669">Кэш</text><!--MD5=[68241ad200ff114935fbc18ca59d87af]
+link svcBranch to redis--><path d="M396.97,317.22 C395.13,332.51 395.07,350.68 401,366 C404.5,375.04 409.84,383.6 415.94,391.4 " fill="none" id="svcBranch-&gt;redis" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="419.41,395.65,416.8391,386.1426,416.257,391.7694,410.6302,391.1873,419.41,395.65" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="149" x="402" y="362.0669">Кэш конфигурации</text><!--MD5=[9ef9696c436384f0d5892d30377b7e5c]
+link svcVisit to queue--><path d="M669.22,317.09 C669.38,340.2 669.58,371.28 669.75,395.44 " fill="none" id="svcVisit-&gt;queue" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="669.78,400.49,673.7285,391.4673,669.7514,395.4901,665.7286,391.513,669.78,400.49" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="65" x="670" y="362.0669">События</text><!--MD5=[053d96d4ea30bbdd7e723e7374d34704]
+@startuml
+
+
+
+
+
+skinparam defaultTextAlignment center
+
+skinparam wrapWidth 200
+skinparam maxMessageSize 150
+
+skinparam rectangle {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam database {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam Arrow {
+    Color #666666
+    FontColor #666666
+    FontSize 12
+}
+
+skinparam rectangle<<boundary>> {
+    Shadowing false
+    StereotypeFontSize 0
+    FontColor #444444
+    BorderColor #444444
+    BorderStyle dashed
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+
+skinparam rectangle<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+
+skinparam rectangle<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+
+skinparam rectangle<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+
+skinparam database<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+
+skinparam database<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+
+skinparam database<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<component>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #000000
+    BackgroundColor #85BBF0
+    BorderColor #78A8D8
+}
+
+skinparam database<<component>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #000000
+    BackgroundColor #85BBF0
+    BorderColor #78A8D8
+}
+
+
+
+
+
+rectangle "==VisitManager API\n<size:12>[Container]</size>" <<boundary>> as api {
+  rectangle "==EntrypointController\n//<size:12>[REST]</size>//" <<component>> as entry
+  rectangle "==ServicePointController\n//<size:12>[REST]</size>//" <<component>> as sp
+  rectangle "==ConfigurationController\n//<size:12>[REST]</size>//" <<component>> as cfg
+  rectangle "==ManagementController\n//<size:12>[REST]</size>//" <<component>> as mgmt
+  rectangle "==KeyCloakController\n//<size:12>[REST]</size>//" <<component>> as kc
+  rectangle "==BranchService\n//<size:12>[BL]</size>//" <<component>> as svcBranch
+  rectangle "==VisitService\n//<size:12>[BL]</size>//" <<component>> as svcVisit
+}
+rectangle "==Keycloak" <<external_system>> as kc_ext
+database "==Redis\n//<size:12>[Кэш/сессии]</size>//" <<container>> as redis
+rectangle "==Kafka\n//<size:12>[Шина событий]</size>//" <<container>> as queue
+entry - -> svcVisit : "===Создание визитов"
+sp - -> svcVisit : "===Обслуживание визитов"
+cfg - -> svcBranch : "===Изменение конфигурации"
+mgmt - -> svcBranch : "===Чтение состояния"
+kc - -> kc_ext : "===Аутентификация\n//<size:12>[OIDC]</size>//"
+svcVisit - -> redis : "===Кэш"
+svcBranch - -> redis : "===Кэш конфигурации"
+svcVisit - -> queue : "===События"
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 UTC 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.2+13-58
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="349px" preserveAspectRatio="none" style="width:391px;height:349px;" version="1.1" viewBox="0 0 391 349" width="391px" zoomAndPan="magnify"><defs><filter height="300%" id="f3rl2oasfgm6c" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[0ba5ee7700168656dc1b457c6fe9fdac]
+entity Client--><ellipse cx="36.5" cy="255.5" fill="#FEFECE" filter="url(#f3rl2oasfgm6c)" rx="8" ry="8" style="stroke: #A80036; stroke-width: 1.5;"/><path d="M36.5,263.5 L36.5,290.5 M23.5,271.5 L49.5,271.5 M36.5,290.5 L23.5,305.5 M36.5,290.5 L49.5,305.5 " fill="none" filter="url(#f3rl2oasfgm6c)" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="39" x="17" y="323.9951">Client</text><!--MD5=[2571bb1592dc874a255a7701a0171bbf]
+entity Operator--><ellipse cx="36.5" cy="61.5" fill="#FEFECE" filter="url(#f3rl2oasfgm6c)" rx="8" ry="8" style="stroke: #A80036; stroke-width: 1.5;"/><path d="M36.5,69.5 L36.5,96.5 M23.5,77.5 L49.5,77.5 M36.5,96.5 L23.5,111.5 M36.5,96.5 L49.5,111.5 " fill="none" filter="url(#f3rl2oasfgm6c)" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="61" x="6" y="129.9951">Operator</text><ellipse cx="254.0454" cy="252.6091" fill="#FEFECE" filter="url(#f3rl2oasfgm6c)" rx="71.0454" ry="16.6091" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="109" x="199.5454" y="257.2575">Создать визит</text><ellipse cx="253.7894" cy="321.2579" fill="#FEFECE" filter="url(#f3rl2oasfgm6c)" rx="74.2894" ry="17.2579" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="117" x="195.2894" y="325.9063">Получить талон</text><ellipse cx="253.9465" cy="24.6893" fill="#FEFECE" filter="url(#f3rl2oasfgm6c)" rx="71.4465" ry="16.6893" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="110" x="198.9465" y="29.3377">Открыть точку</text><ellipse cx="254.0454" cy="92.6091" fill="#FEFECE" filter="url(#f3rl2oasfgm6c)" rx="71.0454" ry="16.6091" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="109" x="199.5454" y="97.2575">Вызвать визит</text><ellipse cx="253.8908" cy="172.2782" fill="#FEFECE" filter="url(#f3rl2oasfgm6c)" rx="126.8908" ry="27.7782" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="234" x="136.8908" y="176.9266">Подтвердить/Завершить визит</text><!--MD5=[cfcab42993e916ad068edabc4bc68301]
+link Client to Создать визит--><path d="M56.25,283.54 C85.63,278.91 143.88,269.72 189.4,262.53 " fill="none" id="Client-&gt;Создать визит" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="194.61,261.71,185.1008,259.1457,189.6698,262.481,186.3345,267.05,194.61,261.71" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[4046bfdbc2f3d40e138c8f384aa2d35b]
+link Client to Получить талон--><path d="M56.25,289.54 C85.14,294.24 141.93,303.46 187.1,310.8 " fill="none" id="Client-&gt;Получить талон" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="192.27,311.64,184.0272,306.2497,187.3346,310.8389,182.7454,314.1463,192.27,311.64" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[e1ac09bbecd437ba4f79566f83e04223]
+link Operator to Открыть точку--><path d="M67.07,80.42 C84.39,73.56 106.76,65.06 127,58.5 C150.45,50.9 176.71,43.62 199.18,37.76 " fill="none" id="Operator-&gt;Открыть точку" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="204.2,36.46,194.4837,34.8497,199.3604,37.7163,196.4938,42.593,204.2,36.46" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[ba48e5d3cbafc060c5814c76a7e5e979]
+link Operator to Вызвать визит--><path d="M67.01,92.5 C95.36,92.5 139.4,92.5 177.5,92.5 " fill="none" id="Operator-&gt;Вызвать визит" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="182.6,92.5,173.6,88.5,177.6,92.5,173.6,96.5,182.6,92.5" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[56206dd203585d629c1fc69d2b272a25]
+link Operator to Подтвердить/Завершить визит--><path d="M67.3,103.93 C84.69,110.57 107.06,119.07 127,126.5 C144.85,133.15 164.16,140.25 182.18,146.83 " fill="none" id="Operator-&gt;Подтвердить/Завершить визит" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="187.22,148.67,180.1355,141.8282,182.5227,146.9567,177.3942,149.3439,187.22,148.67" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[f5f51011f31802190df6b4b03b9648b0]
+@startuml
+left to right direction
+actor Client
+actor Operator
+Client - -> (Создать визит)
+Client - -> (Получить талон)
+Operator - -> (Открыть точку)
+Operator - -> (Вызвать визит)
+Operator - -> (Подтвердить/Завершить визит)
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 UTC 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.2+13-58
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>
