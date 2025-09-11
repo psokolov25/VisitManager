@@ -1,0 +1,10 @@
+@startuml
+left to right direction
+actor Client
+actor Operator
+Client --> (Создать визит)
+Client --> (Получить талон)
+Operator --> (Открыть точку)
+Operator --> (Вызвать визит)
+Operator --> (Подтвердить/Завершить визит)
+@enduml
