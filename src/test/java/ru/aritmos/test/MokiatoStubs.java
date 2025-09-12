@@ -8,6 +8,7 @@ import io.micronaut.cache.SyncCache;
 import io.micronaut.core.type.Argument;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpResponse;
 import jakarta.inject.Singleton;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.rules.client.CallRuleClient;
 
 @Factory
+@Requires(notEnv = "integration")
 public class MokiatoStubs {
 
     @Singleton
