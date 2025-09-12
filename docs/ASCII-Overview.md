@@ -67,5 +67,5 @@ UI ──POST /servicepoint/.../call──► ServicePointController
   curl -X PUT "http://localhost:8080/configuration/branches/<BRANCH_ID>/autocallModeOn"
   ```
 
-Подробные примеры: `docs/REST-Examples.md` и HTML‑шпаргалка `docs/site/index.html`.
+Подробные примеры: [REST-Examples.md](REST-Examples.md) и [HTML‑шпаргалка](site/index.html).
 
