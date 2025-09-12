@@ -1,5 +1,4 @@
 <configuration>
-    <variable file="loki.properties"/>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
@@ -15,31 +14,8 @@
     </appender>
 
 
-    <!--    <property  name="LOKI_URL" value="http://192.168.3.13:3100/loki/api/v1/push"/>-->
-
-    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
-        <http>
-
-            <!--            <url>${LOKI_URL}</url>-->
-            <url>http://192.168.8.45:3100/loki/api/v1/push</url>
-
-        </http>
-        <format>
-            <label>
-                <pattern>app=entry-point,host=${HOSTNAME}</pattern>
-            </label>
-            <message class="com.github.loki4j.logback.JsonLayout">
-                <loggerName>
-                    <fieldName>class</fieldName>
-                    <targetLength>20</targetLength>
-                </loggerName>
-            </message>
-            <sortByTime>true</sortByTime>
-        </format>
-    </appender>
     <logger name="io.micronaut.http" level="WARN"/>
     <root level="WARN">
         <appender-ref ref="STDOUT"/>
-        <!--        <appender-ref ref="LOKI"/>-->
     </root>
 </configuration>
