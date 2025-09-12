@@ -1,0 +1,39 @@
+@startuml
+!include style.puml
+actor Employee
+participant API as "ServicePointController"
+participant Visit as "VisitService"
+
+Employee -> API: POST /servicepoint/.../open
+API -> Visit: openServicePoint(...)
+
+loop Работа с визитами
+  Employee -> API: POST /servicepoint/.../confirmed/visits/call
+  API -> Visit: callNextVisit(...)
+  alt визит найден
+    API --> Employee: Visit
+    Employee -> API: POST /servicepoint/.../visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}
+    API -> Visit: visitConfirm(...)
+    alt требуется перевод
+      Employee -> API: PUT /servicepoint/.../queue/{queueId}/visit/transferFromServicePoint
+      API -> Visit: visitTransfer(...)
+      Employee -> API: PUT /servicepoint/.../poolServicePoint/{poolSpId}/visit/put_back
+      API -> Visit: visitBackToServicePointPool(...)
+    else повторный вызов
+      Employee -> API: POST /servicepoint/.../visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}
+      API -> Visit: visitReCallForConfirm(...)
+    end
+    Employee -> API: PUT /servicepoint/.../visits/servicePoints/{servicePointId}/visit/end
+    API -> Visit: visitEnd(...)
+  else очередь пуста
+    API --> Employee: 204 No Content
+  end
+end
+
+alt Перерыв
+  Employee -> API: POST /servicepoint/.../servicePoints/{servicePointId}/close?isBreak=true
+else Выход
+  Employee -> API: POST /servicepoint/.../servicePoints/{servicePointId}/logout
+end
+API -> Visit: closeServicePoint(...)
+@enduml
