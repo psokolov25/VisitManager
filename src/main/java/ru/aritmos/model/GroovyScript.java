@@ -18,13 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 public class GroovyScript {
-  /** Входные параметры для скрипта. */
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  Map<String, Object> inputParameters = new HashMap<>();
+    /** Входные параметры для скрипта. */
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    @Builder.Default
+    Map<String, Object> inputParameters = new HashMap<>();
 
-  /** Выходные параметры, формируемые скриптом. */
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  HashMap<Object, Object> outputParameters = new HashMap<>();
+    /** Выходные параметры, формируемые скриптом. */
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    @Builder.Default
+    HashMap<Object, Object> outputParameters = new HashMap<>();
 
   /** Исходный код скрипта. */
   String ruleCode;
