@@ -4,11 +4,11 @@
   <proxies>
     <proxy>
       <id>default</id>
-      <active>true</active>
+      <active>${env.MAVEN_PROXY_ACTIVE}</active>
       <protocol>http</protocol>
-      <host>proxy</host>
-      <port>8080</port>
-      <nonProxyHosts>localhost|127.0.0.1|::1</nonProxyHosts>
+      <host>${env.MAVEN_PROXY_HOST}</host>
+      <port>${env.MAVEN_PROXY_PORT}</port>
+      <nonProxyHosts>${env.MAVEN_NON_PROXY_HOSTS}</nonProxyHosts>
     </proxy>
   </proxies>
 </settings>

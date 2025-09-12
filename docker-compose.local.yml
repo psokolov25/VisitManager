@@ -15,11 +15,20 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+      args:
+        MAVEN_PROXY_ACTIVE: ${MAVEN_PROXY_ACTIVE:-false}
+        MAVEN_PROXY_HOST: ${MAVEN_PROXY_HOST:-}
+        MAVEN_PROXY_PORT: ${MAVEN_PROXY_PORT:-}
+        MAVEN_NON_PROXY_HOSTS: ${MAVEN_NON_PROXY_HOSTS:-localhost|127.0.0.1|::1}
     image: aritmos/visitmanager:0.8
     depends_on:
       visitmanager-redis:
         condition: service_healthy
     environment:
+      - MAVEN_PROXY_ACTIVE=${MAVEN_PROXY_ACTIVE:-false}
+      - MAVEN_PROXY_HOST=${MAVEN_PROXY_HOST:-}
+      - MAVEN_PROXY_PORT=${MAVEN_PROXY_PORT:-}
+      - MAVEN_NON_PROXY_HOSTS=${MAVEN_NON_PROXY_HOSTS:-localhost|127.0.0.1|::1}
       - REDIS_SERVER=redis://visitmanager-redis:6379/6
       - DATABUS_SERVER=http://databus:8080
       - CONFIG_SERVER=http://localhost:8081
