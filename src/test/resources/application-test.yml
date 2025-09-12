@@ -10,5 +10,7 @@ kafka:
 
 redis:
   enabled: false
+  health:
+    enabled: false
   caches: { }
 

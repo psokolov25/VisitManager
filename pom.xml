@@ -376,6 +376,7 @@
                             <scope>compile</scope>
                         </dependency>
                     </testResourcesDependencies>
+
                 </configuration>
             </plugin>
             <plugin>

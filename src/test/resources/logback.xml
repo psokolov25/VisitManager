@@ -1,5 +1,4 @@
 <configuration>
-    <variable file="loki.properties"/>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
@@ -37,9 +36,9 @@
             <sortByTime>true</sortByTime>
         </format>
     </appender>
+
     <logger name="io.micronaut.http" level="WARN"/>
     <root level="WARN">
         <appender-ref ref="STDOUT"/>
-        <!--        <appender-ref ref="LOKI"/>-->
     </root>
 </configuration>
