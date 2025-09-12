@@ -35,7 +35,7 @@
         <micronaut.aot.enabled>false</micronaut.aot.enabled>
         <micronaut.aot.packageName>ru.aritmos.aot.generated</micronaut.aot.packageName>
         <micronaut.runtime>netty</micronaut.runtime>
-        <micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>
+        <micronaut.test.resources.enabled>false</micronaut.test.resources.enabled>
         <exec.mainClass>ru.aritmos.Application</exec.mainClass>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -362,6 +362,9 @@
                     </aotDependencies>
                     <shared>true</shared>
                     <configFile>aot-${packaging}.properties</configFile>
+                    <testResources>
+                        <enabled>false</enabled>
+                    </testResources>
                     <testResourcesDependencies>
                         <dependency>
                             <groupId>io.micronaut.testresources</groupId>
