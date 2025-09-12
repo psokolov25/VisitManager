@@ -16,3 +16,12 @@ out/
 /entrypoint-0.2.jar
 /JavaDocs.zip
 docker
+# JVM crash logs
+hs_err_pid*.log
+
+# Temporary files
+__ec_tmp.java
+temp_dump.txt
+*.log
+*.tmp
+*.dump
