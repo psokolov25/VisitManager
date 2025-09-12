@@ -290,7 +290,12 @@
         <dependency>
             <groupId>io.micronaut.testresources</groupId>
             <artifactId>micronaut-test-resources-redis</artifactId>
-            <version>2.6.2</version>
+            <version>2.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut.testresources</groupId>
+            <artifactId>micronaut-test-resources-kafka</artifactId>
+            <version>2.10.1</version>
         </dependency>
 
     </dependencies>
@@ -390,6 +395,10 @@
                             <groupId>io.micronaut.redis</groupId>
                             <artifactId>micronaut-redis-lettuce</artifactId>
                             <scope>compile</scope>
+                        </dependency>
+                        <dependency>
+                            <groupId>io.micronaut.testresources</groupId>
+                            <artifactId>micronaut-test-resources-kafka</artifactId>
                         </dependency>
                     </testResourcesDependencies>
 
@@ -525,6 +534,66 @@
                             <doclint>all</doclint>
                             <failOnWarnings>true</failOnWarnings>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>it-external</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.5.3</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <micronaut.environments>integration</micronaut.environments>
+                                <micronaut.test.resources.enabled>false</micronaut.test.resources.enabled>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>it-resources</id>
+            <properties>
+                <micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.5.3</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <micronaut.environments>integration</micronaut.environments>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
