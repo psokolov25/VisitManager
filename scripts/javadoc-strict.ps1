@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 # Run strict Javadoc and save full log
 Write-Host "Running strict Javadoc..."
 # Строгий режим: падаем на предупреждениях Javadoc
-./mvnw -DskipTests -Ddoclint=all -Dmaven.javadoc.failOnWarnings=true javadoc:javadoc *>& javadoc_strict.log
+mvn -s .mvn/settings.xml -DskipTests -Ddoclint=all -Dmaven.javadoc.failOnWarnings=true javadoc:javadoc *>& javadoc_strict.log
 $exit = $LASTEXITCODE
 Write-Host "Javadoc exit code:" $exit
 

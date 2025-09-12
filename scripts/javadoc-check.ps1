@@ -7,8 +7,8 @@ param(
 
 Write-Host "Проверка Javadoc (doclint=$Mode)" -ForegroundColor Cyan
 
-$mvn = if (Test-Path "$PSScriptRoot/../mvnw.bat") { "$PSScriptRoot/../mvnw.bat" } elseif (Test-Path "$PSScriptRoot/../mvnw.cmd") { "$PSScriptRoot/../mvnw.cmd" } else { 'mvn' }
-$args = @('-B')
+$mvn = 'mvn'
+$args = @('-s', '.mvn/settings.xml', '-B')
 if ($SkipTests) { $args += '-DskipTests' } else { $args += '-DskipTests' }
 $args += "-Ddoclint=$Mode"
 $args += 'javadoc:javadoc'

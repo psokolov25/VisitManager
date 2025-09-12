@@ -5,8 +5,8 @@
 ## Как запускать строгую проверку
 
 - Строгий Javadoc (JUnit тесты выключены):
-  - PowerShell: `./mvnw -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc`
-  - С логом в файл: `./mvnw -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc *> javadoc_strict.log`
+  - PowerShell: `mvn -s .mvn/settings.xml -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc`
+  - С логом в файл: `mvn -s .mvn/settings.xml -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc *> javadoc_strict.log`
 - Быстрый просмотр предупреждений:
   - PowerShell: `Select-String -Path javadoc_strict.log -Pattern "warning:" | Select-Object -First 200 | % { $_.Line }`
 
@@ -71,7 +71,7 @@
 - Добавлять `@throws` только для действительно объявленных исключений.
 
 ## Контрольные команды
-- Строгий прогон: `./mvnw -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc`
+- Строгий прогон: `mvn -s .mvn/settings.xml -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc`
 - При большом объёме предупреждений писать лог: `*> javadoc_strict.log`, затем искать файлы:
   - `Select-String -Path javadoc_strict.log -Pattern "warning:" | % { $_.Line }`
 

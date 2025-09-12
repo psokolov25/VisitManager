@@ -41,6 +41,7 @@
 
 Диаграмма кейсов использования:
 
-![Use Cases](diagrams/use-cases.svg)
-Исходник: [diagrams/use-cases.puml](diagrams/use-cases.puml)
+![Диаграмма кейсов использования](diagrams/use-cases.svg)
+
+- [Исходник PlantUML](diagrams/use-cases.puml)
 

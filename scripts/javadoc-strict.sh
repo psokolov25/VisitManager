@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Run strict Javadoc and save full log
-./mvnw -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc > javadoc_strict.log 2>&1 || true
+mvn -s .mvn/settings.xml -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc > javadoc_strict.log 2>&1 || true
 
 # Print first 200 warnings
 if [[ -f javadoc_strict.log ]]; then
@@ -15,5 +15,5 @@ if [[ -f javadoc_strict.log ]]; then
 fi
 
 # Propagate javadoc exit code by re-running quietly
-./mvnw -q -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc >/dev/null 2>&1
+mvn -q -s .mvn/settings.xml -DskipTests -Ddoclint=all -DfailOnWarnings=true javadoc:javadoc >/dev/null 2>&1
 exit $?
