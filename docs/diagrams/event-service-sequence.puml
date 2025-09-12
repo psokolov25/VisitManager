@@ -1,0 +1,11 @@
+@startuml
+title EventService: отправка события
+actor Service
+participant EventService
+participant DataBusClient
+
+Service -> EventService : send(event)
+EventService -> DataBusClient : send(...)
+DataBusClient --> EventService : ack
+EventService --> Service : return
+@enduml

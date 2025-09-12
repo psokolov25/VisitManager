@@ -16,7 +16,25 @@ import ru.aritmos.events.clients.DataBusClient;
 import ru.aritmos.events.model.ChangedObject;
 import ru.aritmos.events.model.Event;
 
-/** Класс, отвечающий за отправку событий в шину данных */
+/**
+ * Сервис отправки событий в шину данных.
+ *
+ * <p>Пример использования:</p>
+ * <pre>{@code
+ * Event event = Event.builder()
+ *     .eventType("PING")
+ *     .eventDate(ZonedDateTime.now())
+ *     .build();
+ * eventService.send("frontend", false, event);
+ * }</pre>
+ *
+ * <p>Диаграмма последовательности отправки события:</p>
+ * <pre>
+ * client -> EventService -> DataBusClient -> DataBus
+ * </pre>
+ *
+ * @see <a href="../../../../../../../docs/diagrams/event-service-sequence.svg">Диаграмма последовательности</a>
+ */
 @Slf4j
 @Singleton
 public class EventService {
@@ -41,9 +59,9 @@ public class EventService {
   }
 
   /**
-   * Отправка события на шину данных
+   * Отправка события на шину данных.
    *
-   * @param destinationServices служба адресат
+   * @param destinationServices служба-адресат
    * @param sendToOtherBus флаг переправки события в соседние шины данных
    * @param event тело события
    */
@@ -62,9 +80,9 @@ public class EventService {
   }
 
   /**
-   * Отправка события на шину данных
+   * Отправка события на шину данных.
    *
-   * @param destinationServices список служб адресатов
+   * @param destinationServices список служб-адресатов
    * @param sendToOtherBus флаг переправки события в соседние шины данных
    * @param event тело события
    */
@@ -74,9 +92,9 @@ public class EventService {
   }
 
   /**
-   * Отправка события изменения сущности
+   * Отправка события изменения сущности.
    *
-   * @param destinationServices служба адресат
+   * @param destinationServices служба-адресат
    * @param sendToOtherBus флаг переправки события в соседние шины данных
    * @param oldValue старое значение
    * @param newValue новое значение
@@ -110,9 +128,9 @@ public class EventService {
   }
 
   /**
-   * Отправка события изменения сущности
+   * Отправка события изменения сущности.
    *
-   * @param destinationServices список служб адресатов
+   * @param destinationServices список служб-адресатов
    * @param sendToOtherBus флаг переправки события в соседние шины данных
    * @param oldValue старое значение
    * @param newValue новое значение

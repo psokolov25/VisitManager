@@ -30,7 +30,23 @@ import ru.aritmos.model.visit.VisitEventInformation;
 import ru.aritmos.service.rules.CallRule;
 import ru.aritmos.service.rules.SegmentationRule;
 
-/** Сервис операций с визитами: создание, перевод, события и печать талонов. */
+/**
+ * Сервис операций с визитами: создание, перевод, события и печать талонов.
+ *
+ * <p>Пример использования:</p>
+ * <pre>{@code
+ * VisitParameters params = new VisitParameters();
+ * params.setServiceIds(List.of("service1"));
+ * Visit visit = visitService.createVisit("branch1", "entry1", params, true);
+ * }</pre>
+ *
+ * <p>Диаграмма взаимодействия:</p>
+ * <pre>
+ * request -> VisitService -> {BranchService, EventService, PrinterService}
+ * </pre>
+ *
+ * @see <a href="../../../../../../docs/diagrams/visit-service-overview.svg">Диаграмма взаимодействия</a>
+ */
 @Slf4j
 @Singleton
 @SuppressWarnings("unused")
@@ -73,7 +89,7 @@ public class VisitService {
   }
 
   /**
-   * Возвращает визит по его отделению и идентификатору
+   * Возвращает визит по идентификатору отделения и визита.
    *
    * @param branchId идентификатор отделения
    * @param visitId идентификатор визита
@@ -88,10 +104,10 @@ public class VisitService {
   }
 
   /**
-   * Возвращает доступныее сервис поинты отделения
+   * Возвращает доступные сервис-пойнты отделения.
    *
    * @param branchId идентификатор отделения
-   * @return перечень сервис поинтом, с ключом - идентификатором сервис поинта
+   * @return перечень сервис-пойнтов, где ключ — идентификатор сервис-пойнта
    */
   public @NotNull HashMap<String, ServicePoint> getStringServicePointHashMap(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
@@ -103,10 +119,10 @@ public class VisitService {
   }
 
   /**
-   * Возвращает сервис поинты отделения
+   * Возвращает все сервис-пойнты отделения.
    *
    * @param branchId идентификатор отделения
-   * @return перечень сервис поинтом, с ключом - идентификатором сервис поинта
+   * @return перечень сервис-пойнтов, где ключ — идентификатор сервис-пойнта
    */
   public @NotNull HashMap<String, ServicePoint> getServicePointHashMap(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
@@ -116,7 +132,7 @@ public class VisitService {
   }
 
   /**
-   * Возвращает рабочие профили
+   * Возвращает рабочие профили отделения.
    *
    * @param branchId идентификатор отделения
    * @return перечень рабочих профилей
@@ -130,10 +146,10 @@ public class VisitService {
   }
 
   /**
-   * Возвращает рабочие профили
+   * Возвращает пользователей отделения.
    *
    * @param branchId идентификатор отделения
-   * @return перечень рабочих профилей
+   * @return перечень пользователей
    */
   public @NotNull List<User> getUsers(String branchId) {
     Branch currentBranch = branchService.getBranch(branchId);
@@ -142,8 +158,8 @@ public class VisitService {
   }
 
   /**
-   * Возвращает визиты содержащиеся в очереди визиты сортируются по времени ожидания, от большего к
-   * мееньшкму
+   * Возвращает визиты, содержащиеся в указанной очереди.
+   * Визиты сортируются по времени ожидания, от большего к меньшему.
    *
    * @param branchId идентификатор отделения
    * @param queueId идентификатор очереди
@@ -175,10 +191,9 @@ public class VisitService {
   }
 
   /**
-   * Получение списка визитов в указанной очереди указанного отделения с ограничением выдачи
-   * элементов Максимальное количество визитов указывается в параметре limit, если количество
-   * визитов меньше - выводятся все визиты визиты сортируются по времени ожидания, от большего к
-   * мееньшкму
+   * Возвращает ограниченный список визитов указанной очереди.
+   * Если визитов меньше значения {@code limit}, возвращаются все.
+   * Визиты сортируются по времени ожидания, от большего к меньшему.
    *
    * @param branchId идентификатор отделения
    * @param queueId идентификатор очереди

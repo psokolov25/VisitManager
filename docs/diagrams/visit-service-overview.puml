@@ -1,0 +1,9 @@
+@startuml
+title VisitService: взаимодействие с зависимостями
+class VisitService
+class BranchService
+class EventService
+
+VisitService --> BranchService
+VisitService --> EventService
+@enduml

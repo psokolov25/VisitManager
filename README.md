@@ -39,14 +39,14 @@ VisitManager предоставляет REST‑интерфейсы для со�
 
 ### Требования
 - JDK 17
-- Maven 3 (используется maven-wrapper)
-- Подключение к Maven Central
+- Maven 3 (локально установленный `mvn`, поддерживающий память настроек и прокси)
+- Подключение к Maven Central или зеркалу
 - Docker 20+ и Docker Compose для локального стенда
 
 ### Сборка и запуск
 ```bash
 # полная сборка
-JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' ./mvnw clean verify
+JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml clean verify
 # запуск приложения
 java -jar target/visitmanager.jar
 # запуск в Docker
@@ -57,15 +57,16 @@ docker compose -f docker-compose.local.yml up -d --build
 Профиль предназначен для локальной разработки без Docker и внешних сервисов.
 ```bash
 # сборка без интеграционных тестов
-JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' ./mvnw -Plocal-no-docker clean verify
+JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml -Plocal-no-docker clean verify
 # запуск в dev-режиме
 MICRONAUT_ENVIRONMENTS=local-no-docker \
-JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' ./mvnw mn:run
+JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml mn:run
 ```
 Профиль отключает Micronaut Test Resources, генерацию OpenAPI, тяжёлые интеграционные тесты и заменяет интеграции заглушками.
 
 ### Работа за прокси
-Если прямой доступ к Maven недоступен, добавьте в `~/.m2/settings.xml`:
+Проект уже содержит файл `.mvn/settings.xml` с настроениями прокси, поэтому достаточно запускать Maven с опцией `-s .mvn/settings.xml`.
+Если нужно переопределить настройки, добавьте в `~/.m2/settings.xml`:
 ```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -135,7 +136,7 @@ scripts/           примеры сценариев
 ### 🛠️ DevOps
 - Используйте `docker-compose.yml` для запуска зависимостей (Redis, Kafka, Keycloak).
 - Параметры среды задаются через переменные окружения и `.env.*` файлы.
-- Для CI выполняйте `./mvnw clean verify` и публикуйте артефакт `visitmanager.jar`.
+- Для CI выполняйте `mvn -s .mvn/settings.xml clean verify` и публикуйте артефакт `visitmanager.jar`.
 - Логи пишутся через Logback; для централизованного сбора можно использовать Loki (`loki.properties`).
 - Мониторинг метрик и здоровья сервисов ведите через Prometheus/Grafana.
 
@@ -152,7 +153,7 @@ scripts/           примеры сценариев
 - Документируйте новые сценарии и отчёты в `docs/use-cases.md`.
 
 ### 🧪 Тестировщик
-- Локальные тесты: `JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' ./mvnw -Plocal-no-docker test`.
+- Локальные тесты: `JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml -Plocal-no-docker test`.
 - Для ручной проверки используйте примеры curl из раздела [REST API](#-rest-api).
 - Интеграционные тесты запускаются без профиля `local-no-docker` и требуют Docker.
 - При сложных сценариях применяйте Testcontainers или мок‑сервисы.
@@ -266,33 +267,20 @@ try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
 
 ## 📊 Диаграммы
 
-### Кейсы использования
-![Use Cases](docs/diagrams/use-cases.svg)
-Исходник: [docs/diagrams/use-cases.puml](docs/diagrams/use-cases.puml)
+Диаграммы доступны в формате SVG (исходники — в `docs/diagrams/*.puml`):
 
-
-### Архитектура
-![Architecture](docs/diagrams/architecture.svg)
-Исходник: [docs/diagrams/architecture.puml](docs/diagrams/architecture.puml)
-
-
-### Последовательность: создание визита
-![Create Visit](docs/diagrams/sequence-create-visit.svg)
-Исходник: [docs/diagrams/sequence-create-visit.puml](docs/diagrams/sequence-create-visit.puml)
-
-
-### Последовательность: завершение визита
-![End Visit](docs/diagrams/sequence-update-visit.svg)
-Исходник: [docs/diagrams/sequence-update-visit.puml](docs/diagrams/sequence-update-visit.puml)
-
+![Кейсы использования](docs/diagrams/use-cases.svg)
+![Архитектура](docs/diagrams/architecture.svg)
+![Последовательность: создание визита](docs/diagrams/sequence-create-visit.svg)
+![Последовательность: завершение визита](docs/diagrams/sequence-update-visit.svg)
 
 Дополнительные диаграммы и анализ сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
 ```bash
-JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' ./mvnw -Plocal-no-docker test
+JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml -Plocal-no-docker test
 ```
-Профиль `local-no-docker` отключает интеграционные тесты, поэтому набор тестов ограничивается модульными тестами. Для полного прогона используйте `./mvnw test` с поднятыми зависимостями в Docker.
+Профиль `local-no-docker` отключает интеграционные тесты, поэтому набор тестов ограничивается модульными тестами. Для полного прогона используйте `mvn -s .mvn/settings.xml test` с поднятыми зависимостями в Docker.
 
 ## 🌐 Переменные окружения
 - `KEYCLOAK_URL`, `KEYCLOAK_REALM`, `KEYCLOAK_CLIENT_ID`

@@ -9,14 +9,8 @@ if (-not (Get-Command java -ErrorAction SilentlyContinue)) {
   Write-Warning "Java не найдена в PATH. Убедитесь, что установлен JDK 17 и задан JAVA_HOME. Пример: setx JAVA_HOME 'C:\\Program Files\\Java\\jdk-17'"
 }
 
-$mvnCmd = if (Test-Path "$PSScriptRoot/../mvnw.cmd") {
-  "$PSScriptRoot/../mvnw.cmd"
-} elseif (Test-Path "$PSScriptRoot/../mvnw.bat") {
-  "$PSScriptRoot/../mvnw.bat"
-} else {
-  "mvn"
-}
-$args = @()
+$mvnCmd = 'mvn'
+$args = @('-s', '.mvn/settings.xml')
 if ($SkipTests) { $args += '-DskipTests' }
 $args += 'javadoc:javadoc'
 

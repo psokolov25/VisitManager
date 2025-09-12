@@ -8,11 +8,11 @@
 - Результат сборки: `target/visitmanager.jar`.
 
 ## Сборка, тесты и запуск
-- Сборка с тестами: `./mvnw clean verify` (Windows: `mvnw.cmd`).
-- Сборка без тестов: `./mvnw -DskipTests package`.
+- Сборка с тестами: `mvn -s .mvn/settings.xml clean verify`.
+- Сборка без тестов: `mvn -s .mvn/settings.xml -DskipTests package`.
 - Запуск JAR: `java -jar target/visitmanager.jar`.
-- Запуск в dev (если подключен плагин): `./mvnw mn:run`.
-- Тесты: `./mvnw test`.
+- Запуск в dev (если подключен плагин): `mvn -s .mvn/settings.xml mn:run`.
+- Тесты: `mvn -s .mvn/settings.xml test`.
 - Локально в Docker: `docker compose -f docker-compose.local.yml up -d --build`; остановка — `docker compose -f docker-compose.local.yml down`.
 
 ## Стиль кодирования и соглашения
@@ -21,12 +21,13 @@
 - Используйте Lombok для шаблонного кода (`@Getter`, `@Setter`, `@Builder`).
 - Аннотации Micronaut/JSR (`@Singleton`, `@NonNull`, `@Nullable`).
 - Логирование через SLF4J/Logback; не используйте `System.out`.
+- Не добавляйте бинарные артефакты (изображения JPG/PNG, архивы и т.п.); диаграммы храните в текстовом формате (PlantUML, ASCII).
 
 ## Тестирование
 - Фреймворки: JUnit 5 + Micronaut Test + Mockito.
 - Именование: `*Test` (например, `VisitServiceTest`), структура пакетов как в `main`.
 - Юнит‑тесты быстрые; Redis/Kafka — мокать где возможно.
-- Запуск: `./mvnw test`. Порог покрытия не закреплён; целимся в ≥80% для изменённого кода.
+- Запуск: `mvn -s .mvn/settings.xml test`. Порог покрытия не закреплён; целимся в ≥80% для изменённого кода.
 
 ## Коммиты и Pull Request’ы
 - Предпочтительно Conventional Commits: `feat(scope): …`, `fix: …`, `refactor: …`, `docs: …`, `chore: …`. Допустимы RU/EN; кратко и в настоящем времени.
