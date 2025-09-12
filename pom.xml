@@ -40,6 +40,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <skip.openapi.generation>false</skip.openapi.generation>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mockito.version>5.14.2</mockito.version>
     </properties>
 
     <repositories>
@@ -238,6 +240,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -322,6 +325,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.3</version>
                 <configuration combine.self="override">
+                    <argLine>-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
+                    <systemProperties/>
                     <systemPropertyVariables>
                         <junit.platform.listeners.uid.tracking.enabled>true</junit.platform.listeners.uid.tracking.enabled>
                         <junit.platform.listeners.uid.tracking.output.dir>${project.build.directory}/test-ids</junit.platform.listeners.uid.tracking.output.dir>
@@ -524,6 +529,8 @@
                                     <goal>test</goal>
                                 </goals>
                                 <configuration combine.self="override">
+                                    <argLine>-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
+                                    <systemProperties/>
                                     <systemPropertyVariables>
                                         <junit.platform.listeners.uid.tracking.enabled>true</junit.platform.listeners.uid.tracking.enabled>
                                         <junit.platform.listeners.uid.tracking.output.dir>${project.build.directory}/test-ids</junit.platform.listeners.uid.tracking.output.dir>
