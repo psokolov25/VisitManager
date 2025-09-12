@@ -2,8 +2,15 @@ micronaut:
   test:
     resources:
       enabled: false
+  server:
+    port: -1
+
+kafka:
+  enabled: false
 
 redis:
   enabled: false
+  health:
+    enabled: false
   caches: { }
 
