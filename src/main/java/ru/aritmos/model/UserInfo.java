@@ -16,9 +16,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @SuppressWarnings("unused")
 public class UserInfo {
+  /** Уникальный идентификатор пользователя (sub). */
   String sub;
+
+  /** Роли и группы пользователя в Keycloak. */
   RealmAccess realm_access;
+
+  /** Полное имя пользователя. */
   String name;
+
+  /** Электронная почта пользователя. */
   String email;
+
+  /** Дополнительное описание пользователя. */
   String description;
 }

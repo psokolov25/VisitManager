@@ -18,5 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RealmAccess {
+  /** Список ролей пользователя в текущем realm. */
   List<String> roles;
 }

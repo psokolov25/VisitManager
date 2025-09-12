@@ -15,11 +15,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Token {
+  /** Токен доступа. */
   String access_token;
-  Long expires_at; // время жизни токена в секундах
-  Long refresh_expires_in; // в секундах
+  /** Время жизни access‑token в секундах. */
+  Long expires_at;
+  /** Время жизни refresh‑token в секундах. */
+  Long refresh_expires_in;
+  /** Refresh‑token. */
   String refresh_token;
-  String session_state; // идентификатор сессии по которому можно проводить синхронизации
+  /** Идентификатор сессии для синхронизации. */
+  String session_state;
+  /** Признак активности токена. */
   Boolean enabled;
+  /** ID‑token. */
   String id_token;
 }

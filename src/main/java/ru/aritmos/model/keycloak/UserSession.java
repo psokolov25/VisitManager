@@ -17,9 +17,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserSession {
+  /** Логин пользователя. */
   String login;
+
+  /** Время создания сессии (epoch millis). */
   Long create_session;
+
+  /** Время последнего обновления сессии (epoch millis). */
   Long last_update;
+
+  /** Привязанные к сессии данные пользователя и токенов. */
   UserToken userToken;
+
+  /** Идентификатор сессии (sid). */
   String sid;
 }

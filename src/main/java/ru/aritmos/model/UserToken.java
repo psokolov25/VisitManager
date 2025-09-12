@@ -16,6 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @SuppressWarnings("unused")
 public class UserToken {
+  /** Информация о пользователе. */
   UserInfo user;
+
+  /** Сведения о выданных токенах. */
   Token tokenInfo;
 }

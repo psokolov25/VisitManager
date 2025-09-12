@@ -17,9 +17,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserInfo {
+  /** Уникальный идентификатор пользователя (sub). */
   String sub;
+  /** Роли пользователя в реалме. */
   RealmAccess realm_access;
+  /** Полное имя пользователя. */
   String name;
+  /** Электронная почта пользователя. */
   String email;
+  /** Дополнительное описание пользователя. */
   String description;
 }

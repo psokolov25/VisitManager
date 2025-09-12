@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserToken {
+  /** Информация о пользователе. */
   UserInfo user;
+  /** Сведения о выданных токенах. */
   Token tokenInfo;
 }
