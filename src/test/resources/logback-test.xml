@@ -1,5 +1,4 @@
 <configuration>
-    <variable file="loki.properties"/>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
@@ -7,8 +6,8 @@
             <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="io.micronaut.http" level="TRACE"/>
-    <root level="info">
+    <logger name="io.micronaut.http" level="WARN"/>
+    <root level="WARN">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
