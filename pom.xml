@@ -362,6 +362,21 @@
                     </aotDependencies>
                     <shared>true</shared>
                     <configFile>aot-${packaging}.properties</configFile>
+                    <testResources>
+                        <enabled>false</enabled>
+                    </testResources>
+                    <testResourcesDependencies>
+                        <dependency>
+                            <groupId>io.micronaut.testresources</groupId>
+                            <artifactId>micronaut-test-resources-redis</artifactId>
+                        </dependency>
+                        <dependency>
+                            <groupId>io.micronaut.redis</groupId>
+                            <artifactId>micronaut-redis-lettuce</artifactId>
+                            <scope>compile</scope>
+                        </dependency>
+                    </testResourcesDependencies>
+
                 </configuration>
             </plugin>
             <plugin>
