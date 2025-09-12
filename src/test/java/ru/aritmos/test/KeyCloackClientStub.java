@@ -37,5 +37,21 @@ public class KeyCloackClientStub extends KeyCloackClient {
   public Boolean isUserModuleTypeByUserName(String userName, String type) {
     return true; // дать права администратора в тестах
   }
+
+  @Override
+  public void userLogout(String login, Boolean isForced, String reason) {
+    // отключить реальные сетевые вызовы при выходе пользователя
+  }
+
+  @Override
+  public Optional<UserRepresentation> getUserBySid(String sid) {
+    UserRepresentation u = new UserRepresentation();
+    u.setId(UUID.randomUUID().toString());
+    u.setUsername("test-user");
+    u.setFirstName("Test");
+    u.setLastName("User");
+    u.setEmail("test-user@example.local");
+    return Optional.of(u);
+  }
 }
 
