@@ -21,6 +21,7 @@ public class UserSession {
   Long create_session;
   Long last_update;
   UserToken userToken;
-  String sid;
-  HashMap<String, String> params = new HashMap<>();
+    String sid;
+    @Builder.Default
+    HashMap<String, String> params = new HashMap<>();
 }
