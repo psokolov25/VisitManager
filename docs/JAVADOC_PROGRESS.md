@@ -21,7 +21,7 @@
 
 Как продолжить:
 
-1) Запустить строгую проверку: ./scripts/javadoc-strict.ps1 (или ./scripts/javadoc-strict.sh)
+1) Запустить строгую проверку: `mvn -s .mvn/settings.xml -Pjavadoc-strict javadoc:javadoc` или скриптом `./scripts/javadoc-strict.sh`
 2) Открыть javadoc_strict.log и пройтись по ТОП-файлам (есть краткая сводка в консоли и в scripts/javadoc-summary.*)
 3) Пополнять этот файл ([JAVADOC_PROGRESS.md](JAVADOC_PROGRESS.md)) списком «Сделано/Осталось», чтобы не потерять контекст.
 

@@ -54,16 +54,18 @@ java -jar target/visitmanager.jar
 docker compose -f docker-compose.local.yml up -d --build
 ```
 
-### Профиль `local-no-docker`
-Профиль предназначен для локальной разработки без Docker и внешних сервисов.
+### Micronaut профиль `local-no-docker`
+Используется для локальной разработки без Docker и внешних сервисов. Подменяет интеграции заглушками.
 ```bash
-# сборка без интеграционных тестов
-JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml -Plocal-no-docker clean verify
-# запуск в dev-режиме
 MICRONAUT_ENVIRONMENTS=local-no-docker \
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml mn:run
 ```
-Профиль отключает Micronaut Test Resources, генерацию OpenAPI, тяжёлые интеграционные тесты и заменяет интеграции заглушками.
+
+### Профиль `javadoc-strict`
+Профиль для строгой генерации Javadoc: включает полный doclint и завершает сборку при предупреждениях.
+```bash
+mvn -s .mvn/settings.xml -Pjavadoc-strict javadoc:javadoc
+```
 
 ### Работа за прокси
 Проект уже содержит файл `.mvn/settings.xml` с настроениями прокси, поэтому достаточно запускать Maven с опцией `-s .mvn/settings.xml`.
@@ -154,9 +156,8 @@ scripts/           примеры сценариев
 - Документируйте новые сценарии и отчёты в [docs/use-cases.md](docs/use-cases.md).
 
 ### 🧪 Тестировщик
-- Локальные тесты: `JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml -Plocal-no-docker test`.
+- Тесты: `JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test`.
 - Для ручной проверки используйте примеры curl из раздела [REST API](#-rest-api).
-- Интеграционные тесты запускаются без профиля `local-no-docker` и требуют Docker.
 - При сложных сценариях применяйте Testcontainers или мок‑сервисы.
 
 ### 💻 Front End разработчик
@@ -330,9 +331,9 @@ try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
 
 ## 🧪 Тестирование
 ```bash
-JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml -Plocal-no-docker test
+JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
-Профиль `local-no-docker` отключает интеграционные тесты, поэтому набор тестов ограничивается модульными тестами. Для полного прогона используйте `mvn -s .mvn/settings.xml test` с поднятыми зависимостями в Docker.
+Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
 
 ## 🌐 Переменные окружения
 - `KEYCLOAK_URL`, `KEYCLOAK_REALM`, `KEYCLOAK_CLIENT_ID`
