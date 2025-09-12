@@ -362,9 +362,7 @@
                     </aotDependencies>
                     <shared>true</shared>
                     <configFile>aot-${packaging}.properties</configFile>
-                    <testResources>
-                        <enabled>false</enabled>
-                    </testResources>
+
                     <testResourcesDependencies>
                         <dependency>
                             <groupId>io.micronaut.testresources</groupId>
