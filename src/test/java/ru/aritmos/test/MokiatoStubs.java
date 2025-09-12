@@ -83,6 +83,7 @@ public class MokiatoStubs {
 
     @Singleton
     @Replaces(bean = io.micronaut.cache.DefaultCacheManager.class)
+    @SuppressWarnings("unchecked")
     CacheManager<Object> cacheManager() {
         CacheManager<Object> manager = mock(CacheManager.class);
         SyncCache<Object> cache = mock(SyncCache.class);

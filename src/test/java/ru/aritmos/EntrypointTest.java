@@ -1480,8 +1480,11 @@ class EntrypointTest {
     script.run();
     // Получение значений всех переменных скрипта
     var result = binding.getVariables();
-    // Получение оптимального визита из двух, согласно алгоритму описанному в groovya crhbgnt
-    Optional<Visit> optimalVisit = (Optional<Visit>) result.get("result");
+    Object resultObj = result.get("result");
+    Assertions.assertNotNull(resultObj);
+    Assertions.assertTrue(resultObj instanceof Optional<?>);
+    Optional<?> resultOptional = (Optional<?>) resultObj;
+    Optional<Visit> optimalVisit = resultOptional.map(Visit.class::cast);
 
     Assertions.assertTrue(optimalVisit.isPresent());
     Assertions.assertEquals(optimalVisit.get().getQueueId(), "123");
