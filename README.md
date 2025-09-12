@@ -28,6 +28,7 @@
 - [📡 REST API](#-rest-api)
 - [📦 Примеры кода](#-примеры-кода)
 - [📊 Диаграммы](#-диаграммы)
+- [🧑‍💼 Сценарии работы сотрудника](#-сценарии-работы-сотрудника)
 - [🤖 Документация для автотестеров](#-документация-для-автотестеров)
 - [🧪 Тестирование](#-тестирование)
 - [🌐 Переменные окружения](#-переменные-окружения)
@@ -284,6 +285,34 @@ try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
 ![Последовательность: завершение визита](docs/diagrams/sequence-update-visit.svg)
 
 Дополнительные диаграммы и анализ сценариев см. в [docs/use-cases.md](docs/use-cases.md).
+
+## 🧑‍💼 Сценарии работы сотрудника
+
+![Рабочий процесс сотрудника](docs/diagrams/employee-workflow.svg)
+
+### 1. Открытие рабочего места
+1. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — сотрудник занимает точку обслуживания.
+
+### 2. Вызов визита
+1. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — запрос следующего визита (`200 OK` + визит или `204 No Content`).
+
+### 3. Начало обслуживания визита
+1. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — подтверждение прихода клиента.
+
+### 4. Перевод и возвращение визита
+1. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` — перевод в другую очередь.
+2. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer` — перевод в пул ТО.
+3. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/put_back` — возврат из пула.
+
+### 5. Повторный вызов визита
+1. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}` — повторное приглашение клиента.
+
+### 6. Завершение визита
+1. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end?isForced=false` — фиксация завершения обслуживания.
+
+### 7. Закрытие рабочего места
+- Перерыв: `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close?isBreak=true&breakReason=...`
+- Выход из системы: `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/logout`
 
 ## 🤖 Документация для автотестеров
 
