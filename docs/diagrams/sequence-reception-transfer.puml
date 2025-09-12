@@ -1,0 +1,12 @@
+@startuml
+!include style.puml
+actor Reception
+participant API as "ServicePointController"
+participant Visit as "VisitService"
+queue Kafka
+
+Reception -> API: PUT /servicepoint/.../queue/{queueId}/visit/transferFromQueue/{visitId}
+API -> Visit: visitTransfer(...)
+Visit -> Kafka: VISIT_TRANSFERRED
+API --> Reception: 200 OK
+@enduml
