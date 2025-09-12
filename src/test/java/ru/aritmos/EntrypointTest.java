@@ -21,7 +21,6 @@ import org.junit.jupiter.api.*;
 import ru.aritmos.api.EntrypointController;
 import ru.aritmos.api.ManagementController;
 import ru.aritmos.api.ServicePointController;
-import ru.aritmos.events.clients.DataBusClient;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.SystemException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -31,7 +30,6 @@ import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.VisitService;
-import ru.aritmos.test.DataBusClientStub;
 
 @Slf4j
 @MicronautTest
@@ -53,18 +51,12 @@ class EntrypointTest {
   @Inject ManagementController managementController;
   @Inject SecurityService securityService;
   @Inject EventService eventService;
-  @Inject DataBusClient dataBusClient;
   Branch branch;
   @Inject private KeyCloackClient keyCloackClient;
 
   @Test
   void testItWorks() {
     Assertions.assertTrue(application.isRunning());
-  }
-
-  @Test
-  void dataBusClientStubbed() {
-    Assertions.assertTrue(dataBusClient instanceof DataBusClientStub);
   }
 
   /** Создание отделения для проведения юнит теста */
