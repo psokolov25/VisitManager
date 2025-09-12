@@ -11,6 +11,7 @@ import io.micronaut.context.annotation.Replaces;
 import io.micronaut.http.HttpResponse;
 import jakarta.inject.Singleton;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Mono;
 import ru.aritmos.clients.ConfigurationClient;
 import ru.aritmos.clients.PrinterClient;
 import ru.aritmos.keycloack.service.KeyCloackClient;
+import ru.aritmos.events.clients.DataBusClient;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
@@ -78,6 +80,19 @@ public class MokiatoStubs {
     PrinterClient printerClient() {
         PrinterClient mock = mock(PrinterClient.class);
         when(mock.print(anyString(), anyBoolean(), any(Visit.class))).thenReturn(Mono.just(HttpResponse.ok()));
+        return mock;
+    }
+
+    @Singleton
+    @Replaces(DataBusClient.class)
+    DataBusClient dataBusClient() {
+        DataBusClient mock = mock(DataBusClient.class);
+        when(mock.send(anyString(), anyBoolean(), anyString(), anyString(), anyString(), any()))
+                .thenAnswer(
+                        invocation -> {
+                            String type = invocation.getArgument(4, String.class);
+                            return Mono.just(Map.of("status", "stubbed", "type", type));
+                        });
         return mock;
     }
 
