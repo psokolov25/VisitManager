@@ -1,0 +1,13 @@
+@startuml
+!include style.puml
+actor Operator
+participant API as "ServicePointController"
+participant Visit as "VisitService"
+queue Kafka
+
+Operator -> API: POST /servicepoint/.../call
+API -> Visit: callNextVisit(...)
+Visit -> Kafka: VISIT_CALLED
+Visit --> API: Visit{id}
+API --> Operator: 200 + Visit
+@enduml

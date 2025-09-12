@@ -1,0 +1,19 @@
+@startuml
+!include style.puml
+actor Operator
+participant Config as "ConfigurationController"
+participant Scheduler
+participant API as "ServicePointController"
+participant Visit as "VisitService"
+queue Kafka
+
+Operator -> Config: PUT /configuration/branches/{branchId}/autocallModeOn
+Config --> Operator: 200 OK
+
+== Автовызов ==
+Scheduler -> API: POST /servicepoint/.../call
+API -> Visit: callNextVisit(...)
+Visit -> Kafka: VISIT_CALLED
+Visit --> API: Visit{id}
+API --> Scheduler: 200 + Visit
+@enduml
