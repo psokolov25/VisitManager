@@ -39,7 +39,6 @@
         <exec.mainClass>ru.aritmos.Application</exec.mainClass>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <skip.openapi.generation>false</skip.openapi.generation>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mockito.version>5.14.2</mockito.version>
     </properties>
@@ -464,17 +463,6 @@
                             </exclusions>
                         </path>
                         <path>
-                            <groupId>io.micronaut.security</groupId>
-                            <artifactId>micronaut-security-annotations</artifactId>
-                            <version>${micronaut.security.version}</version>
-                            <exclusions>
-                                <exclusion>
-                                    <groupId>io.micronaut</groupId>
-                                    <artifactId>micronaut-inject</artifactId>
-                                </exclusion>
-                            </exclusions>
-                        </path>
-                        <path>
                             <groupId>io.micronaut.serde</groupId>
                             <artifactId>micronaut-serde-processor</artifactId>
                             <version>${micronaut.serialization.version}</version>
@@ -519,107 +507,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>local-no-docker</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <micronaut.test.resources.enabled>false</micronaut.test.resources.enabled>
-                <skip.openapi.generation>true</skip.openapi.generation>
-            </properties>
-            <build>
-                <plugins>
-                    <!-- Отключаем генерацию OpenAPI и прочие задачи micronaut-maven-plugin -->
-                    <plugin>
-                        <groupId>io.micronaut.maven</groupId>
-                        <artifactId>micronaut-maven-plugin</artifactId>
-                        <version>4.9.0</version>
-                        <configuration>
-                            <skip>${skip.openapi.generation}</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.5.3</version>
-                        <executions>
-                            <execution>
-                                <id>default-test</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                                <configuration>
-                                    <argLine>-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
-                                    <systemPropertyVariables>
-                                        <junit.platform.listeners.uid.tracking.enabled>true</junit.platform.listeners.uid.tracking.enabled>
-                                        <junit.platform.listeners.uid.tracking.output.dir>${project.build.directory}/test-ids</junit.platform.listeners.uid.tracking.output.dir>
-                                    </systemPropertyVariables>
-                                    <excludes>
-                                        <!-- Исключаем тяжёлые интеграционные тесты для локального окружения без Docker -->
-                                        <exclude>**/EntrypointTest.java</exclude>
-                                        <exclude>**/*IT.java</exclude>
-                                        <exclude>**/*ITCase.java</exclude>
-                                    </excludes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Убираем annotation processor micronaut-openapi для ускорения локальной сборки -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                            <annotationProcessorPaths combine.self="override">
-                                <path>
-                                    <groupId>io.micronaut.security</groupId>
-                                    <artifactId>micronaut-security-annotations</artifactId>
-                                    <version>${micronaut.security.version}</version>
-                                    <exclusions>
-                                        <exclusion>
-                                            <groupId>io.micronaut</groupId>
-                                            <artifactId>micronaut-inject</artifactId>
-                                        </exclusion>
-                                    </exclusions>
-                                </path>
-                                <path>
-                                    <groupId>org.projectlombok</groupId>
-                                    <artifactId>lombok</artifactId>
-                                    <version>${lombok.version}</version>
-                                </path>
-                                <path>
-                                    <groupId>io.micronaut</groupId>
-                                    <artifactId>micronaut-inject-java</artifactId>
-                                    <version>${micronaut.core.version}</version>
-                                </path>
-                                <path>
-                                    <groupId>io.micronaut</groupId>
-                                    <artifactId>micronaut-graal</artifactId>
-                                    <version>${micronaut.core.version}</version>
-                                </path>
-                                <path>
-                                    <groupId>io.micronaut</groupId>
-                                    <artifactId>micronaut-http-validation</artifactId>
-                                    <version>${micronaut.core.version}</version>
-                                </path>
-                                <path>
-                                    <groupId>io.micronaut.serde</groupId>
-                                    <artifactId>micronaut-serde-processor</artifactId>
-                                    <version>${micronaut.serialization.version}</version>
-                                    <exclusions>
-                                        <exclusion>
-                                            <groupId>io.micronaut</groupId>
-                                            <artifactId>micronaut-inject</artifactId>
-                                        </exclusion>
-                                    </exclusions>
-                                </path>
-                            </annotationProcessorPaths>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <!-- Строгая генерация JavaDocs: все предупреждения считаются ошибками -->
         <profile>
             <id>javadoc-strict</id>
