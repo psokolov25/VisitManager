@@ -1,22 +1,24 @@
 package ru.aritmos.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.GroovyScript;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+/** Unit tests for {@link GroovyScriptService}. */
 class GroovyScriptServiceTest {
 
     @Test
-    void executeShouldPopulateOutputParameters() {
+    void executesScriptAndExposesVariables() {
+        GroovyScriptService service = new GroovyScriptService();
         GroovyScript script = GroovyScript.builder()
-                .ruleCode("result = a + b")
+                .ruleCode("z = x + y")
                 .build();
-        script.getInputParameters().put("a", 1);
-        script.getInputParameters().put("b", 2);
+        script.getInputParameters().put("x", 2);
+        script.getInputParameters().put("y", 3);
 
-        new GroovyScriptService().Execute(script);
+        service.Execute(script);
 
-        assertEquals(3, script.getOutputParameters().get("result"));
+        assertEquals(5, script.getOutputParameters().get("z"));
     }
 }
