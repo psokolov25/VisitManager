@@ -1,6 +1,7 @@
 package ru.aritmos.api;
 
 import groovy.util.logging.Slf4j;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -132,11 +133,12 @@ public class ConfigurationController {
       summary = "Удаление услуг",
       description = "Удаляет услуги отделения",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Услуги удалены"),
+        @ApiResponse(responseCode = "204", description = "Услуги удалены"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(uri = "/branches/{branchId}/services")
+  @Status(HttpStatus.NO_CONTENT)
   public void deleteServices(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @Body List<String> serviceIds,
@@ -233,11 +235,12 @@ public class ConfigurationController {
       summary = "Удаление точек обслуживания",
       description = "Удаляет точки обслуживания отделения",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Точки обслуживания удалены"),
+        @ApiResponse(responseCode = "204", description = "Точки обслуживания удалены"),
         @ApiResponse(responseCode = "404", description = "Отделение или точки обслуживания не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(uri = "/branches/{branchId}/servicePoints")
+  @Status(HttpStatus.NO_CONTENT)
   public void deleteServicePoints(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @Body List<String> servicePointIds) {
@@ -327,11 +330,12 @@ public class ConfigurationController {
       summary = "Удаление очередей",
       description = "Удаляет очереди отделения",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Очереди удалены"),
+        @ApiResponse(responseCode = "204", description = "Очереди удалены"),
         @ApiResponse(responseCode = "404", description = "Отделение или очереди не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(uri = "/branches/{branchId}/queues")
+  @Status(HttpStatus.NO_CONTENT)
   public void deleteQueues(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @Body List<String> queueIds) {

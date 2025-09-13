@@ -1801,7 +1801,7 @@ public class ServicePointController {
       summary = "Удаление визита из очереди",
       description = "Удаляет визит, находящийся в точке обслуживания",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Визит удален"),
+        @ApiResponse(responseCode = "204", description = "Визит удален"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -1809,6 +1809,7 @@ public class ServicePointController {
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}",
       consumes = "application/json",
       produces = "application/json")
+  @Status(HttpStatus.NO_CONTENT)
   @ExecuteOn(TaskExecutors.IO)
   public void deleteVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -1831,7 +1832,7 @@ public class ServicePointController {
       summary = "Удаление визита по идентификатору",
       description = "Удаляет визит по его идентификатору",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Визит удален"),
+        @ApiResponse(responseCode = "204", description = "Визит удален"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -1839,6 +1840,7 @@ public class ServicePointController {
       uri = "/branches/{branchId}/visits/{visitId}",
       consumes = "application/json",
       produces = "application/json")
+  @Status(HttpStatus.NO_CONTENT)
   @ExecuteOn(TaskExecutors.IO)
   public void deleteVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
