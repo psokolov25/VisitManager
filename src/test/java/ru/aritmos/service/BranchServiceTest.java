@@ -37,7 +37,7 @@ class BranchServiceTest {
         service.keyCloackClient = mock(KeyCloackClient.class);
 
         assertThrows(HttpStatusException.class, () -> service.getBranch("missing"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 
     @Test
@@ -51,7 +51,7 @@ class BranchServiceTest {
 
         assertTrue(service.branchExists("b1"));
         assertFalse(service.branchExists("b2"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 
     @Test

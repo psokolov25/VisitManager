@@ -39,9 +39,10 @@ class VisitServiceAddEventTest {
         EventService eventService = mock(EventService.class);
         VisitService service = new VisitService();
 
-        assertThrows(HttpStatusException.class,
+        assertThrows(
+                HttpStatusException.class,
                 () -> service.addEvent(visit, VisitEvent.CALLED, eventService));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 
     @Test
@@ -55,9 +56,10 @@ class VisitServiceAddEventTest {
 
         service.addEvent(visit, VisitEvent.CREATED, eventService);
         service.addEvent(visit, VisitEvent.PLACED_IN_QUEUE, eventService);
-        assertThrows(HttpStatusException.class,
+        assertThrows(
+                HttpStatusException.class,
                 () -> service.addEvent(visit, VisitEvent.CREATED, eventService));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 }
 

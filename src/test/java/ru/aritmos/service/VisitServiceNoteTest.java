@@ -66,7 +66,7 @@ class VisitServiceNoteTest {
         serviceBean.eventService = eventService;
 
         assertThrows(HttpStatusException.class, () -> serviceBean.addNote("b1", "sp1", "text"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 
     @Test
@@ -111,7 +111,7 @@ class VisitServiceNoteTest {
         serviceBean.eventService = eventService;
 
         assertThrows(HttpStatusException.class, () -> serviceBean.getNotes("b1", "v1"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 }
 

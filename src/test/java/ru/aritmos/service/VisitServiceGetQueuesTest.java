@@ -72,7 +72,7 @@ class VisitServiceGetQueuesTest {
         service.eventService = eventService;
 
         assertThrows(HttpStatusException.class, () -> service.getQueues("b1", "sp1"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 }
 

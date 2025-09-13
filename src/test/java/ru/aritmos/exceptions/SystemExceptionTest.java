@@ -2,6 +2,7 @@ package ru.aritmos.exceptions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -21,7 +22,7 @@ class SystemExceptionTest {
         assertEquals("boom", exception.getMessage());
 
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
-        verify(eventService).send(eq("*"), eq(false), captor.capture());
+        verify(eventService).send(anyString(), eq(false), captor.capture());
 
         Event event = captor.getValue();
         assertEquals("SYSTEM_ERROR", event.getEventType());

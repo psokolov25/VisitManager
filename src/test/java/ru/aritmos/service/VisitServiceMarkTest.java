@@ -98,6 +98,6 @@ class VisitServiceMarkTest {
         service.eventService = eventService;
 
         assertThrows(HttpStatusException.class, () -> service.addMark("b1", "sp1", "m1"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 }

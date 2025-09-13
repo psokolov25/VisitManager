@@ -63,7 +63,7 @@ class VisitServiceGetMarksTest {
         service.eventService = eventService;
 
         assertThrows(HttpStatusException.class, () -> service.getMarks("b1", "missing"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 }
 

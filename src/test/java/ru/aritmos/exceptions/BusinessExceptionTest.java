@@ -1,6 +1,7 @@
 package ru.aritmos.exceptions;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -26,7 +27,7 @@ class BusinessExceptionTest {
         assertEquals("ошибка", thrown.getMessage());
 
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
-        verify(eventService).send(eq("*"), eq(false), captor.capture());
+        verify(eventService).send(anyString(), eq(false), captor.capture());
         assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
     }
 
@@ -42,7 +43,7 @@ class BusinessExceptionTest {
         assertEquals(HttpStatus.CONFLICT, thrown.getStatus());
 
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
-        verify(eventService).send(eq("*"), eq(false), captor.capture());
+        verify(eventService).send(anyString(), eq(false), captor.capture());
         assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
     }
 }

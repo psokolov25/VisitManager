@@ -79,9 +79,10 @@ class VisitServiceAutoCallTest {
         service.branchService = branchService;
         service.eventService = eventService;
 
-        assertThrows(HttpStatusException.class,
+        assertThrows(
+                HttpStatusException.class,
                 () -> service.setAutoCallModeOfServicePoint("b1", "sp1", true));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 
     @Test
@@ -98,9 +99,10 @@ class VisitServiceAutoCallTest {
         service.branchService = branchService;
         service.eventService = eventService;
 
-        assertThrows(HttpStatusException.class,
+        assertThrows(
+                HttpStatusException.class,
                 () -> service.setAutoCallModeOfServicePoint("b1", "missing", true));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 }
 

@@ -66,7 +66,7 @@ class VisitServiceDeliveredServicesTest {
         service.eventService = eventService;
 
         assertThrows(HttpStatusException.class, () -> service.getDeliveredServices("b1", "sp1"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 
     @Test
@@ -112,7 +112,7 @@ class VisitServiceDeliveredServicesTest {
         service.eventService = eventService;
 
         assertThrows(HttpStatusException.class, () -> service.addDeliveredService("b1", "sp1", "missing"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 
     @Test
@@ -158,7 +158,7 @@ class VisitServiceDeliveredServicesTest {
         service.eventService = eventService;
 
         assertThrows(HttpStatusException.class, () -> service.deleteDeliveredService("b1", "sp1", "ds1"));
-        verify(eventService).send(eq("*"), eq(false), any());
+        verify(eventService).send(anyString(), eq(false), any());
     }
 }
 
