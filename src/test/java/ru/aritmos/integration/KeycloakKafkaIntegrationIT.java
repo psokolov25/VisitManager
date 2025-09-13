@@ -27,7 +27,7 @@ import org.testcontainers.utility.DockerImageName;
  * Интеграционный тест, использующий реальные Keycloak и Kafka.
  */
 @Testcontainers
-class KeycloakKafkaIntegrationTest {
+class KeycloakKafkaIntegrationIT {
 
     @Container
     static final KeycloakContainer keycloak =
