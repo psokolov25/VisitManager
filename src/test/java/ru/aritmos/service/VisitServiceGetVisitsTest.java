@@ -47,4 +47,24 @@ class VisitServiceGetVisitsTest {
         assertEquals("v1", visits.get(0).getId());
         assertEquals("v2", visits.get(1).getId());
     }
+    @Test
+    void limitsNumberOfVisits() {
+        VisitService service = new VisitService();
+        BranchService branchService = new BranchService();
+        service.branchService = branchService;
+
+        Branch branch = new Branch("b1", "Branch");
+        Queue queue = new Queue("q1", "Queue", "A", 30);
+
+        Visit v1 = Visit.builder().id("v1").createDateTime(ZonedDateTime.now().minusSeconds(100)).build();
+        Visit v2 = Visit.builder().id("v2").createDateTime(ZonedDateTime.now().minusSeconds(50)).build();
+        Visit v3 = Visit.builder().id("v3").createDateTime(ZonedDateTime.now().minusSeconds(10)).build();
+
+        queue.getVisits().addAll(List.of(v1, v2, v3));
+        branch.getQueues().put(queue.getId(), queue);
+        branchService.branches.put(branch.getId(), branch);
+
+        List<Visit> visits = service.getVisits("b1", "q1", 2L);
+        assertEquals(2, visits.size());
+    }
 }
