@@ -390,7 +390,7 @@ public class EntrypointController {
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
-  public List<Service> getAllAvilableServies(
+  public List<Service> getAllAvailableServices(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     try {
 
