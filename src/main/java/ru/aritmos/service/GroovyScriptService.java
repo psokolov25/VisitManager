@@ -11,6 +11,7 @@ import ru.aritmos.model.GroovyScript;
 public class GroovyScriptService {
   /**
    * Выполнить скрипт Groovy с передачей входных параметров и сбором результатов.
+   * После выполнения значения переменных доступны через {@code outputParameters}.
    *
    * @param groovyScript объект скрипта и его параметров
    */
@@ -18,13 +19,14 @@ public class GroovyScriptService {
     Binding binding = new Binding();
     // Объект выполнения скрипта Groovy
     GroovyShell shell = new GroovyShell(binding);
-    // Текст скрипта на groovy, берется из свойства scriptCode
+    // Текст скрипта на Groovy, берётся из свойства ruleCode
     String scriptCode = groovyScript.getRuleCode();
     // Обработка скрипта перед выполнением
     Script script = shell.parse(scriptCode);
     groovyScript.getInputParameters().forEach(binding::setVariable);
     script.run();
-    // Передача двух тестовых визитов
+    // Передача результатов выполнения
+    // в карту выходных параметров
     groovyScript.getOutputParameters().putAll(binding.getVariables());
   }
 }

@@ -19,8 +19,12 @@ import ru.aritmos.model.WorkProfile;
 import ru.aritmos.model.Reception;
 import ru.aritmos.model.tiny.TinyClass;
 
+/**
+ * Юнит-тесты для {@link VisitService}.
+ */
 class VisitServiceTest {
 
+    /** Возвращает существующий визит из очереди. */
     @Test
     void getVisitReturnsExistingVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -42,6 +46,7 @@ class VisitServiceTest {
         assertSame(visit, result);
     }
 
+    /** Выбрасывает исключение, если визит отсутствует. */
     @Test
     void getVisitThrowsWhenMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -59,6 +64,7 @@ class VisitServiceTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    /** Возвращает только свободные точки обслуживания. */
     @Test
     void getStringServicePointHashMapFiltersBusyPoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -83,6 +89,7 @@ class VisitServiceTest {
         assertFalse(result.containsKey("sp2"));
     }
 
+    /** Возвращает все точки обслуживания отделения. */
     @Test
     void getServicePointHashMapReturnsAllPoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -104,6 +111,7 @@ class VisitServiceTest {
         assertTrue(result.containsKey("sp2"));
     }
 
+    /** Возвращает рабочие профили как TinyClass. */
     @Test
     void getWorkProfilesReturnsTinyClasses() {
         Branch branch = new Branch("b1", "Branch");
@@ -123,6 +131,7 @@ class VisitServiceTest {
         assertEquals(new TinyClass("wp1", "Profile"), profiles.get(0));
     }
 
+    /** Возвращает пользователей отделения. */
     @Test
     void getUsersReturnsBranchUsers() {
         Branch branch = new Branch("b1", "Branch");
@@ -142,6 +151,7 @@ class VisitServiceTest {
         assertEquals("u1", users.get(0).getId());
     }
 
+    /** Собирает уникальные принтеры отделения. */
     @Test
     void getPrintersCollectsUniquePrinters() {
         Branch branch = new Branch("b1", "Branch");
@@ -170,6 +180,7 @@ class VisitServiceTest {
         assertTrue(printers.contains(new Entity("p2", "P2")));
     }
 
+    /** Возвращает список очередей как Entity. */
     @Test
     void getQueusReturnsEntityList() {
         Branch branch = new Branch("b1", "Branch");
@@ -188,6 +199,7 @@ class VisitServiceTest {
         assertEquals(List.of(new Entity("q1", "Q1")), queues);
     }
 
+    /** Возвращает очереди полностью. */
     @Test
     void getFullQueusReturnsQueues() {
         Branch branch = new Branch("b1", "Branch");
@@ -207,6 +219,7 @@ class VisitServiceTest {
         assertEquals(List.of(queue), queues);
     }
 
+    /** Собирает работающих пользователей из точек обслуживания. */
     @Test
     void getAllWorkingUsersAggregatesFromServicePoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -227,5 +240,51 @@ class VisitServiceTest {
         HashMap<String, User> users = service.getAllWorkingUsers("b1");
         assertEquals(1, users.size());
         assertSame(user, users.get("u1"));
+    }
+
+    /** Фильтрует просроченные визиты и сортирует по ожиданию. */
+    @Test
+    void getVisitsFiltersByDelaysAndSortsByWaitingTime() {
+        Branch branch = new Branch("b1", "Branch");
+        Queue queue = new Queue("q1", "Q1", "A", 1);
+
+        Visit v1 = Visit.builder()
+                .id("v1")
+                .branchId("b1")
+                .queueId("q1")
+                .createDateTime(java.time.ZonedDateTime.now().minusSeconds(10))
+                .build();
+        Visit v2 = Visit.builder()
+                .id("v2")
+                .branchId("b1")
+                .queueId("q1")
+                .createDateTime(java.time.ZonedDateTime.now().minusSeconds(20))
+                .build();
+        Visit filtered = Visit.builder()
+                .id("v3")
+                .branchId("b1")
+                .queueId("q1")
+                .returnDateTime(java.time.ZonedDateTime.now().minusSeconds(1))
+                .returnTimeDelay(100L)
+                .build();
+
+        queue.getVisits().add(v1);
+        queue.getVisits().add(v2);
+        queue.getVisits().add(filtered);
+        branch.getQueues().put(queue.getId(), queue);
+
+        BranchService branchService = new BranchService();
+        branchService.eventService = mock(EventService.class);
+        branchService.keyCloackClient = mock(ru.aritmos.keycloack.service.KeyCloackClient.class);
+        branchService.branches.put(branch.getId(), branch);
+
+        VisitService service = new VisitService();
+        service.branchService = branchService;
+        service.eventService = mock(EventService.class);
+
+        java.util.List<Visit> visits = service.getVisits("b1", "q1");
+        assertEquals(2, visits.size());
+        assertEquals("v2", visits.get(0).getId());
+        assertEquals("v1", visits.get(1).getId());
     }
 }
