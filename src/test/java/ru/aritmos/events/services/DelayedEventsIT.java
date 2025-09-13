@@ -17,7 +17,7 @@ import ru.aritmos.events.model.Event;
 /**
  * Интеграционный тест {@link DelayedEvents} с использованием контекста Micronaut.
  */
-@MicronautTest(environments = {"integration", "local-no-docker"})
+@MicronautTest(environments = "integration")
 class DelayedEventsIT {
 
     @Inject DelayedEvents delayedEvents;

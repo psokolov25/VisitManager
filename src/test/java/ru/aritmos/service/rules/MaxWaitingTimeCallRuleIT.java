@@ -13,7 +13,7 @@ import ru.aritmos.model.visit.Visit;
 /**
  * Интеграционный тест для {@link MaxWaitingTimeCallRule}.
  */
-@MicronautTest(environments = "local-no-docker")
+@MicronautTest(environments = "integration")
 class MaxWaitingTimeCallRuleIT {
 
     @Inject

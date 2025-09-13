@@ -9,16 +9,13 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import io.micronaut.test.annotation.MockBean;
-import org.mockito.Mockito;
-import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.tiny.TinyClass;
 
 /**
  * Сквозные проверки {@link ManagementController}.
  */
-@MicronautTest(environments = {"integration", "local-no-docker"})
+@MicronautTest(environments = "integration")
 class ManagementControllerE2EIT {
 
     @Inject
@@ -46,8 +43,4 @@ class ManagementControllerE2EIT {
         assertTrue(() -> java.util.Arrays.stream(tiny).anyMatch(t -> t.getId().equals("b2")));
     }
 
-    @MockBean(KeyCloackClient.class)
-    KeyCloackClient keyCloackClient() {
-        return Mockito.mock(KeyCloackClient.class);
-    }
 }

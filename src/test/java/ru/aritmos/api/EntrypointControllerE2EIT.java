@@ -14,7 +14,7 @@ import ru.aritmos.model.*;
 /**
  * Сквозной тест для {@link EntrypointController}.
  */
-@MicronautTest(environments = {"integration", "local-no-docker"})
+@MicronautTest(environments = "integration")
 class EntrypointControllerE2EIT {
 
     @Inject
