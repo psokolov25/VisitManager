@@ -16,6 +16,8 @@ out/
 /entrypoint-0.2.jar
 /JavaDocs.zip
 docker
+# вспомогательный pom, создаваемый maven-shade-plugin
+dependency-reduced-pom.xml
 # JVM crash logs
 hs_err_pid*.log
 
