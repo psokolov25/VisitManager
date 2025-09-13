@@ -35,8 +35,8 @@ public class MaxWaitingTimeCallRule implements CallRule {
   private Integer visitComparer(Visit visit1, Visit visit2) {
     if (visit1.getParameterMap().containsKey("isTransferredToStart")) {
       if (visit2.getParameterMap().containsKey("isTransferredToStart")) {
-        return getDateNyString(visit2.getParameterMap().get("isTransferredToStart"))
-            .compareTo(getDateNyString(visit1.getParameterMap().get("isTransferredToStart")));
+        return getDateByString(visit2.getParameterMap().get("isTransferredToStart"))
+            .compareTo(getDateByString(visit1.getParameterMap().get("isTransferredToStart")));
 
       } else {
         return 1;
@@ -56,7 +56,7 @@ public class MaxWaitingTimeCallRule implements CallRule {
    * @param date дата типа {@link ZonedDateTime}
    * @return строка даты формата EEE, dd MMM yyyy HH:mm:ss zzz
    */
-  ZonedDateTime getDateNyString(String date) {
+  ZonedDateTime getDateByString(String date) {
 
     DateTimeFormatter format =
         DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
