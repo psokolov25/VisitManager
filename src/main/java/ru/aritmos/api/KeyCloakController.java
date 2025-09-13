@@ -3,6 +3,10 @@ package ru.aritmos.api;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.http.annotation.*;
 import io.micronaut.serde.annotation.SerdeImport;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.Optional;
@@ -46,6 +50,20 @@ public class KeyCloakController {
    * @param credentials логин и пароль пользователя
    * @return - данные авторизации (токен, токен обновления и т д )
    */
+  @Operation(
+      summary = "Авторизация пользователя в Keycloak",
+      description = "Возвращает токены авторизации при корректных учетных данных",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Успешная авторизация",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = AuthorizationResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Неверные учетные данные"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера Keycloak")
+      })
   @Tag(name = "Полный список")
   @Tag(name = "Взаимодействие с Keycloak")
   @Post(uri = "/keycloak", consumes = "application/json", produces = "application/json")
@@ -61,6 +79,14 @@ public class KeyCloakController {
    * @param isForced принудительно завершить сессию
    * @param reason причина завершения
    */
+  @Operation(
+      summary = "Завершение пользовательской сессии",
+      description = "Удаляет активную сессию пользователя в Keycloak",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Сессия успешно завершена"),
+        @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера Keycloak")
+      })
   @Tag(name = "Полный список")
   @Tag(name = "Взаимодействие с Keycloak")
   @Post(
