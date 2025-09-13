@@ -8,6 +8,7 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Map;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.*;
 
@@ -15,6 +16,7 @@ import ru.aritmos.model.*;
  * Сквозной тест для {@link EntrypointController}.
  */
 @MicronautTest(environments = {"integration", "local-no-docker"})
+@Disabled("Требует запущенное окружение")
 class EntrypointControllerE2EIT {
 
     @Inject

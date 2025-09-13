@@ -8,6 +8,7 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Map;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import io.micronaut.test.annotation.MockBean;
 import org.mockito.Mockito;
@@ -19,6 +20,7 @@ import ru.aritmos.model.tiny.TinyClass;
  * Сквозные проверки {@link ManagementController}.
  */
 @MicronautTest(environments = {"integration", "local-no-docker"})
+@Disabled("Требует запущенное окружение")
 class ManagementControllerE2EIT {
 
     @Inject

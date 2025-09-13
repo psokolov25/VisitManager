@@ -11,12 +11,14 @@ import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Optional;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.keycloack.model.Credentials;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
 /** E2E tests for {@link KeyCloakController}. */
 @MicronautTest(environments = {"integration", "local-no-docker"})
+@Disabled("Требует запущенное окружение")
 class KeyCloakControllerE2EIT {
 
     @Inject
