@@ -12,6 +12,16 @@ loop Работа с визитами
   API -> Visit: callNextVisit(...)
   alt визит найден
     API --> Employee: Visit
+    opt фиксация фактических услуг
+      Employee -> API: POST /servicepoint/.../deliveredservice/{deliveredServiceId}
+      API -> Visit: addDeliveredService(...)
+      Employee -> API: POST /servicepoint/.../deliveredService/{deliveredServiceId}/outcome/{outcomeId}
+      API -> Visit: addOutcomeOfDeliveredService(...)
+    end
+    opt итог услуги
+      Employee -> API: POST /servicepoint/.../outcome/{outcomeId}
+      API -> Visit: addOutcomeService(...)
+    end
     Employee -> API: POST /servicepoint/.../visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}
     API -> Visit: visitConfirm(...)
     alt требуется перевод
@@ -23,17 +33,19 @@ loop Работа с визитами
       Employee -> API: POST /servicepoint/.../visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}
       API -> Visit: visitReCallForConfirm(...)
     end
-    Employee -> API: PUT /servicepoint/.../visits/servicePoints/{servicePointId}/visit/end
+    Employee -> API: PUT /servicepoint/.../visits/servicePoints/{servicePointId}/visit/end?reason=услуга_оказана
     API -> Visit: visitEnd(...)
   else очередь пуста
     API --> Employee: 204 No Content
   end
 end
-
-alt Перерыв
-  Employee -> API: POST /servicepoint/.../servicePoints/{servicePointId}/close?isBreak=true
-else Выход
-  Employee -> API: POST /servicepoint/.../servicePoints/{servicePointId}/logout
+opt Перерыв
+  Employee -> API: POST /servicepoint/.../servicePoints/{servicePointId}/close?isBreak=true&breakReason=обед
+  API -> Visit: closeServicePoint(...)
+  Employee -> API: POST /servicepoint/.../open
+  API -> Visit: openServicePoint(...)
 end
+
+Employee -> API: POST /servicepoint/.../servicePoints/{servicePointId}/close?reason=конец_смены
 API -> Visit: closeServicePoint(...)
 @enduml
