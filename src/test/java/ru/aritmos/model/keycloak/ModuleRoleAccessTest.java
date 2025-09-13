@@ -3,6 +3,7 @@ package ru.aritmos.model.keycloak;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 
 class ModuleRoleAccessTest {
 
@@ -23,4 +24,40 @@ class ModuleRoleAccessTest {
         assertEquals(viaBuilder.hashCode(), viaSetters.hashCode());
         assertTrue(viaBuilder.toString().contains("access: true"));
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void nameTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void roleTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void accessTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void equalsTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void hashCodeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void toStringTest() {
+        // TODO implement
+    }
+
 }

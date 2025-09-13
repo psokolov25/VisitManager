@@ -18,6 +18,7 @@ import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
 import ru.aritmos.model.Reception;
 import ru.aritmos.model.tiny.TinyClass;
+import org.junit.jupiter.api.Disabled;
 
 class VisitServiceTest {
 
@@ -228,4 +229,382 @@ class VisitServiceTest {
         assertEquals(1, users.size());
         assertSame(user, users.get("u1"));
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void setWaitingTimeCallRuleTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void setLifeTimeCallRuleTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getVisitTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getStringServicePointHashMapTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getServicePointHashMapTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getWorkProfilesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getUsersTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getVisitsTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void createVisitTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void createVisitFromReceptionTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void createVirtualVisitTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addEventTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getQueuesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getAllVisitsTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getVisitsByStatusesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void createVisit2Test() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void createVisit2FromReceptionTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void createVirtualVisit2Test() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getDeliveredServicesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addDeliveredServiceTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void deleteDeliveredServiceTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addServiceTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addMarkTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void deleteMarkTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getMarksTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addOutcomeServiceTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addOutcomeOfDeliveredServiceTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void deleteOutcomeDeliveredServiceTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void deleteOutcomeServiceTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void backCalledVisitTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void stopServingAndBackToQueueTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitTransferTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitBackTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitBackToServicePointPoolTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitPutBackTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitPostPoneTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitBackToUserPoolTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitTransferFromQueueToServicePointPoolTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getAllWorkingUsersTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitTransferFromQueueToUserPoolTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitEndTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitCallTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitCallForConfirmWithMaxWaitingTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitReCallForConfirmTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitConfirmTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitNoShowTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitCallForConfirmWithMaxLifeTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void setAutoCallModeOfBranchTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void setAutoCallModeOfServicePointTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void setConfirmRequiredModeOfServicePointTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void cancelAutoCallModeOfServicePointTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void startAutoCallModeOfServicePointTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitAutoCallTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitCallWithMaximalWaitingTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitCallWithMaxLifeTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void deleteVisitTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitTransferToUserPoolTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void visitTransferToServicePointPoolTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getQueusTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getFullQueusTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getPrintersTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addNoteTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getNotesTest() {
+        // TODO implement
+    }
+
 }

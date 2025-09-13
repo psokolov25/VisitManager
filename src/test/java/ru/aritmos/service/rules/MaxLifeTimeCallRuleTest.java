@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Юнит-тесты для {@link MaxLifeTimeCallRule}.
@@ -65,4 +66,16 @@ class MaxLifeTimeCallRuleTest {
         Visit result = rule.call(branch, sp).orElseThrow();
         assertEquals("v3", result.getId());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void callTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getAvailiableServicePointsTest() {
+        // TODO implement
+    }
+
 }

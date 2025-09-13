@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.junit.jupiter.api.Disabled;
 
 class EndSessionEndpointResolverReplacementTest {
 
@@ -33,5 +34,11 @@ class EndSessionEndpointResolverReplacementTest {
         assertTrue(endpoint.isPresent(), "ожидается непустой результат");
         assertTrue(endpoint.get() instanceof OktaEndSessionEndpoint, "должен быть OktaEndSessionEndpoint");
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void resolveTest() {
+        // TODO implement
+    }
+
 }
 

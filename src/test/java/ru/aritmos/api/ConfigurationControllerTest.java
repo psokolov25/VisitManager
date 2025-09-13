@@ -16,6 +16,7 @@ import ru.aritmos.model.ServicePoint;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
+import org.junit.jupiter.api.Disabled;
 
 class ConfigurationControllerTest {
 
@@ -150,4 +151,76 @@ class ConfigurationControllerTest {
         controller.deleteQueues("b1", ids);
         verify(controller.branchService).deleteQueues("b1", ids);
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void updateTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addUpdateServiceTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getBreakReasonsTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void deleteServicesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addUpdateServicePointTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addUpdateServiceGroupsTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addUpdateSegmentationRulesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void deleteServicePointsTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void setAutoCallModeOfBranchOnTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void setAutoCallModeOfBranchOffTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void addUpdateQueuesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void deleteQueuesTest() {
+        // TODO implement
+    }
+
 }

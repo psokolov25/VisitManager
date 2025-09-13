@@ -10,6 +10,7 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.rules.client.CallRuleClient;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Юнит-тест для {@link CustomCallRule}, проверяющий делегирование клиенту
@@ -48,4 +49,16 @@ class CustomCallRuleTest {
         CustomCallRule rule = new CustomCallRule();
         assertTrue(rule.getAvailiableServicePoints(new Branch("b1", "Branch"), Visit.builder().id("v1").build()).isEmpty());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void callTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getAvailiableServicePointsTest() {
+        // TODO implement
+    }
+
 }

@@ -3,6 +3,7 @@ package ru.aritmos.model.keycloak;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 
 class TinyUserInfoTest {
 
@@ -25,4 +26,46 @@ class TinyUserInfoTest {
         assertEquals(expected.hashCode(), actual.hashCode());
         assertTrue(expected.toString().contains("Иванов Иван"));
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void nameTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void descriptionTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void emailTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void loginTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void equalsTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void hashCodeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void toStringTest() {
+        // TODO implement
+    }
+
 }

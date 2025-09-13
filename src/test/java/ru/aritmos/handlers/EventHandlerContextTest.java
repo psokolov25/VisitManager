@@ -12,6 +12,7 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
+import org.junit.jupiter.api.Disabled;
 
 class EventHandlerContextTest {
 

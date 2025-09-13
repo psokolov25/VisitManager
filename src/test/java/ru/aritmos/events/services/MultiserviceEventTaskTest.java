@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.events.model.Event;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Юнит-тест для {@link MultiserviceEventTask}.
@@ -23,4 +24,10 @@ class MultiserviceEventTaskTest {
 
         verify(eventService).send(destinations, false, event);
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void runTest() {
+        // TODO implement
+    }
+
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Юнит-тесты для {@link DelayedEvents}.
@@ -49,4 +50,10 @@ class DelayedEventsTest {
         captor.getValue().run();
         verify(eventService).send(destinations, false, event);
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void delayedEventServiceTest() {
+        // TODO implement
+    }
+
 }

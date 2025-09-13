@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.clients.DataBusClient;
 import ru.aritmos.events.model.ChangedObject;
+import org.junit.jupiter.api.Disabled;
 
 @MicronautTest
 class EventServiceTest {
@@ -46,4 +47,16 @@ class EventServiceTest {
         org.junit.jupiter.api.Assertions.assertEquals(newValue, changed.getNewValue());
         org.junit.jupiter.api.Assertions.assertEquals(oldValue, changed.getOldValue());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void sendTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void sendChangedEventTest() {
+        // TODO implement
+    }
+
 }

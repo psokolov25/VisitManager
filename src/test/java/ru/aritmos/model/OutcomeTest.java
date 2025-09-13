@@ -2,6 +2,7 @@ package ru.aritmos.model;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 
 class OutcomeTest {
     @Test
@@ -18,4 +19,10 @@ class OutcomeTest {
         original.setCode(100L);
         assertNotEquals(original.getCode(), clone.getCode());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void cloneTest() {
+        // TODO implement
+    }
+
 }

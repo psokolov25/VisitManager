@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Юнит-тесты для {@link MaxWaitingTimeCallRule}.
@@ -74,5 +75,17 @@ class MaxWaitingTimeCallRuleTest {
         assertEquals(1, result.size());
         assertEquals("sp1", result.get(0).getId());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void callTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getAvailiableServicePointsTest() {
+        // TODO implement
+    }
+
 }
 

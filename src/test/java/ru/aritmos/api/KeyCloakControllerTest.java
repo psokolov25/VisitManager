@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.keycloack.model.Credentials;
 import ru.aritmos.keycloack.service.KeyCloackClient;
+import org.junit.jupiter.api.Disabled;
 
 class KeyCloakControllerTest {
 

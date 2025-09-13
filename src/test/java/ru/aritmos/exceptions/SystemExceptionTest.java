@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
+import org.junit.jupiter.api.Disabled;
 
 class SystemExceptionTest {
 

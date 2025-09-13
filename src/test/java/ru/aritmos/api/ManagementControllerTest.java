@@ -13,6 +13,7 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.model.tiny.TinyClass;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
+import org.junit.jupiter.api.Disabled;
 
 class ManagementControllerTest {
 
@@ -77,4 +78,22 @@ class ManagementControllerTest {
         assertEquals(1, tiny.size());
         assertEquals("b1", tiny.get(0).getId());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void getBranchTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getBranchesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getTinyBranchesTest() {
+        // TODO implement
+    }
+
 }

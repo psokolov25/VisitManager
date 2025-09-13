@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import ru.aritmos.clients.PrinterClient;
 import ru.aritmos.model.visit.Visit;
+import org.junit.jupiter.api.Disabled;
 
 class PrinterServiceTest {
 
@@ -23,4 +24,10 @@ class PrinterServiceTest {
 
         verify(client).print("UTF-8", true, visit);
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void printTest() {
+        // TODO implement
+    }
+
 }

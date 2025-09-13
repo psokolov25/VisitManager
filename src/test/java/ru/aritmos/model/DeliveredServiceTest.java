@@ -2,6 +2,7 @@ package ru.aritmos.model;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 
 class DeliveredServiceTest {
     @Test
@@ -29,4 +30,10 @@ class DeliveredServiceTest {
         assertTrue(clone.getServiceIds().isEmpty());
         assertEquals(7L, clone.getOutcome().getCode());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void cloneTest() {
+        // TODO implement
+    }
+
 }

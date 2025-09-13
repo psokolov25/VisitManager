@@ -3,6 +3,7 @@ package ru.aritmos.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 class BranchEntityTest {
 
@@ -18,4 +19,10 @@ class BranchEntityTest {
         assertEquals("name", clone.getName());
         assertEquals("b1", clone.getBranchId());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void cloneTest() {
+        // TODO implement
+    }
+
 }

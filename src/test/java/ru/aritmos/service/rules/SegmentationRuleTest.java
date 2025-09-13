@@ -21,6 +21,7 @@ import ru.aritmos.model.visit.Visit;
 import ru.aritmos.exceptions.SystemException;
 import io.micronaut.http.exceptions.HttpStatusException;
 import ru.aritmos.service.BranchService;
+import org.junit.jupiter.api.Disabled;
 
 class SegmentationRuleTest {
   SegmentationRule rule;
@@ -79,4 +80,10 @@ class SegmentationRuleTest {
         HttpStatusException.class,
         () -> rule.getQueue(visit, branch, "missing"));
   }
+    @Disabled("Not yet implemented")
+    @Test
+    void getQueueTest() {
+        // TODO implement
+    }
+
 }

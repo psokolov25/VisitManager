@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 class CurlCheatsheetGeneratorTest {
 
@@ -45,5 +46,11 @@ class CurlCheatsheetGeneratorTest {
         assertTrue(output.contains("curl http://localhost/test"));
         assertTrue(output.contains("<section>"));
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void mainTest() {
+        // TODO implement
+    }
+
 }
 

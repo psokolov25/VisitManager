@@ -3,6 +3,7 @@ package ru.aritmos.events.services;
 import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.events.model.Event;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Юнит-тест для {@link EventTask}.
@@ -20,4 +21,10 @@ class EventTaskTest {
 
         verify(eventService).send("dest", true, event);
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void runTest() {
+        // TODO implement
+    }
+
 }

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.*;
+import org.junit.jupiter.api.Disabled;
 
 class ServicesTest {
 
@@ -61,5 +62,17 @@ class ServicesTest {
         assertEquals(1, result.size());
         assertEquals("s1", result.get(0).getId());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void getAllServicesTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getAllAvailableServicesTest() {
+        // TODO implement
+    }
+
 }
 

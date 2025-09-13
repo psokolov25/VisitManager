@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 class TinyVisitTest {
 
@@ -35,5 +36,17 @@ class TinyVisitTest {
         long expected = ChronoUnit.SECONDS.between(create, ZonedDateTime.now());
         assertTrue(Math.abs(actual - expected) <= 1, "total waiting time should match");
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void getWaitingTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getTotalWaitingTimeTest() {
+        // TODO implement
+    }
+
 }
 

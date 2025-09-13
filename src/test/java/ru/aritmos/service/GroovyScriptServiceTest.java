@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.aritmos.model.GroovyScript;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 
 /** Unit tests for {@link GroovyScriptService}. */
 class GroovyScriptServiceTest {
@@ -21,4 +22,10 @@ class GroovyScriptServiceTest {
 
         assertEquals(5, script.getOutputParameters().get("z"));
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void ExecuteTest() {
+        // TODO implement
+    }
+
 }

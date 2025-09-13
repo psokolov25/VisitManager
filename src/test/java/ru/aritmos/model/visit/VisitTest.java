@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 class VisitTest {
 
@@ -65,4 +66,34 @@ class VisitTest {
                 .build();
         assertEquals(15L, visit.getServingTime());
     }
+    @Disabled("Not yet implemented")
+    @Test
+    void getWaitingTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getReturningTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getTransferingTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getVisitLifeTimeTest() {
+        // TODO implement
+    }
+
+    @Disabled("Not yet implemented")
+    @Test
+    void getServingTimeTest() {
+        // TODO implement
+    }
+
 }
