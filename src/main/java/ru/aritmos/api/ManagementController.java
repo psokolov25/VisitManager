@@ -48,7 +48,8 @@ public class ManagementController {
                 @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = Branch.class))),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено")
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Tag(name = "Информация об отделении")
   @Tag(name = "Полный список")
@@ -78,6 +79,7 @@ public class ManagementController {
       description = "Возвращает карту доступных отделений",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список отделений"),
+        @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(uri = "/branches")
@@ -124,6 +126,7 @@ public class ManagementController {
       description = "Возвращает идентификаторы и названия отделений",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список отделений"),
+        @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(uri = "/branches/tiny")
