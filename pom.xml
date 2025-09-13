@@ -636,6 +636,7 @@
                             </includes>
                             <systemPropertyVariables>
                                 <micronaut.environments>integration</micronaut.environments>
+                                <micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>
                             </systemPropertyVariables>
                         </configuration>
                         <executions>

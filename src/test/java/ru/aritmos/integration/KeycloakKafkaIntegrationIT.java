@@ -2,6 +2,7 @@ package ru.aritmos.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
@@ -17,42 +18,75 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.KafkaContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 /**
- * Интеграционный тест, использующий реальные Keycloak и Kafka.
+ * Интеграционный тест, проверяющий доступность Keycloak и Kafka.
+ *
+ * <p>В профиле {@code it-resources} поднимает тестовые контейнеры, а в
+ * {@code it-external} использует реальные внешние службы, адреса которых
+ * должны быть переданы через переменные окружения {@code OIDC_ISSUER_URL} и
+ * {@code KAFKA_SERVER}.
  */
-@Testcontainers
-class KeycloakKafkaIntegrationTest {
+class KeycloakKafkaIntegrationIT {
 
-    @Container
-    static final KeycloakContainer keycloak =
-        new KeycloakContainer("quay.io/keycloak/keycloak:22.0.1")
-            .withAdminUsername("admin")
-            .withAdminPassword("admin");
+    private static KeycloakContainer keycloak;
+    private static KafkaContainer kafka;
+    private static String keycloakUrl;
+    private static String kafkaBootstrap;
 
-    @Container
-    static final KafkaContainer kafka =
-        new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.5.0"));
+    @BeforeAll
+    static void setUp() {
+        if (useTestResources()) {
+            keycloak =
+                new KeycloakContainer("quay.io/keycloak/keycloak:22.0.1")
+                    .withAdminUsername("admin")
+                    .withAdminPassword("admin");
+            kafka =
+                new KafkaContainer(
+                    DockerImageName.parse("confluentinc/cp-kafka:7.5.0"));
+            keycloak.start();
+            kafka.start();
+            keycloakUrl = keycloak.getAuthServerUrl();
+            kafkaBootstrap = kafka.getBootstrapServers();
+        } else {
+            keycloakUrl = System.getenv("OIDC_ISSUER_URL");
+            kafkaBootstrap = System.getenv("KAFKA_SERVER");
+        }
+    }
+
+    @AfterAll
+    static void tearDown() {
+        if (keycloak != null) {
+            keycloak.stop();
+        }
+        if (kafka != null) {
+            kafka.stop();
+        }
+    }
 
     @Test
     void keycloakAndKafkaAreAccessible() throws Exception {
-        assertTrue(keycloak.isRunning(), "Keycloak должен быть запущен");
+        assertNotNull(keycloakUrl, "Keycloak URL must be provided");
+        if (keycloak != null) {
+            assertTrue(keycloak.isRunning(), "Keycloak должен быть запущен");
+        }
         HttpResponse<String> response =
             HttpClient.newHttpClient().send(
-                HttpRequest.newBuilder(URI.create(keycloak.getAuthServerUrl()))
+                HttpRequest.newBuilder(URI.create(keycloakUrl))
                     .GET()
                     .build(),
                 HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Keycloak отвечает");
 
+        assertNotNull(kafkaBootstrap, "Kafka bootstrap must be provided");
         String topic = "test-topic";
         Properties producerProps = new Properties();
-        producerProps.put("bootstrap.servers", kafka.getBootstrapServers());
+        producerProps.put("bootstrap.servers", kafkaBootstrap);
         producerProps.put(
             "key.serializer",
             "org.apache.kafka.common.serialization.StringSerializer");
@@ -64,7 +98,7 @@ class KeycloakKafkaIntegrationTest {
         }
 
         Properties consumerProps = new Properties();
-        consumerProps.put("bootstrap.servers", kafka.getBootstrapServers());
+        consumerProps.put("bootstrap.servers", kafkaBootstrap);
         consumerProps.put("group.id", "test-group");
         consumerProps.put(
             "key.deserializer",
@@ -79,6 +113,14 @@ class KeycloakKafkaIntegrationTest {
             assertFalse(records.isEmpty(), "Kafka должен вернуть записанное сообщение");
             assertEquals("v", records.iterator().next().value());
         }
+    }
+
+    private static boolean useTestResources() {
+        String prop =
+            System.getProperty(
+                "micronaut.test.resources.enabled",
+                System.getenv("MICRONAUT_TEST_RESOURCES_ENABLED"));
+        return Boolean.parseBoolean(prop);
     }
 }
 
