@@ -4269,7 +4269,7 @@ public class VisitService {
     Branch currentBranch = branchService.getBranch(branchId);
     if (!currentBranch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException(
-          String.format("Service poiunt %s not found!", servicePointId),
+          String.format("Service point %s not found!", servicePointId),
           eventService,
           HttpStatus.NOT_FOUND);
     }
@@ -4284,7 +4284,7 @@ public class VisitService {
       parameterMap.put("servicePointId", servicePoint.getId());
       Event autocallEvent =
           Event.builder()
-              .eventType("SERVUCEPOINT_AUTOCALL_MODE_TURN_ON")
+              .eventType("SERVICEPOINT_AUTOCALL_MODE_TURN_ON")
               .eventDate(ZonedDateTime.now())
               .params(parameterMap)
               .body(servicePoint)
@@ -4317,7 +4317,7 @@ public class VisitService {
     Branch currentBranch = branchService.getBranch(branchId);
     if (!currentBranch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException(
-          String.format("Service poiunt %s not found!", servicePointId),
+          String.format("Service point %s not found!", servicePointId),
           eventService,
           HttpStatus.NOT_FOUND);
     }
@@ -4332,7 +4332,8 @@ public class VisitService {
     Event autocallEvent =
         Event.builder()
             .eventType(
-                "SERVUCEPOINT_CONFIRM_REQUIRED_MODE_TURN_" + (isConfirmRequiredMode ? "ON" : "OFF"))
+                "SERVICEPOINT_CONFIRM_REQUIRED_MODE_TURN_"
+                    + (isConfirmRequiredMode ? "ON" : "OFF"))
             .eventDate(ZonedDateTime.now())
             .params(parameterMap)
             .body(servicePoint)
@@ -4438,7 +4439,7 @@ public class VisitService {
       parameterMap.put("servicePointId", servicePoint.getId());
       Event autocallEvent =
           Event.builder()
-              .eventType("SERVUCEPOINT_AUTOCALL_MODE_TURN_ON")
+              .eventType("SERVICEPOINT_AUTOCALL_MODE_TURN_ON")
               .eventDate(ZonedDateTime.now())
               .params(parameterMap)
               .body(servicePoint)
