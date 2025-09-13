@@ -10,27 +10,28 @@ import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.ServicePoint;
 
 /**
- * Сквозной тест {@link ConfigurationController}, проверяющий получение причин перерыва.
+ * Сквозной тест эндпоинтов {@link ServicePointController}.
  */
 @MicronautTest(environments = {"integration", "local-no-docker"})
-class ConfigurationControllerE2EIT {
+class ServicePointControllerE2EIT {
 
     @Inject
     @Client("/")
     HttpClient client;
 
-    /** Проверяет, что причины перерыва возвращаются после обновления конфигурации. */
+    /** Проверяет получение свободных точек обслуживания. */
     @Test
-    void returnsBreakReasons() {
+    void fetchesFreeServicePoints() {
         Branch branch = new Branch("b1", "Branch");
-        branch.getBreakReasons().put("b1", "Break");
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "SP"));
         Map<String, Branch> payload = Map.of("b1", branch);
         client.toBlocking().exchange(HttpRequest.POST("/configuration/branches", payload));
 
-        Map<?, ?> response = client.toBlocking().retrieve(
-                HttpRequest.GET("/configuration/branches/b1/break/reasons"), Map.class);
-        assertEquals("Break", response.get("b1"));
+        Map<?,?> response = client.toBlocking().retrieve(
+                HttpRequest.GET("/servicepoint/branches/b1/servicePoints/getFree"), Map.class);
+        assertTrue(response.containsKey("sp1"));
     }
 }
