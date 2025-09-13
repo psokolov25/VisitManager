@@ -89,4 +89,64 @@ class BranchTest {
         assertTrue(filtered.containsKey("v1"));
         assertFalse(filtered.containsKey("v2"));
     }
+    @Test
+    void getAllVisitsList() {
+        // TODO: implement test
+    }
+
+    @Test
+    void openServicePoint() {
+        // TODO: implement test
+    }
+
+    @Test
+    void closeServicePoint() {
+        // TODO: implement test
+    }
+
+    @Test
+    void updateVisit() {
+        // TODO: implement test
+    }
+
+    @Test
+    void addUpdateService() {
+        // TODO: implement test
+    }
+
+    @Test
+    void deleteServices() {
+        // TODO: implement test
+    }
+
+    @Test
+    void adUpdateServiceGroups() {
+        // TODO: implement test
+    }
+
+    @Test
+    void addUpdateServicePoint() {
+        // TODO: implement test
+    }
+
+    @Test
+    void deleteServicePoints() {
+        // TODO: implement test
+    }
+
+    @Test
+    void addUpdateQueues() {
+        // TODO: implement test
+    }
+
+    @Test
+    void deleteQueues() {
+        // TODO: implement test
+    }
+
+    @Test
+    void adUpdateSegmentRules() {
+        // TODO: implement test
+    }
+
 }
