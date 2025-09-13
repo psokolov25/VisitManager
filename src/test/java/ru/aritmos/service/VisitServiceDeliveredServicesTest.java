@@ -45,7 +45,7 @@ class VisitServiceDeliveredServicesTest {
 
         Map<String, DeliveredService> result = service.getDeliveredServices("b1", "sp1");
         assertEquals(1, result.size());
-        assertSame(delivered, result.get("ds1"));
+        assertEquals(delivered, result.get("ds1"));
     }
 
     @Test

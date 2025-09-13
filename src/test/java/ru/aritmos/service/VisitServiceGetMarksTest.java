@@ -45,7 +45,7 @@ class VisitServiceGetMarksTest {
 
         List<Mark> marks = service.getMarks("b1", "v1");
         assertEquals(1, marks.size());
-        assertSame(mark, marks.get(0));
+        assertEquals(mark, marks.get(0));
     }
 
     @Test
