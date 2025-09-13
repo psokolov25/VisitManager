@@ -6,6 +6,10 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
@@ -33,6 +37,19 @@ public class ManagementController {
    * @param id идентификатор отделения
    * @return состояние отделения
    */
+  @Operation(
+      summary = "Получение состояния отделения",
+      description = "Возвращает информацию об отделении по его идентификатору",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Данные отделения",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Branch.class))),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено")
+      })
   @Tag(name = "Информация об отделении")
   @Tag(name = "Полный список")
   @Get(uri = "/branches/{id}")

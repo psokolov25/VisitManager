@@ -60,6 +60,19 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @return свободные точки обслуживания
    */
+  @Operation(
+      summary = "Свободные точки обслуживания отделения",
+      description = "Возвращает карту незанятых точек обслуживания для указанного отделения",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Список свободных точек обслуживания",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ServicePoint.class))),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено")
+      })
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
