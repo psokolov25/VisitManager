@@ -18,9 +18,9 @@ import subprocess
 SOURCE_ROOT = pathlib.Path('src/main/java')
 TEST_ROOT = pathlib.Path('src/test/java')
 
-CLASS_RE = re.compile(r'public\s+(?:class|interface|enum)\s+(\w+)')
-METHOD_RE = re.compile(r'public\s+[^;{]+?\s+(\w+)\s*\(')
-PACKAGE_RE = re.compile(r'package\s+([\w\.]+);')
+CLASS_RE = re.compile('public\s+(?:class|interface|enum)\s+(\w+)')
+METHOD_RE = re.compile('public\s+[^;{]+?\s+(\w+)\s*\(')
+PACKAGE_RE = re.compile('package\s+([\w\.]+);')
 STUB_RE = re.compile(r'TODO|UnsupportedOperationException')
 
 def ensure_tests_for(java_file: pathlib.Path) -> None:
