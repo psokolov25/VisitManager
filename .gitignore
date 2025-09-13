@@ -25,3 +25,5 @@ temp_dump.txt
 *.log
 *.tmp
 *.dump
+
+/.mvn/wrapper/maven-wrapper.jar
