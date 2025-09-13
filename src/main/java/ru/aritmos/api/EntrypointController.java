@@ -6,9 +6,11 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
@@ -57,6 +59,14 @@ public class EntrypointController {
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Создание виртуального визита",
+      description = "Создает визит без печати талона",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит создан"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "500", description = "Системная ошибка")
+      })
   public Visit createVirtualVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
@@ -116,6 +126,14 @@ public class EntrypointController {
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Создание визита",
+      description = "Создает визит в отделении",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит создан"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "500", description = "Системная ошибка")
+      })
   public Visit createVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "2") String entryPointId,
@@ -182,6 +200,14 @@ public class EntrypointController {
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Создание визита с параметрами",
+      description = "Создает визит с дополнительными параметрами",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит создан"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "500", description = "Системная ошибка")
+      })
   public Visit createVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "2") String entryPointId,
@@ -252,6 +278,14 @@ public class EntrypointController {
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Создание визита из приемной",
+      description = "Создает визит с параметрами из приемной",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит создан"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "500", description = "Системная ошибка")
+      })
   public Visit createVisitFromReception(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
@@ -318,6 +352,14 @@ public class EntrypointController {
       consumes = "application/json",
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Добавление параметров визита",
+      description = "Устанавливает параметры визита",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Параметры установлены"),
+        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   public Visit setParameterMap(
       @PathVariable String branchId,
       @PathVariable String visitId,
@@ -340,6 +382,14 @@ public class EntrypointController {
   @Tag(name = "Полный список")
   @Get(uri = "/branches/{branchId}/services", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Доступные услуги",
+      description = "Возвращает список доступных услуг отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список услуг"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   public List<Service> getAllAvilableServies(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     try {
@@ -366,6 +416,14 @@ public class EntrypointController {
   @Tag(name = "Полный список")
   @Get(uri = "/branches/{branchId}/services/all", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Все услуги отделения",
+      description = "Возвращает полный список услуг отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список услуг"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   public List<Service> getAllServices(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     try {

@@ -92,6 +92,14 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о принтерах")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Принтеры отделения",
+      description = "Возвращает список принтеров отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список принтеров"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/printers")
   @ExecuteOn(TaskExecutors.IO)
   public List<Entity> getPrinters(
@@ -108,6 +116,14 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об очередях")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Очереди отделения",
+      description = "Возвращает список очередей отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список очередей"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/queues")
   @ExecuteOn(TaskExecutors.IO)
   public List<Entity> getQueues(
@@ -124,6 +140,14 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об очередях")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Очереди отделения (полные данные)",
+      description = "Возвращает подробную информацию об очередях отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список очередей"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/queues/full")
   @ExecuteOn(TaskExecutors.IO)
   public List<Queue> getFullQueues(
@@ -141,6 +165,14 @@ public class ServicePointController {
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
+  @Operation(
+      summary = "Все точки обслуживания",
+      description = "Возвращает список точек обслуживания отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список точек обслуживания"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/servicePoints")
   @ExecuteOn(TaskExecutors.IO)
   public List<TinyServicePoint> getServicePoints(
@@ -160,6 +192,14 @@ public class ServicePointController {
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
+  @Operation(
+      summary = "Подробные точки обслуживания",
+      description = "Возвращает подробную информацию о точках обслуживания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список точек обслуживания"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/servicePoints/detailed")
   @ExecuteOn(TaskExecutors.IO)
   public List<ServicePoint> getDetailedServicePoints(
@@ -179,6 +219,14 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Get("/branches/{branchId}/servicePoints/user/{userName}")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Точка обслуживания по логину",
+      description = "Возвращает точку обслуживания, где работает указанный сотрудник",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
+        @ApiResponse(responseCode = "404", description = "Отделение или сотрудник не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   public Optional<ServicePoint> getServicePointsByUserName(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable String userName) {
@@ -217,6 +265,14 @@ public class ServicePointController {
   @Tag(name = "Данные о сотрудниках")
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
+  @Operation(
+      summary = "Сотрудники отделения",
+      description = "Возвращает список сотрудников отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список сотрудников"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/users")
   @ExecuteOn(TaskExecutors.IO)
   public List<User> getUsersOfBranch(
@@ -235,6 +291,14 @@ public class ServicePointController {
   @Tag(name = "Данные о сотрудниках")
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
+  @Operation(
+      summary = "Работающие сотрудники отделения",
+      description = "Возвращает список сотрудников, находящихся на рабочем месте",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список сотрудников"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/workingusers")
   @ExecuteOn(TaskExecutors.IO)
   public List<User> getAllWorkingUsersOfBranch(
@@ -253,6 +317,14 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Get("/servicePoints/user/{userName}")
   @ExecuteOn(TaskExecutors.IO)
+  @Operation(
+      summary = "Поиск точки обслуживания по логину",
+      description = "Возвращает точку обслуживания по логину сотрудника среди всех отделений",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
+        @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   public Optional<ServicePoint> getServicePointsByUserName(@PathVariable String userName) {
 
     return branchService.getDetailedBranches().values().stream()
@@ -273,6 +345,14 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Сотрудник по логину",
+      description = "Возвращает информацию о сотруднике по его логину",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Сотрудник найден"),
+        @ApiResponse(responseCode = "404", description = "Отделение или сотрудник не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/users/user/{userName}")
   @ExecuteOn(TaskExecutors.IO)
   public Optional<User> getUserByUserName(
@@ -294,6 +374,14 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о рабочих профилях")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Рабочие профили отделения",
+      description = "Возвращает список рабочих профилей отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список профилей"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get("/branches/{branchId}/workProfiles")
   @ExecuteOn(TaskExecutors.IO)
   public List<TinyClass> getWorkProfiles(
@@ -1151,10 +1239,20 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @param workProfileId идентификатор рабочего профиля
    * @return список услуг
-   */
+  */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об услугах")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Получение услуг рабочего профиля",
+      description =
+          "Возвращает список услуг, доступных для указанного рабочего профиля отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список услуг"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Рабочий профиль не найден"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/workProfile/{workProfileId}/services",
       consumes = "application/json",
@@ -1173,10 +1271,20 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @param queueId идентификатор очереди
    * @return список услуг
-   */
+  */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об услугах")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Получение услуг очереди",
+      description =
+          "Возвращает список услуг, связанных с указанной очередью отделения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список услуг"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/queue/{queueId}/services",
       consumes = "application/json",
@@ -1199,6 +1307,15 @@ public class ServicePointController {
   @Tag(name = "Данные об услугах")
   @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Получение возможных фактических услуг",
+      description =
+          "Возвращает перечень фактических услуг, которые может оказать отделение",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список фактических услуг"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/possibleDeliveredServices",
       consumes = "application/json",

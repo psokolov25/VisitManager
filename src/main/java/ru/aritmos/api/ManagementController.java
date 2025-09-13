@@ -73,6 +73,13 @@ public class ManagementController {
    */
   @Tag(name = "Информация об отделении")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Получение списка отделений",
+      description = "Возвращает карту доступных отделений",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список отделений"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(uri = "/branches")
   @ExecuteOn(TaskExecutors.IO)
   public Map<String, Branch> getBranches(@Nullable String userName) {
@@ -112,6 +119,13 @@ public class ManagementController {
    */
   @Tag(name = "Информация об отделении")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Минимальная информация об отделениях",
+      description = "Возвращает идентификаторы и названия отделений",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список отделений"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(uri = "/branches/tiny")
   @ExecuteOn(TaskExecutors.IO)
   public List<TinyClass> getTinyBranches() {
