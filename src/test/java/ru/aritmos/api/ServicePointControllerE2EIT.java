@@ -15,7 +15,7 @@ import ru.aritmos.model.ServicePoint;
 /**
  * Сквозной тест эндпоинтов {@link ServicePointController}.
  */
-@MicronautTest(environments = {"integration", "local-no-docker"})
+@MicronautTest(environments = "integration")
 class ServicePointControllerE2EIT {
 
     @Inject

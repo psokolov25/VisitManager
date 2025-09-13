@@ -20,7 +20,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 /** End-to-end test for creating and cancelling a visit. */
-@MicronautTest(environments = {"integration", "local-no-docker"})
+@MicronautTest(environments = "integration")
 class VisitLifecycleE2EIT {
 
     @Inject

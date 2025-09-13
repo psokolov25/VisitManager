@@ -14,7 +14,7 @@ import ru.aritmos.model.Branch;
 /**
  * Сквозной тест {@link ConfigurationController}, проверяющий получение причин перерыва.
  */
-@MicronautTest(environments = {"integration", "local-no-docker"})
+@MicronautTest(environments = "integration")
 class ConfigurationControllerE2EIT {
 
     @Inject
