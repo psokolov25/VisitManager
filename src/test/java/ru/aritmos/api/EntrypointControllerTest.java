@@ -31,7 +31,7 @@ class EntrypointControllerTest {
         controller.branchService = mock(BranchService.class);
         controller.visitService = mock(VisitService.class);
         controller.eventService = mock(EventService.class);
-        assertEquals(list, controller.getAllAvilableServies("b1"));
+        assertEquals(list, controller.getAllAvailableServices("b1"));
     }
 
     @Test
@@ -46,7 +46,7 @@ class EntrypointControllerTest {
         controller.visitService = mock(VisitService.class);
         controller.eventService = mock(EventService.class);
         HttpStatusException thrown =
-            assertThrows(HttpStatusException.class, () -> controller.getAllAvilableServies("b1"));
+            assertThrows(HttpStatusException.class, () -> controller.getAllAvailableServices("b1"));
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
     }
 

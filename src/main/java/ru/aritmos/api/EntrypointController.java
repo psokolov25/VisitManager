@@ -65,7 +65,7 @@ public class EntrypointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
-        @ApiResponse(responseCode = "500", description = "Системная ошибка")
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVirtualVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -132,7 +132,7 @@ public class EntrypointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
-        @ApiResponse(responseCode = "500", description = "Системная ошибка")
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -206,7 +206,7 @@ public class EntrypointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
-        @ApiResponse(responseCode = "500", description = "Системная ошибка")
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -284,7 +284,7 @@ public class EntrypointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
-        @ApiResponse(responseCode = "500", description = "Системная ошибка")
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisitFromReception(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -390,7 +390,9 @@ public class EntrypointController {
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
-  public List<Service> getAllAvilableServies(
+
+  public List<Service> getAllAvailableServices(
+
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     try {
 

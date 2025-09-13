@@ -404,7 +404,7 @@ public class ServicePointController {
         @ApiResponse(
             responseCode = "200",
             description = "Смена рабочего профиля произошла успешно"),
-        @ApiResponse(responseCode = "500", description = "Server Error")
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
@@ -468,7 +468,7 @@ public class ServicePointController {
                                             }""")
                     },
                     schema = @Schema(implementation = HashMap.class))),
-        @ApiResponse(responseCode = "500", description = "Server Error")
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
