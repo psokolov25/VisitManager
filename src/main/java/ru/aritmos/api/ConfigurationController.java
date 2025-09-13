@@ -43,6 +43,7 @@ public class ConfigurationController {
       description = "Создает или обновляет конфигурацию отделений",
       responses = {
         @ApiResponse(responseCode = "200", description = "Конфигурация обновлена"),
+        @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Post(uri = "/branches")
@@ -62,6 +63,7 @@ public class ConfigurationController {
       description = "Создает конфигурацию отделений на основе демо-данных",
       responses = {
         @ApiResponse(responseCode = "200", description = "Конфигурация обновлена"),
+        @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Post(uri = "/branches/hardcode")

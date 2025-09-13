@@ -71,7 +71,8 @@ public class ServicePointController {
                 @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ServicePoint.class))),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено")
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
@@ -404,6 +405,7 @@ public class ServicePointController {
         @ApiResponse(
             responseCode = "200",
             description = "Смена рабочего профиля произошла успешно"),
+        @ApiResponse(responseCode = "404", description = "Объект не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Tag(name = "Зона обслуживания")
