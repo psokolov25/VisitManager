@@ -289,12 +289,12 @@ try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
 
 ## 📚 JavaDoc
 
-Сгенерированная документация JavaDoc доступна по пути
-[docs/javadoc/index.html](docs/javadoc/index.html).
+Документация JavaDoc доступна в формате Markdown:
+[docs/JAVADOC.md](docs/JAVADOC.md).
 Чтобы обновить её, выполните:
 
 ```bash
-JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml -DskipTests javadoc:javadoc
+./scripts/javadoc-md.sh
 ```
 
 ## 🧑‍💼 Сценарии работы сотрудника
