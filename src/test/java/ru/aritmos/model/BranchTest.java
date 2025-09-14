@@ -1,11 +1,8 @@
 package ru.aritmos.model;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -14,10 +11,14 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.keycloack.service.KeyCloackClient;
+import ru.aritmos.service.VisitService;
 
 /**
  * Модульные проверки для {@link Branch}.
@@ -360,6 +361,48 @@ class BranchTest {
 
         // Пользователь всё равно сохранён в списке отделения
         assertSame(user, branch.getUsers().get("u1"));
+    }
+
+    @Test
+    void closeServicePointSendsEventsAndEndsVisit() {
+        Branch branch = spy(new Branch("b1", "B1"));
+        ServicePoint sp = new ServicePoint("sp1", "SP1");
+        sp.setBranchId("b1");
+        User user = new User("u1", null);
+        sp.setUser(user);
+
+        Visit visit = Visit.builder().id("v1").build();
+        visit.setUnservedServices(new ArrayList<>(List.of(new Service("s1", "S1", 0, null))));
+        sp.setVisit(visit);
+        branch.getServicePoints().put("sp1", sp);
+
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        visitService.keyCloackClient = keyCloackClient;
+        when(visitService.getServicePointHashMap("b1"))
+                .thenReturn(new HashMap<>(Map.of("sp1", sp)));
+        when(visitService.visitEnd(anyString(), anyString(), anyBoolean(), anyString())).thenReturn(null);
+        doNothing().when(branch)
+                .updateVisit(any(Visit.class), eq(eventService), anyString(), eq(visitService));
+
+        branch.closeServicePoint("sp1", eventService, visitService, true, true, "coffee", true, "force");
+
+        assertNull(sp.getUser());
+        assertTrue(branch.getUsers().containsKey("u1"));
+        assertTrue(visit.getUnservedServices().isEmpty());
+
+        verify(keyCloackClient).userLogout("u1", true, "force");
+        verify(visitService).visitEnd("b1", "sp1", true, "force");
+        verify(branch)
+                .updateVisit(eq(visit), eq(eventService), eq("UNSERVED_SERVICES_CANCELED"), eq(visitService));
+
+        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        verify(eventService, atLeast(3)).send(anyString(), eq(false), captor.capture());
+        List<String> types = captor.getAllValues().stream().map(Event::getEventType).toList();
+        assertTrue(types.contains("SERVICE_POINT_CLOSING"));
+        assertTrue(types.contains("STAFF_START_BREAK"));
+        assertTrue(types.contains("SERVICE_POINT_CLOSED"));
     }
 
 }

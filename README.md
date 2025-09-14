@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-231%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-233%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-38%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-40%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -412,7 +412,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.model.BasedServiceTest — проверяет базовую услугу и её поля.
 - ru.aritmos.model.BranchEntityTest — валидирует сущность отделения, включая список услуг.
 - ru.aritmos.model.BranchEntityWithVisitsTest — тестирует отделение с вложенными визитами.
-- ru.aritmos.model.BranchTest — проверяет доменную модель отделения.
+- ru.aritmos.model.BranchTest — проверяет доменную модель отделения и закрытие точки обслуживания.
 - ru.aritmos.model.DeliveredServiceTest — удостоверяется в корректности модели выполненной услуги визита.
 - ru.aritmos.model.OutcomeTest — проверяет перечисление исходов обслуживания.
 - ru.aritmos.model.ServiceTest — валидирует модель услуги и её атрибуты.

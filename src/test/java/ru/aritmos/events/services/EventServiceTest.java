@@ -8,10 +8,12 @@ import jakarta.inject.Inject;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import reactor.core.publisher.Mono;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.clients.DataBusClient;
 import ru.aritmos.events.model.ChangedObject;
+import ru.aritmos.events.model.Event;
 
 @MicronautTest
 class EventServiceTest {
@@ -28,6 +30,7 @@ class EventServiceTest {
 
     @Test
     void sendChangedEventBuildsEntityChangedEvent() {
+        clearInvocations(dataBusClient);
         Map<String, String> params = Map.of("id", "42");
         Map<String, String> oldValue = Map.of("field", "old");
         Map<String, String> newValue = Map.of("field", "new");
@@ -45,5 +48,21 @@ class EventServiceTest {
         org.junit.jupiter.api.Assertions.assertEquals("UPDATE", changed.getAction());
         org.junit.jupiter.api.Assertions.assertEquals(newValue, changed.getNewValue());
         org.junit.jupiter.api.Assertions.assertEquals(oldValue, changed.getOldValue());
+    }
+
+    @Test
+    void sendSetsSenderAndCallsClient() {
+        clearInvocations(dataBusClient);
+        when(dataBusClient.send(anyString(), anyBoolean(), anyString(), anyString(), anyString(), any()))
+                .thenReturn(Mono.just(Map.of()));
+
+        Event event = Event.builder().eventType("PING").body(Map.of()).build();
+        eventService.applicationName = "vm";
+
+        eventService.send("dest", false, event);
+
+        verify(dataBusClient)
+                .send(eq("dest"), eq(false), anyString(), eq("vm"), eq("PING"), any());
+        org.junit.jupiter.api.Assertions.assertEquals("vm", event.getSenderService());
     }
 }
