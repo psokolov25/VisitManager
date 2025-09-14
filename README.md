@@ -369,6 +369,8 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 Недавние дополнения:
 - тесты конструкторов `BranchEntityWithVisits`;
 - тесты билдера `VisitEventInformation`.
+- тесты модели `User` (конструкторы и расчёт перерывов).
+
 
 ## 🌐 Переменные окружения
 - `KEYCLOAK_URL`, `KEYCLOAK_REALM`, `KEYCLOAK_CLIENT_ID`
