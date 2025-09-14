@@ -1,13 +1,13 @@
 # VisitManager
 
-Служба управления визитами и клиентопотоком, построенная на Micronaut 4.4.3 и Java 17. Сервис управляет очередями, точками обслуживания, сотрудниками и визитами клиентов в отделениях.
+Служба управления визитами и клиентопотоком, построенная на Micronaut 4.7.6 и Java 17. Сервис управляет очередями, точками обслуживания, сотрудниками и визитами клиентов в отделениях.
 
 ![Java](https://img.shields.io/badge/Java-17-007396)
-![Micronaut](https://img.shields.io/badge/Micronaut-4.4.3-1C1C1C)
+![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
 ![Tests](https://img.shields.io/badge/Tests-Maven%20Passing-brightgreen)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-![Coverage](https://img.shields.io/badge/Coverage-23%25-red)
+![Coverage](https://img.shields.io/badge/Coverage-33%25-orange)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
