@@ -7,7 +7,7 @@
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
 ![Tests](https://img.shields.io/badge/Tests-Maven%20Passing-brightgreen)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-![Coverage](https://img.shields.io/badge/Coverage-80%25-yellow)
+![Coverage](https://img.shields.io/badge/Coverage-23%25-red)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
