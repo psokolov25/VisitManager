@@ -24,24 +24,45 @@ class BranchTest {
 
     @Test
     void incrementTicketCounterReturnsNewValue() {
+        // Готовим отделение с очередью
         Branch branch = new Branch("b1", "Branch");
         Queue queue = new Queue("q1", "Queue", "Q", 1);
         branch.getQueues().put("q1", queue);
 
+        // Инкрементируем счётчик
         int result = branch.incrementTicketCounter(queue);
 
+        // Возвращается новое значение, а счётчик очереди увеличивается
         assertEquals(1, result);
         assertEquals(1, queue.getTicketCounter());
     }
 
     @Test
     void incrementTicketCounterReturnsMinusOneForForeignQueue() {
+        // Очередь не принадлежит отделению
         Branch branch = new Branch("b1", "Branch");
         Queue queue = new Queue("q1", "Queue", "Q", 1);
 
+        // Инкрементировать счётчик нельзя
         int result = branch.incrementTicketCounter(queue);
 
         assertEquals(-1, result);
+    }
+
+    @Test
+    void incrementTicketCounterIncrementsSequentially() {
+        // Готовим отделение с очередью
+        Branch branch = new Branch("b1", "Branch");
+        Queue queue = new Queue("q1", "Queue", "Q", 1);
+        branch.getQueues().put("q1", queue);
+
+        // Два последовательных вызова увеличивают счётчик
+        int first = branch.incrementTicketCounter(queue);
+        int second = branch.incrementTicketCounter(queue);
+
+        assertEquals(1, first);
+        assertEquals(2, second);
+        assertEquals(2, queue.getTicketCounter());
     }
 
     @Test
@@ -196,20 +217,6 @@ class BranchTest {
         assertTrue(filtered.containsKey("v3"));
         assertTrue(filtered.containsKey("v4"));
         assertFalse(filtered.containsKey("v5"));
-    }
-
-    @Test
-    void incrementTicketCounterIncrementsSequentially() {
-        Branch branch = new Branch("b1", "Branch");
-        Queue queue = new Queue("q1", "Queue", "Q", 1);
-        branch.getQueues().put("q1", queue);
-
-        int first = branch.incrementTicketCounter(queue);
-        int second = branch.incrementTicketCounter(queue);
-
-        assertEquals(1, first);
-        assertEquals(2, second);
-        assertEquals(2, queue.getTicketCounter());
     }
 
     @Test
