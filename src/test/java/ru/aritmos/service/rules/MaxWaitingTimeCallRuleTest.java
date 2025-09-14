@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
@@ -73,6 +76,101 @@ class MaxWaitingTimeCallRuleTest {
 
         assertEquals(1, result.size());
         assertEquals("sp1", result.get(0).getId());
+    }
+
+    /**
+     * Проверяем, что при неверном рабочем профиле выбрасывается исключение.
+     */
+    @Test
+    void callThrowsWhenWorkProfileIsWrong() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+        rule.eventService = org.mockito.Mockito.mock(ru.aritmos.events.services.EventService.class);
+
+        Branch branch = new Branch("b1", "branch");
+        ServicePoint sp = new ServicePoint("sp1", "sp1");
+        User u1 = new User();
+        u1.setId("u1");
+        u1.setName("u1");
+        u1.setCurrentWorkProfileId("wp1");
+        sp.setUser(u1);
+
+        io.micronaut.http.exceptions.HttpStatusException ex =
+                assertThrows(io.micronaut.http.exceptions.HttpStatusException.class, () -> rule.call(branch, sp));
+        assertEquals(io.micronaut.http.HttpStatus.FORBIDDEN, ex.getStatus());
+    }
+
+    /** Проверяем вызов визита по максимальному ожиданию из списка очередей. */
+    @Test
+    void callWithQueueIdsSelectsVisit() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+
+        Branch branch = new Branch("b1", "branch");
+        WorkProfile wp = new WorkProfile("wp1", "wp1");
+        wp.getQueueIds().add("q1");
+        branch.getWorkProfiles().put(wp.getId(), wp);
+
+        ServicePoint sp = new ServicePoint("sp1", "sp1");
+        User user = new User("u1", "u1", null);
+        user.setCurrentWorkProfileId("wp1");
+        sp.setUser(user);
+
+        Queue queue = new Queue("q1", "q", "A", 1);
+        Visit v1 = Visit.builder()
+                .id("v1")
+                .status("WAITING")
+                .createDateTime(java.time.ZonedDateTime.now().minusSeconds(5))
+                .parameterMap(new HashMap<>())
+                .build();
+        Visit v2 = Visit.builder()
+                .id("v2")
+                .status("WAITING")
+                .createDateTime(java.time.ZonedDateTime.now().minusSeconds(10))
+                .parameterMap(new HashMap<>())
+                .build();
+        queue.getVisits().add(v1);
+        queue.getVisits().add(v2);
+        branch.getQueues().put(queue.getId(), queue);
+
+        Optional<Visit> result = rule.call(branch, sp, List.of("q1"));
+        assertTrue(result.isPresent());
+        assertEquals("v2", result.get().getId());
+    }
+
+    /** Проверяем, что без пользователя выбрасывается исключение при вызове с очередями. */
+    @Test
+    void callWithQueueIdsWithoutUserThrows() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+        rule.eventService = org.mockito.Mockito.mock(ru.aritmos.events.services.EventService.class);
+
+        Branch branch = new Branch("b1", "branch");
+        ServicePoint sp = new ServicePoint("sp1", "sp1");
+
+        io.micronaut.http.exceptions.HttpStatusException ex =
+                assertThrows(io.micronaut.http.exceptions.HttpStatusException.class, () -> rule.call(branch, sp, List.of("q1")));
+        assertEquals(io.micronaut.http.HttpStatus.FORBIDDEN, ex.getStatus());
+    }
+
+    /** Проверяем работу компаратора перенесённых визитов. */
+    @Test
+    void visitComparerHandlesTransferFlags() throws Exception {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+        Method comparer = MaxWaitingTimeCallRule.class.getDeclaredMethod("visitComparer", Visit.class, Visit.class);
+        comparer.setAccessible(true);
+
+        Visit transferred = Visit.builder()
+                .parameterMap(new HashMap<>(Map.of("isTransferredToStart", "Mon, 01 Jan 2024 10:00:00 GMT")))
+                .waitingTime(1L)
+                .build();
+        Visit regular = Visit.builder()
+                .parameterMap(new HashMap<>())
+                .waitingTime(10L)
+                .build();
+
+        int result1 = (int) comparer.invoke(rule, transferred, regular);
+        int result2 = (int) comparer.invoke(rule, regular, transferred);
+
+        assertTrue(result1 > 0);
+        assertTrue(result2 < 0);
     }
 }
 
