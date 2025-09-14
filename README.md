@@ -366,6 +366,10 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 ```
 Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
 
+Недавние дополнения:
+- тесты конструкторов `BranchEntityWithVisits`;
+- тесты билдера `VisitEventInformation`.
+
 ## 🌐 Переменные окружения
 - `KEYCLOAK_URL`, `KEYCLOAK_REALM`, `KEYCLOAK_CLIENT_ID`
 - `REDIS_HOST`, `REDIS_PORT`
