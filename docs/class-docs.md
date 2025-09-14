@@ -48,7 +48,6 @@ REST API управления конфигурацией отделений.
 - `List<TinyClass> getWorkProfiles(String branchId)` — рабочие профили отделения.
 - `List<User> getUsers(String branchId)` — пользователи отделения.
 - `List<Visit> getVisits(String branchId, String queueId)` — визиты очереди, отсортированные по времени ожидания.
-=======
 ### ru.aritmos.api.EntrypointController
 
 REST API управления зоной ожидания.
