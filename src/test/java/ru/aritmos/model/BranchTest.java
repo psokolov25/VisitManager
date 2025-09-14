@@ -400,7 +400,7 @@ class BranchTest {
     }
 
     @Test
-    void adUpdateSegmentRulesThrowsIfServiceGroupMissing() {
+    void addUpdateSegmentRulesThrowsIfServiceGroupMissing() {
         // Создаём правило сегментации с отсутствующей группой услуг
         Branch branch = new Branch("b1", "Branch");
         EventService eventService = mock(EventService.class);
