@@ -5,11 +5,12 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-![Tests](https://img.shields.io/badge/Tests-Maven%20Passing-brightgreen)
+[![Tests](https://img.shields.io/badge/tests-231%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-![Coverage](https://img.shields.io/badge/Coverage-37%25-orange)
+[![Coverage](https://img.shields.io/badge/Coverage-38%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
+[![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
 
 ## 📑 Содержание
 - [🧾 Обзор](#-обзор)
@@ -31,8 +32,12 @@
 - [🧑‍💼 Сценарии работы сотрудника](#-сценарии-работы-сотрудника)
 - [🤖 Документация для автотестеров](#-документация-для-автотестеров)
 - [🧪 Тестирование](#-тестирование)
+  - [Модульные тесты](#модульные-тесты)
+  - [Интеграционные тесты](#интеграционные-тесты)
 - [🌐 Переменные окружения](#-переменные-окружения)
 - [🔗 Полезные ссылки](#-полезные-ссылки)
+- [🤝 Contributing](#-contributing)
+- [📄 Лицензия](#-лицензия)
 
 ## 🧾 Обзор
 VisitManager предоставляет REST‑интерфейсы для создания визитов, управления очередями и обслуживания клиентов. Сервис обрабатывает события асинхронно через Kafka, кеширует конфигурацию в Redis и использует Keycloak для аутентификации. Поддерживается горизонтальное масштабирование и расширяемая модель домена.
@@ -364,12 +369,86 @@ try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
-Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
 
-Недавние дополнения:
-- тесты конструкторов `BranchEntityWithVisits`;
-- тесты билдера `VisitEventInformation`.
-- тесты модели `User` (конструкторы и расчёт перерывов).
+### Модульные тесты
+ - ru.aritmos.ApplicationConfigurerTest — проверяет настройку окружения по умолчанию
+ - ru.aritmos.ApplicationTest — тестирует запуск и доступ к конфигурации
+ - ru.aritmos.EntrypointTest — проверяет выбор визита скриптом Groovy
+ - ru.aritmos.GroovyTest — демонстрация работы Groovy‑скрипта для выборки визита
+ - ru.aritmos.api.ConfigurationControllerTest — покрывает API получения конфигурации
+ - ru.aritmos.api.EntrypointControllerTest — проверяет REST‑методы создания визита
+ - ru.aritmos.api.KeyCloakControllerTest — тестирует ручки аутентификации Keycloak
+ - ru.aritmos.api.ManagementControllerTest — проверяет административные REST‑операции
+ - ru.aritmos.api.ServicePointControllerTest — тестирует операции в точке обслуживания
+ - ru.aritmos.config.LocalNoDockerDataBusClientStubTest — заглушка DataBus для режима без Docker
+ - ru.aritmos.config.LocalNoDockerKeycloakStubTest — заглушка клиента Keycloak
+ - ru.aritmos.docs.CurlCheatsheetGeneratorTest — генерация подсказки по curl
+ - ru.aritmos.events.model.ChangedObjectTest — модель изменённого объекта
+ - ru.aritmos.events.model.EventTest — сериализация и параметры событий
+ - ru.aritmos.events.services.DelayedEventsTest — логика отложенной отправки событий
+ - ru.aritmos.events.services.EventTaskTest — выполнение задач обработки события
+ - ru.aritmos.events.services.MultiserviceEventTaskTest — обработка многосервисных задач
+ - ru.aritmos.exceptions.BusinessExceptionTest — поведение бизнес‑исключений
+ - ru.aritmos.exceptions.SystemExceptionTest — поведение системных исключений
+ - ru.aritmos.handlers.EventHandlerContextTest — контекст регистрации обработчиков
+ - ru.aritmos.keycloack.customsecurity.CustomSecurityRuleTest — правило безопасности Micronaut
+ - ru.aritmos.keycloack.service.EndSessionEndpointResolverReplacementTest — резолвер завершения сессии
+ - ru.aritmos.keycloack.service.KeyCloackClientTest — клиент Keycloak
+ - ru.aritmos.keycloack.service.UserMapperTest — маппинг данных пользователя
+ - ru.aritmos.model.BasedServiceTest — модель базовой услуги
+ - ru.aritmos.model.BranchEntityTest — сущность отделения
+ - ru.aritmos.model.BranchEntityWithVisitsTest — отделение с визитами
+ - ru.aritmos.model.BranchTest — модель отделения
+ - ru.aritmos.model.DeliveredServiceTest — выполненная услуга визита
+ - ru.aritmos.model.OutcomeTest — возможные исходы обслуживания
+ - ru.aritmos.model.ServiceTest — модель услуги
+ - ru.aritmos.model.UserTest — модель пользователя
+ - ru.aritmos.model.keycloak.ModuleRoleAccessTest — доступ к функциям по ролям
+ - ru.aritmos.model.keycloak.ModuleRoleTest — модель роли модуля
+ - ru.aritmos.model.keycloak.TinyUserInfoTest — упрощённая информация пользователя
+ - ru.aritmos.model.tiny.TinyVisitTest — облегчённая модель визита
+ - ru.aritmos.model.visit.VisitEventInformationTest — сведения о событии визита
+ - ru.aritmos.model.visit.VisitEventTest — модель события визита
+ - ru.aritmos.model.visit.VisitTest — доменная модель визита
+ - ru.aritmos.service.BranchServiceTest — сервис работы с отделениями
+ - ru.aritmos.service.ConfigurationTest — сервис конфигурации приложения
+ - ru.aritmos.service.GroovyScriptServiceTest — выполнение скриптов Groovy
+ - ru.aritmos.service.PrinterServiceTest — сервис печати талонов
+ - ru.aritmos.service.ServicesTest — доступ к справочнику услуг
+ - ru.aritmos.service.VisitServiceAddEventTest — добавление события визита
+ - ru.aritmos.service.VisitServiceAddServiceTest — добавление услуги в визит
+ - ru.aritmos.service.VisitServiceAutoCallTest — автоматический вызов визита
+ - ru.aritmos.service.VisitServiceDeliveredServicesTest — завершённые услуги визита
+ - ru.aritmos.service.VisitServiceGetAllVisitsTest — получение всех визитов отделения
+ - ru.aritmos.service.VisitServiceGetMarksTest — получение оценок визита
+ - ru.aritmos.service.VisitServiceGetQueuesTest — получение очередей отделения
+ - ru.aritmos.service.VisitServiceGetVisitsTest — поиск визитов по параметрам
+ - ru.aritmos.service.VisitServiceMarkModificationTest — изменение оценки визита
+ - ru.aritmos.service.VisitServiceNoteTest — добавление заметок к визиту
+ - ru.aritmos.service.VisitServiceOutcomeTest — установка исхода визита
+ - ru.aritmos.service.VisitServiceTest — базовые операции VisitService
+ - ru.aritmos.service.rules.CustomCallRuleTest — пользовательское правило вызова
+ - ru.aritmos.service.rules.MaxLifeTimeCallRuleTest — правило максимальной жизни визита
+ - ru.aritmos.service.rules.MaxWaitingTimeCallRuleTest — правило максимального ожидания
+ - ru.aritmos.service.rules.RuleTest — базовый контракт правил
+ - ru.aritmos.service.rules.SegmentationRuleTest — правило сегментации очереди
+
+ ### Интеграционные тесты
+ - ru.aritmos.DataBusClientMockTest — проверка заглушки клиента DataBus
+ - ru.aritmos.ExternalServicesIT — доступность внешних сервисов
+ - ru.aritmos.api.ConfigurationControllerE2EIT — сквозной тест получения конфигурации
+ - ru.aritmos.api.EntrypointControllerE2EIT — сквозной тест создания визита
+ - ru.aritmos.api.ManagementControllerE2EIT — сквозной тест административных операций
+ - ru.aritmos.api.ServicePointControllerE2EIT — сквозной тест точки обслуживания
+ - ru.aritmos.api.VisitLifecycleE2EIT — сценарий полного жизненного цикла визита
+ - ru.aritmos.events.clients.DataBusClientIT — интеграция с DataBus
+ - ru.aritmos.events.services.DelayedEventsIT — отложенные события в инфраструктуре
+ - ru.aritmos.events.services.EventServiceTest — построение и отправка событий в DataBus
+ - ru.aritmos.events.services.KafkaListenerTest — обработка сообщений Kafka
+ - ru.aritmos.integration.KeycloakKafkaIntegrationIT — работа Keycloak и Kafka через testcontainers
+ - ru.aritmos.service.rules.MaxWaitingTimeCallRuleIT — выбор визита с максимальным ожиданием
+
+ Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
 
 
 ## 🌐 Переменные окружения
@@ -386,3 +465,11 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - [Micronaut Documentation](https://docs.micronaut.io/latest/guide/)
 - [Micronaut OpenAPI](https://micronaut-projects.github.io/micronaut-openapi/latest/guide/)
 - [Micronaut Security](https://micronaut-projects.github.io/micronaut-security/latest/guide/)
+
+## 🤝 Contributing
+
+Перед отправкой изменений выполните `mvn -s .mvn/settings.xml test` и придерживайтесь соглашения [Conventional Commits](https://www.conventionalcommits.org/). В pull request укажите, что изменено, как проверить изменения и возможные риски.
+
+## 📄 Лицензия
+
+Проект распространяется по лицензии MIT. См. файл [LICENSE](LICENSE).
