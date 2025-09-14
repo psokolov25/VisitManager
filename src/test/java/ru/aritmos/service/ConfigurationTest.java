@@ -96,6 +96,7 @@ class ConfigurationTest {
             .send(eq("stat"), eq(false), argThat((Event e) -> e.getEventType().equals("ROLLBACK_COMPLETE")));
     }
 
+
     /**
      * Создаёт демонстрационное отделение с заполненными данными.
      */
