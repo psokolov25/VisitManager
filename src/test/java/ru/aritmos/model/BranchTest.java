@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import io.micronaut.http.HttpStatus;
@@ -200,6 +201,7 @@ class BranchTest {
     }
 
     @Test
+
     void incrementTicketCounterIncrementsSequentially() {
         Branch branch = new Branch("b1", "Branch");
         Queue queue = new Queue("q1", "Queue", "Q", 1);
@@ -214,6 +216,7 @@ class BranchTest {
     }
 
     @Test
+
     void getAllVisitsListContainsDuplicatesForSameVisit() {
         // Один и тот же визит встречается у пользователя и как текущий визит точки обслуживания
         Branch branch = new Branch("b1", "Branch");
@@ -252,6 +255,7 @@ class BranchTest {
 
         assertTrue(visits.isEmpty());
     }
+
 
     @Test
     void openServicePointAssignsUserAndPublishesEvents() throws IOException {
@@ -316,6 +320,7 @@ class BranchTest {
         assertTrue(branch.getUsers().containsKey("u2"));
     }
 
+
     @Test
     void openServicePointAddsUserWithoutServicePoint() throws IOException {
         // Пользователь не указал точку обслуживания
@@ -356,4 +361,5 @@ class BranchTest {
         // Пользователь всё равно сохранён в списке отделения
         assertSame(user, branch.getUsers().get("u1"));
     }
+
 }
