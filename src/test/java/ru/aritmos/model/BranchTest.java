@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import static org.mockito.Mockito.verifyNoInteractions;
+
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import org.mockito.ArgumentCaptor;
@@ -154,7 +156,6 @@ class BranchTest {
     }
 
     @Test
-
     void getVisitsByStatusCollectsFromUsersServicePointsAndQueues() {
         // Формируем отделение с визитами из разных источников
         Branch branch = new Branch("b1", "Branch");
@@ -317,6 +318,48 @@ class BranchTest {
         assertSame(current, sp.getUser());
         // Новый пользователь присутствует в общем списке, но не назначен
         assertTrue(branch.getUsers().containsKey("u2"));
+    }
+
+
+    @Test
+    void openServicePointAddsUserWithoutServicePoint() throws IOException {
+        // Пользователь не указал точку обслуживания
+        Branch branch = new Branch("b1", "Branch");
+        ServicePoint sp = new ServicePoint("sp1", "СП1");
+        branch.getServicePoints().put("sp1", sp);
+
+        User user = new User("u1", null); // servicePointId остаётся null
+        EventService eventService = mock(EventService.class);
+
+        branch.openServicePoint(user, eventService);
+
+        // Пользователь добавлен в отделение, но точка обслуживания не занята
+        assertSame(user, branch.getUsers().get("u1"));
+        assertNull(sp.getUser());
+
+        // События не публиковались
+        verifyNoInteractions(eventService);
+    }
+
+    @Test
+    void openServicePointThrowsIfServicePointNotFound() {
+        // Пользователь пытается открыть отсутствующую точку
+        Branch branch = new Branch("b1", "Branch");
+        User user = new User("u1", null);
+        user.setServicePointId("sp1");
+        EventService eventService = mock(EventService.class);
+
+        HttpStatusException thrown =
+                assertThrows(HttpStatusException.class, () -> branch.openServicePoint(user, eventService));
+        assertEquals(HttpStatus.CONFLICT, thrown.getStatus());
+
+        // Отправлено событие бизнес-ошибки
+        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        verify(eventService).send(eq("*"), eq(false), captor.capture());
+        assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
+
+        // Пользователь всё равно сохранён в списке отделения
+        assertSame(user, branch.getUsers().get("u1"));
     }
 
 }
