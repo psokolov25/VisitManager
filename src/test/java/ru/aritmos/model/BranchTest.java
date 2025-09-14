@@ -154,6 +154,7 @@ class BranchTest {
     }
 
     @Test
+
     void getVisitsByStatusCollectsFromUsersServicePointsAndQueues() {
         // Формируем отделение с визитами из разных источников
         Branch branch = new Branch("b1", "Branch");
@@ -199,6 +200,7 @@ class BranchTest {
     }
 
     @Test
+
     void incrementTicketCounterIncrementsSequentially() {
         Branch branch = new Branch("b1", "Branch");
         Queue queue = new Queue("q1", "Queue", "Q", 1);
@@ -213,6 +215,7 @@ class BranchTest {
     }
 
     @Test
+
     void getAllVisitsListContainsDuplicatesForSameVisit() {
         // Один и тот же визит встречается у пользователя и как текущий визит точки обслуживания
         Branch branch = new Branch("b1", "Branch");
@@ -251,6 +254,7 @@ class BranchTest {
 
         assertTrue(visits.isEmpty());
     }
+
 
     @Test
     void openServicePointAssignsUserAndPublishesEvents() throws IOException {
@@ -314,4 +318,5 @@ class BranchTest {
         // Новый пользователь присутствует в общем списке, но не назначен
         assertTrue(branch.getUsers().containsKey("u2"));
     }
+
 }
