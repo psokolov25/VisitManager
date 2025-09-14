@@ -197,7 +197,6 @@ class BranchServiceTest {
         verify(branch)
             .closeServicePoint(
                 eq("sp1"), eq(service.eventService), eq(visitService), eq(false), eq(false), eq(""), eq(false), eq(""));
- codex/-ru.aritmos.service-gr76xz
         verify(service).add("b1", branch);
     }
 
@@ -223,99 +222,6 @@ class BranchServiceTest {
         verify(eventService)
             .sendChangedEvent(
                 eq("config"), eq(true), eq(oldBranch), eq(updated), anyMap(), eq("BRANCH_CHANGED"));
-    }
-
-    /**
-     * Удаляет отделение, закрывая активные точки и отправляя событие.
-     */
-    @Test
-    void deleteRemovesBranchAndClosesServicePoints() {
-        // подготовка
-        BranchService service = spy(new BranchService());
-        EventService eventService = mock(EventService.class);
-        service.eventService = eventService;
-        service.keyCloackClient = mock(KeyCloackClient.class);
-        VisitService visitService = mock(VisitService.class);
-        Branch branch = new Branch("b1", "Branch");
-        ServicePoint sp = new ServicePoint("sp1", "SP1");
-        sp.setUser(new User("u1", "User", null));
-        branch.getServicePoints().put("sp1", sp);
-        service.branches.put("b1", branch);
-
-        doNothing()
-            .when(service)
-            .closeServicePoint(
-                anyString(),
-                anyString(),
-                any(),
-                anyBoolean(),
-                anyBoolean(),
-                any(),
-                anyBoolean(),
-                anyString());
-
-        // действие
-        service.delete("b1", visitService);
-
-        // проверки
-        assertFalse(service.branches.containsKey("b1"));
-        verify(service)
-            .closeServicePoint(
-                eq("b1"),
-                eq("sp1"),
-                eq(visitService),
-                eq(true),
-                eq(false),
-                eq(""),
-                eq(true),
-                eq("BRANCH_DELETED"));
-        verify(eventService)
-            .sendChangedEvent(
-                eq("config"), eq(true), eq(branch), isNull(), anyMap(), eq("BRANCH_DELETED"));
-    }
-
-    /**
-     * Бросает ошибку, если рабочий профиль не найден.
-     */
-    @Test
-    void openServicePointThrowsWhenWorkProfileMissing() {
-        // подготовка: отделение без рабочего профиля
-        BranchService service = new BranchService();
-        EventService eventService = mock(EventService.class);
-        service.eventService = eventService;
-        service.keyCloackClient = mock(KeyCloackClient.class);
-        Branch branch = new Branch("b1", "Branch");
-        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "SP1"));
-        service.branches.put("b1", branch);
-
-        // проверка исключения
-        assertThrows(
-            HttpStatusException.class,
-            () -> service.openServicePoint("b1", "user", "sp1", "wp1", mock(VisitService.class)));
-        // событие об ошибке отправлено
-        verify(eventService).send(eq("*"), eq(false), any());
-    }
-
-    /**
-     * Бросает ошибку, если точка обслуживания не найдена.
-     */
-    @Test
-    void openServicePointThrowsWhenServicePointMissing() {
-        // подготовка: отделение без точки обслуживания
-        BranchService service = new BranchService();
-        EventService eventService = mock(EventService.class);
-        service.eventService = eventService;
-        service.keyCloackClient = mock(KeyCloackClient.class);
-        Branch branch = new Branch("b1", "Branch");
-        branch.getWorkProfiles().put("wp1", new WorkProfile("wp1", "WP"));
-        service.branches.put("b1", branch);
-
-        // проверка исключения
-        assertThrows(
-            HttpStatusException.class,
-            () -> service.openServicePoint("b1", "user", "sp1", "wp1", mock(VisitService.class)));
-        // событие об ошибке отправлено
-        verify(eventService).send(eq("*"), eq(false), any());
     }
 
     /**
@@ -460,30 +366,6 @@ class BranchServiceTest {
         assertSame(user, branch.getServicePoints().get("sp1").getUser());
 
         verify(service).add("b1", branch);
-    }
-
-    /**
-     * Обновляет существующее отделение и отправляет событие изменения.
-     */
-    @Test
-    void addUpdatesExistingBranchSendsEvent() {
-        // подготовка
-        BranchService service = new BranchService();
-        EventService eventService = mock(EventService.class);
-        service.eventService = eventService;
-        service.keyCloackClient = mock(KeyCloackClient.class);
-        Branch oldBranch = new Branch("b1", "Старый");
-        service.branches.put("b1", oldBranch);
-        Branch updated = new Branch("b1", "Новый");
-
-        // действие
-        service.add("b1", updated);
-
-        // проверки
-        assertSame(updated, service.branches.get("b1"));
-        verify(eventService)
-            .sendChangedEvent(
-                eq("config"), eq(true), eq(oldBranch), eq(updated), anyMap(), eq("BRANCH_CHANGED"));
     }
 
     /**
