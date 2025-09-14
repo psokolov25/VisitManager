@@ -429,5 +429,35 @@ class BranchServiceTest {
         assertEquals(1, result.size());
         assertEquals("d1", result.get(0).getId());
     }
+
+    /**
+     * Открывает точку обслуживания, назначая пользователя и рабочий профиль.
+     */
+    @Test
+    void openServicePointAssignsUserAndProfile() throws Exception {
+        // подготовка: отделение с рабочим профилем и точкой
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        when(keyCloackClient.isUserModuleTypeByUserName("user", "admin")).thenReturn(false);
+        when(keyCloackClient.getAllBranchesOfUser("user")).thenReturn(List.of());
+        when(keyCloackClient.getUserInfo("user")).thenReturn(java.util.Optional.empty());
+        service.keyCloackClient = keyCloackClient;
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        branch.getWorkProfiles().put("wp1", new WorkProfile("wp1", "WP"));
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "SP"));
+        service.branches.put("b1", branch);
+
+        // действие
+        User user = service.openServicePoint("b1", "user", "sp1", "wp1", visitService);
+
+        // проверки: пользователь назначен на точку и профиль
+        assertEquals("sp1", user.getServicePointId());
+        assertEquals("wp1", user.getCurrentWorkProfileId());
+        assertSame(user, branch.getServicePoints().get("sp1").getUser());
+        verify(service).add("b1", branch);
+    }
 }
 
