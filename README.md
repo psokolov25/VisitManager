@@ -5,11 +5,12 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-![Tests](https://img.shields.io/badge/Tests-Maven%20Passing-brightgreen)
+[![Tests](https://img.shields.io/badge/tests-231%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-![Coverage](https://img.shields.io/badge/Coverage-37%25-orange)
+[![Coverage](https://img.shields.io/badge/Coverage-33%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
+[![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
 
 ## 📑 Содержание
 - [🧾 Обзор](#-обзор)
@@ -31,8 +32,12 @@
 - [🧑‍💼 Сценарии работы сотрудника](#-сценарии-работы-сотрудника)
 - [🤖 Документация для автотестеров](#-документация-для-автотестеров)
 - [🧪 Тестирование](#-тестирование)
+  - [Модульные тесты](#модульные-тесты)
+  - [Интеграционные тесты](#интеграционные-тесты)
 - [🌐 Переменные окружения](#-переменные-окружения)
 - [🔗 Полезные ссылки](#-полезные-ссылки)
+- [🤝 Contributing](#-contributing)
+- [📄 Лицензия](#-лицензия)
 
 ## 🧾 Обзор
 VisitManager предоставляет REST‑интерфейсы для создания визитов, управления очередями и обслуживания клиентов. Сервис обрабатывает события асинхронно через Kafka, кеширует конфигурацию в Redis и использует Keycloak для аутентификации. Поддерживается горизонтальное масштабирование и расширяемая модель домена.
@@ -364,12 +369,86 @@ try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
-Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
 
-Недавние дополнения:
-- тесты конструкторов `BranchEntityWithVisits`;
-- тесты билдера `VisitEventInformation`.
-- тесты модели `User` (конструкторы и расчёт перерывов).
+### Модульные тесты
+- ru.aritmos.ApplicationConfigurerTest
+- ru.aritmos.ApplicationTest
+- ru.aritmos.EntrypointTest
+- ru.aritmos.GroovyTest
+- ru.aritmos.api.ConfigurationControllerTest
+- ru.aritmos.api.EntrypointControllerTest
+- ru.aritmos.api.KeyCloakControllerTest
+- ru.aritmos.api.ManagementControllerTest
+- ru.aritmos.api.ServicePointControllerTest
+- ru.aritmos.config.LocalNoDockerDataBusClientStubTest
+- ru.aritmos.config.LocalNoDockerKeycloakStubTest
+- ru.aritmos.docs.CurlCheatsheetGeneratorTest
+- ru.aritmos.events.model.ChangedObjectTest
+- ru.aritmos.events.model.EventTest
+- ru.aritmos.events.services.DelayedEventsTest
+- ru.aritmos.events.services.EventTaskTest
+- ru.aritmos.events.services.MultiserviceEventTaskTest
+- ru.aritmos.exceptions.BusinessExceptionTest
+- ru.aritmos.exceptions.SystemExceptionTest
+- ru.aritmos.handlers.EventHandlerContextTest
+- ru.aritmos.keycloack.customsecurity.CustomSecurityRuleTest
+- ru.aritmos.keycloack.service.EndSessionEndpointResolverReplacementTest
+- ru.aritmos.keycloack.service.KeyCloackClientTest
+- ru.aritmos.keycloack.service.UserMapperTest
+- ru.aritmos.model.BasedServiceTest
+- ru.aritmos.model.BranchEntityTest
+- ru.aritmos.model.BranchEntityWithVisitsTest
+- ru.aritmos.model.BranchTest
+- ru.aritmos.model.DeliveredServiceTest
+- ru.aritmos.model.OutcomeTest
+- ru.aritmos.model.ServiceTest
+- ru.aritmos.model.UserTest
+- ru.aritmos.model.keycloak.ModuleRoleAccessTest
+- ru.aritmos.model.keycloak.ModuleRoleTest
+- ru.aritmos.model.keycloak.TinyUserInfoTest
+- ru.aritmos.model.tiny.TinyVisitTest
+- ru.aritmos.model.visit.VisitEventInformationTest
+- ru.aritmos.model.visit.VisitEventTest
+- ru.aritmos.model.visit.VisitTest
+- ru.aritmos.service.BranchServiceTest
+- ru.aritmos.service.ConfigurationTest
+- ru.aritmos.service.GroovyScriptServiceTest
+- ru.aritmos.service.PrinterServiceTest
+- ru.aritmos.service.ServicesTest
+- ru.aritmos.service.VisitServiceAddEventTest
+- ru.aritmos.service.VisitServiceAddServiceTest
+- ru.aritmos.service.VisitServiceAutoCallTest
+- ru.aritmos.service.VisitServiceDeliveredServicesTest
+- ru.aritmos.service.VisitServiceGetAllVisitsTest
+- ru.aritmos.service.VisitServiceGetMarksTest
+- ru.aritmos.service.VisitServiceGetQueuesTest
+- ru.aritmos.service.VisitServiceGetVisitsTest
+- ru.aritmos.service.VisitServiceMarkModificationTest
+- ru.aritmos.service.VisitServiceNoteTest
+- ru.aritmos.service.VisitServiceOutcomeTest
+- ru.aritmos.service.VisitServiceTest
+- ru.aritmos.service.rules.CustomCallRuleTest
+- ru.aritmos.service.rules.MaxLifeTimeCallRuleTest
+- ru.aritmos.service.rules.MaxWaitingTimeCallRuleTest
+- ru.aritmos.service.rules.RuleTest
+- ru.aritmos.service.rules.SegmentationRuleTest
+
+### Интеграционные тесты
+- ru.aritmos.DataBusClientMockTest
+- ru.aritmos.ExternalServicesIT
+- ru.aritmos.api.ConfigurationControllerE2EIT
+- ru.aritmos.api.EntrypointControllerE2EIT
+- ru.aritmos.api.ManagementControllerE2EIT
+- ru.aritmos.api.ServicePointControllerE2EIT
+- ru.aritmos.api.VisitLifecycleE2EIT
+- ru.aritmos.events.clients.DataBusClientIT
+- ru.aritmos.events.services.DelayedEventsIT
+- ru.aritmos.events.services.EventServiceTest
+- ru.aritmos.events.services.KafkaListenerTest
+- ru.aritmos.integration.KeycloakKafkaIntegrationIT
+- ru.aritmos.service.rules.MaxWaitingTimeCallRuleIT
+
+Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
 
 
 ## 🌐 Переменные окружения
@@ -386,3 +465,11 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - [Micronaut Documentation](https://docs.micronaut.io/latest/guide/)
 - [Micronaut OpenAPI](https://micronaut-projects.github.io/micronaut-openapi/latest/guide/)
 - [Micronaut Security](https://micronaut-projects.github.io/micronaut-security/latest/guide/)
+
+## 🤝 Contributing
+
+Перед отправкой изменений выполните `mvn -s .mvn/settings.xml test` и придерживайтесь соглашения [Conventional Commits](https://www.conventionalcommits.org/). В pull request укажите, что изменено, как проверить изменения и возможные риски.
+
+## 📄 Лицензия
+
+Проект распространяется по лицензии MIT. См. файл [LICENSE](LICENSE).
