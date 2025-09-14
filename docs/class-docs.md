@@ -47,8 +47,6 @@ REST API управления конфигурацией отделений.
 - `HashMap<String, ServicePoint> getServicePointHashMap(String branchId)` — все сервис‑пойнты отделения.
 - `List<TinyClass> getWorkProfiles(String branchId)` — рабочие профили отделения.
 - `List<User> getUsers(String branchId)` — пользователи отделения.
-- `List<Visit> getVisits(String branchId, String queueId)` — визиты очереди, отсортированные по времени ожидания.
-=======
 ### ru.aritmos.api.EntrypointController
 
 REST API управления зоной ожидания.
