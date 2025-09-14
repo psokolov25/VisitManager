@@ -136,6 +136,7 @@ class VisitServiceDeliveredServicesTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
+
     @Test
     void addOutcomeOfDeliveredServiceSetsOutcome() {
         Branch branch = new Branch("b1", "Branch");
