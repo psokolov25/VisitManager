@@ -124,6 +124,5 @@ class ConfigurationTest {
         verify(configuration.branchService)
             .add(eq("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3"), any());
     }
-
 }
 
