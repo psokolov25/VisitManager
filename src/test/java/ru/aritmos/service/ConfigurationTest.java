@@ -95,5 +95,35 @@ class ConfigurationTest {
         verify(configuration.eventService)
             .send(eq("stat"), eq(false), argThat((Event e) -> e.getEventType().equals("ROLLBACK_COMPLETE")));
     }
+
+
+    /**
+     * Создаёт демонстрационное отделение с заполненными данными.
+     */
+    @Test
+    void createDemoBranchBuildsSample() {
+        // конфигурация с заглушкой клиента Keycloak
+        Configuration configuration = new Configuration();
+        configuration.keyCloackClient = mock(KeyCloackClient.class);
+        configuration.branchService = mock(BranchService.class);
+        when(configuration.keyCloackClient.getBranchPathByBranchPrefix("REGION", "TVR"))
+            .thenReturn("/demo");
+
+        // вызываем метод
+        Map<String, Branch> result = configuration.createDemoBranch();
+
+        // карта содержит основной демо-филиал и дополнительные
+        assertTrue(result.size() >= 5);
+        Branch branch = result.get("37493d1c-8282-4417-a729-dceac1f3e2b4");
+        assertNotNull(branch);
+        assertEquals("Клиника на Тверской", branch.getName());
+        assertEquals("TVR", branch.getPrefix());
+        assertEquals("/demo", branch.getPath());
+        assertTrue(branch.getMarks().containsKey("04992364-9e96-4ec9-8a05-923766aa57e7"));
+        // в процессе создаются дополнительные отделения
+        verify(configuration.branchService)
+            .add(eq("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3"), any());
+    }
+
 }
 

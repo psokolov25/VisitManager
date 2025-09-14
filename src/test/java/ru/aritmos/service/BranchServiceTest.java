@@ -270,5 +270,51 @@ class BranchServiceTest {
             .sendChangedEvent(
                 eq("config"), eq(true), eq(branch), isNull(), anyMap(), eq("BRANCH_DELETED"));
     }
+
+
+    /**
+     * Бросает ошибку, если рабочий профиль не найден.
+     */
+    @Test
+    void openServicePointThrowsWhenWorkProfileMissing() {
+        // подготовка: отделение без рабочего профиля
+        BranchService service = new BranchService();
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = new Branch("b1", "Branch");
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "SP1"));
+        service.branches.put("b1", branch);
+
+        // проверка исключения
+        assertThrows(
+            HttpStatusException.class,
+            () -> service.openServicePoint("b1", "user", "sp1", "wp1", mock(VisitService.class)));
+        // событие об ошибке отправлено
+        verify(eventService).send(eq("*"), eq(false), any());
+    }
+
+    /**
+     * Бросает ошибку, если точка обслуживания не найдена.
+     */
+    @Test
+    void openServicePointThrowsWhenServicePointMissing() {
+        // подготовка: отделение без точки обслуживания
+        BranchService service = new BranchService();
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = new Branch("b1", "Branch");
+        branch.getWorkProfiles().put("wp1", new WorkProfile("wp1", "WP"));
+        service.branches.put("b1", branch);
+
+        // проверка исключения
+        assertThrows(
+            HttpStatusException.class,
+            () -> service.openServicePoint("b1", "user", "sp1", "wp1", mock(VisitService.class)));
+        // событие об ошибке отправлено
+        verify(eventService).send(eq("*"), eq(false), any());
+    }
+
 }
 
