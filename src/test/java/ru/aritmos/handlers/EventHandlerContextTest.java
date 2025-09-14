@@ -1,14 +1,20 @@
 package ru.aritmos.handlers;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Map;
+import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.ServicePoint;
+import ru.aritmos.model.User;
+import ru.aritmos.model.keycloak.UserSession;
+import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
@@ -47,5 +53,70 @@ class EventHandlerContextTest {
         assertDoesNotThrow(() -> new EventHandlerContext.BusinesErrorHandler().Handle(event));
         assertDoesNotThrow(() -> new EventHandlerContext.SystemErrorHandler().Handle(event));
         assertDoesNotThrow(() -> new EventHandlerContext.EntityChangedHandler().Handle(event));
+    }
+
+    @Test
+    void notForceLogoutClosesPointAndEndsVisit() throws Exception {
+        VisitService visitService = mock(VisitService.class);
+        EventService eventService = mock(EventService.class);
+        BranchService branchService = mock(BranchService.class);
+        when(visitService.getBranchService()).thenReturn(branchService);
+
+        Branch branch = new Branch("b1", "B1");
+        ServicePoint sp = new ServicePoint("sp1", "SP1");
+        sp.setBranchId("b1");
+        User user = new User();
+        user.setName("u1");
+        sp.setUser(user);
+        Visit visit = Visit.builder().id("v1").build();
+        sp.setVisit(visit);
+        branch.getServicePoints().put(sp.getId(), sp);
+
+        when(branchService.getDetailedBranches()).thenReturn(new HashMap<>(Map.of("b1", branch)));
+
+        EventHandlerContext.NotForceUserLogoutHandler handler =
+                new EventHandlerContext.NotForceUserLogoutHandler(visitService, eventService);
+
+        UserSession session = UserSession.builder().login("u1").build();
+        Event event = Event.builder().body(session).build();
+
+        handler.Handle(event);
+
+        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        verify(eventService).send(eq("frontend"), eq(false), captor.capture());
+        assertEquals("PROCESSING_USER_LOGOUT_FORCE", captor.getValue().getEventType());
+        verify(visitService).visitEnd("b1", "sp1", true, "USER_SESSION_KILLED");
+        verify(branchService)
+                .closeServicePoint("b1", "sp1", visitService, false, false, "", false, "");
+    }
+
+    @Test
+    void forceLogoutClosesPoint() throws Exception {
+        VisitService visitService = mock(VisitService.class);
+        EventService eventService = mock(EventService.class);
+        BranchService branchService = mock(BranchService.class);
+        when(visitService.getBranchService()).thenReturn(branchService);
+
+        Branch branch = new Branch("b1", "B1");
+        ServicePoint sp = new ServicePoint("sp1", "SP1");
+        sp.setBranchId("b1");
+        User user = new User();
+        user.setName("u1");
+        sp.setUser(user);
+        branch.getServicePoints().put(sp.getId(), sp);
+
+        when(branchService.getDetailedBranches()).thenReturn(new HashMap<>(Map.of("b1", branch)));
+
+        EventHandlerContext.ForceUserLogoutHandler handler =
+                new EventHandlerContext.ForceUserLogoutHandler(visitService, eventService);
+
+        UserSession session = UserSession.builder().login("u1").build();
+        Event event = Event.builder().body(session).senderService("external").build();
+
+        handler.Handle(event);
+
+        verify(branchService)
+                .closeServicePoint("b1", "sp1", visitService, false, false, "", true, "USER_SESSION_KILLED");
+        verifyNoInteractions(eventService);
     }
 }
