@@ -13,6 +13,7 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.model.DeliveredService;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.Service;
+import ru.aritmos.model.ServiceGroup;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
@@ -56,6 +57,57 @@ class BranchServiceTest {
         assertThrows(HttpStatusException.class, () -> service.getBranch("missing"));
         // событие об ошибке отправлено
         verify(eventService).send(eq("*"), eq(false), any());
+    }
+
+    /**
+     * Добавляет группы услуг и связывает их с услугами отделения.
+     */
+    @Test
+    void addUpdateServiceGroupsAssignsToServices() {
+        // подготовка отделения с услугой
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = new Branch("b1", "Branch");
+        Service service1 = new Service("s1", "Service", 10, "q1");
+        branch.getServices().put(service1.getId(), service1);
+        service.branches.put("b1", branch);
+
+        ServiceGroup group = new ServiceGroup("g1", "Group", List.of("s1"), branch.getId());
+        HashMap<String, ServiceGroup> groups = new HashMap<>();
+        groups.put(group.getId(), group);
+
+        // действие
+        service.addUpdateServiceGroups("b1", groups);
+
+        // проверка: группа добавлена и услуга привязана
+        assertSame(group, branch.getServiceGroups().get("g1"));
+        assertEquals("g1", service1.getServiceGroupId());
+        verify(service).add("b1", branch);
+        verify(service.eventService)
+            .sendChangedEvent(eq("config"), eq(false), isNull(), eq(groups), anyMap(), eq("Add or update service groups"));
+    }
+
+    /**
+     * Бросает ошибку, если группа ссылается на несуществующую услугу.
+     */
+    @Test
+    void addUpdateServiceGroupsThrowsWhenServiceMissing() {
+        BranchService service = spy(new BranchService());
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = new Branch("b1", "Branch");
+        service.branches.put("b1", branch);
+
+        ServiceGroup group = new ServiceGroup("g1", "Group", List.of("missing"), branch.getId());
+        HashMap<String, ServiceGroup> groups = new HashMap<>();
+        groups.put(group.getId(), group);
+
+        assertThrows(HttpStatusException.class, () -> service.addUpdateServiceGroups("b1", groups));
+        verify(service, never()).add(anyString(), any());
+        verify(eventService, never())
+            .sendChangedEvent(anyString(), anyBoolean(), any(), any(), anyMap(), anyString());
     }
 
     /**
