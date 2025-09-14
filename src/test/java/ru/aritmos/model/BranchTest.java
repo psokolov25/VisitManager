@@ -144,6 +144,7 @@ class BranchTest {
     }
 
     @Test
+
     void getVisitsByStatusCollectsFromUsersServicePointsAndQueues() {
         // Формируем отделение с визитами из разных источников
         Branch branch = new Branch("b1", "Branch");
@@ -203,6 +204,7 @@ class BranchTest {
     }
 
     @Test
+
     void getAllVisitsListContainsDuplicatesForSameVisit() {
         // Один и тот же визит встречается у пользователя и как текущий визит точки обслуживания
         Branch branch = new Branch("b1", "Branch");
