@@ -371,6 +371,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 ```
 
 ### Модульные тесты
+
  - ru.aritmos.ApplicationConfigurerTest — проверяет настройку окружения по умолчанию
  - ru.aritmos.ApplicationTest — тестирует запуск и доступ к конфигурации
  - ru.aritmos.EntrypointTest — проверяет выбор визита скриптом Groovy
