@@ -17,6 +17,7 @@ import ru.aritmos.model.ServiceGroup;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
+import ru.aritmos.model.visit.Visit;
 
 /**
  * Тесты для {@link BranchService}.
@@ -387,6 +388,29 @@ class BranchServiceTest {
         // проверки
         assertEquals(1, result.size());
         assertEquals("d1", result.get(0).getId());
+    }
+
+    /**
+     * Делегирует обновление визита объекту Branch.
+     */
+    @Test
+    void updateVisitDelegatesToBranch() {
+        // подготовка: шпион Branch и сервис
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doNothing().when(branch).updateVisit(any(), any(), anyString(), any());
+        service.branches.put("b1", branch);
+        Visit visit = Visit.builder().id("v1").branchId("b1").build();
+        VisitService visitService = mock(VisitService.class);
+
+        // действие
+        service.updateVisit(visit, "ACTION", visitService);
+
+        // проверки: вызван метод Branch.updateVisit с нужными параметрами
+        verify(branch).updateVisit(visit, service.eventService, "ACTION", visitService);
+        verify(service).getBranch("b1");
     }
 
     /**
