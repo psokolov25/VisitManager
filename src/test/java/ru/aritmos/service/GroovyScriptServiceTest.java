@@ -21,4 +21,17 @@ class GroovyScriptServiceTest {
 
         assertEquals(5, script.getOutputParameters().get("z"));
     }
+
+    /**
+     * Бросает исключение при ошибке синтаксиса в сценарии.
+     */
+    @Test
+    void executeThrowsOnCompilationError() {
+        GroovyScriptService service = new GroovyScriptService();
+        GroovyScript script = GroovyScript.builder()
+                .ruleCode("z = ")
+                .build();
+
+        assertThrows(RuntimeException.class, () -> service.Execute(script));
+    }
 }

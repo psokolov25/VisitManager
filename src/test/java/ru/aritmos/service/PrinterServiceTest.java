@@ -1,5 +1,6 @@
 package ru.aritmos.service;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import io.micronaut.http.HttpResponse;
@@ -21,6 +22,22 @@ class PrinterServiceTest {
 
         service.print("printer", visit);
 
+        verify(client).print("UTF-8", true, visit);
+    }
+
+    /**
+     * Не выбрасывает исключение при ошибке клиента печати.
+     */
+    @Test
+    void printHandlesClientError() {
+        PrinterClient client = mock(PrinterClient.class);
+        Visit visit = Visit.builder().build();
+        when(client.print("UTF-8", true, visit)).thenReturn(Mono.error(new RuntimeException("fail")));
+
+        PrinterService service = new PrinterService();
+        service.printerClient = client;
+
+        assertDoesNotThrow(() -> service.print("printer", visit));
         verify(client).print("UTF-8", true, visit);
     }
 }
