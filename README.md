@@ -248,7 +248,8 @@ class VisitFacade {
 ```java
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.client.annotation.Client;
-import jakarta.inject.Singleton;
+import java.util.List;
+import ru.aritmos.model.visit.Visit;
 
 @Client("/")
 interface VisitClient {
@@ -257,7 +258,9 @@ interface VisitClient {
 }
 ```
 ```java
-// использование клиента
+import jakarta.inject.Inject;
+
+@Inject VisitClient visitClient;
 Visit created = visitClient.create("001", "01", List.of("serviceId1"));
 ```
 
@@ -266,12 +269,17 @@ Visit created = visitClient.create("001", "01", List.of("serviceId1"));
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.HttpRequest;
+import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+Logger log = LoggerFactory.getLogger("example");
 
 try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
     BlockingHttpClient blocking = client.toBlocking();
     HttpRequest<?> req = HttpRequest.GET("/managementinformation/branches");
     String body = blocking.retrieve(req);
-    System.out.println(body);
+    log.info("Ответ: {}", body);
 }
 ```
 
