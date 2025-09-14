@@ -371,84 +371,85 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 ```
 
 ### Модульные тесты
-- ru.aritmos.ApplicationConfigurerTest
-- ru.aritmos.ApplicationTest
-- ru.aritmos.EntrypointTest
-- ru.aritmos.GroovyTest
-- ru.aritmos.api.ConfigurationControllerTest
-- ru.aritmos.api.EntrypointControllerTest
-- ru.aritmos.api.KeyCloakControllerTest
-- ru.aritmos.api.ManagementControllerTest
-- ru.aritmos.api.ServicePointControllerTest
-- ru.aritmos.config.LocalNoDockerDataBusClientStubTest
-- ru.aritmos.config.LocalNoDockerKeycloakStubTest
-- ru.aritmos.docs.CurlCheatsheetGeneratorTest
-- ru.aritmos.events.model.ChangedObjectTest
-- ru.aritmos.events.model.EventTest
-- ru.aritmos.events.services.DelayedEventsTest
-- ru.aritmos.events.services.EventTaskTest
-- ru.aritmos.events.services.MultiserviceEventTaskTest
-- ru.aritmos.exceptions.BusinessExceptionTest
-- ru.aritmos.exceptions.SystemExceptionTest
-- ru.aritmos.handlers.EventHandlerContextTest
-- ru.aritmos.keycloack.customsecurity.CustomSecurityRuleTest
-- ru.aritmos.keycloack.service.EndSessionEndpointResolverReplacementTest
-- ru.aritmos.keycloack.service.KeyCloackClientTest
-- ru.aritmos.keycloack.service.UserMapperTest
-- ru.aritmos.model.BasedServiceTest
-- ru.aritmos.model.BranchEntityTest
-- ru.aritmos.model.BranchEntityWithVisitsTest
-- ru.aritmos.model.BranchTest
-- ru.aritmos.model.DeliveredServiceTest
-- ru.aritmos.model.OutcomeTest
-- ru.aritmos.model.ServiceTest
-- ru.aritmos.model.UserTest
-- ru.aritmos.model.keycloak.ModuleRoleAccessTest
-- ru.aritmos.model.keycloak.ModuleRoleTest
-- ru.aritmos.model.keycloak.TinyUserInfoTest
-- ru.aritmos.model.tiny.TinyVisitTest
-- ru.aritmos.model.visit.VisitEventInformationTest
-- ru.aritmos.model.visit.VisitEventTest
-- ru.aritmos.model.visit.VisitTest
-- ru.aritmos.service.BranchServiceTest
-- ru.aritmos.service.ConfigurationTest
-- ru.aritmos.service.GroovyScriptServiceTest
-- ru.aritmos.service.PrinterServiceTest
-- ru.aritmos.service.ServicesTest
-- ru.aritmos.service.VisitServiceAddEventTest
-- ru.aritmos.service.VisitServiceAddServiceTest
-- ru.aritmos.service.VisitServiceAutoCallTest
-- ru.aritmos.service.VisitServiceDeliveredServicesTest
-- ru.aritmos.service.VisitServiceGetAllVisitsTest
-- ru.aritmos.service.VisitServiceGetMarksTest
-- ru.aritmos.service.VisitServiceGetQueuesTest
-- ru.aritmos.service.VisitServiceGetVisitsTest
-- ru.aritmos.service.VisitServiceMarkModificationTest
-- ru.aritmos.service.VisitServiceNoteTest
-- ru.aritmos.service.VisitServiceOutcomeTest
-- ru.aritmos.service.VisitServiceTest
-- ru.aritmos.service.rules.CustomCallRuleTest
-- ru.aritmos.service.rules.MaxLifeTimeCallRuleTest
-- ru.aritmos.service.rules.MaxWaitingTimeCallRuleTest
-- ru.aritmos.service.rules.RuleTest
-- ru.aritmos.service.rules.SegmentationRuleTest
 
-### Интеграционные тесты
-- ru.aritmos.DataBusClientMockTest
-- ru.aritmos.ExternalServicesIT
-- ru.aritmos.api.ConfigurationControllerE2EIT
-- ru.aritmos.api.EntrypointControllerE2EIT
-- ru.aritmos.api.ManagementControllerE2EIT
-- ru.aritmos.api.ServicePointControllerE2EIT
-- ru.aritmos.api.VisitLifecycleE2EIT
-- ru.aritmos.events.clients.DataBusClientIT
-- ru.aritmos.events.services.DelayedEventsIT
-- ru.aritmos.events.services.EventServiceTest
-- ru.aritmos.events.services.KafkaListenerTest
-- ru.aritmos.integration.KeycloakKafkaIntegrationIT
-- ru.aritmos.service.rules.MaxWaitingTimeCallRuleIT
+ - ru.aritmos.ApplicationConfigurerTest — проверяет настройку окружения по умолчанию
+ - ru.aritmos.ApplicationTest — тестирует запуск и доступ к конфигурации
+ - ru.aritmos.EntrypointTest — проверяет выбор визита скриптом Groovy
+ - ru.aritmos.GroovyTest — демонстрация работы Groovy‑скрипта для выборки визита
+ - ru.aritmos.api.ConfigurationControllerTest — покрывает API получения конфигурации
+ - ru.aritmos.api.EntrypointControllerTest — проверяет REST‑методы создания визита
+ - ru.aritmos.api.KeyCloakControllerTest — тестирует ручки аутентификации Keycloak
+ - ru.aritmos.api.ManagementControllerTest — проверяет административные REST‑операции
+ - ru.aritmos.api.ServicePointControllerTest — тестирует операции в точке обслуживания
+ - ru.aritmos.config.LocalNoDockerDataBusClientStubTest — заглушка DataBus для режима без Docker
+ - ru.aritmos.config.LocalNoDockerKeycloakStubTest — заглушка клиента Keycloak
+ - ru.aritmos.docs.CurlCheatsheetGeneratorTest — генерация подсказки по curl
+ - ru.aritmos.events.model.ChangedObjectTest — модель изменённого объекта
+ - ru.aritmos.events.model.EventTest — сериализация и параметры событий
+ - ru.aritmos.events.services.DelayedEventsTest — логика отложенной отправки событий
+ - ru.aritmos.events.services.EventTaskTest — выполнение задач обработки события
+ - ru.aritmos.events.services.MultiserviceEventTaskTest — обработка многосервисных задач
+ - ru.aritmos.exceptions.BusinessExceptionTest — поведение бизнес‑исключений
+ - ru.aritmos.exceptions.SystemExceptionTest — поведение системных исключений
+ - ru.aritmos.handlers.EventHandlerContextTest — контекст регистрации обработчиков
+ - ru.aritmos.keycloack.customsecurity.CustomSecurityRuleTest — правило безопасности Micronaut
+ - ru.aritmos.keycloack.service.EndSessionEndpointResolverReplacementTest — резолвер завершения сессии
+ - ru.aritmos.keycloack.service.KeyCloackClientTest — клиент Keycloak
+ - ru.aritmos.keycloack.service.UserMapperTest — маппинг данных пользователя
+ - ru.aritmos.model.BasedServiceTest — модель базовой услуги
+ - ru.aritmos.model.BranchEntityTest — сущность отделения
+ - ru.aritmos.model.BranchEntityWithVisitsTest — отделение с визитами
+ - ru.aritmos.model.BranchTest — модель отделения
+ - ru.aritmos.model.DeliveredServiceTest — выполненная услуга визита
+ - ru.aritmos.model.OutcomeTest — возможные исходы обслуживания
+ - ru.aritmos.model.ServiceTest — модель услуги
+ - ru.aritmos.model.UserTest — модель пользователя
+ - ru.aritmos.model.keycloak.ModuleRoleAccessTest — доступ к функциям по ролям
+ - ru.aritmos.model.keycloak.ModuleRoleTest — модель роли модуля
+ - ru.aritmos.model.keycloak.TinyUserInfoTest — упрощённая информация пользователя
+ - ru.aritmos.model.tiny.TinyVisitTest — облегчённая модель визита
+ - ru.aritmos.model.visit.VisitEventInformationTest — сведения о событии визита
+ - ru.aritmos.model.visit.VisitEventTest — модель события визита
+ - ru.aritmos.model.visit.VisitTest — доменная модель визита
+ - ru.aritmos.service.BranchServiceTest — сервис работы с отделениями
+ - ru.aritmos.service.ConfigurationTest — сервис конфигурации приложения
+ - ru.aritmos.service.GroovyScriptServiceTest — выполнение скриптов Groovy
+ - ru.aritmos.service.PrinterServiceTest — сервис печати талонов
+ - ru.aritmos.service.ServicesTest — доступ к справочнику услуг
+ - ru.aritmos.service.VisitServiceAddEventTest — добавление события визита
+ - ru.aritmos.service.VisitServiceAddServiceTest — добавление услуги в визит
+ - ru.aritmos.service.VisitServiceAutoCallTest — автоматический вызов визита
+ - ru.aritmos.service.VisitServiceDeliveredServicesTest — завершённые услуги визита
+ - ru.aritmos.service.VisitServiceGetAllVisitsTest — получение всех визитов отделения
+ - ru.aritmos.service.VisitServiceGetMarksTest — получение оценок визита
+ - ru.aritmos.service.VisitServiceGetQueuesTest — получение очередей отделения
+ - ru.aritmos.service.VisitServiceGetVisitsTest — поиск визитов по параметрам
+ - ru.aritmos.service.VisitServiceMarkModificationTest — изменение оценки визита
+ - ru.aritmos.service.VisitServiceNoteTest — добавление заметок к визиту
+ - ru.aritmos.service.VisitServiceOutcomeTest — установка исхода визита
+ - ru.aritmos.service.VisitServiceTest — базовые операции VisitService
+ - ru.aritmos.service.rules.CustomCallRuleTest — пользовательское правило вызова
+ - ru.aritmos.service.rules.MaxLifeTimeCallRuleTest — правило максимальной жизни визита
+ - ru.aritmos.service.rules.MaxWaitingTimeCallRuleTest — правило максимального ожидания
+ - ru.aritmos.service.rules.RuleTest — базовый контракт правил
+ - ru.aritmos.service.rules.SegmentationRuleTest — правило сегментации очереди
 
-Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
+ ### Интеграционные тесты
+ - ru.aritmos.DataBusClientMockTest — проверка заглушки клиента DataBus
+ - ru.aritmos.ExternalServicesIT — доступность внешних сервисов
+ - ru.aritmos.api.ConfigurationControllerE2EIT — сквозной тест получения конфигурации
+ - ru.aritmos.api.EntrypointControllerE2EIT — сквозной тест создания визита
+ - ru.aritmos.api.ManagementControllerE2EIT — сквозной тест административных операций
+ - ru.aritmos.api.ServicePointControllerE2EIT — сквозной тест точки обслуживания
+ - ru.aritmos.api.VisitLifecycleE2EIT — сценарий полного жизненного цикла визита
+ - ru.aritmos.events.clients.DataBusClientIT — интеграция с DataBus
+ - ru.aritmos.events.services.DelayedEventsIT — отложенные события в инфраструктуре
+ - ru.aritmos.events.services.EventServiceTest — построение и отправка событий в DataBus
+ - ru.aritmos.events.services.KafkaListenerTest — обработка сообщений Kafka
+ - ru.aritmos.integration.KeycloakKafkaIntegrationIT — работа Keycloak и Kafka через testcontainers
+ - ru.aritmos.service.rules.MaxWaitingTimeCallRuleIT — выбор визита с максимальным ожиданием
+
+ Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
 
 
 ## 🌐 Переменные окружения
