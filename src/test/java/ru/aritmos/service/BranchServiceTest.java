@@ -144,5 +144,47 @@ class BranchServiceTest {
                 eq(false), eq(""), eq(false), eq(""));
         verify(service).add("b1", branch);
     }
+
+    /** Проверяет, что удаление отделения закрывает точки обслуживания и публикует событие. */
+    @Test
+    void deleteClosesServicePointsAndRemovesBranch() {
+        BranchService service = spy(new BranchService());
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        ServicePoint sp = new ServicePoint("sp1", "SP1");
+        sp.setUser(new User("u1", "User", null));
+        branch.getServicePoints().put(sp.getId(), sp);
+        service.branches.put(branch.getId(), branch);
+
+        doNothing()
+            .when(service)
+            .closeServicePoint(anyString(), anyString(), eq(visitService), anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString());
+
+        service.delete("b1", visitService);
+
+        verify(service)
+            .closeServicePoint(
+                eq("b1"), eq("sp1"), eq(visitService), eq(true), eq(false), eq(""), eq(true), eq("BRANCH_DELETED"));
+        verify(eventService)
+            .sendChangedEvent(eq("config"), eq(true), eq(branch), isNull(), anyMap(), eq("BRANCH_DELETED"));
+        assertFalse(service.branches.containsKey("b1"));
+    }
+
+    /** Проверяет выброс ошибки при удалении несуществующего отделения. */
+    @Test
+    void deleteThrowsWhenBranchMissing() {
+        BranchService service = new BranchService();
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        VisitService visitService = mock(VisitService.class);
+
+        assertThrows(HttpStatusException.class, () -> service.delete("missing", visitService));
+        verify(eventService).send(eq("*"), eq(false), any());
+    }
 }
 
