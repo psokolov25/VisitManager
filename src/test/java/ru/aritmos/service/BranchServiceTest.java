@@ -271,6 +271,7 @@ class BranchServiceTest {
                 eq("config"), eq(true), eq(branch), isNull(), anyMap(), eq("BRANCH_DELETED"));
     }
 
+
     /**
      * Бросает ошибку, если рабочий профиль не найден.
      */
@@ -314,5 +315,6 @@ class BranchServiceTest {
         // событие об ошибке отправлено
         verify(eventService).send(eq("*"), eq(false), any());
     }
+
 }
 
