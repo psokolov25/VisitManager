@@ -228,10 +228,13 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 ### Использование сервиса
 ```java
 import jakarta.inject.Inject;
+import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.VisitService;
 
 class VisitFacade {
-    @Inject VisitService visitService;
+
+    @Inject
+    VisitService visitService;
 
     Visit load(String branchId, String visitId) {
         return visitService.getVisit(branchId, visitId);
@@ -259,27 +262,44 @@ interface VisitClient {
 ```
 ```java
 import jakarta.inject.Inject;
+import java.util.List;
+import ru.aritmos.clients.VisitClient;
+import ru.aritmos.model.visit.Visit;
 
-@Inject VisitClient visitClient;
-Visit created = visitClient.create("001", "01", List.of("serviceId1"));
+class VisitCreator {
+
+    @Inject
+    VisitClient visitClient;
+
+    Visit createVisit() {
+        return visitClient.create("001", "01", List.of("serviceId1"));
+    }
+}
 ```
 
 ### Работа с `HttpClient`
 ```java
-import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.BlockingHttpClient;
+import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.HttpRequest;
+import java.net.MalformedURLException;
 import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-Logger log = LoggerFactory.getLogger("example");
 
-try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
-    BlockingHttpClient blocking = client.toBlocking();
-    HttpRequest<?> req = HttpRequest.GET("/managementinformation/branches");
-    String body = blocking.retrieve(req);
-    log.info("Ответ: {}", body);
+class HttpExample {
+
+    private static final Logger log = LoggerFactory.getLogger(HttpExample.class);
+
+    void fetchBranches() throws MalformedURLException {
+        try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {
+            BlockingHttpClient blocking = client.toBlocking();
+            HttpRequest<?> req = HttpRequest.GET("/managementinformation/branches");
+            String body = blocking.retrieve(req);
+            log.info("Ответ: {}", body);
+        }
+    }
 }
 ```
 
