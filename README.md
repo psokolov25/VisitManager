@@ -5,7 +5,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-238%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-241%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-40%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
@@ -460,7 +460,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.model.visit.VisitTest — проверяет доменную модель визита и её билдер.
 
 #### Сервисы
-- ru.aritmos.service.BranchServiceTest — проверяет сервис работы с отделениями, используя моки репозиториев.
+- ru.aritmos.service.BranchServiceTest — проверяет сервис работы с отделениями, включая получение пользователей и инкремент счётчика талонов.
 - ru.aritmos.service.ConfigurationTest — тестирует сервис конфигурации приложения.
 - ru.aritmos.service.GroovyScriptServiceTest — проверяет выполнение Groovy‑скриптов внутри сервиса.
 - ru.aritmos.service.PrinterServiceTest — удостоверяется в корректности печати талонов через мок‑клиента.

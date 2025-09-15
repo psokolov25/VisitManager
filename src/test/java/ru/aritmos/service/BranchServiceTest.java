@@ -538,5 +538,62 @@ class BranchServiceTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    /**
+     * Возвращает карту пользователей отделения без изменений.
+     */
+    @Test
+    void getUsersReturnsBranchUsers() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = new Branch("b1", "Branch");
+        User user = new User("u1", "User", null);
+        branch.getUsers().put(user.getName(), user);
+        service.branches.put("b1", branch);
+
+        HashMap<String, User> result = service.getUsers("b1");
+
+        assertSame(branch.getUsers(), result);
+        verify(service).getBranch("b1");
+    }
+
+    /**
+     * Увеличивает счётчик талонов очереди и сохраняет отделение.
+     */
+    @Test
+    void incrementTicketCounterUpdatesQueue() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = new Branch("b1", "Branch");
+        Queue queue = new Queue("q1", "Q1", "A", 1);
+        branch.getQueues().put(queue.getId(), queue);
+        service.branches.put("b1", branch);
+
+        Integer result = service.incrementTicketCounter("b1", queue);
+
+        assertEquals(1, result);
+        assertEquals(1, branch.getQueues().get("q1").getTicketCounter());
+        verify(service).add("b1", branch);
+    }
+
+    /**
+     * Возвращает -1, если очередь не найдена, но отделение сохраняется.
+     */
+    @Test
+    void incrementTicketCounterReturnsMinusOneWhenQueueMissing() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = new Branch("b1", "Branch");
+        service.branches.put("b1", branch);
+        Queue queue = new Queue("q1", "Q1", "A", 1);
+
+        Integer result = service.incrementTicketCounter("b1", queue);
+
+        assertEquals(-1, result);
+        verify(service).add("b1", branch);
+    }
+
 }
 
