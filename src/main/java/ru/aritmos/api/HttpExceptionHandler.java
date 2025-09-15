@@ -40,6 +40,7 @@ public class HttpExceptionHandler
         } else if (exception instanceof HttpClientResponseException hcre) {
             status = hcre.getStatus();
             message = hcre.getMessage();
+
         } else if (exception instanceof BusinessException be) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             message = be.getMessage();
