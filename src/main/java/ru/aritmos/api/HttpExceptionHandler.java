@@ -7,11 +7,14 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.http.server.exceptions.ErrorExceptionHandler;
+import io.micronaut.http.server.exceptions.ErrorResponseProcessorExceptionHandler;
 import io.micronaut.http.server.exceptions.HttpStatusExceptionHandler;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.inject.Singleton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.exceptions.SystemException;
 
 /**
@@ -19,9 +22,14 @@ import ru.aritmos.exceptions.SystemException;
  * Формирует единый ответ с кодом и сообщением об ошибке.
  * BusinessException порождает {@link HttpStatusException} и обрабатывается как клиентская ошибка.
  */
+@Slf4j
 @Singleton
 @Produces
-@Replaces(HttpStatusExceptionHandler.class)
+@Replaces({
+    HttpStatusExceptionHandler.class,
+    ErrorExceptionHandler.class,
+    ErrorResponseProcessorExceptionHandler.class
+})
 public class HttpExceptionHandler
     implements io.micronaut.http.server.exceptions.ExceptionHandler<Throwable, HttpResponse<HttpExceptionHandler.ErrorResponse>> {
 
@@ -51,6 +59,7 @@ public class HttpExceptionHandler
             message = exception.getMessage();
         }
 
+        log.warn("HTTP error {} on {}: {}", status, request.getPath(), message);
         return HttpResponse.status(status)
             .body(new ErrorResponse(status.getCode(), message));
     }
