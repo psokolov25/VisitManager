@@ -1,5 +1,6 @@
 package ru.aritmos.api;
 
+
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Singleton
+
 @Replaces(HttpStatusHandler.class)
 public class HttpErrorHandler implements ExceptionHandler<HttpStatusException, HttpResponse<?>> {
 
