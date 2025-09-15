@@ -3,7 +3,6 @@ package ru.aritmos.api;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
-import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Operation;
@@ -407,17 +406,7 @@ public class EntrypointController {
   public List<Service> getAllAvailableServices(
 
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
-    try {
-
-      return services.getAllAvailableServices(branchId);
-
-    } catch (BusinessException ex) {
-      if (ex.getMessage().contains("not found")) {
-        throw new HttpStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-      } else {
-        throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-      }
-    }
+    return services.getAllAvailableServices(branchId);
   }
 
   /**
@@ -441,16 +430,6 @@ public class EntrypointController {
       })
   public List<Service> getAllServices(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
-    try {
-
-      return services.getAllServices(branchId);
-
-    } catch (BusinessException ex) {
-      if (ex.getMessage().contains("not found")) {
-        throw new HttpStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-      } else {
-        throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-      }
-    }
+    return services.getAllServices(branchId);
   }
 }
