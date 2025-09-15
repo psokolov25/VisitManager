@@ -3,6 +3,8 @@ package ru.aritmos.api;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -250,5 +252,178 @@ class ServicePointControllerTest {
         when(controller.visitService.visitCallWithMaximalWaitingTime("b1", "sp1"))
             .thenReturn(visit);
         assertEquals(visit, controller.visitCallWithMaximalWaitingTime("b1", "sp1"));
+    }
+
+    @Test
+    void getVisitFromQueueReturnsMatch() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        when(controller.visitService.getVisits("b1", "q1")).thenReturn(List.of(visit));
+
+        Visit result = controller.getVisit("b1", "q1", "v1");
+
+        assertSame(visit, result);
+        verify(controller.visitService).getVisits("b1", "q1");
+    }
+
+    @Test
+    void getVisitFromQueueThrowsWhenMissing() {
+        ServicePointController controller = controller();
+        when(controller.visitService.getVisits("b1", "q1")).thenReturn(List.of());
+
+        HttpStatusException exception =
+            assertThrows(HttpStatusException.class, () -> controller.getVisit("b1", "q1", "v1"));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+    @Test
+    void callVisitDelegatesToService() {
+        ServicePointController controller = controller();
+        Optional<Visit> visit = Optional.of(Visit.builder().build());
+        when(controller.visitService.visitCall("b1", "sp1", "v1")).thenReturn(visit);
+
+        assertEquals(visit, controller.callVisit("b1", "sp1", "v1"));
+    }
+
+    @Test
+    void visitCallForConfirmUsesServiceResult() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        Optional<Visit> expected = Optional.of(visit);
+        when(controller.visitService.visitCallForConfirmWithMaxWaitingTime("b1", "sp1", visit))
+            .thenReturn(expected);
+
+        assertEquals(expected, controller.visitCallForConfirm("b1", "sp1", visit));
+    }
+
+    @Test
+    void visitCallForConfirmByIdLoadsVisitFirst() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        Optional<Visit> expected = Optional.of(visit);
+        when(controller.visitService.getVisit("b1", "v1")).thenReturn(visit);
+        when(controller.visitService.visitCallForConfirmWithMaxWaitingTime("b1", "sp1", visit))
+            .thenReturn(expected);
+
+        assertEquals(expected, controller.visitCallForConfirmByVisitId("b1", "sp1", "v1"));
+        verify(controller.visitService).getVisit("b1", "v1");
+    }
+
+    @Test
+    void visitCallForConfirmMaxWaitingDelegates() {
+        ServicePointController controller = controller();
+        Optional<Visit> expected = Optional.of(Visit.builder().build());
+        when(controller.visitService.visitCallForConfirmWithMaxWaitingTime("b1", "sp1"))
+            .thenReturn(expected);
+
+        assertEquals(expected, controller.visitCallForConfirmMaxWaitingTime("b1", "sp1"));
+    }
+
+    @Test
+    void visitCallFromQueuesDelegates() {
+        ServicePointController controller = controller();
+        List<String> queueIds = List.of("q1", "q2");
+        Optional<Visit> expected = Optional.of(Visit.builder().build());
+        when(controller.visitService.visitCallWithMaximalWaitingTime("b1", "sp1", queueIds))
+            .thenReturn(expected);
+
+        assertEquals(expected, controller.visitCall("b1", "sp1", queueIds));
+    }
+
+    @Test
+    void visitCallFromQueuesWithConfirmationDelegates() {
+        ServicePointController controller = controller();
+        List<String> queueIds = List.of("q1");
+        Optional<Visit> expected = Optional.of(Visit.builder().build());
+        when(controller.visitService.visitCallForConfirmWithMaxWaitingTime("b1", "sp1", queueIds))
+            .thenReturn(expected);
+
+        assertEquals(
+            expected, controller.visitCallForConfirmMaxWaitingTime("b1", "sp1", queueIds));
+    }
+
+    @Test
+    void visitNoShowDelegatesToService() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        Optional<Visit> expected = Optional.of(visit);
+        when(controller.visitService.visitNoShow("b1", "sp1", visit)).thenReturn(expected);
+
+        assertEquals(expected, controller.visitNoShow("b1", "sp1", visit));
+    }
+
+    @Test
+    void visitCallNoShowRetrievesVisit() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        Optional<Visit> expected = Optional.of(visit);
+        when(controller.visitService.getVisit("b1", "v1")).thenReturn(visit);
+        when(controller.visitService.visitNoShow("b1", "sp1", visit)).thenReturn(expected);
+
+        assertEquals(expected, controller.visitCallNoShow("b1", "sp1", "v1"));
+        verify(controller.visitService).getVisit("b1", "v1");
+    }
+
+    @Test
+    void visitReCallForConfirmDelegates() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        when(controller.visitService.visitReCallForConfirm("b1", "sp1", visit)).thenReturn(visit);
+
+        assertEquals(visit, controller.visitReCallForConfirm("b1", "sp1", visit));
+    }
+
+    @Test
+    void visitReCallForConfirmByIdLoadsVisit() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        when(controller.visitService.getVisit("b1", "v1")).thenReturn(visit);
+        when(controller.visitService.visitReCallForConfirm("b1", "sp1", visit)).thenReturn(visit);
+
+        assertEquals(visit, controller.visitReCallForConfirm("b1", "sp1", "v1"));
+        verify(controller.visitService).getVisit("b1", "v1");
+    }
+
+    @Test
+    void visitConfirmDelegates() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        when(controller.visitService.visitConfirm("b1", "sp1", visit)).thenReturn(visit);
+
+        assertEquals(visit, controller.visitConfirm("b1", "sp1", visit));
+    }
+
+    @Test
+    void visitConfirmByIdDelegates() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        when(controller.visitService.getVisit("b1", "v1")).thenReturn(visit);
+        when(controller.visitService.visitConfirm("b1", "sp1", visit)).thenReturn(visit);
+
+        assertEquals(visit, controller.visitConfirm("b1", "sp1", "v1"));
+        verify(controller.visitService).getVisit("b1", "v1");
+    }
+
+    @Test
+    void cancelAutoCallDelegates() {
+        ServicePointController controller = controller();
+        Optional<ServicePoint> expected = Optional.of(new ServicePoint("sp1", "SP"));
+        when(controller.visitService.cancelAutoCallModeOfServicePoint("b1", "sp1"))
+            .thenReturn(expected);
+
+        assertEquals(expected, controller.cancelAutoCallModeOfServicePoint("b1", "sp1"));
+    }
+
+    @Test
+    void startAutoCallEnablesBranchAndPoint() {
+        ServicePointController controller = controller();
+        Optional<ServicePoint> expected = Optional.of(new ServicePoint("sp1", "SP"));
+        when(controller.visitService.startAutoCallModeOfServicePoint("b1", "sp1"))
+            .thenReturn(expected);
+
+        assertEquals(expected, controller.startAutoCallModeOfServicePoint("b1", "sp1"));
+        verify(controller.visitService).setAutoCallModeOfBranch("b1", true);
+        verify(controller.visitService).startAutoCallModeOfServicePoint("b1", "sp1");
     }
 }
