@@ -2130,6 +2130,16 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Данные точки обслуживания",
+      description = "Возвращает информацию о точке обслуживания, учитывая сотрудника на перерыве",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}",
       consumes = "application/json",
@@ -2166,6 +2176,16 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Доступные очереди точки обслуживания",
+      description = "Возвращает список очередей, доступных для точки обслуживания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список очередей"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/queues",
       consumes = "application/json",
@@ -2493,6 +2513,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита по позиции",
+      description = "Переводит визит из очереди в очередь на указанную позицию",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueue/{visitId}",
@@ -2538,6 +2568,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита в начало или конец очереди",
+      description = "Переводит визит из очереди в очередь с размещением в начало или конец списка",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueueToStartOrToEnd/{visitId}",
@@ -2584,6 +2624,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита внешней службой",
+      description = "Переводит визит в другую очередь с указанием внешней службы",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri = "/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer",
       consumes = "application/json",
@@ -2629,6 +2679,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита в другую очередь",
+      description = "Переводит переданный визит из одной очереди в другую",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueue",
@@ -2673,6 +2733,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита на позицию очереди",
+      description = "Переводит визит из очереди в очередь на указанную позицию",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueue/position/{index}",
@@ -2716,6 +2786,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита в пул на позицию",
+      description = "Переводит визит из очереди в пул точки обслуживания на указанную позицию",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transferFromQueue/position/{index}",
@@ -2760,6 +2840,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита в пул точки обслуживания",
+      description = "Переводит визит из очереди в пул указанной точки обслуживания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transferFromQueue",
@@ -2806,6 +2896,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита в пул внешней службой",
+      description = "Переводит визит из очереди в пул точки обслуживания с указанием внешней службы",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, точка обслуживания или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer",
@@ -2851,6 +2951,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита по идентификатору в пул",
+      description = "Переводит визит по идентификатору из очереди в пул точки обслуживания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, точка обслуживания или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visits/{visitId}/transferFromQueue",
@@ -2887,6 +2997,16 @@ public class ServicePointController {
   @Tag(name = "Изменение визита")
   @Tag(name = "Перевод визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Перевод визита по идентификатору на позицию в пуле",
+      description = "Переводит визит по идентификатору из очереди в пул точки обслуживания на указанную позицию",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит переведен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, точка обслуживания или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visits/{visitId}/transferFromQueueWithIndex",
