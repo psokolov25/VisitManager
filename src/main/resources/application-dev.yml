@@ -43,12 +43,12 @@ micronaut:
         keycloak:
           techlogin: '${KEYCLOAK_TECHLOGIN:admin}'
           techpassword: '${KEYCLOAK_TECHPASSWORD:LtlVjhjp!23}'
-          keycloakurl: '${OIDC_ISSUER_URL:`http://192.168.8.45:9090`}'
+          keycloakurl: '${OIDC_ISSUER_URL:`http://192.168.8.40:8282`}'
           realm: aritmos_platform
           token:
             auth-method: client_secret_post
-          client-secret: '${OAUTH_CLIENT_SECRET:HKdkHNfaMWWsDqFa6a4q3kcNVkRjN0Wv}' # <3>
-          client-id: '${OAUTH_CLIENT_ID:myclient}' # <4>
+          client-secret: '${OAUTH_CLIENT_SECRET:A7gpRkCOcdjEucoqodkPpE79cWaqLIOg}' # <3>
+          client-id: '${OAUTH_CLIENT_ID:auth_service}' # <4>
           openid:
             issuer: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.45:9090`}/realms/${KEYCLOAK_REALM:aritmos_platform}' # <5>
 
