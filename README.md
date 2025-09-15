@@ -7,7 +7,7 @@
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
 [![Tests](https://img.shields.io/badge/tests-299%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-40%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-40.6%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
