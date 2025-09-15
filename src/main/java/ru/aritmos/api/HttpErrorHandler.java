@@ -1,10 +1,13 @@
 package ru.aritmos.api;
 
+
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
+import io.micronaut.http.server.exceptions.HttpStatusHandler;
 import io.micronaut.http.server.exceptions.response.ErrorContext;
 import io.micronaut.http.server.exceptions.response.ErrorResponseProcessor;
 import jakarta.inject.Singleton;
@@ -17,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Singleton
+
+@Replaces(HttpStatusHandler.class)
 public class HttpErrorHandler implements ExceptionHandler<HttpStatusException, HttpResponse<?>> {
 
     private final ErrorResponseProcessor<?> errorResponseProcessor;
