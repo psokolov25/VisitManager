@@ -212,11 +212,12 @@ public class VisitService {
    * @param visitParameters передаваемые список услуг и дополнительные параметры визита
    * @param printTicket флаг печати талона
    * @return созданный визит
+   * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка обработки визита
    */
   public Visit createVisit(
       String branchId, String entryPointId, VisitParameters visitParameters, Boolean printTicket)
-      throws SystemException {
+      throws BusinessException, SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -243,13 +244,14 @@ public class VisitService {
    * @param printTicket флаг печати талона
    * @param segmentationRuleId идентификатор правила вызова
    * @return созданный визит
+   * @throws BusinessException бизнес-ошибка
    */
   public Visit createVisit(
       String branchId,
       String entryPointId,
       VisitParameters visitParameters,
       Boolean printTicket,
-      String segmentationRuleId) {
+      String segmentationRuleId) throws BusinessException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -281,6 +283,7 @@ public class VisitService {
    * @param printTicket флаг печати талона
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return созданный визит
+   * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка обработки визита
    */
   public Visit createVisitFromReception(
@@ -289,7 +292,7 @@ public class VisitService {
       VisitParameters visitParameters,
       Boolean printTicket,
       String sid)
-      throws SystemException {
+      throws BusinessException, SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -317,6 +320,7 @@ public class VisitService {
    * @param segmentationRuleId идентификатор правила сегментации
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return созданный визит
+   * @throws BusinessException бизнес-ошибка
    */
   public Visit createVisitFromReception(
       String branchId,
@@ -324,7 +328,7 @@ public class VisitService {
       VisitParameters visitParameters,
       Boolean printTicket,
       String segmentationRuleId,
-      String sid) {
+      String sid) throws BusinessException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServices().keySet().stream()
         .anyMatch(visitParameters.getServiceIds()::contains)) {
@@ -356,11 +360,12 @@ public class VisitService {
    * @param visitParameters параметры и список услуг визита
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return созданный визит
+   * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка обработки визита
    */
   public Visit createVirtualVisit(
       String branchId, String servicePointId, VisitParameters visitParameters, String sid)
-      throws SystemException {
+      throws BusinessException, SystemException {
     Branch currentBranch = branchService.getBranch(branchId);
     if (currentBranch.getServicePoints().containsKey(servicePointId)
         && currentBranch.getServicePoints().get(servicePointId).getVisit() != null) {
