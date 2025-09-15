@@ -25,6 +25,11 @@ public class DeliveredService extends BasedService implements Cloneable {
     super(id, name);
   }
 
+  /**
+   * Создаёт копию оказанной услуги.
+   *
+   * @return копия с восстановленными идентификаторами и исходом
+   */
   @Override
   public DeliveredService clone() {
     DeliveredService clone = (DeliveredService) super.clone();

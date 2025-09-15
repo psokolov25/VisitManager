@@ -22,8 +22,8 @@ public class Reception {
   /** Перечень идентификаторов принтера. */
   List<Entity> printers;
 
-    /** Перечень сеансов работы сотрудника. */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Builder.Default
-    List<ReceptionSession> receptionSessions = new ArrayList<>();
+  /** Перечень сеансов работы сотрудника. */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Builder.Default
+  List<ReceptionSession> receptionSessions = new ArrayList<>();
 }

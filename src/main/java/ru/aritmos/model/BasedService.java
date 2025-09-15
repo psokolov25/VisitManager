@@ -28,6 +28,11 @@ public class BasedService extends BranchEntity implements Cloneable {
     super(id, name);
   }
 
+  /**
+   * Создаёт копию базовой услуги.
+   *
+   * @return глубокая копия услуги с перенесёнными исходами
+   */
   @Override
   public BasedService clone() {
     BasedService clone = (BasedService) super.clone();

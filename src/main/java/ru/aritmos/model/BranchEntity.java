@@ -50,6 +50,11 @@ public class BranchEntity implements Cloneable {
     this.name = name;
   }
 
+  /**
+   * Создаёт копию сущности отделения.
+   *
+   * @return копия с идентификатором, именем и филиалом исходной сущности
+   */
   @Override
   public BranchEntity clone() {
     try {

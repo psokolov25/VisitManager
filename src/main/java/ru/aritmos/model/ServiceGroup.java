@@ -16,7 +16,10 @@ public class ServiceGroup extends BranchEntity {
   /** Идентификаторы услуг, входящих в группу */
   List<String> serviceIds;
 
+  /** Идентификатор правила сегментации для группы услуг. */
   String segmentationRuleId;
+
+  /** Идентификатор правила сегментации по параметрам визита. */
   String segmentationParameterRuleId;
 
   /**

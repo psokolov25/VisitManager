@@ -11,6 +11,7 @@ import ru.aritmos.model.visit.Visit;
 @Singleton
 @Slf4j
 public class PrinterService {
+  /** HTTP-клиент печати талонов. */
   @Inject PrinterClient printerClient;
 
   /**

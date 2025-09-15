@@ -35,6 +35,10 @@ public class EventTask implements Runnable {
     this.eventService = eventService;
   }
 
+  /**
+   * Запускает отправку события в отдельном потоке.
+   * Логирует результат отправки.
+   */
   @Override
   @ExecuteOn(value = TaskExecutors.IO)
   public void run() {

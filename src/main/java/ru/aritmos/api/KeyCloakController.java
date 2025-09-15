@@ -54,10 +54,10 @@ public class KeyCloakController {
   @Inject KeyCloackClient keyCloackClient;
 
   /**
-   * Авторизация пользователя в Keycloak
+   * Авторизация пользователя в Keycloak.
    *
    * @param credentials логин и пароль пользователя
-   * @return - данные авторизации (токен, токен обновления и т д )
+   * @return ответ авторизации с набором токенов
    */
   @Operation(
       summary = "Авторизация пользователя в Keycloak",

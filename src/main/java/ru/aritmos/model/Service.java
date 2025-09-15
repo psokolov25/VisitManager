@@ -15,8 +15,8 @@ import lombok.*;
 @SuppressWarnings("unused")
 public class Service extends BasedService implements Cloneable {
 
+  /** Нормативное время обслуживания. */
   @SuppressWarnings("all")
-  /** Нормативное время обслуживания */
   Integer servingSL;
 
   /** Связанная очередь */
@@ -25,6 +25,7 @@ public class Service extends BasedService implements Cloneable {
   /** Флаг доступности */
   Boolean isAvailable;
 
+  /** Идентификатор группы услуг, к которой относится услуга. */
   String serviceGroupId;
 
   /** Список идентификаторов оказанных услуг */
@@ -46,6 +47,12 @@ public class Service extends BasedService implements Cloneable {
     this.isAvailable = true;
   }
 
+  /**
+   * Создаёт копию услуги с клонированием связанных сущностей.
+   *
+   * @return глубокая копия услуги
+   */
+  @Override
   public Service clone() {
     Service service = (Service) super.clone();
 

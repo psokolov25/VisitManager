@@ -67,6 +67,7 @@ public class User extends BranchEntityWithVisits {
   /** Отделение, в которой сотрудник работал до перерыва */
   String lastBranchId;
 
+  /** Доступные пользователю группы отделений из Keycloak. */
   List<GroupRepresentation> allBranches;
 
   /**

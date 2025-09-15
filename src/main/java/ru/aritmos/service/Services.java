@@ -11,6 +11,7 @@ import ru.aritmos.model.WorkProfile;
 /** Класс отвечающий за работу с услугами */
 @Singleton
 public class Services {
+  /** Сервис управления отделениями. */
   @Inject BranchService branchService;
 
   /**

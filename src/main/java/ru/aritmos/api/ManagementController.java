@@ -35,8 +35,10 @@ import ru.aritmos.service.BranchService;
 })
 public class ManagementController {
 
+  /** Сервис управления отделениями. */
   @Inject BranchService branchService;
 
+  /** Клиент Keycloak для получения данных о пользователях. */
   @Inject KeyCloackClient keyCloakClient;
 
   /**

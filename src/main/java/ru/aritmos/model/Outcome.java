@@ -22,6 +22,11 @@ public class Outcome extends BranchEntity implements Cloneable {
     super(id, name);
   }
 
+  /**
+   * Создаёт копию итога обслуживания.
+   *
+   * @return глубокая копия текущего объекта
+   */
   @Override
   public Outcome clone() {
     Outcome clone = (Outcome) super.clone();
