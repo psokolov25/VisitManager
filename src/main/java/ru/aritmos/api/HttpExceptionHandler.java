@@ -1,11 +1,13 @@
 package ru.aritmos.api;
 
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.http.server.exceptions.HttpStatusExceptionHandler;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.inject.Singleton;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import ru.aritmos.exceptions.SystemException;
  */
 @Singleton
 @Produces
+@Replaces(HttpStatusExceptionHandler.class)
 public class HttpExceptionHandler
     implements io.micronaut.http.server.exceptions.ExceptionHandler<Throwable, HttpResponse<HttpExceptionHandler.ErrorResponse>> {
 
