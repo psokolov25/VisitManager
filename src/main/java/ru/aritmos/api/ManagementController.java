@@ -38,6 +38,7 @@ import ru.aritmos.service.BranchService;
     @ApiResponse(responseCode = "429", description = "Превышено количество запросов"),
     @ApiResponse(responseCode = "500", description = "Ошибка сервера"),
     @ApiResponse(responseCode = "503", description = "Сервис недоступен")
+
 })
 public class ManagementController {
 

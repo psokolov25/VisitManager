@@ -26,6 +26,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
     @ApiResponse(responseCode = "401", description = "Не авторизован"),
     @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
     @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+
     @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
     @ApiResponse(responseCode = "409", description = "Конфликт состояния"),
     @ApiResponse(responseCode = "413", description = "Превышен размер запроса"),
