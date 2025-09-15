@@ -109,13 +109,13 @@
 
 2. **Отмена визита**
 
-   `DELETE /entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/15b4ea29-7f49-45e1-8e6d-e848d6e76d5a`
+   `DELETE /servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/15b4ea29-7f49-45e1-8e6d-e848d6e76d5a`
 
    → `204 No Content`, визит удалён.
 
 3. **Статус визита**
 
-   `GET /entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/15b4ea29-7f49-45e1-8e6d-e848d6e76d5a`
+   `GET /servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/15b4ea29-7f49-45e1-8e6d-e848d6e76d5a`
 
    → `200 OK`, возвращает данные визита.
 
@@ -234,7 +234,7 @@
 
 2. **Отмена визита**
 
-   `DELETE /entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/15b4ea29-7f49-45e1-8e6d-e848d6e76d5a`
+   `DELETE /servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/15b4ea29-7f49-45e1-8e6d-e848d6e76d5a`
 
    → `204 No Content`, визит удалён.
 
@@ -244,7 +244,7 @@
 
 5. **Перевод визита**
 
-   `PUT /entrypoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/15b4ea29-7f49-45e1-8e6d-e848d6e76d5a/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/transfer?isAppend=true&transferTimeDelay=0`
+   `PUT /servicepoint/branches/37493d1c-8282-4417-a729-dceac1f3e2b4/visits/servicePoints/a66ff6f4-4f4a-4009-8602-0dc278024cf2/queue/c211ae6b-de7b-4350-8a4c-cff7ff98104e/visit/transferFromServicePoint?isAppend=true&transferTimeDelay=0`
 
    → `200 OK`, визит перенаправлен в очередь «Офтальмолог».
 

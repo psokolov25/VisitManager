@@ -1890,6 +1890,7 @@ public class ServicePointController {
         @ApiResponse(
             responseCode = "404",
             description = "Отделение, услуга или визит не найдены"),
+        @ApiResponse(responseCode = "409", description = "Итог недоступен для текущей услуги"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Post(
@@ -2182,6 +2183,9 @@ public class ServicePointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Список очередей"),
         @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(
             responseCode = "404",
             description = "Отделение или точка обслуживания не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
@@ -2214,6 +2218,7 @@ public class ServicePointController {
       responses = {
         @ApiResponse(responseCode = "204", description = "Визит удален"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "409", description = "Визит нельзя удалить"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(
@@ -2245,6 +2250,7 @@ public class ServicePointController {
       responses = {
         @ApiResponse(responseCode = "204", description = "Визит удален"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "409", description = "Визит нельзя удалить"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(
