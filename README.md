@@ -5,7 +5,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-233%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-235%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-40%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
@@ -446,6 +446,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.model.BranchTest — проверяет доменную модель отделения и закрытие точки обслуживания.
 - ru.aritmos.model.DeliveredServiceTest — удостоверяется в корректности модели выполненной услуги визита.
 - ru.aritmos.model.OutcomeTest — проверяет перечисление исходов обслуживания.
+- ru.aritmos.model.QueueTest — проверяет модель очереди и её конструкторы.
 - ru.aritmos.model.ServiceTest — валидирует модель услуги и её атрибуты.
 - ru.aritmos.model.UserTest — проверяет пользователя и его идентификаторы.
 - ru.aritmos.model.keycloak.ModuleRoleAccessTest — проверяет доступ к функциям по ролям Keycloak.
