@@ -64,6 +64,7 @@ public class EntrypointController {
       description = "Создает визит без печати талона",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
+        @ApiResponse(responseCode = "409", description = "Визит уже создан"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -131,6 +132,7 @@ public class EntrypointController {
       description = "Создает визит в отделении",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
+        @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -205,6 +207,7 @@ public class EntrypointController {
       description = "Создает визит с дополнительными параметрами",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
+        @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -283,6 +286,7 @@ public class EntrypointController {
       description = "Создает визит с параметрами из приемной",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
+        @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
