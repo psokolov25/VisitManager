@@ -52,5 +52,5 @@ RUN mvn clean package -Dmaven.test.skip=true
 #COPY --from=packager "$JAVA_HOME" "$JAVA_HOME"
 FROM bellsoft/liberica-openjdk-alpine:17
 COPY --from=builder "/app/target/visitmanager.jar" "app.jar"
-EXPOSE 8080
+EXPOSE 8080 8282
 ENTRYPOINT ["java","-jar","app.jar"]

@@ -25,20 +25,21 @@ services:
       - CONFIG_SERVER=http://localhost:8081
       #- PRINTER_SERVER=http://printerservice:8084
       - PRINTER_SERVER=http://192.168.3.29:8084
-      - OIDC_ISSUER_DOMAIN=http://keycloak:8080/realms/aritmos_platform
-      - OAUTH_CLIENT_ID=myclient
+      - OIDC_ISSUER_DOMAIN=http://192.168.8.40:8282/realms/aritmos_platform
+      - OAUTH_CLIENT_ID=auth_service
       - KEYCLOAK_TECHLOGIN=admin
       - KEYCLOAK_TECHPASSWORD=LtlVjhjp!23
-      - OIDC_ISSUER_URL=http://keycloak:8080
+      - OIDC_ISSUER_URL=http://192.168.8.40:8282
       - KAFKA_SERVER=kafka:9092
       - LOKI_SERVER=http://loki:3100/loki/api/v1/push
-      - OAUTH_CLIENT_SECRET=HKdkHNfaMWWsDqFa6a4q3kcNVkRjN0Wv
+      - OAUTH_CLIENT_SECRET=A7gpRkCOcdjEucoqodkPpE79cWaqLIOg
       - KEYCLOAK_REALM=aritmos_platform
     restart: always
   visitmanager-redis:
     expose:
       - '6379'
       - '9092'
+      - '8282'
     healthcheck:
       interval: 10s
       timeout: 5s

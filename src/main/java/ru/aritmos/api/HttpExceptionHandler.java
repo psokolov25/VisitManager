@@ -20,14 +20,15 @@ public class HttpExceptionHandler
     @Override
     public HttpResponse<ErrorResponse> handle(HttpRequest request, HttpStatusException exception) {
         return HttpResponse.status(exception.getStatus())
-            .body(new ErrorResponse(exception.getMessage()));
+            .body(new ErrorResponse( exception.getStatus().getCode(),exception.getMessage()));
     }
 
     /** Simple error response with a message field. */
     @Getter
     @AllArgsConstructor
     @Serdeable
-    static class ErrorResponse {
+    public static class ErrorResponse {
+        Integer statusCode;
         String message;
     }
 }
