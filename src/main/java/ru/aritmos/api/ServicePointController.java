@@ -424,7 +424,8 @@ public class ServicePointController {
   public User changeUserWorkprofile(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId) {
+      @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId)
+      throws BusinessException {
 
     return branchService.changeUserWorkProfileInServicePoint(
         branchId, servicePointId, workProfileId);
@@ -439,6 +440,7 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @param workProfileId идентификатор рабочего профиля
    * @return сотрудник
+   * @throws BusinessException бизнес-ошибка
    * @throws java.io.IOException ошибка взаимодействия с внешними сервисами
    */
   @Operation(
@@ -491,7 +493,7 @@ public class ServicePointController {
       @PathVariable String userName,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @PathVariable(defaultValue = "d5a84e60-e605-4527-b065-f4bd7a385790") String workProfileId)
-      throws IOException {
+      throws BusinessException, IOException {
 
     return branchService.openServicePoint(
         branchId, userName, servicePointId, workProfileId, visitService);

@@ -251,7 +251,7 @@ public class BranchService {
    * @throws BusinessException если профиль, точка или пользователь не найдены
    */
   public User changeUserWorkProfileInServicePoint(
-      String branchId, String servicePointId, String workProfileId) {
+      String branchId, String servicePointId, String workProfileId) throws BusinessException {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
       throw new BusinessException("Work profile not found!", eventService, HttpStatus.NOT_FOUND);
@@ -290,7 +290,7 @@ public class BranchService {
       String servicePointId,
       String workProfileId,
       VisitService visitService)
-      throws IOException {
+      throws BusinessException, IOException {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
       throw new BusinessException("Work profile not found!!", eventService, HttpStatus.NOT_FOUND);
