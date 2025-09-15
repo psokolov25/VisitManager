@@ -1662,6 +1662,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Добавление фактической услуги",
+      description = "Добавляет фактическую услугу к текущему визиту",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Фактическая услуга добавлена"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}",
@@ -1688,6 +1696,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Марки")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Получение меток визита",
+      description = "Возвращает список меток, установленных на визит",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список меток"),
+        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(uri = "/branches/{branchId}/visits/{visitId}/marks", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public List<Mark> getMarks(
@@ -1709,6 +1725,16 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Марки")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Удаление метки визита",
+      description = "Удаляет выбранную метку из визита",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Метка удалена"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, визит или метка не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Delete(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}",
       produces = "application/json")
@@ -1731,6 +1757,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Марки")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Список возможных меток",
+      description = "Возвращает перечень меток, доступных в отделении",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список меток"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(uri = "/branches/{branchId}/marks/", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public HashMap<String, Mark> deleteMark(
@@ -1752,6 +1786,16 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Марки")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Добавление метки визиту",
+      description = "Присваивает визиту выбранную метку",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Метка добавлена"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, визит или метка не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/mark/{markId}",
       consumes = "application/json",
@@ -1777,6 +1821,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Заметки")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Добавление текстовой заметки",
+      description = "Создает текстовую заметку для визита",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Заметка добавлена"),
+        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/notes",
       consumes = "application/json",
@@ -1801,6 +1853,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Заметки")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Получение заметок визита",
+      description = "Возвращает текстовые заметки, добавленные к визиту",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список заметок"),
+        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(uri = "/branches/{branchId}/visits/{visitId}/notes", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   public List<Mark> getNotes(
@@ -1822,6 +1882,16 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Итоги услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Добавление итога услуги",
+      description = "Фиксирует итог оказания текущей услуги визиту",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Итог установлен"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, услуга или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}",
       consumes = "application/json",
@@ -1847,6 +1917,16 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Изменение визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Добавление услуги визиту",
+      description = "Добавляет новую услугу в список услуг визита",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Услуга добавлена"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, услуга или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/services/{serviceId}",
       consumes = "application/json",
@@ -1872,6 +1952,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Изменение визита")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Добавление нескольких услуг визиту",
+      description = "Добавляет набор услуг в визит",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Услуги добавлены"),
+        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/services",
       consumes = "application/json",
@@ -1902,6 +1990,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Итоги услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Добавление итога фактической услуги",
+      description = "Устанавливает итог для фактической услуги визита",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Итог установлен"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}",
@@ -1931,6 +2027,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Итоги услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Удаление итога фактической услуги",
+      description = "Удаляет установленный итог для фактической услуги визита",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Итог удален"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Delete(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}/outcome",
@@ -1957,6 +2061,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Итоги услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Удаление итога услуги",
+      description = "Удаляет итог оказания услуги у визита",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Итог удален"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Delete(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/service/{serviceId}/outcome",
@@ -1983,6 +2095,14 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Удаление фактической услуги",
+      description = "Удаляет фактическую услугу из визита",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Фактическая услуга удалена"),
+        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Delete(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}",
