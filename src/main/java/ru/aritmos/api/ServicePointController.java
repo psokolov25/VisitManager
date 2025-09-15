@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.io.IOException;
@@ -38,6 +39,14 @@ import ru.aritmos.service.VisitService;
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 @SerdeImport(GroupRepresentation.class)
 @Controller("/servicepoint")
+@ApiResponses({
+    @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+    @ApiResponse(responseCode = "401", description = "Не авторизован"),
+    @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+    @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+    @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
+    @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+})
 public class ServicePointController {
   /** Сервис для выборки услуг. */
   @Inject Services services;

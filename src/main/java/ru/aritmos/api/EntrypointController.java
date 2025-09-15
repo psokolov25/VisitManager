@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
@@ -27,6 +28,14 @@ import ru.aritmos.service.VisitService;
  * @author Pavel Sokolov REST API управления зоной ожидания
  */
 @Controller("/entrypoint")
+@ApiResponses({
+    @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+    @ApiResponse(responseCode = "401", description = "Не авторизован"),
+    @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+    @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+    @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
+    @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+})
 public class EntrypointController {
   /** Служба по работе с услугами */
   @Inject Services services;
