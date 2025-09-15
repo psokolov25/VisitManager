@@ -727,6 +727,15 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов визита по идентификатору",
+      description = "Переводит визит в статус CALLED",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "409", description = "Визит уже вызван"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}/call",
       consumes = "application/json",
@@ -752,6 +761,15 @@ public class ServicePointController {
   @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов визита с подтверждением",
+      description = "Визит вызывается и ожидает подтверждения клиента",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(responseCode = "403", description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit",
       consumes = "application/json",
@@ -776,6 +794,16 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Ожидание подтверждения прихода")
+  @Operation(
+      summary = "Вызов визита по идентификатору с подтверждением",
+      description = "Визит вызывается по ID и ожидает подтверждения клиента",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(responseCode = "403", description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}",
       consumes = "application/json",

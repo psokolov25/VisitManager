@@ -263,6 +263,7 @@ public class ConfigurationController {
       description = "Активирует режим авто вызова для отделения",
       responses = {
         @ApiResponse(responseCode = "200", description = "Режим включен"),
+        @ApiResponse(responseCode = "207", description = "Режим уже включен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -286,6 +287,7 @@ public class ConfigurationController {
       description = "Деактивирует режим авто вызова для отделения",
       responses = {
         @ApiResponse(responseCode = "200", description = "Режим выключен"),
+        @ApiResponse(responseCode = "207", description = "Режим уже выключен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
