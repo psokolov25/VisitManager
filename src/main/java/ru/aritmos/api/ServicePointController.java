@@ -497,14 +497,26 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на
    *     перерыв
-   * @param isForced флаг "принудительного" завершения обслуживания
-   * @param breakReason причина перерыва
-   * @param reason причина принудительного завершения обслуживания
-   */
+  * @param isForced флаг "принудительного" завершения обслуживания
+  * @param breakReason причина перерыва
+  * @param reason причина принудительного завершения обслуживания
+  */
   @SuppressWarnings("all")
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Закрытие точки обслуживания",
+      description =
+          "Завершает работу точки обслуживания. При повторном запросе возвращает конфликт",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Точка обслуживания закрыта"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "409", description = "Точка уже закрыта"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post("/branches/{branchId}/servicePoints/{servicePointId}/close")
   @ExecuteOn(TaskExecutors.IO)
   public void closeServicePoint(
@@ -528,13 +540,24 @@ public class ServicePointController {
    * @param isBreak флаг указывающий, что точка обслуживания закрывается из-за ухода сотрудника на
    *     перерыв
    * @param isForced флаг "принудительного" завершения обслуживания
-   * @param reason причина принудительного завершения обслуживания
-   * @param breakReason причина перерыва
-   */
+  * @param reason причина принудительного завершения обслуживания
+  * @param breakReason причина перерыва
+  */
   @SuppressWarnings("all")
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Закрытие точки и выход сотрудника",
+      description = "Закрывает точку обслуживания и завершает сессию сотрудника",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Точка обслуживания закрыта"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "409", description = "Точка уже закрыта"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post("/branches/{branchId}/servicePoints/{servicePointId}/logout")
   @ExecuteOn(TaskExecutors.IO)
   public void logoutUser(
@@ -1240,6 +1263,15 @@ public class ServicePointController {
   @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Повторный вызов визита",
+      description = "Повторно вызывает визит с ожиданием подтверждения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван повторно"),
+        @ApiResponse(responseCode = "404", description = "Визит или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "409", description = "Визит уже вызван"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall",
       consumes = "application/json",
@@ -1265,6 +1297,15 @@ public class ServicePointController {
   @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Повторный вызов визита по идентификатору",
+      description = "Повторно вызывает визит по его идентификатору",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван повторно"),
+        @ApiResponse(responseCode = "404", description = "Визит или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "409", description = "Визит уже вызван"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}",
       consumes = "application/json",
@@ -1292,6 +1333,15 @@ public class ServicePointController {
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Подтверждение прихода",
+      description = "Переводит визит в статус CONFIRMED",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Приход подтвержден"),
+        @ApiResponse(responseCode = "404", description = "Визит или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "409", description = "Визит уже подтвержден"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm",
       consumes = "application/json",
@@ -1318,6 +1368,15 @@ public class ServicePointController {
   @Tag(name = "Результат вызова")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Подтверждение прихода по идентификатору",
+      description = "Подтверждает приход визита по его идентификатору",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Приход подтвержден"),
+        @ApiResponse(responseCode = "404", description = "Визит или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "409", description = "Визит уже подтвержден"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri =
           "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}",
@@ -1345,6 +1404,15 @@ public class ServicePointController {
   @Tag(name = "Автоматический вызов")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Отмена автоматического вызова",
+      description = "Отключает режим автоматического вызова в точке обслуживания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Режим отключен"),
+        @ApiResponse(responseCode = "207", description = "Режим уже отключён"),
+        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put("/branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall")
   public Optional<ServicePoint> cancelAutoCallModeOfServicePoint(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -1363,6 +1431,15 @@ public class ServicePointController {
   @Tag(name = "Автоматический вызов")
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Запуск автоматического вызова",
+      description = "Включает режим автоматического вызова в точке обслуживания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Режим включен"),
+        @ApiResponse(responseCode = "207", description = "Режим уже включён"),
+        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Put("/branches/{branchId}/servicePoins/{servicePointId}/startAutoCall")
   public Optional<ServicePoint> startAutoCallModeOfServicePoint(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
