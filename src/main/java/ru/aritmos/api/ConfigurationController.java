@@ -5,6 +5,7 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.HashMap;
@@ -22,6 +23,19 @@ import ru.aritmos.service.VisitService;
 @lombok.extern.slf4j.Slf4j
 @Controller("/configuration")
 @Slf4j
+@ApiResponses({
+    @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+    @ApiResponse(responseCode = "401", description = "Не авторизован"),
+    @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+    @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+    @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
+    @ApiResponse(responseCode = "409", description = "Конфликт состояния"),
+    @ApiResponse(responseCode = "413", description = "Превышен размер запроса"),
+    @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
+    @ApiResponse(responseCode = "429", description = "Превышено количество запросов"),
+    @ApiResponse(responseCode = "500", description = "Ошибка сервера"),
+    @ApiResponse(responseCode = "503", description = "Сервис недоступен")
+})
 public class ConfigurationController {
   /** Сервис управления отделениями. */
   @Inject BranchService branchService;
