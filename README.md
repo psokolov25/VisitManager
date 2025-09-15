@@ -5,7 +5,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-278%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-299%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-40%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
@@ -475,6 +475,17 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.model.UserTest — проверяет пользователя и его идентификаторы.
 - ru.aritmos.model.UserInfoTest — убеждается, что данные пользователя переносятся через билдер и сеттеры без потерь.
 - ru.aritmos.model.UserTokenTest — проверяет агрегированный объект пользователя и связанных токенов.
+
+- ru.aritmos.model.EntryPointTest — проверяет наследование полей точки входа и привязку принтера.
+- ru.aritmos.model.MarkTest — тестирует модель пометки визита и обновление полей.
+- ru.aritmos.model.ReceptionTest — проверяет построение приёмной с перечнем принтеров и сессий.
+- ru.aritmos.model.ReceptionSessionTest — убеждается, что билдер сессии приёмной задаёт пользователя и временные метки.
+- ru.aritmos.model.SegmentationRuleDataTest — валидирует билдер данных правила сегментации и возможность задавать свойства позже.
+- ru.aritmos.model.ServiceGroupTest — подтверждает работу конструктора группы услуг и хранение идентификаторов сегментации.
+- ru.aritmos.model.UserSessionTest — валидирует модель пользовательской сессии VisitManager и работу билдера и сеттеров.
+- ru.aritmos.model.VisitParametersTest — проверяет, что билдер параметров визита создаёт пустые коллекции и принимает пользовательские значения.
+- ru.aritmos.model.WorkProfileTest — тестирует конструкторы рабочего профиля и редактирование списка очередей.
+
 - ru.aritmos.model.keycloak.ModuleRoleAccessTest — проверяет доступ к функциям по ролям Keycloak.
 - ru.aritmos.model.keycloak.ModuleRoleTest — тестирует модель роли модуля.
 - ru.aritmos.model.keycloak.ClientAccessTest — убеждается, что карта ролей клиента читается билдерами и сеттерами.
@@ -486,6 +497,10 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.model.keycloak.TinyUserInfoTest — проверяет упрощённое представление данных пользователя.
 - ru.aritmos.keycloack.model.CredentialsTest — подтверждает наличие геттеров/сеттеров в модели учетных данных.
 - ru.aritmos.keycloack.model.KeyCloackUserTest — проверяет чтение атрибутов сокращённой модели пользователя Keycloak.
+
+- ru.aritmos.model.tiny.TinyClassTest — проверяет билдер и сеттеры компактного представления сущности.
+- ru.aritmos.model.tiny.TinyServicePointTest — убеждается, что сокращённая точка обслуживания хранит флаг доступности.
+
 - ru.aritmos.model.tiny.TinyVisitTest — валидирует облегчённую модель визита.
 - ru.aritmos.model.visit.VisitEventInformationTest — проверяет сведения о событии визита.
 - ru.aritmos.model.visit.VisitEventTest — тестирует сериализацию модели события.

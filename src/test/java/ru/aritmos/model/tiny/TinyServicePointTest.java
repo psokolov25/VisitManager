@@ -1,0 +1,25 @@
+package ru.aritmos.model.tiny;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+class TinyServicePointTest {
+
+    @Test
+    void constructorShouldPopulateFields() {
+        TinyServicePoint servicePoint = new TinyServicePoint("sp1", "Desk 1", true);
+
+        assertEquals("sp1", servicePoint.getId());
+        assertEquals("Desk 1", servicePoint.getName());
+        assertTrue(servicePoint.getIsAvailable());
+    }
+
+    @Test
+    void settersShouldUpdateAvailability() {
+        TinyServicePoint servicePoint = new TinyServicePoint("sp2", "Desk 2", false);
+        servicePoint.setIsAvailable(true);
+
+        assertTrue(servicePoint.getIsAvailable());
+    }
+}
