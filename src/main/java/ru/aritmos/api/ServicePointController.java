@@ -563,6 +563,15 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о визитах")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Визиты очереди с ограничением",
+      description =
+          "Возвращает последние визиты указанной очереди, количество ограничено параметром",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список визитов"),
+        @ApiResponse(responseCode = "404", description = "Отделение или очередь не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/queues/{queueId}/visits/limit/{limit}",
       consumes = "application/json",
@@ -603,6 +612,14 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о визитах")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Все визиты очереди",
+      description = "Возвращает все визиты указанной очереди",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список визитов"),
+        @ApiResponse(responseCode = "404", description = "Отделение или очередь не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/queues/{queueId}/visits/",
       consumes = "application/json",
@@ -625,6 +642,15 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о визитах")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Все визиты отделения",
+      description =
+          "Возвращает все визиты отделения, включая находящиеся в очередях и пулах",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список визитов"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/visits/all",
       consumes = "application/json",
@@ -646,6 +672,14 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о визитах")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Визит по идентификатору",
+      description = "Возвращает визит по его идентификатору",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Данные визита"),
+        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/visits/{visitId}",
       consumes = "application/json",
@@ -669,6 +703,14 @@ public class ServicePointController {
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о визитах")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Визиты по статусам",
+      description = "Возвращает визиты с указанными статусами",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список визитов"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/statuses",
       consumes = "application/json",
@@ -829,6 +871,17 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Вызов визита c наибольшим временем ожидания")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов визита с максимальным ожиданием",
+      description = "Вызывает визит с наибольшим временем ожидания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/call",
       consumes = "application/json",
@@ -852,6 +905,18 @@ public class ServicePointController {
   @Tag(name = "Вызов визита c наибольшим временем ожидания")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов визита с подтверждением",
+      description =
+          "Вызывает визит с максимальным временем ожидания и ожидает подтверждения клиента",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call",
       consumes = "application/json",
@@ -879,6 +944,19 @@ public class ServicePointController {
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов из указанных очередей",
+      description =
+          "Вызывает визит с максимальным временем ожидания из переданных очередей",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues",
       consumes = "application/json",
@@ -906,6 +984,19 @@ public class ServicePointController {
   @Tag(name = "Вызов визита c наибольшим временем ожидания")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов из очередей с подтверждением",
+      description =
+          "Вызывает визит с максимальным временем ожидания из переданных очередей с ожиданием подтверждения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues",
       consumes = "application/json",
@@ -930,6 +1021,17 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Вызов визита c максимальным временем жизни")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов визита с максимальным временем жизни",
+      description = "Вызывает визит, дольше всего ожидающий обслуживания",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/call/maxLifeTime",
       consumes = "application/json",
@@ -957,6 +1059,19 @@ public class ServicePointController {
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов из очередей с максимальным временем жизни",
+      description =
+          "Вызывает визит с наибольшим временем жизни из указанных очередей",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues/maxLifeTime",
       consumes = "application/json",
@@ -981,6 +1096,18 @@ public class ServicePointController {
   @Tag(name = "Вызов визита c максимальным временем жизни")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов визита с подтверждением по времени жизни",
+      description =
+          "Вызывает визит с максимальным временем жизни и ожидает подтверждения клиента",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call/maxLifeTime",
       consumes = "application/json",
@@ -1007,6 +1134,19 @@ public class ServicePointController {
   @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Вызов из очередей по времени жизни с подтверждением",
+      description =
+          "Вызывает визит с максимальным временем жизни из указанных очередей с ожиданием подтверждения",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит вызван"),
+        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Сотрудник не авторизован или точка обслуживания недоступна"),
+        @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri =
           "/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/callfromQueues/maxLifeTime",
@@ -1033,6 +1173,14 @@ public class ServicePointController {
   @Tag(name = "Завершение вызова")
   @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Отмена вызова: клиент не пришёл",
+      description = "Переводит визит в статус NO_SHOW",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит отменён"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow",
       consumes = "application/json",
@@ -1058,6 +1206,14 @@ public class ServicePointController {
   @Tag(name = "Завершение вызова")
   @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Отмена вызова по идентификатору",
+      description = "Переводит визит в статус NO_SHOW по его идентификатору",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Визит отменён"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Post(
       uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow/{visitId}",
       consumes = "application/json",
@@ -1267,6 +1423,14 @@ public class ServicePointController {
   @Tag(name = "Данные об услугах")
   @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Фактические услуги текущей услуги", 
+      description = "Возвращает список предоставленных фактических услуг текущего визита в точке обслуживания", 
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список фактических услуг"),
+        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/servicePoins/{servicePointId}/deliveredServices",
       consumes = "application/json",
@@ -2088,17 +2252,27 @@ public class ServicePointController {
    * @param returnTimeDelay задержка визита в секундах
    * @return визит после перевода
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Полный список")
-  @Tag(name = "Завершение вызова")
-  @Put(
-      uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/put_back",
-      consumes = "application/json",
-      produces = "application/json")
-  @ExecuteOn(TaskExecutors.IO)
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Возвращение визита")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Полный список")
+    @Tag(name = "Завершение вызова")
+    @Operation(
+        summary = "Возврат визита в очередь",
+        description = "Возвращает визит из точки обслуживания обратно в очередь",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит возвращен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение или точка обслуживания не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(
+        uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/put_back",
+        consumes = "application/json",
+        produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
   public Visit returnVisit(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
@@ -2545,16 +2719,26 @@ public class ServicePointController {
    * @param reason причина принудительного завершения обслуживания
    * @return визит после перевода
    */
-  @SuppressWarnings("all")
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Полный список")
-  @Tag(name = "Завершение вызова")
-  @Put(
-      uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end",
-      consumes = "application/json",
-      produces = "application/json")
-  @ExecuteOn(TaskExecutors.IO)
+    @SuppressWarnings("all")
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Полный список")
+    @Tag(name = "Завершение вызова")
+    @Operation(
+        summary = "Завершение обслуживания",
+        description = "Завершает обслуживание визита в точке обслуживания",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Обслуживание завершено"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение или точка обслуживания не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(
+        uri = "/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end",
+        consumes = "application/json",
+        produces = "application/json")
+    @ExecuteOn(TaskExecutors.IO)
   public Visit visitEnd(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
@@ -2576,15 +2760,25 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/users/{userId}")
-  public Visit visitTransferFromQueueToUserPool(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
-      @Body Visit visit,
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Перевод визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Перевод визита в пул сотрудника",
+        description = "Переводит визит в пул сотрудника в начало или конец списка",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит переведен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/users/{userId}")
+    public Visit visitTransferFromQueueToUserPool(
+        @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+        @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
+        @Body Visit visit,
       @QueryValue(defaultValue = "true") Boolean isAppend,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
       @Nullable @CookieValue("sid") String sid) {
@@ -2605,15 +2799,25 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/users/{userId}/position/{index}")
-  public Visit visitTransferFromQueueToUserPool(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
-      @Body Visit visit,
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Перевод визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Перевод визита в пул сотрудника на позицию",
+        description = "Переводит визит из очереди в пул сотрудника на указанную позицию",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит переведен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/users/{userId}/position/{index}")
+    public Visit visitTransferFromQueueToUserPool(
+        @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+        @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
+        @Body Visit visit,
       @PathVariable(defaultValue = "0") Integer index,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
       @Nullable @CookieValue("sid") String sid) {
@@ -2633,15 +2837,25 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}")
-  public Visit visitTransferFromQueueToUserPool(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
-      @PathVariable String visitId,
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Перевод визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Перевод визита по идентификатору в пул сотрудника",
+        description = "Переводит визит по идентификатору в пул сотрудника в начало или конец списка",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит переведен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}")
+    public Visit visitTransferFromQueueToUserPool(
+        @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+        @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
+        @PathVariable String visitId,
       @QueryValue(defaultValue = "true") Boolean isAppend,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
       @Nullable @CookieValue("sid") String sid) {
@@ -2663,15 +2877,25 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer")
-  public Visit visitTransferFromQueueToUserPool(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
-      @PathVariable String visitId,
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Перевод визита внешней службой в пул сотрудника",
+        description = "Переводит визит в пул сотрудника по данным внешней службы",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит переведен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer")
+    public Visit visitTransferFromQueueToUserPool(
+        @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+        @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
+        @PathVariable String visitId,
       HashMap<String, String> serviceInfo,
       @QueryValue(defaultValue = "true") Boolean isAppend,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
@@ -2693,15 +2917,25 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}/position/{index}")
-  public Visit visitTransferFromQueueToUserPool(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
-      @PathVariable String visitId,
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Перевод визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Перевод визита по идентификатору в пул сотрудника на позицию",
+        description = "Переводит визит из очереди в пул сотрудника на указанную позицию",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит переведен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}/position/{index}")
+    public Visit visitTransferFromQueueToUserPool(
+        @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+        @PathVariable(defaultValue = "f2fa7ddc-7ff2-43d2-853b-3b548b1b3a89") String userId,
+        @PathVariable String visitId,
       @QueryValue(defaultValue = "0") Integer index,
       @QueryValue(defaultValue = "0") Long transferTimeDelay,
       @Nullable @CookieValue("sid") String sid) {
@@ -2719,17 +2953,27 @@ public class ServicePointController {
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/put_back")
-  public Visit visitBackToUserPool(
-      @PathVariable String branchId,
-      @PathVariable String servicePointId,
-      @PathVariable String userId,
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Завершение вызова")
+    @Tag(name = "Возвращение визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Возвращение визита в пул сотрудника",
+        description = "Возвращает визит из точки обслуживания в пул сотрудника",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит возвращен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение, точка или сотрудник не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/put_back")
+    public Visit visitBackToUserPool(
+        @PathVariable String branchId,
+        @PathVariable String servicePointId,
+        @PathVariable String userId,
       @QueryValue(defaultValue = "60") Long returnTimeDelay) {
     return visitService.visitBackToUserPool(branchId, servicePointId, userId, returnTimeDelay);
   }
@@ -2744,17 +2988,27 @@ public class ServicePointController {
    *     после перевода)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/transfer")
-  public Visit visitTransferToUserPool(
-      @PathVariable String branchId,
-      @PathVariable String servicePointId,
-      @PathVariable String userId,
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Завершение вызова")
+    @Tag(name = "Перевод визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Перевод визита в пул сотрудника",
+        description = "Переводит визит из точки обслуживания в пул сотрудника",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит переведен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение, точка или сотрудник не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/transfer")
+    public Visit visitTransferToUserPool(
+        @PathVariable String branchId,
+        @PathVariable String servicePointId,
+        @PathVariable String userId,
       @QueryValue(defaultValue = "0") Long transferTimeDelay) {
     return visitService.visitTransferToUserPool(
         branchId, servicePointId, userId, transferTimeDelay);
@@ -2767,17 +3021,27 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/postpone")
-  public Visit visitPostPone(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
-    return visitService.visitPostPone(branchId, servicePointId);
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Завершение вызова")
+    @Tag(name = "Возвращение визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Отложить визит",
+        description = "Отложить текущий визит в точке обслуживания",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит отложен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение или точка обслуживания не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/postpone")
+    public Visit visitPostPone(
+        @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId) {
+      return visitService.visitPostPone(branchId, servicePointId);
   }
 
   /**
@@ -2788,17 +3052,27 @@ public class ServicePointController {
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back")
-  public Visit visitPutBack(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
-      @QueryValue(defaultValue = "60") Long returnTimeDelay) {
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Завершение вызова")
+    @Tag(name = "Возвращение визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Возвращение визита из точки обслуживания",
+        description = "Возвращает обслуживаемый визит в очередь отделения",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит возвращен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение или точка обслуживания не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back")
+    public Visit visitPutBack(
+        @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+        @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
+        @QueryValue(defaultValue = "60") Long returnTimeDelay) {
     return visitService.visitPutBack(branchId, servicePointId, returnTimeDelay);
   }
 
@@ -2810,17 +3084,27 @@ public class ServicePointController {
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Полный список")
-  @Put(uri = "/branches/{branchId}/visits/{visitId}/put_back")
-  public Visit calledVisitPutBack(
-      @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
-      @PathVariable String visitId,
-      @QueryValue(defaultValue = "60") Long returnTimeDelay) {
-    return visitService.backCalledVisit(branchId, visitId, returnTimeDelay);
+    @Tag(name = "Зона обслуживания")
+    @Tag(name = "Обслуживание")
+    @Tag(name = "Изменение визита")
+    @Tag(name = "Завершение вызова")
+    @Tag(name = "Возвращение визита")
+    @Tag(name = "Полный список")
+    @Operation(
+        summary = "Возвращение вызванного визита",
+        description = "Возвращает ранее вызванный визит в очередь",
+        responses = {
+          @ApiResponse(responseCode = "200", description = "Визит возвращен"),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Отделение или визит не найдены"),
+          @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        })
+    @Put(uri = "/branches/{branchId}/visits/{visitId}/put_back")
+    public Visit calledVisitPutBack(
+        @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
+        @PathVariable String visitId,
+        @QueryValue(defaultValue = "60") Long returnTimeDelay) {
+      return visitService.backCalledVisit(branchId, visitId, returnTimeDelay);
   }
 }
