@@ -3,7 +3,6 @@ package ru.aritmos.api;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
-import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,13 +65,7 @@ public class ManagementController {
   @ExecuteOn(TaskExecutors.IO)
   public Branch getBranch(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String id) {
-    Branch branch;
-    try {
-      branch = branchService.getBranch(id);
-    } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
-    }
-    return branch;
+    return branchService.getBranch(id);
   }
 
   /**

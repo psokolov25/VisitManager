@@ -4,7 +4,6 @@ import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
-import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.SerdeImport;
@@ -787,7 +786,7 @@ public class ServicePointController {
     return visitService.getVisits(branchId, queueId).stream()
         .filter(f -> f.getId().equals(visitId))
         .findFirst()
-        .orElseThrow(() -> new HttpStatusException(HttpStatus.NOT_FOUND, "Visit not found!"));
+        .orElseThrow(() -> new BusinessException("Visit not found!", eventService, HttpStatus.NOT_FOUND));
   }
 
   /**
@@ -2321,10 +2320,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+      throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransfer(
@@ -2371,10 +2370,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+      throw new BusinessException("Service point not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitBackToServicePointPool(
@@ -2422,10 +2421,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+      throw new BusinessException("Service point not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferToServicePointPool(
@@ -2466,10 +2465,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+      throw new BusinessException("Service point not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferToServicePointPool(
@@ -2556,10 +2555,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+      throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
@@ -2611,10 +2610,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+      throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
@@ -2667,10 +2666,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+      throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
@@ -2722,10 +2721,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+      throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransfer(
@@ -2776,10 +2775,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Queue not found!");
+      throw new BusinessException("Queue not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransfer(
@@ -2830,10 +2829,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+      throw new BusinessException("Service point not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
@@ -2884,10 +2883,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+      throw new BusinessException("Service point not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
@@ -2940,10 +2939,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!");
+      throw new BusinessException("Branch not found!", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(servicePointId)) {
-      throw new HttpStatusException(HttpStatus.NOT_FOUND, "Service point not found!");
+      throw new BusinessException("Service point not found!", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
