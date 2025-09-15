@@ -2,33 +2,59 @@ package ru.aritmos.api;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Produces;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
+import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.inject.Singleton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Global handler for HTTP status exceptions producing unified error responses.
+ * Глобальный обработчик HTTP‑ошибок.
+ * Формирует единый ответ с кодом и сообщением об ошибке.
  */
 @Singleton
 @Produces
 public class HttpExceptionHandler
-    implements io.micronaut.http.server.exceptions.ExceptionHandler<HttpStatusException, HttpResponse<HttpExceptionHandler.ErrorResponse>> {
+    implements io.micronaut.http.server.exceptions.ExceptionHandler<Throwable, HttpResponse<HttpExceptionHandler.ErrorResponse>> {
 
+    /**
+     * Преобразует исключение в HTTP‑ответ.
+     *
+     * @param request исходный HTTP‑запрос
+     * @param exception перехваченное исключение
+     * @return ответ с кодом и описанием ошибки
+     */
     @Override
-    public HttpResponse<ErrorResponse> handle(HttpRequest request, HttpStatusException exception) {
-        return HttpResponse.status(exception.getStatus())
-            .body(new ErrorResponse( exception.getStatus().getCode(),exception.getMessage()));
+    public HttpResponse<ErrorResponse> handle(HttpRequest request, Throwable exception) {
+        HttpStatus status;
+        String message;
+
+        if (exception instanceof HttpStatusException hse) {
+            status = hse.getStatus();
+            message = hse.getMessage();
+        } else if (exception instanceof HttpClientResponseException hcre) {
+            status = hcre.getStatus();
+            message = hcre.getMessage();
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            message = exception.getMessage();
+        }
+
+        return HttpResponse.status(status)
+            .body(new ErrorResponse(status.getCode(), message));
     }
 
-    /** Simple error response with a message field. */
+    /** Ответ об ошибке с кодом и сообщением. */
     @Getter
     @AllArgsConstructor
     @Serdeable
     public static class ErrorResponse {
+        /** Код HTTP‑статуса. */
         Integer statusCode;
+        /** Текст ошибки. */
         String message;
     }
 }
