@@ -57,6 +57,7 @@ public class EntrypointController {
    *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ] )
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return созданный визит
+   * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка
    */
   @Tag(name = "Зона ожидания")
@@ -97,7 +98,7 @@ public class EntrypointController {
                                               """)))
           ArrayList<String> serviceIds,
       @Nullable @CookieValue("sid") String sid)
-      throws SystemException {
+      throws BusinessException, SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -126,6 +127,7 @@ public class EntrypointController {
    * @param printTicket флаг печати талона
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
    * @return созданный визит
+   * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка
    */
   @Tag(name = "Зона ожидания")
@@ -166,7 +168,7 @@ public class EntrypointController {
           ArrayList<String> serviceIds,
       @QueryValue(defaultValue = "false") Boolean printTicket,
       @Nullable @QueryValue String segmentationRuleId)
-      throws SystemException {
+      throws BusinessException, SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -201,6 +203,7 @@ public class EntrypointController {
    *     "parameters": { "sex": "male", "age": "33" } }
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
    * @return визит
+   * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка
    */
   @Tag(name = "Зона ожидания")
@@ -247,7 +250,7 @@ public class EntrypointController {
           VisitParameters parameters,
       @QueryValue Boolean printTicket,
       @Nullable @QueryValue String segmentationRuleId)
-      throws SystemException {
+      throws BusinessException, SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
@@ -280,6 +283,7 @@ public class EntrypointController {
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
    * @param staffId идентификатор сессии сотрудника (cookie sid)
    * @return визит
+   * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка обработки визита
    */
   @Tag(name = "Зона ожидания")
@@ -327,7 +331,7 @@ public class EntrypointController {
       @QueryValue Boolean printTicket,
       @Nullable @QueryValue String segmentationRuleId,
       @Nullable @CookieValue("sid") String staffId)
-      throws SystemException {
+      throws BusinessException, SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
