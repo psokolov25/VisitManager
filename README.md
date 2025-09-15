@@ -5,7 +5,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-241%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-299%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-40%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
@@ -429,15 +429,20 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 
 #### API контроллеры
 - ru.aritmos.api.ConfigurationControllerTest — покрывает REST получения конфигурации, вызывая контроллер через встроенный HTTP‑клиент и сравнивая JSON‑ответ.
-- ru.aritmos.api.EntrypointControllerTest — проверяет методы создания визита, эмулируя HTTP‑запросы и анализируя коды ответов.
+- ru.aritmos.api.EntrypointControllerTest — покрывает создание визитов (виртуальные, стандартные и из приёмной), проверяя передачу параметров и работу сегментации.
+- ru.aritmos.api.HttpErrorHandlerTest — подтверждает формирование унифицированного тела ответа при обработке `HttpStatusException`.
 - ru.aritmos.api.KeyCloakControllerTest — тестирует ручки аутентификации Keycloak с использованием заглушек OAuth‑клиента.
 - ru.aritmos.api.ManagementControllerTest — проверяет административные операции, отправляя запросы к управленческим эндпоинтам.
-- ru.aritmos.api.ServicePointControllerTest — тестирует операции в точке обслуживания, моделируя сценарии вызова и завершения визита.
+- ru.aritmos.api.ServicePointControllerTest — моделирует сценарии обслуживания: поиск визита в очереди, вызовы по списку очередей, подтверждение/отмену визитов и управление режимом автозапуска точек.
 
 #### Заглушки и утилиты
 - ru.aritmos.config.LocalNoDockerDataBusClientStubTest — убеждается в работе заглушки DataBus для режима без Docker.
 - ru.aritmos.config.LocalNoDockerKeycloakStubTest — проверяет, что заглушка клиента Keycloak возвращает фиктивные данные.
 - ru.aritmos.docs.CurlCheatsheetGeneratorTest — генерирует подсказку по `curl`, проверяя создание документа из OpenAPI‑описания.
+
+#### Внешние клиенты
+- ru.aritmos.clients.ConfigurationClientTest — проверяет Micronaut‑клиент конфигурации и наличие HTTP‑аннотаций.
+- ru.aritmos.clients.PrinterClientTest — подтверждает настройки повторных попыток и поток исполнения HTTP‑клиента печати.
 
 #### События и обработчики
 - ru.aritmos.events.model.ChangedObjectTest — проверяет модель изменённого объекта, создавая экземпляры и сравнивая поля.
@@ -462,13 +467,36 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.model.BranchTest — проверяет доменную модель отделения и закрытие точки обслуживания.
 - ru.aritmos.model.DeliveredServiceTest — удостоверяется в корректности модели выполненной услуги визита.
 - ru.aritmos.model.OutcomeTest — проверяет перечисление исходов обслуживания.
+- ru.aritmos.model.RealmAccessTest — проверяет расширенные права доступа пользователя, включая ветки, группы и модули.
 - ru.aritmos.model.QueueTest — проверяет модель очереди и её конструкторы.
 - ru.aritmos.model.ServiceTest — валидирует модель услуги и её атрибуты.
 - ru.aritmos.model.ServicePointTest — проверяет конструкторы точки обслуживания и значения по умолчанию.
+- ru.aritmos.model.TokenTest — подтверждает корректность хранения атрибутов токена авторизации.
 - ru.aritmos.model.UserTest — проверяет пользователя и его идентификаторы.
+- ru.aritmos.model.UserInfoTest — убеждается, что данные пользователя переносятся через билдер и сеттеры без потерь.
+- ru.aritmos.model.UserTokenTest — проверяет агрегированный объект пользователя и связанных токенов.
+- ru.aritmos.model.EntryPointTest — проверяет наследование полей точки входа и привязку принтера.
+- ru.aritmos.model.MarkTest — тестирует модель пометки визита и обновление полей.
+- ru.aritmos.model.ReceptionTest — проверяет построение приёмной с перечнем принтеров и сессий.
+- ru.aritmos.model.ReceptionSessionTest — убеждается, что билдер сессии приёмной задаёт пользователя и временные метки.
+- ru.aritmos.model.SegmentationRuleDataTest — валидирует билдер данных правила сегментации и возможность задавать свойства позже.
+- ru.aritmos.model.ServiceGroupTest — подтверждает работу конструктора группы услуг и хранение идентификаторов сегментации.
+- ru.aritmos.model.UserSessionTest — валидирует модель пользовательской сессии VisitManager и работу билдера и сеттеров.
+- ru.aritmos.model.VisitParametersTest — проверяет, что билдер параметров визита создаёт пустые коллекции и принимает пользовательские значения.
+- ru.aritmos.model.WorkProfileTest — тестирует конструкторы рабочего профиля и редактирование списка очередей.
 - ru.aritmos.model.keycloak.ModuleRoleAccessTest — проверяет доступ к функциям по ролям Keycloak.
 - ru.aritmos.model.keycloak.ModuleRoleTest — тестирует модель роли модуля.
+- ru.aritmos.model.keycloak.ClientAccessTest — убеждается, что карта ролей клиента читается билдерами и сеттерами.
+- ru.aritmos.model.keycloak.RealmAccessTest — проверяет хранение перечня ролей в realm.
+- ru.aritmos.model.keycloak.TokenTest — подтверждает, что поля токена Keycloak не теряются при маппинге.
+- ru.aritmos.model.keycloak.UserInfoTest — проверяет перенос данных пользователя из Keycloak.
+- ru.aritmos.model.keycloak.UserSessionTest — тестирует контейнер пользовательской сессии Keycloak.
+- ru.aritmos.model.keycloak.UserTokenTest — проверяет агрегацию сведений о пользователе и токенах.
 - ru.aritmos.model.keycloak.TinyUserInfoTest — проверяет упрощённое представление данных пользователя.
+- ru.aritmos.keycloack.model.CredentialsTest — подтверждает наличие геттеров/сеттеров в модели учетных данных.
+- ru.aritmos.keycloack.model.KeyCloackUserTest — проверяет чтение атрибутов сокращённой модели пользователя Keycloak.
+- ru.aritmos.model.tiny.TinyClassTest — проверяет билдер и сеттеры компактного представления сущности.
+- ru.aritmos.model.tiny.TinyServicePointTest — убеждается, что сокращённая точка обслуживания хранит флаг доступности.
 - ru.aritmos.model.tiny.TinyVisitTest — валидирует облегчённую модель визита.
 - ru.aritmos.model.visit.VisitEventInformationTest — проверяет сведения о событии визита.
 - ru.aritmos.model.visit.VisitEventTest — тестирует сериализацию модели события.

@@ -1,0 +1,23 @@
+package ru.aritmos.model;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.ZonedDateTime;
+import org.junit.jupiter.api.Test;
+
+class ReceptionSessionTest {
+
+    @Test
+    void builderShouldPopulateAllFields() {
+        User user = new User();
+        ZonedDateTime start = ZonedDateTime.now();
+        ZonedDateTime end = start.plusHours(1);
+
+        ReceptionSession session =
+                ReceptionSession.builder().user(user).startTime(start).endTime(end).build();
+
+        assertSame(user, session.getUser());
+        assertEquals(start, session.getStartTime());
+        assertEquals(end, session.getEndTime());
+    }
+}
