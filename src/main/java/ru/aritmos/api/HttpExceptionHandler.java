@@ -10,12 +10,12 @@ import io.micronaut.serde.annotation.Serdeable;
 import jakarta.inject.Singleton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.exceptions.SystemException;
 
 /**
  * Глобальный обработчик HTTP‑ошибок.
  * Формирует единый ответ с кодом и сообщением об ошибке.
+ * BusinessException порождает {@link HttpStatusException} и обрабатывается как клиентская ошибка.
  */
 @Singleton
 @Produces
@@ -40,10 +40,6 @@ public class HttpExceptionHandler
         } else if (exception instanceof HttpClientResponseException hcre) {
             status = hcre.getStatus();
             message = hcre.getMessage();
-
-        } else if (exception instanceof BusinessException be) {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-            message = be.getMessage();
         } else if (exception instanceof SystemException se) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             message = se.getMessage();
