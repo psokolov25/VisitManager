@@ -1267,6 +1267,14 @@ public class ServicePointController {
   @Tag(name = "Данные об услугах")
   @Tag(name = "Фактические услуги")
   @Tag(name = "Полный список")
+  @Operation(
+      summary = "Фактические услуги текущей услуги", 
+      description = "Возвращает список предоставленных фактических услуг текущего визита в точке обслуживания", 
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Список фактических услуг"),
+        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+      })
   @Get(
       uri = "/branches/{branchId}/servicePoins/{servicePointId}/deliveredServices",
       consumes = "application/json",
