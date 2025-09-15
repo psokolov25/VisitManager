@@ -361,11 +361,12 @@ class HttpExample {
 |---|---|---|
 | Создание визита | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` тело `["serviceId1"]` | `200 OK` + JSON визита |
 | Невалидная услуга | тот же запрос с несуществующей услугой | `404 Not Found` |
-| Очередь переполнена | тот же запрос при переполненной очереди | `409 Conflict` |
 | Отмена визита | `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` | `204 No Content` |
 | Статус визита | `GET /servicepoint/branches/{branchId}/visits/{visitId}` | `200 OK` + JSON |
 | Печать талона | `POST ...?printTicket=true` | `200 OK`, талон отправлен на принтер |
 | Визит с параметрами | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters` с телом `{ "serviceIds": [], "parameters": {} }` | `200 OK` |
+| Визит на несколько услуг | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` тело `["serviceId1","serviceId2"]` | `200 OK` + JSON визита |
+| Пустой список услуг | тот же запрос с пустым телом `[]` | `400 Bad Request` |
 | Отмена чужого визита | `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` с чужим идентификатором | `403 Forbidden` |
 
 ### Кейсы операторов
