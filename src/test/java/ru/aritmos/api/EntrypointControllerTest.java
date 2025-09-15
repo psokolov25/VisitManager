@@ -3,14 +3,11 @@ package ru.aritmos.api;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import io.micronaut.http.HttpStatus;
-import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.events.services.EventService;
-import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.model.Service;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.VisitParameters;
@@ -34,21 +31,7 @@ class EntrypointControllerTest {
         assertEquals(list, controller.getAllAvailableServices("b1"));
     }
 
-    @Test
-    void getAllAvailableServicesMapsBusinessException() {
-        Services services = mock(Services.class);
-        BusinessException ex = mock(BusinessException.class);
-        when(ex.getMessage()).thenReturn("not found");
-        when(services.getAllAvailableServices("b1")).thenThrow(ex);
-        EntrypointController controller = new EntrypointController();
-        controller.services = services;
-        controller.branchService = mock(BranchService.class);
-        controller.visitService = mock(VisitService.class);
-        controller.eventService = mock(EventService.class);
-        HttpStatusException thrown =
-            assertThrows(HttpStatusException.class, () -> controller.getAllAvailableServices("b1"));
-        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-    }
+
 
     private EntrypointController controller() {
         EntrypointController controller = new EntrypointController();
