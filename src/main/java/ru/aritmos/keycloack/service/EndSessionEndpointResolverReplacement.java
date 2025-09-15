@@ -49,6 +49,14 @@ public class EndSessionEndpointResolverReplacement extends EndSessionEndpointRes
     this.securityConfiguration = securityConfiguration;
   }
 
+  /**
+   * Формирует end-session URL, совместимый с Okta/Keycloak, вместо стандартного резолвера.
+   *
+   * @param oauthClientConfiguration конфигурация OAuth2-клиента
+   * @param openIdProviderMetadata ленивый провайдер метаданных OpenID
+   * @param endSessionCallbackUrlBuilder построитель callback-URL завершения сессии
+   * @return опционально сформированный эндпойнт завершения сессии
+   */
   @SuppressWarnings(value = "unchecked")
   @Override
   public Optional<EndSessionEndpoint> resolve(

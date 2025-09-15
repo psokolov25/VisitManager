@@ -20,6 +20,7 @@ import ru.aritmos.service.rules.client.CallRuleClient;
 @Named("SimpleCallRule")
 @Requires(property = "micronaut.application.rules.callVisit", value = "custom")
 public class CustomCallRule implements CallRule {
+  /** Клиент вызова пользовательских правил. */
   @Inject CallRuleClient callRuleClient;
 
 

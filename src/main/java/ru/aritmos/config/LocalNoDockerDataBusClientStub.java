@@ -16,6 +16,17 @@ import ru.aritmos.events.clients.DataBusClient;
 @Replaces(DataBusClient.class)
 public class LocalNoDockerDataBusClientStub implements DataBusClient {
 
+  /**
+   * Эмулирует отправку события без фактического HTTP-запроса.
+   *
+   * @param destinationServices целевые сервисы
+   * @param sendToOtherBus пересылать ли в дополнительные шины
+   * @param sendDate метка времени отправки
+   * @param senderService имя сервиса-отправителя
+   * @param type тип события
+   * @param body тело события
+   * @return реактивный ответ с информацией о заглушке
+   */
   @Override
   public Publisher<Map<String, String>> send(
       String destinationServices,

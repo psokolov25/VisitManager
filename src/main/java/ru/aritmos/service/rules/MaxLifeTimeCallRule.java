@@ -21,6 +21,7 @@ import ru.aritmos.model.visit.Visit;
 @Singleton
 @Named("MaxLifeTimeCallRule")
 public class MaxLifeTimeCallRule implements CallRule {
+  /** Сервис отправки событий. */
   @Inject EventService eventService;
 
 

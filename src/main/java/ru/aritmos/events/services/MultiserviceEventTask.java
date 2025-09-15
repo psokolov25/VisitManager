@@ -39,6 +39,9 @@ public class MultiserviceEventTask implements Runnable {
     this.eventService = eventService;
   }
 
+  /**
+   * Выполняет рассылку события нескольким адресатам в отдельном потоке.
+   */
   @Override
   @ExecuteOn(value = TaskExecutors.IO)
   public void run() {

@@ -20,6 +20,12 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 @Replaces(KeyCloackClient.class)
 public class LocalNoDockerKeycloakStub extends KeyCloackClient {
 
+  /**
+   * Возвращает фиктивную информацию о пользователе для локального окружения.
+   *
+   * @param userName логин пользователя
+   * @return псевдо-пользователь с заполненными полями
+   */
   @Override
   public Optional<UserRepresentation> getUserInfo(String userName) {
     UserRepresentation u = new UserRepresentation();
@@ -31,16 +37,36 @@ public class LocalNoDockerKeycloakStub extends KeyCloackClient {
     return Optional.of(u);
   }
 
+  /**
+   * Возвращает пустой список доступных отделений в локальном окружении.
+   *
+   * @param username логин пользователя
+   * @return пустой список групп
+   */
   @Override
   public List<GroupRepresentation> getAllBranchesOfUser(String username) {
     return new ArrayList<>();
   }
 
+  /**
+   * Сообщает о наличии прав доступа у пользователя в локальном окружении.
+   *
+   * @param userName логин пользователя
+   * @param type тип модуля
+   * @return всегда {@code true}
+   */
   @Override
   public Boolean isUserModuleTypeByUserName(String userName, String type) {
     return true; // в dev-профиле считаем пользователя администратором
   }
 
+  /**
+   * Формирует фиктивный путь отделения без обращений к Keycloak.
+   *
+   * @param regionName наименование региона
+   * @param prefix префикс отделения
+   * @return составной путь отделения
+   */
   @Override
   public String getBranchPathByBranchPrefix(String regionName, String prefix) {
     // Возвращаем фиктивный путь без обращений к Keycloak

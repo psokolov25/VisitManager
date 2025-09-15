@@ -24,5 +24,6 @@ public class Mark {
   /** Дата и время пометки */
   ZonedDateTime markDate;
 
+  /** Автор пометки */
   User author;
 }
