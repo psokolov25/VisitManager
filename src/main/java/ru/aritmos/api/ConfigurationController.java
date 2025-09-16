@@ -199,6 +199,7 @@ public class ConfigurationController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Группы услуг обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Указанная услуга не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(uri = "/branches/{branchId}/serviceGroups")
@@ -224,6 +225,7 @@ public class ConfigurationController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Правила сегментации обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Группа услуг для правила не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(uri = "/branches/{branchId}/segmentationRules")

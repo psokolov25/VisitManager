@@ -75,6 +75,7 @@ public class EntrypointController {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "409", description = "Визит уже создан"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "404", description = "Очередь для указанных услуг не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVirtualVisit(
@@ -144,6 +145,8 @@ public class EntrypointController {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "404", description = "Точка создания визита не найдена"),
+        @ApiResponse(responseCode = "404", description = "Очередь для указанных услуг не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisit(
@@ -220,6 +223,12 @@ public class EntrypointController {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "404", description = "Точка создания визита не найдена"),
+        @ApiResponse(responseCode = "404", description = "Очередь для указанных услуг не найдена"),
+        @ApiResponse(responseCode = "404", description = "Правило сегментации не найдено"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Не найдены необходимые данные для правила сегментации"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisit(
@@ -300,6 +309,11 @@ public class EntrypointController {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "404", description = "Очередь для указанных услуг не найдена"),
+        @ApiResponse(responseCode = "404", description = "Правило сегментации не найдено"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Не найдены необходимые данные для правила сегментации"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisitFromReception(
