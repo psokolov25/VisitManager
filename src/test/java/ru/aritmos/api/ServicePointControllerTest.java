@@ -16,6 +16,8 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Entity;
 import ru.aritmos.model.Queue;
+import ru.aritmos.model.Outcome;
+import ru.aritmos.model.Service;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.visit.Visit;
@@ -425,5 +427,75 @@ class ServicePointControllerTest {
         assertEquals(expected, controller.startAutoCallModeOfServicePoint("b1", "sp1"));
         verify(controller.visitService).setAutoCallModeOfBranch("b1", true);
         verify(controller.visitService).startAutoCallModeOfServicePoint("b1", "sp1");
+    }
+
+    @Test
+    void getOutcomesReturnsConfiguredMap() {
+        ServicePointController controller = controller();
+        Branch branch = new Branch("b1", "Отделение");
+        Service service = new Service("s1", "Услуга", 1, null);
+        HashMap<String, Outcome> outcomes = new HashMap<>();
+        Outcome outcome = new Outcome("o1", "Итог");
+        outcomes.put("o1", outcome);
+        service.setPossibleOutcomes(outcomes);
+        branch.getServices().put("s1", service);
+        when(controller.branchService.getBranch("b1")).thenReturn(branch);
+
+        HashMap<String, Outcome> result = controller.getOutcomes("b1", "s1");
+
+        assertSame(outcomes, result);
+        verify(controller.branchService).getBranch("b1");
+    }
+
+    @Test
+    void getOutcomesThrowsWhenServiceMissing() {
+        ServicePointController controller = controller();
+        Branch branch = new Branch("b1", "Отделение");
+        when(controller.branchService.getBranch("b1")).thenReturn(branch);
+
+        HttpStatusException exception =
+            assertThrows(HttpStatusException.class, () -> controller.getOutcomes("b1", "absent"));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        verify(controller.eventService).send(eq("*"), eq(false), any());
+    }
+
+    @Test
+    void addServicesInvokesVisitServiceSequentially() {
+        ServicePointController controller = controller();
+        Visit first = Visit.builder().id("v1").build();
+        Visit second = Visit.builder().id("v2").build();
+        when(controller.visitService.addService("b1", "sp1", "s1")).thenReturn(first);
+        when(controller.visitService.addService("b1", "sp1", "s2")).thenReturn(second);
+
+        Visit result = controller.addServices("b1", "sp1", List.of("s1", "s2"));
+
+        assertSame(second, result);
+        verify(controller.visitService).addService("b1", "sp1", "s1");
+        verify(controller.visitService).addService("b1", "sp1", "s2");
+    }
+
+    @Test
+    void deleteVisitRemovesVisitWhenFound() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v1").build();
+        HashMap<String, Visit> visits = new HashMap<>(Map.of("v1", visit));
+        when(controller.visitService.getAllVisits("b1")).thenReturn(visits);
+
+        controller.deleteVisit("b1", "v1");
+
+        verify(controller.visitService).deleteVisit(visit);
+    }
+
+    @Test
+    void deleteVisitThrowsWhenMissing() {
+        ServicePointController controller = controller();
+        when(controller.visitService.getAllVisits("b1")).thenReturn(new HashMap<>());
+
+        HttpStatusException exception =
+            assertThrows(HttpStatusException.class, () -> controller.deleteVisit("b1", "unknown"));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        verify(controller.eventService).send(eq("*"), eq(false), any());
     }
 }
