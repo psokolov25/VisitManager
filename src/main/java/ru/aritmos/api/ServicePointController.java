@@ -233,7 +233,8 @@ public class ServicePointController {
       description = "Возвращает точку обслуживания, где работает указанный сотрудник",
       responses = {
         @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
-        @ApiResponse(responseCode = "404", description = "Отделение или сотрудник не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Optional<ServicePoint> getServicePointsByUserName(
@@ -359,7 +360,8 @@ public class ServicePointController {
       description = "Возвращает информацию о сотруднике по его логину",
       responses = {
         @ApiResponse(responseCode = "200", description = "Сотрудник найден"),
-        @ApiResponse(responseCode = "404", description = "Отделение или сотрудник не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get("/branches/{branchId}/users/user/{userName}")
@@ -529,9 +531,8 @@ public class ServicePointController {
           "Завершает работу точки обслуживания. При повторном запросе возвращает конфликт",
       responses = {
         @ApiResponse(responseCode = "200", description = "Точка обслуживания закрыта"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "409", description = "Точка уже закрыта"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -570,9 +571,8 @@ public class ServicePointController {
       description = "Закрывает точку обслуживания и завершает сессию сотрудника",
       responses = {
         @ApiResponse(responseCode = "200", description = "Точка обслуживания закрыта"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "409", description = "Точка уже закрыта"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -610,7 +610,8 @@ public class ServicePointController {
           "Возвращает последние визиты указанной очереди, количество ограничено параметром",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список визитов"),
-        @ApiResponse(responseCode = "404", description = "Отделение или очередь не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(
@@ -658,7 +659,8 @@ public class ServicePointController {
       description = "Возвращает все визиты указанной очереди",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список визитов"),
-        @ApiResponse(responseCode = "404", description = "Отделение или очередь не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(
@@ -718,7 +720,8 @@ public class ServicePointController {
       description = "Возвращает визит по его идентификатору",
       responses = {
         @ApiResponse(responseCode = "200", description = "Данные визита"),
-        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(
@@ -818,7 +821,8 @@ public class ServicePointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "409", description = "Визит уже вызван"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -999,7 +1003,8 @@ public class ServicePointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(
             responseCode = "403",
             description = "Сотрудник не авторизован или точка обслуживания недоступна"),
@@ -1040,7 +1045,8 @@ public class ServicePointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(
             responseCode = "403",
             description = "Сотрудник не авторизован или точка обслуживания недоступна"),
@@ -1115,7 +1121,8 @@ public class ServicePointController {
           "Вызывает визит с наибольшим временем жизни из указанных очередей",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
-        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(
             responseCode = "403",
             description = "Сотрудник не авторизован или точка обслуживания недоступна"),
@@ -1190,7 +1197,8 @@ public class ServicePointController {
           "Вызывает визит с максимальным временем жизни из указанных очередей с ожиданием подтверждения",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
-        @ApiResponse(responseCode = "404", description = "Очередь или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(
             responseCode = "403",
             description = "Сотрудник не авторизован или точка обслуживания недоступна"),
@@ -1297,7 +1305,8 @@ public class ServicePointController {
       description = "Повторно вызывает визит с ожиданием подтверждения",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван повторно"),
-        @ApiResponse(responseCode = "404", description = "Визит или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "409", description = "Визит уже вызван"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -1331,7 +1340,8 @@ public class ServicePointController {
       description = "Повторно вызывает визит по его идентификатору",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван повторно"),
-        @ApiResponse(responseCode = "404", description = "Визит или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "409", description = "Визит уже вызван"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -1367,7 +1377,8 @@ public class ServicePointController {
       description = "Переводит визит в статус CONFIRMED",
       responses = {
         @ApiResponse(responseCode = "200", description = "Приход подтвержден"),
-        @ApiResponse(responseCode = "404", description = "Визит или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "409", description = "Визит уже подтвержден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -1402,7 +1413,8 @@ public class ServicePointController {
       description = "Подтверждает приход визита по его идентификатору",
       responses = {
         @ApiResponse(responseCode = "200", description = "Приход подтвержден"),
-        @ApiResponse(responseCode = "404", description = "Визит или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "409", description = "Визит уже подтвержден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -1439,7 +1451,8 @@ public class ServicePointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Режим отключен"),
         @ApiResponse(responseCode = "207", description = "Режим уже отключён"),
-        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put("/branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall")
@@ -1466,7 +1479,8 @@ public class ServicePointController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Режим включен"),
         @ApiResponse(responseCode = "207", description = "Режим уже включён"),
-        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put("/branches/{branchId}/servicePoins/{servicePointId}/startAutoCall")
@@ -1492,7 +1506,8 @@ public class ServicePointController {
       description = "Возвращает перечень доступных фактических услуг для указанной услуги",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список фактических услуг"),
-        @ApiResponse(responseCode = "404", description = "Услуга или отделение не найдены"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(
@@ -1534,7 +1549,8 @@ public class ServicePointController {
       description = "Возвращает список предоставленных фактических услуг текущего визита в точке обслуживания", 
       responses = {
         @ApiResponse(responseCode = "200", description = "Список фактических услуг"),
-        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(
@@ -1658,7 +1674,8 @@ public class ServicePointController {
       description = "Возвращает список возможных итогов для указанной услуги",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список итогов"),
-        @ApiResponse(responseCode = "404", description = "Услуга или отделение не найдены"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(
@@ -1696,7 +1713,8 @@ public class ServicePointController {
       description = "Добавляет фактическую услугу к текущему визиту",
       responses = {
         @ApiResponse(responseCode = "200", description = "Фактическая услуга добавлена"),
-        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(
             responseCode = "404",
@@ -1737,7 +1755,8 @@ public class ServicePointController {
       description = "Возвращает список меток, установленных на визит",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список меток"),
-        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(uri = "/branches/{branchId}/visits/{visitId}/marks", produces = "application/json")
@@ -1766,9 +1785,9 @@ public class ServicePointController {
       description = "Удаляет выбранную метку из визита",
       responses = {
         @ApiResponse(responseCode = "200", description = "Метка удалена"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, визит или метка не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "404", description = "Метка не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(
@@ -1827,9 +1846,9 @@ public class ServicePointController {
       description = "Присваивает визиту выбранную метку",
       responses = {
         @ApiResponse(responseCode = "200", description = "Метка добавлена"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, визит или метка не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "404", description = "Метка не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Post(
@@ -1862,7 +1881,8 @@ public class ServicePointController {
       description = "Создает текстовую заметку для визита",
       responses = {
         @ApiResponse(responseCode = "200", description = "Заметка добавлена"),
-        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Post(
@@ -1894,7 +1914,8 @@ public class ServicePointController {
       description = "Возвращает текстовые заметки, добавленные к визиту",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список заметок"),
-        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(uri = "/branches/{branchId}/visits/{visitId}/notes", produces = "application/json")
@@ -1923,9 +1944,9 @@ public class ServicePointController {
       description = "Фиксирует итог оказания текущей услуги визиту",
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог установлен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, услуга или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(
             responseCode = "404",
@@ -1963,9 +1984,9 @@ public class ServicePointController {
       description = "Добавляет новую услугу в список услуг визита",
       responses = {
         @ApiResponse(responseCode = "200", description = "Услуга добавлена"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, услуга или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -1999,7 +2020,8 @@ public class ServicePointController {
       description = "Добавляет набор услуг в визит",
       responses = {
         @ApiResponse(responseCode = "200", description = "Услуги добавлены"),
-        @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -2038,7 +2060,8 @@ public class ServicePointController {
       description = "Устанавливает итог для фактической услуги визита",
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог установлен"),
-        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(
             responseCode = "404",
@@ -2086,7 +2109,8 @@ public class ServicePointController {
       description = "Удаляет установленный итог для фактической услуги визита",
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог удален"),
-        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(
             responseCode = "404",
@@ -2128,7 +2152,10 @@ public class ServicePointController {
       description = "Удаляет итог оказания услуги у визита",
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог удален"),
-        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
+
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
@@ -2164,7 +2191,8 @@ public class ServicePointController {
       description = "Удаляет фактическую услугу из визита",
       responses = {
         @ApiResponse(responseCode = "200", description = "Фактическая услуга удалена"),
-        @ApiResponse(responseCode = "404", description = "Отделение или услуга не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(
@@ -2199,9 +2227,8 @@ public class ServicePointController {
       description = "Возвращает информацию о точке обслуживания, учитывая сотрудника на перерыве",
       responses = {
         @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(
@@ -2248,9 +2275,8 @@ public class ServicePointController {
         @ApiResponse(
             responseCode = "403",
             description = "Сотрудник не авторизован или точка обслуживания недоступна"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Get(
@@ -2355,7 +2381,8 @@ public class ServicePointController {
       description = "Переводит визит из точки обслуживания в указанную очередь",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(responseCode = "404", description = "Отделение или очередь не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -2406,7 +2433,8 @@ public class ServicePointController {
       description = "Возвращает визит в пул указанной точки обслуживания",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит возвращен"),
-        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -2457,7 +2485,8 @@ public class ServicePointController {
       description = "Переводит визит в пул указанной точки обслуживания",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(responseCode = "404", description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -2550,9 +2579,8 @@ public class ServicePointController {
         description = "Возвращает визит из точки обслуживания обратно в очередь",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит возвращен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение или точка обслуживания не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(
@@ -2588,9 +2616,9 @@ public class ServicePointController {
       description = "Переводит визит из очереди в очередь на указанную позицию",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -2644,9 +2672,9 @@ public class ServicePointController {
       description = "Переводит визит из очереди в очередь с размещением в начало или конец списка",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -2701,9 +2729,9 @@ public class ServicePointController {
       description = "Переводит визит в другую очередь с указанием внешней службы",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -2756,9 +2784,9 @@ public class ServicePointController {
       description = "Переводит переданный визит из одной очереди в другую",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -2810,9 +2838,9 @@ public class ServicePointController {
       description = "Переводит визит из очереди в очередь на указанную позицию",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, очередь или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -2863,9 +2891,8 @@ public class ServicePointController {
       description = "Переводит визит из очереди в пул точки обслуживания на указанную позицию",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -2917,9 +2944,8 @@ public class ServicePointController {
       description = "Переводит визит из очереди в пул указанной точки обслуживания",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение или точка обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -2973,9 +2999,9 @@ public class ServicePointController {
       description = "Переводит визит из очереди в пул точки обслуживания с указанием внешней службы",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, точка обслуживания или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -3028,9 +3054,9 @@ public class ServicePointController {
       description = "Переводит визит по идентификатору из очереди в пул точки обслуживания",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, точка обслуживания или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -3074,9 +3100,9 @@ public class ServicePointController {
       description = "Переводит визит по идентификатору из очереди в пул точки обслуживания на указанную позицию",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Отделение, точка обслуживания или визит не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
+        @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(
@@ -3118,9 +3144,8 @@ public class ServicePointController {
         description = "Завершает обслуживание визита в точке обслуживания",
         responses = {
           @ApiResponse(responseCode = "200", description = "Обслуживание завершено"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение или точка обслуживания не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(
@@ -3158,9 +3183,9 @@ public class ServicePointController {
         description = "Переводит визит в пул сотрудника в начало или конец списка",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит переведен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
+          @ApiResponse(responseCode = "404", description = "Визит не найден"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/users/{userId}")
@@ -3197,9 +3222,9 @@ public class ServicePointController {
         description = "Переводит визит из очереди в пул сотрудника на указанную позицию",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит переведен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
+          @ApiResponse(responseCode = "404", description = "Визит не найден"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/users/{userId}/position/{index}")
@@ -3235,9 +3260,9 @@ public class ServicePointController {
         description = "Переводит визит по идентификатору в пул сотрудника в начало или конец списка",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит переведен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
+          @ApiResponse(responseCode = "404", description = "Визит не найден"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}")
@@ -3275,9 +3300,9 @@ public class ServicePointController {
         description = "Переводит визит в пул сотрудника по данным внешней службы",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит переведен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
+          @ApiResponse(responseCode = "404", description = "Визит не найден"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer")
@@ -3315,9 +3340,9 @@ public class ServicePointController {
         description = "Переводит визит из очереди в пул сотрудника на указанную позицию",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит переведен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение, сотрудник или визит не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
+          @ApiResponse(responseCode = "404", description = "Визит не найден"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/users/{userId}/visits/{visitId}/position/{index}")
@@ -3353,9 +3378,9 @@ public class ServicePointController {
         description = "Возвращает визит из точки обслуживания в пул сотрудника",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит возвращен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение, точка или сотрудник не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
+          @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/put_back")
@@ -3388,9 +3413,9 @@ public class ServicePointController {
         description = "Переводит визит из точки обслуживания в пул сотрудника",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит переведен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение, точка или сотрудник не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
+          @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/transfer")
@@ -3421,9 +3446,8 @@ public class ServicePointController {
         description = "Отложить текущий визит в точке обслуживания",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит отложен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение или точка обслуживания не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/postpone")
@@ -3452,9 +3476,8 @@ public class ServicePointController {
         description = "Возвращает обслуживаемый визит в очередь отделения",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит возвращен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение или точка обслуживания не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back")
@@ -3484,9 +3507,8 @@ public class ServicePointController {
         description = "Возвращает ранее вызванный визит в очередь",
         responses = {
           @ApiResponse(responseCode = "200", description = "Визит возвращен"),
-          @ApiResponse(
-              responseCode = "404",
-              description = "Отделение или визит не найдены"),
+          @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+          @ApiResponse(responseCode = "404", description = "Визит не найден"),
           @ApiResponse(responseCode = "500", description = "Ошибка сервера")
         })
     @Put(uri = "/branches/{branchId}/visits/{visitId}/put_back")
