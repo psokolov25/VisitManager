@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-322%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-351%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-40.7%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-43.8%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -392,14 +392,14 @@ class HttpExample {
 
 | Кейс | Запрос | Ожидаемый ответ |
 |---|---|---|
-| Открытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/workProfiles/{wpId}/users/{user}/open` | `200 OK` + JSON пользователя |
-| Вызов визита | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` | `200 OK` + JSON визита |
-| Подтверждение/завершение | `POST /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/confirmed/confirm/{visitId}` | `200 OK` + JSON визита |
+| Открытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/workProfiles/{wpId}/users/{user}/open` | `200 OK` + JSON пользователя; `404 Not Found` если отделение/профиль/точка отсутствуют; `409 Conflict` при занятой точке |
+| Вызов визита | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` | `200 OK` + JSON визита; `204 No Content` если очередь пуста; `207 Multi-Status` при активном авто-вызове; `403/404` при недоступных сущностях |
+| Подтверждение/завершение | `POST /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/confirmed/confirm/{visitId}` | `200 OK` + JSON визита; `404 Not Found` если визит или точка не найдены; `409 Conflict` при повторном подтверждении |
 | Нет визитов | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` при пустой очереди | `204 No Content` |
-| Перевод визита | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` | `200 OK` + JSON визита |
-| Ошибка перевода | тот же запрос с неверными параметрами | `400 Bad Request` или `409 Conflict` |
-| Закрытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/close` | `200 OK` |
-| Перевод в пул ТО | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/poolServicePoint/{poolSpId}/visit/transfer` | `200 OK` + JSON визита |
+| Перевод визита | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` | `200 OK` + JSON визита; `404 Not Found` когда нет отделения/очереди/точки; `500 Internal Server Error` при сбое |
+| Ошибка перевода | тот же запрос с неверными параметрами | `400 Bad Request` для некорректных аргументов; `404 Not Found` либо `409 Conflict` при конфликте состояний |
+| Закрытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/close` | `200 OK` (пустое тело); `404 Not Found` если точка или отделение не найдены; `409 Conflict` при повторном закрытии |
+| Перевод в пул ТО | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/poolServicePoint/{poolSpId}/visit/transfer` | `200 OK` + JSON визита; `404 Not Found` при отсутствии точки/пула; `500 Internal Server Error` при ошибке |
 | Повторное завершение | повторный `.../confirmed/confirm/{visitId}` | `409 Conflict` |
 
 ### Кейсы аутентификации
@@ -417,6 +417,7 @@ class HttpExample {
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
+Всего модульных и интеграционных тестов: 351 (`mvn test`). Линейное покрытие по JaCoCo — 43,8%.
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
