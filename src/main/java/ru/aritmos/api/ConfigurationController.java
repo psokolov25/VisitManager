@@ -145,7 +145,8 @@ public class ConfigurationController {
       description = "Удаляет услуги отделения",
       responses = {
         @ApiResponse(responseCode = "204", description = "Услуги удалены"),
-        @ApiResponse(responseCode = "404", description = "Отделение или услуги не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Услуги не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(uri = "/branches/{branchId}/services")
@@ -199,6 +200,7 @@ public class ConfigurationController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Группы услуг обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Указанная услуга не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(uri = "/branches/{branchId}/serviceGroups")
@@ -224,6 +226,7 @@ public class ConfigurationController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Правила сегментации обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Группа услуг для правила не найдена"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Put(uri = "/branches/{branchId}/segmentationRules")
@@ -247,7 +250,8 @@ public class ConfigurationController {
       description = "Удаляет точки обслуживания отделения",
       responses = {
         @ApiResponse(responseCode = "204", description = "Точки обслуживания удалены"),
-        @ApiResponse(responseCode = "404", description = "Отделение или точки обслуживания не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Точки обслуживания не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(uri = "/branches/{branchId}/servicePoints")
@@ -344,7 +348,8 @@ public class ConfigurationController {
       description = "Удаляет очереди отделения",
       responses = {
         @ApiResponse(responseCode = "204", description = "Очереди удалены"),
-        @ApiResponse(responseCode = "404", description = "Отделение или очереди не найдены"),
+        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
+        @ApiResponse(responseCode = "404", description = "Очереди не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   @Delete(uri = "/branches/{branchId}/queues")
