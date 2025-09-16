@@ -243,6 +243,29 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 Полный список запросов см. в [docs/curl-examples.md](docs/curl-examples.md) и Swagger UI.
 
+## 🖥️ REST пульта рабочего места оператора
+
+Ниже приведены REST-запросы, которые использует пульт рабочего места оператора. Для каждого запроса указан контроллер и метод Micronaut-приложения, обрабатывающий вызов.
+
+| № | Метод и путь | Назначение | Контроллер и метод |
+| --- | --- | --- | --- |
+| 1 | `GET /managementinformation/branches/tiny` | Сокращённый список отделений для выбора филиала | `ManagementController#getTinyBranches` 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】 |
+| 2 | `GET /servicepoint/branches/{branchUuid}/servicePoints` | Получение точек обслуживания выбранного отделения | `ServicePointController#getServicePoints` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L168-L193】 |
+| 3 | `GET /servicepoint/branches/{branchUuid}/users` | Перечень сотрудников отделения | `ServicePointController#getUsersOfBranch` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L268-L291】 |
+| 4 | `GET /entrypoint/branches/{branchUuid}/services/all` | Полный список услуг отделения | `EntrypointController#getAllServices` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】 |
+| 5 | `GET /servicepoint/branches/{branchUuid}/queues/full` | Очереди и талоны отделения с подробностями | `ServicePointController#getFullQueues` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】 |
+| 6 | `DELETE /servicepoint/branches/{branchUuid}/visits/{visitUuid}` | Отмена визита по идентификатору | `ServicePointController#deleteVisit` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2334-L2363】 |
+| 7 | `GET /servicepoint/branches/{branchUuid}/printers` | Доступные принтеры отделения | `ServicePointController#getPrinters` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L102-L117】 |
+| 8 | `GET /servicepoint/branches/{branchUuid}` | Получение информации об отделении (реализовано через `GET /managementinformation/branches/{id}`) | `ManagementController#getBranch` 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】 |
+| 9 | `POST /entrypoint/branches/{branchUuid}/printer/{printerUuid}/visitWithParameters?printTicket=true` | Создание визита с печатью талона | `EntrypointController#createVisitFromReception` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L368】 |
+| 10 | `POST /entrypoint/branches/{branchUuid}/printer/{printerUuid}/visitWithParameters?printTicket=false` | Создание виртуального визита без печати | `EntrypointController#createVisitFromReception` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L368】 |
+| 11 | `PUT /servicepoint/branches/{branchUuid}/queue/{queueUuid}/visits/{visitUuid}/externalService/transfer?isAppend=true` | Перенос визита внешней службой в начало очереди | `ServicePointController#visitTransferFromQueue` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】 |
+| 12 | `PUT /servicepoint/branches/{branchUuid}/queue/{queueUuid}/visits/{visitUuid}/externalService/transfer?isAppend=false` | Перенос визита внешней службой в конец очереди | `ServicePointController#visitTransferFromQueue` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】 |
+| 13 | `PUT /servicepoint/branches/{branchUuid}/servicePoint/{servicePointUuid}/pool/visits/{visitUuid}/externalService/transfer?isAppend=true` | Добавление визита внешней службой в начало пула точки обслуживания | `ServicePointController#visitTransferFromQueueToServicePointPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2982-L3034】 |
+| 14 | `PUT /servicepoint/branches/{branchUuid}/servicePoint/{servicePointUuid}/pool/visits/{visitUuid}/externalService/transfer?isAppend=false` | Добавление визита внешней службой в конец пула точки обслуживания | `ServicePointController#visitTransferFromQueueToServicePointPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2982-L3034】 |
+| 15 | `PUT /servicepoint/branches/{branchUuid}/users/{userUuid}/pool/visits/{visitUuid}/externalService/transfer?isAppend=true` | Помещение визита внешней службой в начало пула сотрудника | `ServicePointController#visitTransferFromQueueToUserPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3320】 |
+| 16 | `PUT /servicepoint/branches/{branchUuid}/users/{userUuid}/pool/visits/{visitUuid}/externalService/transfer?isAppend=false` | Помещение визита внешней службой в конец пула сотрудника | `ServicePointController#visitTransferFromQueueToUserPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3320】 |
+
 ## 📦 Примеры кода
 
 ### Использование сервиса
@@ -338,31 +361,31 @@ class HttpExample {
 ![Рабочий процесс сотрудника](docs/diagrams/employee-workflow.svg)
 
 ### 1. Открытие рабочего места
-1. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — сотрудник занимает точку обслуживания.
+1. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — сотрудник занимает точку обслуживания (`ServicePointController#openServicePoint`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L492-L511】
 
 ### 2. Вызов визита
-1. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — запрос следующего визита (`200 OK` + визит или `204 No Content`).
+1. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — запрос следующего визита (`200 OK` + визит или `204 No Content`, метод `ServicePointController#visitCallForConfirmMaxWaitingTime`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L973-L982】
 
 ### 3. Начало обслуживания визита
-1. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — подтверждение прихода клиента.
-2. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}` — добавление фактической услуги.
-3. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}` — итог фактической услуги.
-4. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}` — итог обслуженной услуги.
+1. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — подтверждение прихода клиента (`ServicePointController#visitConfirm`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1386-L1434】
+2. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}` — добавление фактической услуги (`ServicePointController#addDeliveredService`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1700-L1741】
+3. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}` — итог фактической услуги (`ServicePointController#addOutcomeOfDeliveredService`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2055-L2093】
+4. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}` — итог обслуженной услуги (`ServicePointController#addOutcomeService`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1939-L1969】
 
 ### 4. Перевод и возвращение визита
-1. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` — перевод в другую очередь.
-2. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer` — перевод в пул ТО.
-3. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/put_back` — возврат из пула.
+1. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` — перевод в другую очередь (`ServicePointController#visitTransfer`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2366-L2414】
+2. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer` — перевод в пул ТО (`ServicePointController#visitTransferToServicePointPool`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2468-L2517】
+3. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/put_back` — возврат из пула (`ServicePointController#visitBackToServicePointPool`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2418-L2465】
 
 ### 5. Повторный вызов визита
-1. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}` — повторное приглашение клиента.
+1. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}` — повторное приглашение клиента (`ServicePointController#visitReCallForConfirm`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1292-L1360】
 
 ### 6. Завершение визита
-1. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end?isForced=false` — фиксация завершения обслуживания.
+1. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end?isForced=false` — фиксация завершения обслуживания (`ServicePointController#visitEnd`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3138-L3163】
 
 ### 7. Закрытие рабочего места
-- Перерыв: `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close?isBreak=true&breakReason=...`
-- Выход из системы: `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/logout`
+- Перерыв: `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close?isBreak=true&breakReason=...` (метод `ServicePointController#closeServicePoint`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L540-L551】
+- Выход из системы: `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/logout` (метод `ServicePointController#logoutUser`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L560-L592】
 
 ## 🤖 Документация для автотестеров
 
@@ -390,17 +413,17 @@ class HttpExample {
 
 ### Кейсы операторов
 
-| Кейс | Запрос | Ожидаемый ответ |
-|---|---|---|
-| Открытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/workProfiles/{wpId}/users/{user}/open` | `200 OK` + JSON пользователя; `404 Not Found` если отделение/профиль/точка отсутствуют; `409 Conflict` при занятой точке |
-| Вызов визита | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` | `200 OK` + JSON визита; `204 No Content` если очередь пуста; `207 Multi-Status` при активном авто-вызове; `403/404` при недоступных сущностях |
-| Подтверждение/завершение | `POST /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/confirmed/confirm/{visitId}` | `200 OK` + JSON визита; `404 Not Found` если визит или точка не найдены; `409 Conflict` при повторном подтверждении |
-| Нет визитов | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` при пустой очереди | `204 No Content` |
-| Перевод визита | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` | `200 OK` + JSON визита; `404 Not Found` когда нет отделения/очереди/точки; `500 Internal Server Error` при сбое |
-| Ошибка перевода | тот же запрос с неверными параметрами | `400 Bad Request` для некорректных аргументов; `404 Not Found` либо `409 Conflict` при конфликте состояний |
-| Закрытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/close` | `200 OK` (пустое тело); `404 Not Found` если точка или отделение не найдены; `409 Conflict` при повторном закрытии |
-| Перевод в пул ТО | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/poolServicePoint/{poolSpId}/visit/transfer` | `200 OK` + JSON визита; `404 Not Found` при отсутствии точки/пула; `500 Internal Server Error` при ошибке |
-| Повторное завершение | повторный `.../confirmed/confirm/{visitId}` | `409 Conflict` |
+| Кейс | Запрос | Ожидаемый ответ | Контроллер/метод |
+|---|---|---|---|
+| Открытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/workProfiles/{wpId}/users/{user}/open` | `200 OK` + JSON пользователя; `404 Not Found` если отделение/профиль/точка отсутствуют; `409 Conflict` при занятой точке | `ServicePointController#openServicePoint` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L492-L511】 |
+| Вызов визита | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` | `200 OK` + JSON визита; `204 No Content` если очередь пуста; `207 Multi-Status` при активном авто-вызове; `403/404` при недоступных сущностях | `ServicePointController#visitCallForConfirmMaxWaitingTime` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L973-L982】 |
+| Подтверждение/завершение | `POST /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/confirmed/confirm/{visitId}` | `200 OK` + JSON визита; `404 Not Found` если визит или точка не найдены; `409 Conflict` при повторном подтверждении | `ServicePointController#visitConfirm` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1386-L1434】 |
+| Нет визитов | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` при пустой очереди | `204 No Content` | `ServicePointController#visitCallForConfirmMaxWaitingTime` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L973-L982】 |
+| Перевод визита | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` | `200 OK` + JSON визита; `404 Not Found` когда нет отделения/очереди/точки; `500 Internal Server Error` при сбое | `ServicePointController#visitTransfer` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2366-L2414】 |
+| Ошибка перевода | тот же запрос с неверными параметрами | `400 Bad Request` для некорректных аргументов; `404 Not Found` либо `409 Conflict` при конфликте состояний | `ServicePointController#visitTransfer` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2366-L2414】 |
+| Закрытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/close` | `200 OK` (пустое тело); `404 Not Found` если точка или отделение не найдены; `409 Conflict` при повторном закрытии | `ServicePointController#closeServicePoint` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L540-L551】 |
+| Перевод в пул ТО | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/poolServicePoint/{poolSpId}/visit/transfer` | `200 OK` + JSON визита; `404 Not Found` при отсутствии точки/пула; `500 Internal Server Error` при ошибке | `ServicePointController#visitTransferToServicePointPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2468-L2517】 |
+| Повторное завершение | повторный `.../confirmed/confirm/{visitId}` | `409 Conflict` | `ServicePointController#visitConfirm` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1386-L1434】 |
 
 ### Кейсы аутентификации
 
