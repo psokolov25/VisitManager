@@ -11,6 +11,14 @@
         Назначением службы является управление клиентским путем.
 
     </description>
+    <licenses>
+        <license>
+            <name>Простая (неисключительная) лицензия с оплатой по модели «Named User»</name>
+            <url>https://digital.gov.ru/uploaded/files/metodicheskie-rekomendatsii-po-vyboru-modelej-litsenzirovania-otechestvennogo-po.pdf</url>
+            <distribution>repo</distribution>
+            <comments>Лицензионное вознаграждение рассчитывается исходя из количества пользователей системы.</comments>
+        </license>
+    </licenses>
     <scm>
         <url>https://192.168.8.32/pavel.sokolov/entrypoint</url>
         <developerConnection>scm:git:https://192.168.8.32/pavel.sokolov/entrypoint</developerConnection>
