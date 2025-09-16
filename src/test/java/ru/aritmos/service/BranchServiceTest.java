@@ -19,6 +19,7 @@ import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.model.visit.VisitEvent;
 
 /**
  * Тесты для {@link BranchService}.
@@ -279,6 +280,60 @@ class BranchServiceTest {
     }
 
     /**
+     * Удаляет отделение, закрывая точки и публикуя событие.
+     */
+    @Test
+    void deleteRemovesBranchAndSendsEvent() {
+        BranchService service = spy(new BranchService());
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        VisitService visitService = mock(VisitService.class);
+        Branch branch = new Branch("b1", "Branch");
+        ServicePoint servicePoint = new ServicePoint("sp1", "SP1");
+        servicePoint.setUser(new User("user", "User", null));
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+        service.branches.put("b1", branch);
+
+        doNothing()
+            .when(service)
+            .closeServicePoint(
+                anyString(), anyString(), any(), anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString());
+
+        service.delete("b1", visitService);
+
+        verify(service)
+            .closeServicePoint(
+                eq("b1"),
+                eq("sp1"),
+                eq(visitService),
+                eq(true),
+                eq(false),
+                eq(""),
+                eq(true),
+                eq("BRANCH_DELETED"));
+        verify(eventService)
+            .sendChangedEvent(eq("config"), eq(true), eq(branch), isNull(), anyMap(), eq("BRANCH_DELETED"));
+        assertFalse(service.branches.containsKey("b1"));
+    }
+
+    /**
+     * Бросает исключение при попытке удалить неизвестное отделение.
+     */
+    @Test
+    void deleteThrowsWhenBranchMissing() {
+        BranchService service = new BranchService();
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        VisitService visitService = mock(VisitService.class);
+
+        assertThrows(HttpStatusException.class, () -> service.delete("missing", visitService));
+        verify(eventService, never())
+            .sendChangedEvent(anyString(), anyBoolean(), any(), any(), anyMap(), anyString());
+    }
+
+    /**
      * Возвращает услуги, связанные с рабочим профилем.
      */
     @Test
@@ -411,6 +466,74 @@ class BranchServiceTest {
 
         // проверки: вызван метод Branch.updateVisit с нужными параметрами
         verify(branch).updateVisit(visit, service.eventService, "ACTION", visitService);
+        verify(service).getBranch("b1");
+    }
+
+    /**
+     * Делегирует обновление визита по событию без дополнительных параметров.
+     */
+    @Test
+    void updateVisitWithEventDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doNothing()
+            .when(branch)
+            .updateVisit(any(Visit.class), any(), any(VisitEvent.class), any(VisitService.class));
+        service.branches.put("b1", branch);
+        Visit visit = Visit.builder().id("v1").branchId("b1").build();
+        VisitService visitService = mock(VisitService.class);
+
+        service.updateVisit(visit, VisitEvent.CREATED, visitService);
+
+        verify(branch).updateVisit(visit, service.eventService, VisitEvent.CREATED, visitService);
+        verify(service).getBranch("b1");
+    }
+
+    /**
+     * Делегирует обновление визита по событию с флагом постановки в начало.
+     */
+    @Test
+    void updateVisitWithEventAndStartFlagDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doNothing()
+            .when(branch)
+            .updateVisit(any(Visit.class), any(), any(VisitEvent.class), any(VisitService.class), anyBoolean());
+        service.branches.put("b1", branch);
+        Visit visit = Visit.builder().id("v1").branchId("b1").build();
+        VisitService visitService = mock(VisitService.class);
+
+        service.updateVisit(visit, VisitEvent.CALLED, visitService, true);
+
+        verify(branch)
+            .updateVisit(visit, service.eventService, VisitEvent.CALLED, visitService, true);
+        verify(service).getBranch("b1");
+    }
+
+    /**
+     * Делегирует обновление визита по событию с указанием позиции.
+     */
+    @Test
+    void updateVisitWithEventAndIndexDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doNothing()
+            .when(branch)
+            .updateVisit(any(Visit.class), any(), any(VisitEvent.class), any(VisitService.class), anyInt());
+        service.branches.put("b1", branch);
+        Visit visit = Visit.builder().id("v1").branchId("b1").build();
+        VisitService visitService = mock(VisitService.class);
+
+        service.updateVisit(visit, VisitEvent.START_SERVING, visitService, 2);
+
+        verify(branch)
+            .updateVisit(visit, service.eventService, VisitEvent.START_SERVING, visitService, 2);
         verify(service).getBranch("b1");
     }
 
