@@ -6,7 +6,10 @@ import static org.mockito.Mockito.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
@@ -566,6 +569,73 @@ class BranchServiceTest {
         assertSame(user, branch.getServicePoints().get("sp1").getUser());
 
         verify(service).add("b1", branch);
+    }
+
+    /**
+     * Публикует события о смене точки и профиля при открытии точки существующим сотрудником.
+     */
+    @Test
+    void openServicePointPublishesUserChangeEvents() throws Exception {
+        // подготовка: отделение с существующим пользователем
+        BranchService service = new BranchService();
+        service.eventService = mock(EventService.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        when(keyCloackClient.getUserInfo("user")).thenReturn(Optional.empty());
+        service.keyCloackClient = keyCloackClient;
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        branch.setPrefix("BR");
+        branch.getWorkProfiles().put("wp2", new WorkProfile("wp2", "Новый профиль"));
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "Окно 1"));
+        User user = new User("u1", "user", null);
+        user.setName("user");
+        user.setIsAdmin(true);
+        user.setAllBranches(List.of());
+        user.setServicePointId("oldSp");
+        user.setCurrentWorkProfileId("oldWp");
+        branch.getUsers().put("user", user);
+        service.branches.put("b1", branch);
+
+        service.openServicePoint("b1", "user", "sp1", "wp2", visitService);
+
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(service.eventService, atLeastOnce()).send(eq("stat"), eq(false), eventCaptor.capture());
+
+        List<String> eventTypes = eventCaptor.getAllValues().stream().map(Event::getEventType).toList();
+        assertTrue(eventTypes.contains("USER_SERVICE_POINT_CHANGED"));
+        assertTrue(eventTypes.contains("USER_WORK_PROFILE_CHANGED"));
+    }
+
+    /**
+     * Бросает ошибку, если у сотрудника нет доступа к отделению при открытии точки.
+     */
+    @Test
+    void openServicePointThrowsWhenUserHasNoAccess() {
+        // подготовка: пользователь без прав на филиал
+        BranchService service = new BranchService();
+        service.eventService = mock(EventService.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        when(keyCloackClient.getUserInfo("user")).thenReturn(Optional.empty());
+        service.keyCloackClient = keyCloackClient;
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        branch.setPrefix("BR");
+        branch.getWorkProfiles().put("wp2", new WorkProfile("wp2", "Новый профиль"));
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "Окно 1"));
+        User user = new User("u1", "user", null);
+        user.setName("user");
+        user.setIsAdmin(false);
+        user.setAllBranches(List.of());
+        branch.getUsers().put("user", user);
+        service.branches.put("b1", branch);
+
+        HttpStatusException exception = assertThrows(
+            HttpStatusException.class,
+            () -> service.openServicePoint("b1", "user", "sp1", "wp2", visitService));
+
+        assertTrue(exception.getMessage().contains("dont have permissions"));
     }
 
     /**
