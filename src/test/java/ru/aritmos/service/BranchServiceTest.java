@@ -6,7 +6,10 @@ import static org.mockito.Mockito.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
@@ -14,10 +17,12 @@ import ru.aritmos.model.DeliveredService;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.Service;
 import ru.aritmos.model.ServiceGroup;
+import ru.aritmos.model.SegmentationRuleData;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.model.visit.VisitEvent;
 
 /**
  * Тесты для {@link BranchService}.
@@ -278,6 +283,60 @@ class BranchServiceTest {
     }
 
     /**
+     * Удаляет отделение, закрывая точки и публикуя событие.
+     */
+    @Test
+    void deleteRemovesBranchAndSendsEvent() {
+        BranchService service = spy(new BranchService());
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        VisitService visitService = mock(VisitService.class);
+        Branch branch = new Branch("b1", "Branch");
+        ServicePoint servicePoint = new ServicePoint("sp1", "SP1");
+        servicePoint.setUser(new User("user", "User", null));
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+        service.branches.put("b1", branch);
+
+        doNothing()
+            .when(service)
+            .closeServicePoint(
+                anyString(), anyString(), any(), anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString());
+
+        service.delete("b1", visitService);
+
+        verify(service)
+            .closeServicePoint(
+                eq("b1"),
+                eq("sp1"),
+                eq(visitService),
+                eq(true),
+                eq(false),
+                eq(""),
+                eq(true),
+                eq("BRANCH_DELETED"));
+        verify(eventService)
+            .sendChangedEvent(eq("config"), eq(true), eq(branch), isNull(), anyMap(), eq("BRANCH_DELETED"));
+        assertFalse(service.branches.containsKey("b1"));
+    }
+
+    /**
+     * Бросает исключение при попытке удалить неизвестное отделение.
+     */
+    @Test
+    void deleteThrowsWhenBranchMissing() {
+        BranchService service = new BranchService();
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        VisitService visitService = mock(VisitService.class);
+
+        assertThrows(HttpStatusException.class, () -> service.delete("missing", visitService));
+        verify(eventService, never())
+            .sendChangedEvent(anyString(), anyBoolean(), any(), any(), anyMap(), anyString());
+    }
+
+    /**
      * Возвращает услуги, связанные с рабочим профилем.
      */
     @Test
@@ -414,6 +473,74 @@ class BranchServiceTest {
     }
 
     /**
+     * Делегирует обновление визита по событию без дополнительных параметров.
+     */
+    @Test
+    void updateVisitWithEventDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doNothing()
+            .when(branch)
+            .updateVisit(any(Visit.class), any(), any(VisitEvent.class), any(VisitService.class));
+        service.branches.put("b1", branch);
+        Visit visit = Visit.builder().id("v1").branchId("b1").build();
+        VisitService visitService = mock(VisitService.class);
+
+        service.updateVisit(visit, VisitEvent.CREATED, visitService);
+
+        verify(branch).updateVisit(visit, service.eventService, VisitEvent.CREATED, visitService);
+        verify(service).getBranch("b1");
+    }
+
+    /**
+     * Делегирует обновление визита по событию с флагом постановки в начало.
+     */
+    @Test
+    void updateVisitWithEventAndStartFlagDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doNothing()
+            .when(branch)
+            .updateVisit(any(Visit.class), any(), any(VisitEvent.class), any(VisitService.class), anyBoolean());
+        service.branches.put("b1", branch);
+        Visit visit = Visit.builder().id("v1").branchId("b1").build();
+        VisitService visitService = mock(VisitService.class);
+
+        service.updateVisit(visit, VisitEvent.CALLED, visitService, true);
+
+        verify(branch)
+            .updateVisit(visit, service.eventService, VisitEvent.CALLED, visitService, true);
+        verify(service).getBranch("b1");
+    }
+
+    /**
+     * Делегирует обновление визита по событию с указанием позиции.
+     */
+    @Test
+    void updateVisitWithEventAndIndexDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doNothing()
+            .when(branch)
+            .updateVisit(any(Visit.class), any(), any(VisitEvent.class), any(VisitService.class), anyInt());
+        service.branches.put("b1", branch);
+        Visit visit = Visit.builder().id("v1").branchId("b1").build();
+        VisitService visitService = mock(VisitService.class);
+
+        service.updateVisit(visit, VisitEvent.START_SERVING, visitService, 2);
+
+        verify(branch)
+            .updateVisit(visit, service.eventService, VisitEvent.START_SERVING, visitService, 2);
+        verify(service).getBranch("b1");
+    }
+
+    /**
      * Открывает точку обслуживания, назначая пользователя и рабочий профиль.
      */
     @Test
@@ -442,6 +569,73 @@ class BranchServiceTest {
         assertSame(user, branch.getServicePoints().get("sp1").getUser());
 
         verify(service).add("b1", branch);
+    }
+
+    /**
+     * Публикует события о смене точки и профиля при открытии точки существующим сотрудником.
+     */
+    @Test
+    void openServicePointPublishesUserChangeEvents() throws Exception {
+        // подготовка: отделение с существующим пользователем
+        BranchService service = new BranchService();
+        service.eventService = mock(EventService.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        when(keyCloackClient.getUserInfo("user")).thenReturn(Optional.empty());
+        service.keyCloackClient = keyCloackClient;
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        branch.setPrefix("BR");
+        branch.getWorkProfiles().put("wp2", new WorkProfile("wp2", "Новый профиль"));
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "Окно 1"));
+        User user = new User("u1", "user", null);
+        user.setName("user");
+        user.setIsAdmin(true);
+        user.setAllBranches(List.of());
+        user.setServicePointId("oldSp");
+        user.setCurrentWorkProfileId("oldWp");
+        branch.getUsers().put("user", user);
+        service.branches.put("b1", branch);
+
+        service.openServicePoint("b1", "user", "sp1", "wp2", visitService);
+
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(service.eventService, atLeastOnce()).send(eq("stat"), eq(false), eventCaptor.capture());
+
+        List<String> eventTypes = eventCaptor.getAllValues().stream().map(Event::getEventType).toList();
+        assertTrue(eventTypes.contains("USER_SERVICE_POINT_CHANGED"));
+        assertTrue(eventTypes.contains("USER_WORK_PROFILE_CHANGED"));
+    }
+
+    /**
+     * Бросает ошибку, если у сотрудника нет доступа к отделению при открытии точки.
+     */
+    @Test
+    void openServicePointThrowsWhenUserHasNoAccess() {
+        // подготовка: пользователь без прав на филиал
+        BranchService service = new BranchService();
+        service.eventService = mock(EventService.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        when(keyCloackClient.getUserInfo("user")).thenReturn(Optional.empty());
+        service.keyCloackClient = keyCloackClient;
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        branch.setPrefix("BR");
+        branch.getWorkProfiles().put("wp2", new WorkProfile("wp2", "Новый профиль"));
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "Окно 1"));
+        User user = new User("u1", "user", null);
+        user.setName("user");
+        user.setIsAdmin(false);
+        user.setAllBranches(List.of());
+        branch.getUsers().put("user", user);
+        service.branches.put("b1", branch);
+
+        HttpStatusException exception = assertThrows(
+            HttpStatusException.class,
+            () -> service.openServicePoint("b1", "user", "sp1", "wp2", visitService));
+
+        assertTrue(exception.getMessage().contains("dont have permissions"));
     }
 
     /**
@@ -492,7 +686,6 @@ class BranchServiceTest {
             .sendChangedEvent(
                 eq("config"), eq(true), eq(branch), isNull(), anyMap(), eq("BRANCH_DELETED"));
     }
-
 
     /**
      * Бросает ошибку, если рабочий профиль не найден.
@@ -595,5 +788,134 @@ class BranchServiceTest {
         verify(service).add("b1", branch);
     }
 
-}
+    /**
+     * Делегирует обновление услуг объекта Branch и сохраняет отделение.
+     */
+    @Test
+    void addUpdateServiceDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doReturn(branch).when(service).getBranch("b1");
+        HashMap<String, Service> services = new HashMap<>();
+        VisitService visitService = mock(VisitService.class);
 
+        service.addUpdateService("b1", services, true, visitService);
+
+        verify(branch)
+            .addUpdateService(services, service.eventService, true, visitService);
+        verify(service).add("b1", branch);
+    }
+
+    /**
+     * Вызывает удаление услуг у Branch c передачей всех параметров.
+     */
+    @Test
+    void deleteServicesDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doReturn(branch).when(service).getBranch("b1");
+        VisitService visitService = mock(VisitService.class);
+        List<String> serviceIds = List.of("s1", "s2");
+
+        service.deleteServices("b1", serviceIds, true, visitService);
+
+        verify(branch)
+            .deleteServices(serviceIds, service.eventService, true, visitService);
+    }
+
+    /**
+     * Передаёт обновление точек обслуживания в Branch и инициирует сохранение.
+     */
+    @Test
+    void addUpdateServicePointDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doReturn(branch).when(service).getBranch("b1");
+        HashMap<String, ServicePoint> points = new HashMap<>();
+
+        service.addUpdateServicePoint("b1", points, true, false);
+
+        verify(branch)
+            .addUpdateServicePoint(points, true, false, service.eventService);
+        verify(service).add("b1", branch);
+    }
+
+    /**
+     * Делегирует удаление точек обслуживания и сохраняет изменения отделения.
+     */
+    @Test
+    void deleteServicePointsDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doReturn(branch).when(service).getBranch("b1");
+        List<String> servicePointIds = List.of("sp1", "sp2");
+
+        service.deleteServicePoints("b1", servicePointIds);
+
+        verify(branch).deleteServicePoints(servicePointIds, service.eventService);
+        verify(service).add("b1", branch);
+    }
+
+    /**
+     * Передаёт обновление очередей в Branch и инициирует сохранение отделения.
+     */
+    @Test
+    void addUpdateQueuesDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doReturn(branch).when(service).getBranch("b1");
+        HashMap<String, Queue> queues = new HashMap<>();
+
+        service.addUpdateQueues("b1", queues, true);
+
+        verify(branch).addUpdateQueues(queues, true, service.eventService);
+        verify(service).add("b1", branch);
+    }
+
+    /**
+     * Делегирует удаление очередей и фиксирует изменения через add.
+     */
+    @Test
+    void deleteQueuesDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doReturn(branch).when(service).getBranch("b1");
+        List<String> queueIds = List.of("q1", "q2");
+
+        service.deleteQueues("b1", queueIds);
+
+        verify(branch).deleteQueues(queueIds, service.eventService);
+        verify(service).add("b1", branch);
+    }
+
+    /**
+     * Передаёт обновление правил сегментации объекту Branch и сохраняет отделение.
+     */
+    @Test
+    void addUpdateSegmentationRulesDelegatesToBranch() {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = spy(new Branch("b1", "Branch"));
+        doReturn(branch).when(service).getBranch("b1");
+        HashMap<String, SegmentationRuleData> rules = new HashMap<>();
+
+        service.addUpdateSegmentationRules("b1", rules);
+
+        verify(branch).adUpdateSegmentRules(rules, service.eventService);
+        verify(service).add("b1", branch);
+    }
+
+}
