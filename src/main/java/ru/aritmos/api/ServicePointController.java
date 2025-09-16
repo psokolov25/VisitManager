@@ -2152,8 +2152,10 @@ public class ServicePointController {
       description = "Удаляет итог оказания услуги у визита",
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог удален"),
+
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
+
         @ApiResponse(responseCode = "404", description = "Точка обслуживания не найдена"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
