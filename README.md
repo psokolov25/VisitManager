@@ -301,15 +301,14 @@ class VisitCreator {
 import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.HttpRequest;
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
+@Slf4j
 class HttpExample {
-
-    private static final Logger log = LoggerFactory.getLogger(HttpExample.class);
 
     void fetchBranches() throws MalformedURLException {
         try (HttpClient client = HttpClient.create(new URL("http://localhost:8080"))) {

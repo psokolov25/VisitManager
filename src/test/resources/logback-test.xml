@@ -7,7 +7,7 @@
         </encoder>
     </appender>
     <logger name="io.micronaut.http" level="WARN"/>
-    <root level="WARN">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
