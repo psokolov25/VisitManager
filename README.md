@@ -245,6 +245,7 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ## 🖥️ REST пульта рабочего места оператора
 
+
 Ниже приведены REST-запросы, которые использует пульт рабочего места оператора. Для каждого запроса указан контроллер Micronaut, который его обрабатывает, и основные варианты ответов сервера.
 
 | № | Метод и путь | Описание действия | Ответы сервера | Контроллер и метод |
@@ -360,6 +361,7 @@ class HttpExample {
 ![Рабочий процесс сотрудника](docs/diagrams/employee-workflow.svg)
 
 ### 1. Открытие рабочего места
+
 1. `GET /managementinformation/branches/tiny` — пульт загружает компактный список отделений (`200 OK` + массив `{ id, name }`; `400/500` при ошибках). 【F:src/main/java/ру/aritмос/api/ManagementController.java†L127-L142】
 2. `GET /managementinformation/branches/{branchId}` — актуализирует состояние выбранного отделения перед началом смены (`200 OK`; `404/500` при проблемах). 【F:src/main/java/ру/aritмос/api/ManagementController.java†L65-L71】
 3. `GET /servicepoint/branches/{branchId}/servicePoints` — показывает доступные рабочие места и их статус (`200 OK`; `404/500` при ошибках). 【F:src/main/java/ру/aritмос/api/ServicePointController.java†L168-L193】
@@ -428,6 +430,7 @@ class HttpExample {
 
 | Кейс | Запрос | Ожидаемый ответ | Контроллер/метод |
 |---|---|---|---|
+
 | Выбор отделения | `GET /managementinformation/branches/tiny` | `200 OK` + список `{ id, name }`; `400 Bad Request` или `500 Internal Server Error` при ошибках | `ManagementController#getTinyBranches` 【F:src/main/java/ру/aritмос/api/ManagementController.java†L127-L142】 |
 | Детали отделения | `GET /managementinformation/branches/{branchId}` | `200 OK` + JSON отделения; `404 Not Found` при отсутствии отделения; `500 Internal Server Error` при сбое | `ManagementController#getBranch` 【F:src/main/java/ру/aritмос/api/ManagementController.java†L65-L71】 |
 | Рабочие места отделения | `GET /servicepoint/branches/{branchId}/servicePoints` | `200 OK` + список точек; `404 Not Found` при неизвестном отделении; `500 Internal Server Error` при ошибке | `ServicePointController#getServicePoints` 【F:src/main/java/ру/aritмос/api/ServicePointController.java†L168-L193】 |
@@ -453,6 +456,7 @@ class HttpExample {
 | Закрытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close` | `200 OK`; `404 Not Found`; `409 Conflict` при повторном закрытии | `ServicePointController#closeServicePoint` 【F:src/main/java/ру/aritмос/api/ServicePointController.java†L540-L551】 |
 | Перевод в пул ТО из точки | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer` | `200 OK` + JSON визита; `404 Not Found`; `500 Internal Server Error` | `ServicePointController#visitTransferToServicePointPool` 【F:src/main/java/ру/aritмос/api/ServicePointController.java†L2468-L2517】 |
 | Повторное подтверждение | Повторный `.../confirmed/confirm/{visitId}` | `409 Conflict` | `ServicePointController#visitConfirm` 【F:src/main/java/ру/aritмос/api/ServicePointController.java†L1386-L1434】 |
+
 
 
 ### Кейсы аутентификации
