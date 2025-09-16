@@ -634,6 +634,7 @@ class BranchServiceTest {
     }
 
     /**
+
      * Публикует события о смене точки и профиля при открытии точки существующим сотрудником.
      */
     @Test
@@ -670,6 +671,7 @@ class BranchServiceTest {
     }
 
     /**
+
      * Закрывает прежние точки обслуживания пользователя при назначении новой.
      */
     @Test
@@ -716,6 +718,7 @@ class BranchServiceTest {
     }
 
     /**
+
      * Бросает ошибку, если у сотрудника нет доступа к отделению при открытии точки.
      */
     @Test
@@ -911,6 +914,7 @@ class BranchServiceTest {
 
         service.addUpdateService("b1", services, true, visitService);
 
+
         verify(branch)
             .addUpdateService(services, service.eventService, true, visitService);
         verify(service).add("b1", branch);
@@ -946,6 +950,7 @@ class BranchServiceTest {
         Branch branch = spy(new Branch("b1", "Branch"));
         doReturn(branch).when(service).getBranch("b1");
         HashMap<String, ServicePoint> points = new HashMap<>();
+
 
         service.addUpdateServicePoint("b1", points, true, false);
 
