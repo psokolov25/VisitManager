@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.Branch;
+import ru.aritmos.service.Configuration;
 
 /**
  * Сквозной тест {@link ConfigurationController}, проверяющий получение причин перерыва.
@@ -21,13 +22,16 @@ class ConfigurationControllerE2EIT {
     @Client("/")
     HttpClient client;
 
+    @Inject
+    Configuration configuration;
+
     /** Проверяет, что причины перерыва возвращаются после обновления конфигурации. */
     @Test
     void returnsBreakReasons() {
         Branch branch = new Branch("b1", "Branch");
         branch.getBreakReasons().put("b1", "Break");
         Map<String, Branch> payload = Map.of("b1", branch);
-        client.toBlocking().exchange(HttpRequest.POST("/configuration/branches", payload));
+        configuration.createBranchConfiguration(payload);
 
         Map<?, ?> response = client.toBlocking().retrieve(
                 HttpRequest.GET("/configuration/branches/b1/break/reasons"), Map.class);
