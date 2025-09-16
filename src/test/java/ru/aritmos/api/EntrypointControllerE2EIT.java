@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.*;
+import ru.aritmos.service.Configuration;
 
 /**
  * Сквозной тест для {@link EntrypointController}.
@@ -20,6 +21,9 @@ class EntrypointControllerE2EIT {
     @Inject
     @Client("/")
     HttpClient client;
+
+    @Inject
+    Configuration configuration;
 
     /** Проверяет получение списка доступных услуг отделения. */
     @Test
@@ -35,6 +39,8 @@ class EntrypointControllerE2EIT {
         User user = new User();
         user.setId("u1");
         user.setName("User");
+        user.setFirstName("User");
+        user.setLastName("Test");
         user.setCurrentWorkProfileId("wp1");
         ServicePoint sp = new ServicePoint("sp1", "SP");
         sp.setUser(user);
@@ -45,7 +51,7 @@ class EntrypointControllerE2EIT {
         branch.getServices().put("s1", service);
 
         Map<String, Branch> payload = Map.of("b1", branch);
-        client.toBlocking().exchange(HttpRequest.POST("/configuration/branches", payload));
+        configuration.createBranchConfiguration(payload);
 
         Service[] services = client.toBlocking().retrieve(
                 HttpRequest.GET("/entrypoint/branches/b1/services"), Service[].class);
