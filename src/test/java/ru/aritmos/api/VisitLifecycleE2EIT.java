@@ -13,6 +13,7 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.Service;
+import ru.aritmos.service.Configuration;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -27,6 +28,9 @@ class VisitLifecycleE2EIT {
     @Client("/")
     HttpClient client;
 
+    @Inject
+    Configuration configuration;
+
     @Test
     void createsAndCancelsVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -37,7 +41,7 @@ class VisitLifecycleE2EIT {
         entryPoint.setName("Entry");
         branch.getEntryPoints().put("e1", entryPoint);
         Map<String, Branch> payload = Map.of("b1", branch);
-        client.toBlocking().exchange(HttpRequest.POST("/configuration/branches", payload));
+        configuration.createBranchConfiguration(payload);
 
         ArrayList<String> serviceIds = new ArrayList<>();
         serviceIds.add("s1");
@@ -46,7 +50,7 @@ class VisitLifecycleE2EIT {
 
         HttpResponse<?> deleteResponse = client.toBlocking().exchange(
                 HttpRequest.DELETE("/servicepoint/branches/b1/visits/" + visit.get("id")));
-        assertEquals(HttpStatus.OK, deleteResponse.getStatus());
+        assertEquals(HttpStatus.NO_CONTENT, deleteResponse.getStatus());
 
         HttpClientResponseException ex = assertThrows(
                 HttpClientResponseException.class,

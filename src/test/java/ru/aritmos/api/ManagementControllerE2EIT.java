@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.tiny.TinyClass;
+import ru.aritmos.service.Configuration;
 
 /**
  * Сквозные проверки {@link ManagementController}.
@@ -22,10 +23,13 @@ class ManagementControllerE2EIT {
     @Client("/")
     HttpClient client;
 
+    @Inject
+    Configuration configuration;
+
     @Test
     void returnsBranchById() {
         Branch branch = new Branch("b1", "Branch");
-        client.toBlocking().exchange(HttpRequest.POST("/configuration/branches", Map.of("b1", branch)));
+        configuration.createBranchConfiguration(Map.of("b1", branch));
 
         Branch fetched = client.toBlocking().retrieve(
                 HttpRequest.GET("/managementinformation/branches/b1"), Branch.class);
@@ -35,7 +39,7 @@ class ManagementControllerE2EIT {
     @Test
     void returnsTinyBranches() {
         Branch branch = new Branch("b2", "B2");
-        client.toBlocking().exchange(HttpRequest.POST("/configuration/branches", Map.of("b2", branch)));
+        configuration.createBranchConfiguration(Map.of("b2", branch));
 
         TinyClass[] tiny = client.toBlocking().retrieve(
                 HttpRequest.GET("/managementinformation/branches/tiny"), TinyClass[].class);
