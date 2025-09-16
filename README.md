@@ -195,19 +195,64 @@ scripts/           демо-сценарии и утилиты для локал
 ### Варианты ответа сервера
 Все контроллеры возвращают стандартные HTTP-коды:
 
-| Код | Описание |
-| --- | --- |
-| `200 OK` | успешный запрос |
-| `204 No Content` | успешный запрос без содержимого |
-| `207 Multi-Status` | режим автоматического вызова уже активен или отключён |
-| `400 Bad Request` | некорректный запрос |
-| `401 Unauthorized` | не авторизован |
-| `403 Forbidden` | доступ запрещён |
-| `404 Not Found` | ресурс не найден |
-| `405 Method Not Allowed` | HTTP-метод не поддерживается для ресурса |
-| `409 Conflict` | конфликт данных или состояния |
-| `415 Unsupported Media Type` | неподдерживаемый тип данных |
-| `500 Internal Server Error` | ошибка сервера |
+<table>
+  <colgroup>
+    <col style="width: 28%" />
+    <col style="width: 72%" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Код</th>
+      <th>Описание</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>200 OK</code></td>
+      <td>успешный запрос</td>
+    </tr>
+    <tr>
+      <td><code>204 No Content</code></td>
+      <td>успешный запрос без содержимого</td>
+    </tr>
+    <tr>
+      <td><code>207 Multi-Status</code></td>
+      <td>режим автоматического вызова уже активен или отключён</td>
+    </tr>
+    <tr>
+      <td><code>400 Bad Request</code></td>
+      <td>некорректный запрос</td>
+    </tr>
+    <tr>
+      <td><code>401 Unauthorized</code></td>
+      <td>не авторизован</td>
+    </tr>
+    <tr>
+      <td><code>403 Forbidden</code></td>
+      <td>доступ запрещён</td>
+    </tr>
+    <tr>
+      <td><code>404 Not Found</code></td>
+      <td>ресурс не найден</td>
+    </tr>
+    <tr>
+      <td><code>405 Method Not Allowed</code></td>
+      <td>HTTP-метод не поддерживается для ресурса</td>
+    </tr>
+    <tr>
+      <td><code>409 Conflict</code></td>
+      <td>конфликт данных или состояния</td>
+    </tr>
+    <tr>
+      <td><code>415 Unsupported Media Type</code></td>
+      <td>неподдерживаемый тип данных</td>
+    </tr>
+    <tr>
+      <td><code>500 Internal Server Error</code></td>
+      <td>ошибка сервера</td>
+    </tr>
+  </tbody>
+</table>
 
 ### ManagementController
 ```bash
@@ -247,24 +292,187 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 Ниже приведены REST-запросы, которые использует пульт рабочего места оператора. Для каждого запроса указан контроллер Micronaut, который его обрабатывает, и основные варианты ответов сервера.
 
-| № | Метод и путь | Описание действия | Ответы сервера | Контроллер и метод |
-| --- | --- | --- | --- | --- |
-| 1 | `GET /managementinformation/branches/tiny` | Компактный список отделений для выбора филиала. | `200 OK` — JSON-массив `{ id, name }`.<br>`400 Bad Request` или `500 Internal Server Error` при ошибках. | `ManagementController#getTinyBranches` 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】 |
-| 2 | `GET /servicepoint/branches/{branchId}/servicePoints` | Список точек обслуживания отделения для выбора рабочего места. | `200 OK` — точки с признаком доступности.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#getServicePoints` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L168-L193】 |
-| 3 | `GET /servicepoint/branches/{branchId}/users` | Возвращает сотрудников отделения и их статусы. | `200 OK` — массив сотрудников.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#getUsersOfBranch` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L268-L291】 |
-| 4 | `GET /entrypoint/branches/{branchId}/services/all` | Полный каталог услуг отделения для фильтров и карточек визита. | `200 OK` — список услуг.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `EntrypointController#getAllServices` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】 |
-| 5 | `GET /servicepoint/branches/{branchId}/queues/full` | Подробные данные по очередям отделения. | `200 OK` — очереди и талоны.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#getFullQueues` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】 |
-| 6 | `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` | Отменяет визит по идентификатору. | `204 No Content` при успехе.<br>`404 Not Found`, `409 Conflict` или `500 Internal Server Error` при ошибках. | `ServicePointController#deleteVisit` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2334-L2363】 |
-| 7 | `GET /servicepoint/branches/{branchId}/printers` | Список доступных принтеров отделения. | `200 OK` — перечень устройств.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#getPrinters` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L102-L117】 |
-| 8 | `GET /servicepoint/branches/{branchId}` | Возвращает сводные данные отделения (делегирует `ManagementController#getBranch`). | `200 OK` — JSON отделения.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ManagementController#getBranch` 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】 |
-| 9 | `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` | Создаёт визит с печатью талона на выбранном принтере. | `200 OK` — созданный визит.<br>`400 Bad Request`, `404 Not Found` или `500 Internal Server Error` при ошибках. | `EntrypointController#createVisitFromReception` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】 |
-| 10 | `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` | Создаёт виртуальный визит без печати талона. | `200 OK` — созданный визит.<br>`400 Bad Request`, `404 Not Found` или `500 Internal Server Error` при ошибках. | `EntrypointController#createVisitFromReception` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】 |
-| 11 | `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=true` | Переносит визит внешней службой в конец очереди. | `200 OK` — обновлённый визит.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#visitTransferFromQueue` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】 |
-| 12 | `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false` | Переносит визит внешней службой в начало очереди. | `200 OK` — обновлённый визит.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#visitTransferFromQueue` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】 |
-| 13 | `PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` | Добавляет визит в конец пула выбранной точки обслуживания. | `200 OK` — визит в пуле.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#visitTransferFromQueueToServicePointPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】 |
-| 14 | `PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=false` | Помещает визит в начало пула точки обслуживания. | `200 OK` — визит в пуле.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#visitTransferFromQueueToServicePointPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】 |
-| 15 | `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` | Переносит визит в конец пула сотрудника. | `200 OK` — визит в пуле сотрудника.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#visitTransferFromQueueToUserPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】 |
-| 16 | `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=false` | Переносит визит в начало пула сотрудника. | `200 OK` — визит в пуле сотрудника.<br>`404 Not Found` или `500 Internal Server Error` при ошибках. | `ServicePointController#visitTransferFromQueueToUserPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】 |
+
+<table>
+  <colgroup>
+    <col style="width: 4%" />
+    <col style="width: 23%" />
+    <col style="width: 24%" />
+    <col style="width: 29%" />
+    <col style="width: 20%" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>№</th>
+      <th>Метод и путь</th>
+      <th>Описание действия</th>
+      <th>Ответы сервера</th>
+      <th>Контроллер и метод</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td><code>GET /managementinformation/branches/tiny</code></td>
+      <td>Компактный список отделений для выбора филиала.</td>
+      <td>
+        <div><code>200 OK</code> — JSON-массив <code>{ id, name }</code>.</div>
+        <div><code>400 Bad Request</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ManagementController#getTinyBranches</code> 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>GET /servicepoint/branches/{branchId}/servicePoints</code></td>
+      <td>Список точек обслуживания отделения для выбора рабочего места.</td>
+      <td>
+        <div><code>200 OK</code> — точки с признаком доступности.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#getServicePoints</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L168-L193】</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code>GET /servicepoint/branches/{branchId}/users</code></td>
+      <td>Возвращает сотрудников отделения и их статусы.</td>
+      <td>
+        <div><code>200 OK</code> — массив сотрудников.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#getUsersOfBranch</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L268-L291】</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><code>GET /entrypoint/branches/{branchId}/services/all</code></td>
+      <td>Полный каталог услуг отделения для фильтров и карточек визита.</td>
+      <td>
+        <div><code>200 OK</code> — список услуг.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>EntrypointController#getAllServices</code> 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><code>GET /servicepoint/branches/{branchId}/queues/full</code></td>
+      <td>Подробные данные по очередям отделения.</td>
+      <td>
+        <div><code>200 OK</code> — очереди и талоны.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#getFullQueues</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><code>DELETE /servicepoint/branches/{branchId}/visits/{visitId}</code></td>
+      <td>Отменяет визит по идентификатору.</td>
+      <td>
+        <div><code>204 No Content</code> — успешная отмена.</div>
+        <div><code>404 Not Found</code>, <code>409 Conflict</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#deleteVisit</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2334-L2363】</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><code>GET /servicepoint/branches/{branchId}/printers</code></td>
+      <td>Список доступных принтеров отделения.</td>
+      <td>
+        <div><code>200 OK</code> — перечень устройств.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#getPrinters</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L102-L117】</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><code>GET /servicepoint/branches/{branchId}</code></td>
+      <td>Возвращает сводные данные отделения (делегирует <code>ManagementController#getBranch</code>).</td>
+      <td>
+        <div><code>200 OK</code> — JSON отделения.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ManagementController#getBranch</code> 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><code>POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true</code></td>
+      <td>Создаёт визит с печатью талона на выбранном принтере.</td>
+      <td>
+        <div><code>200 OK</code> — созданный визит.</div>
+        <div><code>400 Bad Request</code>, <code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>EntrypointController#createVisitFromReception</code> 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td><code>POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false</code></td>
+      <td>Создаёт виртуальный визит без печати талона.</td>
+      <td>
+        <div><code>200 OK</code> — созданный визит.</div>
+        <div><code>400 Bad Request</code>, <code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>EntrypointController#createVisitFromReception</code> 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td><code>PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=true</code></td>
+      <td>Переносит визит внешней службой в конец очереди.</td>
+      <td>
+        <div><code>200 OK</code> — обновлённый визит.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#visitTransferFromQueue</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td><code>PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false</code></td>
+      <td>Переносит визит внешней службой в начало очереди.</td>
+      <td>
+        <div><code>200 OK</code> — обновлённый визит.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#visitTransferFromQueue</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td><code>PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=true</code></td>
+      <td>Добавляет визит в конец пула выбранной точки обслуживания.</td>
+      <td>
+        <div><code>200 OK</code> — визит в пуле.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#visitTransferFromQueueToServicePointPool</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td><code>PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=false</code></td>
+      <td>Помещает визит в начало пула точки обслуживания.</td>
+      <td>
+        <div><code>200 OK</code> — визит в пуле.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#visitTransferFromQueueToServicePointPool</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td><code>PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=true</code></td>
+      <td>Переносит визит в конец пула сотрудника.</td>
+      <td>
+        <div><code>200 OK</code> — визит в пуле сотрудника.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#visitTransferFromQueueToUserPool</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td><code>PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=false</code></td>
+      <td>Переносит визит в начало пула сотрудника.</td>
+      <td>
+        <div><code>200 OK</code> — визит в пуле сотрудника.</div>
+        <div><code>404 Not Found</code> или <code>500 Internal Server Error</code> при ошибках.</div>
+      </td>
+      <td><code>ServicePointController#visitTransferFromQueueToUserPool</code> 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】</td>
+    </tr>
+  </tbody>
+</table>
 ## 📦 Примеры кода
 
 ### Использование сервиса
