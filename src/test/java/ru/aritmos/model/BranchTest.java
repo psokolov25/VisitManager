@@ -405,4 +405,196 @@ class BranchTest {
         assertTrue(types.contains("SERVICE_POINT_CLOSED"));
     }
 
+    @Test
+    void closeServicePointThrowsWhenPointMissing() {
+        // В отделении нет точки обслуживания с указанным идентификатором
+        Branch branch = new Branch("b1", "B1");
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+
+        HttpStatusException thrown =
+                assertThrows(
+                        HttpStatusException.class,
+                        () ->
+                                branch.closeServicePoint(
+                                        "sp1",
+                                        eventService,
+                                        visitService,
+                                        false,
+                                        false,
+                                        null,
+                                        false,
+                                        null));
+
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        verify(eventService)
+                .send(eq("*"), eq(false), argThat(event -> "BUSINESS_ERROR".equals(event.getEventType())));
+        verifyNoInteractions(visitService);
+    }
+
+    @Test
+    void closeServicePointThrowsWhenAlreadyClosed() {
+        // Точка обслуживания существует, но на ней уже нет сотрудника
+        Branch branch = new Branch("b1", "B1");
+        ServicePoint servicePoint = new ServicePoint("sp1", "СП1");
+        branch.getServicePoints().put("sp1", servicePoint);
+
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+        when(visitService.getServicePointHashMap("b1"))
+                .thenReturn(new HashMap<>(Map.of("sp1", servicePoint)));
+
+        HttpStatusException thrown =
+                assertThrows(
+                        HttpStatusException.class,
+                        () ->
+                                branch.closeServicePoint(
+                                        "sp1",
+                                        eventService,
+                                        visitService,
+                                        false,
+                                        false,
+                                        null,
+                                        false,
+                                        null));
+
+        assertEquals(HttpStatus.CONFLICT, thrown.getStatus());
+        verify(eventService)
+                .send(eq("*"), eq(false), argThat(event -> "BUSINESS_ERROR".equals(event.getEventType())));
+        verify(visitService, times(1)).getServicePointHashMap("b1");
+    }
+
+    @Test
+    void addUpdateServiceRefreshesVisitsWhenCheckEnabled() {
+        // Обновляем услугу, которая используется в активном визите
+        Branch branch = spy(new Branch("b1", "B1"));
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+
+        Service existing = new Service("s1", "Старая услуга", 10, "q1");
+        branch.getServices().put("s1", existing);
+
+        Service updated = new Service("s1", "Новая услуга", 20, "q2");
+
+        Visit visit =
+                Visit.builder()
+                        .id("v1")
+                        .currentService(existing.clone())
+                        .unservedServices(new ArrayList<>(List.of(existing.clone())))
+                        .servedServices(new ArrayList<>(List.of(existing.clone())))
+                        .build();
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "СП1");
+        servicePoint.setVisit(visit);
+        branch.getServicePoints().put("sp1", servicePoint);
+
+        doNothing().when(branch)
+                .updateVisit(eq(visit), eq(eventService), eq("UPDATE_SERVICE"), eq(visitService));
+
+        branch.addUpdateService(
+                new HashMap<>(Map.of("s1", updated)), eventService, true, visitService);
+
+        assertEquals("Новая услуга", branch.getServices().get("s1").getName());
+        assertEquals("Новая услуга", visit.getCurrentService().getName());
+        assertEquals("Новая услуга", visit.getUnservedServices().get(0).getName());
+        assertEquals("Новая услуга", visit.getServedServices().get(0).getName());
+
+        verify(branch)
+                .updateVisit(eq(visit), eq(eventService), eq("UPDATE_SERVICE"), eq(visitService));
+        verify(eventService)
+                .sendChangedEvent(
+                        eq("config"),
+                        eq(false),
+                        same(existing),
+                        argThat(service ->
+                                service instanceof Service svc
+                                        && svc.getId().equals("s1")
+                                        && svc.getName().equals("Новая услуга")),
+                        anyMap(),
+                        eq("Update service"));
+    }
+
+    @Test
+    void addUpdateServiceFailsWhenCheckDisabledAndServiceInUse() {
+        // При отключённой проверке визитов обновление должно быть запрещено
+        Branch branch = new Branch("b1", "B1");
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+
+        Service existing = new Service("s1", "Старая услуга", 10, "q1");
+        branch.getServices().put("s1", existing);
+
+        Visit visit =
+                Visit.builder()
+                        .id("v1")
+                        .currentService(existing)
+                        .unservedServices(new ArrayList<>(List.of(existing.clone())))
+                        .servedServices(new ArrayList<>(List.of(existing.clone())))
+                        .build();
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "СП1");
+        servicePoint.setVisit(visit);
+        branch.getServicePoints().put("sp1", servicePoint);
+
+        Service updated = new Service("s1", "Новая услуга", 20, "q2");
+
+        HttpStatusException thrown =
+                assertThrows(
+                        HttpStatusException.class,
+                        () ->
+                                branch.addUpdateService(
+                                        new HashMap<>(Map.of("s1", updated)),
+                                        eventService,
+                                        false,
+                                        visitService));
+
+        assertEquals(HttpStatus.CONFLICT, thrown.getStatus());
+        verify(eventService)
+                .send(eq("*"), eq(false), argThat(event -> "BUSINESS_ERROR".equals(event.getEventType())));
+        assertSame(existing, branch.getServices().get("s1"));
+    }
+
+    @Test
+    void deleteServicesCleansVisitReferences() {
+        // Удаляем услугу и проверяем обновление всех связей визита
+        Branch branch = spy(new Branch("b1", "B1"));
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+
+        Service serviceToDelete = new Service("s1", "Удаляемая", 10, "q1");
+        Service nextService = new Service("s2", "Следующая", 15, "q1");
+        branch.getServices().put("s1", serviceToDelete);
+        branch.getServices().put("s2", nextService);
+
+        Visit visit =
+                Visit.builder()
+                        .id("v1")
+                        .queueId("q1")
+                        .servicePointId("sp1")
+                        .currentService(serviceToDelete.clone())
+                        .unservedServices(new ArrayList<>(List.of(nextService.clone())))
+                        .servedServices(new ArrayList<>(List.of(serviceToDelete.clone())))
+                        .build();
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "СП1");
+        servicePoint.setVisit(visit);
+        branch.getServicePoints().put("sp1", servicePoint);
+
+        doNothing().when(branch)
+                .updateVisit(eq(visit), eq(eventService), eq("SERVICE_DELETED"), eq(visitService));
+
+        branch.deleteServices(List.of("s1"), eventService, true, visitService);
+
+        assertEquals("s2", visit.getCurrentService().getId());
+        assertTrue(visit.getUnservedServices().isEmpty());
+        assertTrue(visit.getServedServices().stream().noneMatch(service -> service.getId().equals("s1")));
+        assertFalse(branch.getServices().containsKey("s1"));
+
+        verify(branch)
+                .updateVisit(eq(visit), eq(eventService), eq("SERVICE_DELETED"), eq(visitService));
+        verify(eventService)
+                .sendChangedEvent(
+                        eq("config"), eq(false), isNull(), same(serviceToDelete), anyMap(), eq("Delete service"));
+    }
+
 }
