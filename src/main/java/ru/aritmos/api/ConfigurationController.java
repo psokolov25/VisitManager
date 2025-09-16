@@ -28,6 +28,7 @@ import ru.aritmos.service.VisitService;
     @ApiResponse(responseCode = "401", description = "Не авторизован"),
     @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
     @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+    @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
     @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
     @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
