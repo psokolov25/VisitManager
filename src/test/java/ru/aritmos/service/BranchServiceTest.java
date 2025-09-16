@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.keycloak.representations.idm.GroupRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -229,6 +231,28 @@ class BranchServiceTest {
         // проверки
         assertEquals("wp1", result.getCurrentWorkProfileId());
         verify(service).add("b1", branch);
+    }
+
+    /**
+     * Бросает исключение, если на точке отсутствует пользователь.
+     */
+    @Test
+    void changeUserWorkProfileInServicePointThrowsWhenUserMissing() {
+        BranchService service = new BranchService();
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        service.keyCloackClient = mock(KeyCloackClient.class);
+        Branch branch = new Branch("b1", "Branch");
+        branch.getWorkProfiles().put("wp1", new WorkProfile("wp1", "WP1"));
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "SP1"));
+        service.branches.put("b1", branch);
+
+        HttpStatusException exception = assertThrows(
+            HttpStatusException.class,
+            () -> service.changeUserWorkProfileInServicePoint("b1", "sp1", "wp1"));
+
+        assertTrue(exception.getMessage().contains("User not found"));
+        verify(eventService).send(eq("*"), eq(false), any());
     }
 
     /**
@@ -572,6 +596,45 @@ class BranchServiceTest {
     }
 
     /**
+     * Подгружает профиль сотрудника из Keycloak при первом открытии точки.
+     */
+    @Test
+    void openServicePointUpdatesUserFromKeycloak() throws Exception {
+        BranchService service = new BranchService();
+        service.eventService = mock(EventService.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        UserRepresentation representation = new UserRepresentation();
+        representation.setId("user-id");
+        representation.setEmail("user@example.com");
+        representation.setFirstName("Иван");
+        representation.setLastName("Иванов");
+        when(keyCloackClient.getUserInfo("user")).thenReturn(Optional.of(representation));
+        GroupRepresentation group = new GroupRepresentation();
+        HashMap<String, List<String>> attributes = new HashMap<>();
+        attributes.put("branchPrefix", List.of("BR"));
+        group.setAttributes(attributes);
+        when(keyCloackClient.getAllBranchesOfUser("user")).thenReturn(List.of(group));
+        when(keyCloackClient.isUserModuleTypeByUserName("user", "admin")).thenReturn(false);
+        service.keyCloackClient = keyCloackClient;
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        branch.setPrefix("BR");
+        branch.getWorkProfiles().put("wp1", new WorkProfile("wp1", "WP"));
+        branch.getServicePoints().put("sp1", new ServicePoint("sp1", "SP"));
+        service.branches.put("b1", branch);
+
+        User user = service.openServicePoint("b1", "user", "sp1", "wp1", visitService);
+
+        assertEquals("user-id", user.getId());
+        assertEquals("user@example.com", user.getEmail());
+        assertEquals("Иван", user.getFirstName());
+        assertEquals("Иванов", user.getLastName());
+        assertSame(user, branch.getUsers().get("user"));
+    }
+
+    /**
+
      * Публикует события о смене точки и профиля при открытии точки существующим сотрудником.
      */
     @Test
@@ -608,6 +671,54 @@ class BranchServiceTest {
     }
 
     /**
+
+     * Закрывает прежние точки обслуживания пользователя при назначении новой.
+     */
+    @Test
+    void openServicePointClosesPreviousAssignments() throws Exception {
+        BranchService service = spy(new BranchService());
+        service.eventService = mock(EventService.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        when(keyCloackClient.getUserInfo("user")).thenReturn(Optional.empty());
+        when(keyCloackClient.getAllBranchesOfUser("user")).thenReturn(List.of());
+        when(keyCloackClient.isUserModuleTypeByUserName("user", "admin")).thenReturn(true);
+        service.keyCloackClient = keyCloackClient;
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        branch.setPrefix("BR");
+        branch.getWorkProfiles().put("wp1", new WorkProfile("wp1", "WP"));
+        ServicePoint oldPoint = new ServicePoint("old", "Старое окно");
+        User user = new User("u1", "user", null);
+        user.setName("user");
+        user.setIsAdmin(true);
+        user.setAllBranches(List.of());
+        user.setServicePointId("old");
+        user.setCurrentWorkProfileId("oldProfile");
+        oldPoint.setUser(user);
+        ServicePoint newPoint = new ServicePoint("new", "Новое окно");
+        branch.getServicePoints().put(oldPoint.getId(), oldPoint);
+        branch.getServicePoints().put(newPoint.getId(), newPoint);
+        branch.getWorkProfiles().put("oldProfile", new WorkProfile("oldProfile", "Старый"));
+        branch.getUsers().put("user", user);
+        service.branches.put("b1", branch);
+
+        doNothing()
+            .when(service)
+            .closeServicePoint(
+                anyString(), anyString(), any(), anyBoolean(), anyBoolean(), anyString(), anyBoolean(), anyString());
+
+        service.openServicePoint("b1", "user", "new", "wp1", visitService);
+
+        verify(service)
+            .closeServicePoint(
+                eq("b1"), eq("old"), eq(visitService), eq(false), eq(false), eq(""), eq(false), eq(""));
+        assertEquals("new", branch.getUsers().get("user").getServicePointId());
+        assertSame(branch.getServicePoints().get("new").getUser(), branch.getUsers().get("user"));
+    }
+
+    /**
+
      * Бросает ошибку, если у сотрудника нет доступа к отделению при открытии точки.
      */
     @Test
@@ -803,6 +914,7 @@ class BranchServiceTest {
 
         service.addUpdateService("b1", services, true, visitService);
 
+
         verify(branch)
             .addUpdateService(services, service.eventService, true, visitService);
         verify(service).add("b1", branch);
@@ -838,6 +950,7 @@ class BranchServiceTest {
         Branch branch = spy(new Branch("b1", "Branch"));
         doReturn(branch).when(service).getBranch("b1");
         HashMap<String, ServicePoint> points = new HashMap<>();
+
 
         service.addUpdateServicePoint("b1", points, true, false);
 
