@@ -291,8 +291,6 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 ## 🖥️ REST пульта рабочего места оператора
 
 Ниже приведены REST-запросы, которые использует пульт рабочего места оператора. Для каждого запроса указан контроллер Micronaut, который его обрабатывает, и основные варианты ответов сервера.
-
-
 <table>
   <colgroup>
     <col style="width: 4%" />
@@ -620,54 +618,396 @@ class HttpExample {
 
 ### Кейсы клиентов
 
-| Кейс | Запрос | Ожидаемый ответ |
-|---|---|---|
-| Создание визита | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` тело `["serviceId1"]` | `200 OK` + JSON визита |
-| Невалидная услуга | тот же запрос с несуществующей услугой | `404 Not Found` |
-| Отмена визита | `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` | `204 No Content` |
-| Статус визита | `GET /servicepoint/branches/{branchId}/visits/{visitId}` | `200 OK` + JSON визита |
-| Печать талона | `POST ...?printTicket=true` | `200 OK` + JSON визита, талон отправлен на принтер |
-| Визит с параметрами | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters` с телом `{ "serviceIds": [], "parameters": {} }` | `200 OK` + JSON визита |
-| Визит на несколько услуг | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` тело `["serviceId1","serviceId2"]` | `200 OK` + JSON визита |
-| Пустой список услуг | тот же запрос с пустым телом `[]` | `400 Bad Request` |
-| Отмена чужого визита | `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` с чужим идентификатором | `403 Forbidden` |
+<table>
+  <colgroup>
+    <col style="width: 20%" />
+    <col style="width: 30%" />
+    <col style="width: 30%" />
+    <col style="width: 20%" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Кейс</th>
+      <th>REST-запрос</th>
+      <th>Описание</th>
+      <th>Ожидаемый ответ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Создание визита</td>
+      <td><code>POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit</code></td>
+      <td>Клиент регистрирует талон на выбранные услуги через пульт или терминал.</td>
+      <td>
+        <div><code>200 OK</code> — JSON визита.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Визит на несколько услуг</td>
+      <td><code>POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit</code></td>
+      <td>В теле запроса передаются несколько идентификаторов услуг: <code>["serviceId1","serviceId2"]</code>.</td>
+      <td>
+        <div><code>200 OK</code> — JSON визита со списком услуг.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Визит с параметрами</td>
+      <td><code>POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters</code></td>
+      <td>Создание талона с передачей объекта <code>{ "serviceIds": [], "parameters": {} }</code>.</td>
+      <td>
+        <div><code>200 OK</code> — JSON визита с указанными параметрами.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Печать талона</td>
+      <td><code>POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true</code></td>
+      <td>Регистрация визита с одновременной печатью талона на выбранном принтере.</td>
+      <td>
+        <div><code>200 OK</code> — JSON визита, талон отправлен на принтер.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Отмена визита</td>
+      <td><code>DELETE /servicepoint/branches/{branchId}/visits/{visitId}</code></td>
+      <td>Клиент или оператор удаляет талон по идентификатору.</td>
+      <td>
+        <div><code>204 No Content</code> — визит удалён.</div>
+        <div><code>404 Not Found</code> — визит не найден.</div>
+        <div><code>409 Conflict</code> — нарушено бизнес-ограничение.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Статус визита</td>
+      <td><code>GET /servicepoint/branches/{branchId}/visits/{visitId}</code></td>
+      <td>Запрос актуального состояния визита по идентификатору.</td>
+      <td>
+        <div><code>200 OK</code> — JSON визита.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Невалидная услуга</td>
+      <td><code>POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit</code></td>
+      <td>В теле указана услуга, отсутствующая в конфигурации отделения.</td>
+      <td>
+        <div><code>404 Not Found</code> — услуга не найдена.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Пустой список услуг</td>
+      <td><code>POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit</code></td>
+      <td>Передан пустой массив услуг: <code>[]</code>.</td>
+      <td>
+        <div><code>400 Bad Request</code> — необходимо указать услугу.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Отмена чужого визита</td>
+      <td><code>DELETE /servicepoint/branches/{branchId}/visits/{visitId}</code></td>
+      <td>Попытка удалить визит, который закреплён за другим пользователем.</td>
+      <td>
+        <div><code>403 Forbidden</code> — нет прав на удаление.</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ### Кейсы операторов
 
-
 Ниже приведены проверки интерфейса оператора. В описании каждого кейса указано, какой контроллер Micronaut обрабатывает соответствующий REST-запрос.
 
-| Кейс (контроллер) | REST | Описание действия | Ожидаемый ответ |
-|---|---|---|---|
-| Выбор отделения — `ManagementController#getTinyBranches` | `GET /managementinformation/branches/tiny` | Пульт загружает компактный список отделений для выбора филиала при входе. | `200 OK` — JSON-массив объектов с полями `id`, `name`.<br>`400 Bad Request` — неверные параметры фильтрации.<br>`500 Internal Server Error` — сбой сервера. |
-| Загрузка рабочих мест — `ServicePointController#getServicePoints` | `GET /servicepoint/branches/{branchId}/servicePoints` | Получает актуальный перечень точек обслуживания и признак их занятости. | `200 OK` — список объектов (`id`, `name`, `isFree`).<br>`404 Not Found` — отделение отсутствует.<br>`500 Internal Server Error` — ошибка сервиса. |
-| Загрузка сотрудников — `ServicePointController#getUsersOfBranch` | `GET /servicepoint/branches/{branchId}/users` | Показывает сотрудников отделения и текущий статус (работает, на перерыве). | `200 OK` — массив пользователей с атрибутами профиля.<br>`404 Not Found` — отделение не найдено.<br>`500 Internal Server Error` — ошибка сервера. |
-| Каталог услуг — `EntrypointController#getAllServices` | `GET /entrypoint/branches/{branchId}/services/all` | Загружает полный каталог услуг и их параметры для подготовки визита. | `200 OK` — массив услуг и параметров.<br>`404 Not Found` — отделение недоступно.<br>`500 Internal Server Error` — сбой интеграций. |
-| Картина очередей — `ServicePointController#getFullQueues` | `GET /servicepoint/branches/{branchId}/queues/full` | Отображает очереди отделения с текущими талонами и метриками. | `200 OK` — список очередей с вложенными визитами.<br>`404 Not Found` — отделение отсутствует.<br>`500 Internal Server Error` — ошибка сервера. |
-| Аннулирование визита — `ServicePointController#deleteVisit` | `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` | Удаляет талон по идентификатору, когда оператор отменяет приём. | `204 No Content` — визит удалён.<br>`404 Not Found` — визит не найден.<br>`409 Conflict` — бизнес-ограничение на удаление.<br>`500 Internal Server Error` — ошибка сервера. |
-| Список принтеров — `ServicePointController#getPrinters` | `GET /servicepoint/branches/{branchId}/printers` | Получает доступные принтеры отделения для печати талонов. | `200 OK` — список устройств печати.<br>`404 Not Found` — отделение отсутствует.<br>`500 Internal Server Error` — ошибка сервиса. |
-| Сведения об отделении — `ManagementController#getBranch` | `GET /servicepoint/branches/{branchId}` → `GET /managementinformation/branches/{branchId}` | Актуализирует сводную информацию отделения перед началом смены. | `200 OK` — JSON отделения (очереди, рабочие места, услуги).<br>`404 Not Found` — отделение отсутствует.<br>`500 Internal Server Error` — ошибка сервера. |
-| Создание визита с печатью — `EntrypointController#createVisitFromReception` | `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` | Создаёт визит и печатает талон на выбранном принтере. | `200 OK` — JSON визита и подтверждение печати.<br>`400 Bad Request` — некорректные параметры визита.<br>`404 Not Found` — отделение, услуга или принтер отсутствуют.<br>`500 Internal Server Error` — ошибка бизнес-логики. |
-| Создание визита без печати — `EntrypointController#createVisitFromReception` | `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` | Создаёт виртуальный визит без печати талона. | `200 OK` — JSON визита.<br>`400 Bad Request` — неверные параметры запроса.<br>`404 Not Found` — связанные сущности не найдены.<br>`500 Internal Server Error` — ошибка бизнес-логики. |
-| Перевод визита в конец очереди — `ServicePointController#visitTransferFromQueue` | `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=true` | Внешняя служба ставит визит в конец очереди, передавая `serviceInfo` и опциональный `transferTimeDelay`. | `200 OK` — обновлённый визит с новой позицией.<br>`404 Not Found` — отделение, очередь или визит отсутствуют.<br>`500 Internal Server Error` — ошибка обработки. |
-| Перевод визита в начало очереди — `ServicePointController#visitTransferFromQueue` | `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false` | Внешняя служба ставит визит в начало очереди. | `200 OK` — обновлённый визит с новой позицией.<br>`404 Not Found` — отделение, очередь или визит отсутствуют.<br>`500 Internal Server Error` — ошибка обработки. |
-| Внешний пул точки обслуживания (конец) — `ServicePointController#visitTransferFromQueueToServicePointPool` | `PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` | Переносит визит во внешний пул выбранной точки обслуживания в конец списка. | `200 OK` — визит добавлен в пул точки.<br>`404 Not Found` — отделение, точка или визит отсутствуют.<br>`500 Internal Server Error` — ошибка сервера. |
-| Внешний пул точки обслуживания (начало) — `ServicePointController#visitTransferFromQueueToServicePointPool` | `PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=false` | Помещает визит в начало внешнего пула точки обслуживания. | `200 OK` — визит добавлен в пул точки.<br>`404 Not Found` — отделение, точка или визит отсутствуют.<br>`500 Internal Server Error` — ошибка сервера. |
-| Внешний пул сотрудника (конец) — `ServicePointController#visitTransferFromQueueToUserPool` | `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` | Ставит визит в конец внешнего пула выбранного сотрудника. | `200 OK` — визит закреплён за пулом сотрудника.<br>`404 Not Found` — отделение, сотрудник или визит отсутствуют.<br>`500 Internal Server Error` — ошибка обработки. |
-| Внешний пул сотрудника (начало) — `ServicePointController#visitTransferFromQueueToUserPool` | `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=false` | Помещает визит в начало внешнего пула сотрудника. | `200 OK` — визит закреплён за пулом сотрудника.<br>`404 Not Found` — отделение, сотрудник или визит отсутствуют.<br>`500 Internal Server Error` — ошибка обработки. |
+<table>
+  <colgroup>
+    <col style="width: 20%" />
+    <col style="width: 30%" />
+    <col style="width: 30%" />
+    <col style="width: 20%" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Кейс и контроллер</th>
+      <th>REST-запрос</th>
+      <th>Описание действия</th>
+      <th>Ожидаемый ответ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <div>Выбор отделения</div>
+        <div><code>ManagementController#getTinyBranches</code></div>
+      </td>
+      <td><code>GET /managementinformation/branches/tiny</code></td>
+      <td>Загружает компактный список отделений при входе оператора.</td>
+      <td>
+        <div><code>200 OK</code> — JSON с полями <code>id</code>, <code>name</code>.</div>
+        <div><code>400 Bad Request</code> — неверные параметры фильтрации.</div>
+        <div><code>500 Internal Server Error</code> — сбой сервера.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Загрузка рабочих мест</div>
+        <div><code>ServicePointController#getServicePoints</code></div>
+      </td>
+      <td><code>GET /servicepoint/branches/{branchId}/servicePoints</code></td>
+      <td>Возвращает точки обслуживания отделения и их доступность.</td>
+      <td>
+        <div><code>200 OK</code> — список объектов с признаками занятости.</div>
+        <div><code>404 Not Found</code> — отделение отсутствует.</div>
+        <div><code>500 Internal Server Error</code> — ошибка сервиса.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Загрузка сотрудников</div>
+        <div><code>ServicePointController#getUsersOfBranch</code></div>
+      </td>
+      <td><code>GET /servicepoint/branches/{branchId}/users</code></td>
+      <td>Показывает сотрудников отделения и их текущий статус.</td>
+      <td>
+        <div><code>200 OK</code> — массив пользователей.</div>
+        <div><code>404 Not Found</code> — отделение не найдено.</div>
+        <div><code>500 Internal Server Error</code> — ошибка сервера.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Каталог услуг</div>
+        <div><code>EntrypointController#getAllServices</code></div>
+      </td>
+      <td><code>GET /entrypoint/branches/{branchId}/services/all</code></td>
+      <td>Загружает полный перечень услуг и их параметров.</td>
+      <td>
+        <div><code>200 OK</code> — массив услуг.</div>
+        <div><code>404 Not Found</code> — отделение недоступно.</div>
+        <div><code>500 Internal Server Error</code> — ошибка интеграций.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Картина очередей</div>
+        <div><code>ServicePointController#getFullQueues</code></div>
+      </td>
+      <td><code>GET /servicepoint/branches/{branchId}/queues/full</code></td>
+      <td>Отображает очереди отделения, их талоны и метрики.</td>
+      <td>
+        <div><code>200 OK</code> — список очередей с визитами.</div>
+        <div><code>404 Not Found</code> — отделение отсутствует.</div>
+        <div><code>500 Internal Server Error</code> — ошибка сервера.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Аннулирование визита</div>
+        <div><code>ServicePointController#deleteVisit</code></div>
+      </td>
+      <td><code>DELETE /servicepoint/branches/{branchId}/visits/{visitId}</code></td>
+      <td>Удаляет талон по идентификатору в интерфейсе оператора.</td>
+      <td>
+        <div><code>204 No Content</code> — визит удалён.</div>
+        <div><code>404 Not Found</code> — визит не найден.</div>
+        <div><code>409 Conflict</code> — нарушено бизнес-правило.</div>
+        <div><code>500 Internal Server Error</code> — ошибка сервера.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Список принтеров</div>
+        <div><code>ServicePointController#getPrinters</code></div>
+      </td>
+      <td><code>GET /servicepoint/branches/{branchId}/printers</code></td>
+      <td>Показывает доступные устройства печати талонов.</td>
+      <td>
+        <div><code>200 OK</code> — перечень принтеров.</div>
+        <div><code>404 Not Found</code> — отделение отсутствует.</div>
+        <div><code>500 Internal Server Error</code> — ошибка сервиса.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Сведения об отделении</div>
+        <div><code>ManagementController#getBranch</code></div>
+      </td>
+      <td><code>GET /servicepoint/branches/{branchId}</code></td>
+      <td>Возвращает агрегированное состояние отделения (делегирует <code>ManagementController#getBranch</code>).</td>
+      <td>
+        <div><code>200 OK</code> — JSON отделения.</div>
+        <div><code>404 Not Found</code> — отделение отсутствует.</div>
+        <div><code>500 Internal Server Error</code> — ошибка сервера.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Создание визита с печатью</div>
+        <div><code>EntrypointController#createVisitFromReception</code></div>
+      </td>
+      <td><code>POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true</code></td>
+      <td>Создаёт визит из приёмной и печатает талон на выбранном устройстве.</td>
+      <td>
+        <div><code>200 OK</code> — JSON визита и подтверждение печати.</div>
+        <div><code>400 Bad Request</code> — некорректные параметры.</div>
+        <div><code>404 Not Found</code> — отделение, услуга или принтер отсутствуют.</div>
+        <div><code>500 Internal Server Error</code> — ошибка бизнес-логики.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Создание визита без печати</div>
+        <div><code>EntrypointController#createVisitFromReception</code></div>
+      </td>
+      <td><code>POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false</code></td>
+      <td>Создаёт виртуальный визит без печати талона.</td>
+      <td>
+        <div><code>200 OK</code> — JSON визита.</div>
+        <div><code>400 Bad Request</code> — неверные параметры запроса.</div>
+        <div><code>404 Not Found</code> — связанные сущности не найдены.</div>
+        <div><code>500 Internal Server Error</code> — ошибка бизнес-логики.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Перевод визита в конец очереди</div>
+        <div><code>ServicePointController#visitTransferFromQueue</code></div>
+      </td>
+      <td><code>PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=true</code></td>
+      <td>Внешняя служба ставит визит в конец очереди, передавая <code>serviceInfo</code> и задержку.</td>
+      <td>
+        <div><code>200 OK</code> — визит обновлён.</div>
+        <div><code>404 Not Found</code> — отделение, очередь или визит отсутствуют.</div>
+        <div><code>500 Internal Server Error</code> — ошибка обработки.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Перевод визита в начало очереди</div>
+        <div><code>ServicePointController#visitTransferFromQueue</code></div>
+      </td>
+      <td><code>PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false</code></td>
+      <td>Перемещает визит в начало очереди с помощью внешней службы.</td>
+      <td>
+        <div><code>200 OK</code> — визит обновлён.</div>
+        <div><code>404 Not Found</code> — отделение, очередь или визит отсутствуют.</div>
+        <div><code>500 Internal Server Error</code> — ошибка обработки.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Внешний пул точки обслуживания (конец)</div>
+        <div><code>ServicePointController#visitTransferFromQueueToServicePointPool</code></div>
+      </td>
+      <td><code>PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=true</code></td>
+      <td>Переносит визит во внешний пул точки обслуживания в конец списка.</td>
+      <td>
+        <div><code>200 OK</code> — визит добавлен в пул.</div>
+        <div><code>404 Not Found</code> — отделение, точка или визит отсутствуют.</div>
+        <div><code>500 Internal Server Error</code> — ошибка сервера.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Внешний пул точки обслуживания (начало)</div>
+        <div><code>ServicePointController#visitTransferFromQueueToServicePointPool</code></div>
+      </td>
+      <td><code>PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=false</code></td>
+      <td>Помещает визит в начало внешнего пула точки обслуживания.</td>
+      <td>
+        <div><code>200 OK</code> — визит добавлен в пул.</div>
+        <div><code>404 Not Found</code> — отделение, точка или визит отсутствуют.</div>
+        <div><code>500 Internal Server Error</code> — ошибка сервера.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Внешний пул сотрудника (конец)</div>
+        <div><code>ServicePointController#visitTransferFromQueueToUserPool</code></div>
+      </td>
+      <td><code>PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=true</code></td>
+      <td>Ставит визит в конец внешнего пула выбранного сотрудника.</td>
+      <td>
+        <div><code>200 OK</code> — визит закреплён за пулом.</div>
+        <div><code>404 Not Found</code> — отделение, сотрудник или визит отсутствуют.</div>
+        <div><code>500 Internal Server Error</code> — ошибка обработки.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>Внешний пул сотрудника (начало)</div>
+        <div><code>ServicePointController#visitTransferFromQueueToUserPool</code></div>
+      </td>
+      <td><code>PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=false</code></td>
+      <td>Помещает визит в начало внешнего пула сотрудника.</td>
+      <td>
+        <div><code>200 OK</code> — визит закреплён за пулом.</div>
+        <div><code>404 Not Found</code> — отделение, сотрудник или визит отсутствуют.</div>
+        <div><code>500 Internal Server Error</code> — ошибка обработки.</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 
 ### Кейсы аутентификации
 
-| Кейс | Запрос | Ожидаемый ответ |
-|---|---|---|
-| Валидный токен | любой запрос с корректным `Authorization: Bearer <token>` | `200 OK` |
-| Просроченный токен | запрос с токеном с истёкшим сроком | `401 Unauthorized` |
-| Отсутствие токена | запрос без заголовка Authorization | `401 Unauthorized` |
-| Недостаточно прав | токен без нужной роли | `403 Forbidden` |
-| Неверная подпись | токен с некорректной подписью | `401 Unauthorized` |
-| Отозванный токен | токен, отозванный сервером | `401 Unauthorized` |
-| Неизвестный издатель | токен от другого Identity Provider | `401 Unauthorized` |
+<table>
+  <colgroup>
+    <col style="width: 20%" />
+    <col style="width: 30%" />
+    <col style="width: 30%" />
+    <col style="width: 20%" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Кейс</th>
+      <th>REST-запрос</th>
+      <th>Описание</th>
+      <th>Ожидаемый ответ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Валидный токен</td>
+      <td>Любой защищённый REST-эндпоинт</td>
+      <td>Запрос с корректным заголовком <code>Authorization: Bearer &lt;token&gt;</code>.</td>
+      <td><code>200 OK</code></td>
+    </tr>
+    <tr>
+      <td>Просроченный токен</td>
+      <td>Любой защищённый REST-эндпоинт</td>
+      <td>Используется токен с истёкшим сроком действия.</td>
+      <td><code>401 Unauthorized</code></td>
+    </tr>
+    <tr>
+      <td>Отсутствие токена</td>
+      <td>Запрос без заголовка <code>Authorization</code></td>
+      <td>Отправка запроса без передачи bearer-токена.</td>
+      <td><code>401 Unauthorized</code></td>
+    </tr>
+    <tr>
+      <td>Недостаточно прав</td>
+      <td>Любой защищённый REST-эндпоинт</td>
+      <td>Токен не содержит требуемой роли или scope.</td>
+      <td><code>403 Forbidden</code></td>
+    </tr>
+    <tr>
+      <td>Неверная подпись</td>
+      <td>Любой защищённый REST-эндпоинт</td>
+      <td>Токен модифицирован, подпись не совпадает с ключом провайдера.</td>
+      <td><code>401 Unauthorized</code></td>
+    </tr>
+    <tr>
+      <td>Отозванный токен</td>
+      <td>Любой защищённый REST-эндпоинт</td>
+      <td>Используется токен, который был отозван сервером аутентификации.</td>
+      <td><code>401 Unauthorized</code></td>
+    </tr>
+    <tr>
+      <td>Неизвестный издатель</td>
+      <td>Любой защищённый REST-эндпоинт</td>
+      <td>Токен выпущен другим Identity Provider и не доверен системе.</td>
+      <td><code>401 Unauthorized</code></td>
+    </tr>
+  </tbody>
+</table>
 
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
