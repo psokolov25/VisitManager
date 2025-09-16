@@ -5,9 +5,13 @@ import static org.mockito.Mockito.*;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.keycloak.representations.idm.GroupRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.tiny.TinyClass;
@@ -61,6 +65,67 @@ class ManagementControllerTest {
         controller.branchService = branchService;
         controller.keyCloakClient = client;
         assertSame(branches, controller.getBranches("u1"));
+    }
+
+    @Test
+    void getBranchesForAdminВозвращаетВсеОтделения() {
+        BranchService branchService = mock(BranchService.class);
+        HashMap<String, Branch> branches = new HashMap<>();
+        Branch branch = new Branch("b1", "Branch");
+        branches.put("b1", branch);
+        when(branchService.getBranches()).thenReturn(branches);
+
+        KeyCloackClient client = mock(KeyCloackClient.class);
+        UserRepresentation user = new UserRepresentation();
+        user.setUsername("admin");
+        when(client.getUserInfo("admin")).thenReturn(Optional.of(user));
+        when(client.isUserModuleTypeByUserName("admin", "admin")).thenReturn(true);
+        when(client.getAllBranchesOfUser("admin")).thenReturn(Collections.emptyList());
+
+        ManagementController controller = new ManagementController();
+        controller.branchService = branchService;
+        controller.keyCloakClient = client;
+
+        Map<String, Branch> result = controller.getBranches("admin");
+
+        assertEquals(branches, result);
+    }
+
+    @Test
+    void getBranchesФильтруетДоступныеОтделенияДляПользователя() {
+        BranchService branchService = mock(BranchService.class);
+        HashMap<String, Branch> branches = new HashMap<>();
+        Branch allowed = new Branch("b1", "Branch1");
+        allowed.setPrefix("BR1");
+        Branch denied = new Branch("b2", "Branch2");
+        denied.setPrefix("BR2");
+        branches.put("b1", allowed);
+        branches.put("b2", denied);
+        when(branchService.getBranches()).thenReturn(branches);
+
+        KeyCloackClient client = mock(KeyCloackClient.class);
+        UserRepresentation userInfo = new UserRepresentation();
+        userInfo.setUsername("user");
+        when(client.getUserInfo("user")).thenReturn(Optional.of(userInfo));
+
+        GroupRepresentation group = new GroupRepresentation();
+        HashMap<String, List<String>> attrs = new HashMap<>();
+        attrs.put("branchPrefix", List.of("BR1"));
+        group.setAttributes(attrs);
+        when(client.getAllBranchesOfUser("user")).thenReturn(List.of(group));
+        when(client.isUserModuleTypeByUserName("user", "admin"))
+                .thenReturn(false)
+                .thenThrow(new RuntimeException("fail"));
+
+        ManagementController controller = new ManagementController();
+        controller.branchService = branchService;
+        controller.keyCloakClient = client;
+
+        Map<String, Branch> result = controller.getBranches("user");
+
+        assertEquals(1, result.size());
+        assertTrue(result.containsKey("b1"));
+        assertFalse(result.containsKey("b2"));
     }
 
     @Test
