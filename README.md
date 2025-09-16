@@ -381,9 +381,9 @@ class HttpExample {
 | Создание визита | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` тело `["serviceId1"]` | `200 OK` + JSON визита |
 | Невалидная услуга | тот же запрос с несуществующей услугой | `404 Not Found` |
 | Отмена визита | `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` | `204 No Content` |
-| Статус визита | `GET /servicepoint/branches/{branchId}/visits/{visitId}` | `200 OK` + JSON |
-| Печать талона | `POST ...?printTicket=true` | `200 OK`, талон отправлен на принтер |
-| Визит с параметрами | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters` с телом `{ "serviceIds": [], "parameters": {} }` | `200 OK` |
+| Статус визита | `GET /servicepoint/branches/{branchId}/visits/{visitId}` | `200 OK` + JSON визита |
+| Печать талона | `POST ...?printTicket=true` | `200 OK` + JSON визита, талон отправлен на принтер |
+| Визит с параметрами | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters` с телом `{ "serviceIds": [], "parameters": {} }` | `200 OK` + JSON визита |
 | Визит на несколько услуг | `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` тело `["serviceId1","serviceId2"]` | `200 OK` + JSON визита |
 | Пустой список услуг | тот же запрос с пустым телом `[]` | `400 Bad Request` |
 | Отмена чужого визита | `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` с чужим идентификатором | `403 Forbidden` |
@@ -392,14 +392,14 @@ class HttpExample {
 
 | Кейс | Запрос | Ожидаемый ответ |
 |---|---|---|
-| Открытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/workProfiles/{wpId}/users/{user}/open` | `200 OK` |
+| Открытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/workProfiles/{wpId}/users/{user}/open` | `200 OK` + JSON пользователя |
 | Вызов визита | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` | `200 OK` + JSON визита |
-| Подтверждение/завершение | `POST /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/confirmed/confirm/{visitId}` | `200 OK` |
+| Подтверждение/завершение | `POST /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/confirmed/confirm/{visitId}` | `200 OK` + JSON визита |
 | Нет визитов | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call` при пустой очереди | `204 No Content` |
-| Перевод визита | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` | `200 OK` |
+| Перевод визита | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` | `200 OK` + JSON визита |
 | Ошибка перевода | тот же запрос с неверными параметрами | `400 Bad Request` или `409 Conflict` |
 | Закрытие точки | `POST /servicepoint/branches/{branchId}/servicePoints/{spId}/close` | `200 OK` |
-| Перевод в пул ТО | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/poolServicePoint/{poolSpId}/visit/transfer` | `200 OK` |
+| Перевод в пул ТО | `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/poolServicePoint/{poolSpId}/visit/transfer` | `200 OK` + JSON визита |
 | Повторное завершение | повторный `.../confirmed/confirm/{visitId}` | `409 Conflict` |
 
 ### Кейсы аутентификации
