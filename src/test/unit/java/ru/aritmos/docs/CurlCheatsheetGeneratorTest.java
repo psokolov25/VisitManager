@@ -9,9 +9,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+import ru.aritmos.test.TestLoggingExtension;
+
+/**
+ * Набор тестов для {@link CurlCheatsheetGenerator}, проверяющий извлечение примеров curl и
+ * корректное формирование HTML.
+ */
+@ExtendWith(TestLoggingExtension.class)
 class CurlCheatsheetGeneratorTest {
 
+    /**
+     * Убеждаемся, что экранирование спецсимволов HTML работает корректно для угловых скобок и
+     * амперсанда.
+     */
     @Test
     void escapeHtml() throws Exception {
         Method escape = CurlCheatsheetGenerator.class.getDeclaredMethod("escape", String.class);
@@ -20,6 +32,10 @@ class CurlCheatsheetGeneratorTest {
         assertEquals("&lt;tag&gt;&amp;", result);
     }
 
+    /**
+     * Проверяет, что секция контроллера с комментариями «Пример curl» добавляется в итоговый HTML
+     * и содержит исходный пример запроса.
+     */
     @Test
     void appendControllerSectionAddsExample() throws Exception {
         Path file = Files.createTempFile("Controller", ".java");
@@ -93,5 +109,88 @@ class CurlCheatsheetGeneratorTest {
             }
         }
     }
+
+
+    /**
+     * Проверяет, что генератор извлекает метод и URI из аннотации даже при многострочном описании
+     * с параметром {@code uri} на отдельной строке.
+     */
+    @Test
+    void appendControllerSectionResolvesUriFromAttributeBlock() throws Exception {
+        Path file = Files.createTempFile("ControllerMulti", ".java");
+        Files.writeString(
+                file,
+                """
+                package example;
+
+                import io.micronaut.http.MediaType;
+                import io.micronaut.http.annotation.Post;
+
+                /**
+                 * Пример curl
+                 * <pre><code>
+                 * curl -X POST http://localhost/api/multi
+                 * </code></pre>
+                 */
+                @Post(
+                    consumes = MediaType.APPLICATION_JSON,
+                    produces = MediaType.APPLICATION_JSON,
+                    uri = "/api/multi")
+                final class Sample {}
+                """,
+                StandardCharsets.UTF_8);
+
+        StringBuilder html = new StringBuilder();
+        Method append = CurlCheatsheetGenerator.class.getDeclaredMethod("appendControllerSection", StringBuilder.class, Path.class);
+        append.setAccessible(true);
+
+        try {
+            append.invoke(null, html, file);
+            String output = html.toString();
+            assertTrue(output.contains("<h3>POST /api/multi</h3>"));
+            assertTrue(output.contains("curl -X POST http://localhost/api/multi"));
+        } finally {
+            Files.deleteIfExists(file);
+        }
+    }
+
+    /**
+     * Убеждаемся, что неполные примеры без закрывающего тега {@literal </code></pre>} пропускаются
+     * и не попадают в HTML.
+     */
+    @Test
+    void appendControllerSectionSkipsIncompleteExample() throws Exception {
+        Path file = Files.createTempFile("ControllerBroken", ".java");
+        Files.writeString(
+                file,
+                """
+                package example;
+
+                import io.micronaut.http.annotation.Get;
+
+                /**
+                 * Пример curl
+                 * <pre><code>
+                 * curl http://localhost/api/broken
+                 */
+                @Get("/api/broken")
+                final class Sample {}
+                """,
+                StandardCharsets.UTF_8);
+
+        StringBuilder html = new StringBuilder();
+        Method append = CurlCheatsheetGenerator.class.getDeclaredMethod("appendControllerSection", StringBuilder.class, Path.class);
+        append.setAccessible(true);
+
+        try {
+            append.invoke(null, html, file);
+            String output = html.toString();
+            assertFalse(output.contains("curl http://localhost/api/broken"));
+            assertFalse(output.contains("<article>"));
+        } finally {
+            Files.deleteIfExists(file);
+        }
+    }
+
 }
 
