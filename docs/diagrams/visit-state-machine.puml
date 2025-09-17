@@ -1,0 +1,56 @@
+@startuml
+!include style.puml
+
+title Жизненный цикл визита
+
+state "Создан\n(CREATED)" as Created
+state "Очередь ожидания\n(WAITING_IN_QUEUE)" as Queue
+state "Вызван\n(CALLED)" as Called
+state "Обслуживание\n(SERVING)" as Serving
+state "Пул сотрудника\n(WAITING_IN_USER_POOL)" as UserPool
+state "Пул точки обслуживания\n(WAITING_IN_SERVICE_POOL)" as ServicePool
+state "Завершён\n(END)" as End <<final>>
+
+[*] --> Created : CREATED
+
+Created --> Queue : PLACED_IN_QUEUE
+Created --> Called : CALLED
+
+Queue --> Called : CALLED
+Queue --> UserPool : TRANSFER_TO_USER_POOL
+Queue --> ServicePool : TRANSFER_TO_SERVICE_POINT_POOL
+Queue --> End : END\nDELETED
+
+Called --> Serving : START_SERVING
+Called --> Queue : BACK_TO_QUEUE\nTRANSFER_TO_QUEUE
+Called --> UserPool : BACK_TO_USER_POOL\nTRANSFER_TO_USER_POOL
+Called --> ServicePool : BACK_TO_SERVICE_POINT_POOL\nTRANSFER_TO_SERVICE_POINT_POOL
+Called --> End : END\nNO_SHOW\nDELETED
+Called --> Called : RECALLED
+
+Serving --> Queue : BACK_TO_QUEUE\nTRANSFER_TO_QUEUE
+Serving --> UserPool : TRANSFER_TO_USER_POOL
+Serving --> ServicePool : TRANSFER_TO_SERVICE_POINT_POOL
+Serving --> End : END\nDELETED
+
+UserPool --> Called : CALLED
+UserPool --> ServicePool : TRANSFER_TO_SERVICE_POINT_POOL
+UserPool --> End : END\nDELETED
+
+ServicePool --> Called : CALLED
+ServicePool --> UserPool : TRANSFER_TO_USER_POOL
+ServicePool --> End : END\nDELETED
+
+End --> [*]
+
+note right of Serving
+  STOP_SERVING и события добавления услуг фиксируют прогресс,
+  но не меняют состояние визита (см. VisitEvent.visitStateMap).
+end note
+
+note bottom of End
+  Состояние END охватывает завершение обслуживания,
+  удаление визита и сценарии NO_SHOW.
+end note
+
+@enduml

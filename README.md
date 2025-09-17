@@ -499,6 +499,7 @@ class HttpExample {
 
 ![Кейсы использования](docs/diagrams/use-cases.svg)
 ![Архитектура](docs/diagrams/architecture.svg)
+![Состояния визита](docs/diagrams/visit-state-machine.svg)
 ![Последовательность: создание визита](docs/diagrams/sequence-create-visit.svg)
 ![Последовательность: завершение визита](docs/diagrams/sequence-update-visit.svg)
 
