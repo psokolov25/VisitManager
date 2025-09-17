@@ -9,6 +9,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.time.Duration;
+import java.util.concurrent.ScheduledFuture;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -27,7 +28,12 @@ class DelayedEventsIT {
     @MockBean(TaskScheduler.class)
     @Named(TaskExecutors.SCHEDULED)
     TaskScheduler scheduler() {
-        return Mockito.mock(TaskScheduler.class);
+        return Mockito.mock(
+                TaskScheduler.class,
+                invocation ->
+                        ScheduledFuture.class.isAssignableFrom(invocation.getMethod().getReturnType())
+                                ? Mockito.mock(ScheduledFuture.class)
+                                : org.mockito.Answers.RETURNS_DEFAULTS.answer(invocation));
     }
 
     @MockBean(EventService.class)
