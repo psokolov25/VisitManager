@@ -24,7 +24,13 @@ import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
 /**
- * @author Pavel Sokolov REST API управления зоной ожидания
+ * REST API управления зоной ожидания.
+ *
+ * <p>Контроллер обрабатывает операции регистрации и сопровождения посетителей:
+ * создание виртуальных визитов, оформление талонов и перевод клиентов между
+ * очередями.
+ *
+ * @author Pavel Sokolov
  */
 @Controller("/entrypoint")
 @ApiResponses({
