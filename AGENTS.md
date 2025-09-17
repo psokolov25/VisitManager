@@ -54,3 +54,14 @@
 - Не коммитьте секреты. Для разработки — `.env.local`; для стендов — переменные CI/CD.
 - Ключевые переменные: `OIDC_ISSUER_URL`, `OAUTH_CLIENT_ID/SECRET`, `REDIS_SERVER`, `KAFKA_SERVER`, `LOKI_SERVER`.
 - Профиль Micronaut по умолчанию — `dev` (см. `Application.Configurer`); переопределение — `MICRONAUT_ENVIRONMENTS`.
+
+## История покрытия тестами и требования к новым сценариям
+- 2025-09-17: выполнена команда `mvn -s .mvn/settings.xml clean verify`; успешно пройдено 360 автотестов, сформирован отчёт JaCoCo.
+- Приоритетные области без покрытия (требуют добавления тестов с подробным логированием шагов и проверок, снабжённых документацией в коде):
+  - `ru.aritmos.service.VisitService` — 74 метода без покрытия (создание и трансформация визитов: `createVisit`, `createVisitFromReception`, `createVirtualVisit` и др.).
+  - `ru.aritmos.api.ServicePointController` — 55 методов без покрытия (сценарии управления визитами: переносы между очередями/пулами, работа с delivered services, маркерами, заметками, outcome’ами).
+  - `ru.aritmos.model.Branch` — 22 метода без покрытия (`updateVisit(...)` и связанные лямбда‑обработчики для сегментации, очередей и сервисов).
+  - `ru.aritmos.keycloack.service.KeyCloackClient` — 17 методов без покрытия (интеграция с Keycloak: получение филиалов, проверка ролей и т.п.).
+  - Дополнительные точки роста: `ru.aritmos.service.rules.MaxWaitingTimeCallRule`, `ru.aritmos.service.BranchService`, `ru.aritmos.docs.CurlCheatsheetGenerator`, `ru.aritmos.events.services.EventService`, `ru.aritmos.service.rules.MaxLifeTimeCallRule`.
+- При добавлении новых тестов фиксируйте свежие результаты покрытия в данном файле, чтобы отслеживать прогресс.
+- Все названия задач, сообщения коммитов, комментарии к тестам и логирование выполняйте на русском языке.
