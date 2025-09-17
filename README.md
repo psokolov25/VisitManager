@@ -27,6 +27,7 @@
   - [🧰 Back End разработчик](#-back-end-разработчик)
   - [🔗 Интегратор](#-интегратор)
 - [📡 REST API](#-rest-api)
+- [🕹️ Работа пульта оператора](#-работа-пульта-оператора)
 - [📦 Примеры кода](#-примеры-кода)
 - [📊 Диаграммы](#-диаграммы)
 - [🧑‍💼 Сценарии работы сотрудника](#-сценарии-работы-сотрудника)
@@ -242,6 +243,62 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 - перевод в очередь: `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromQueue/{visitId}`
 
 Полный список запросов см. в [docs/curl-examples.md](docs/curl-examples.md) и Swagger UI.
+
+## 🕹️ Работа пульта оператора
+
+Пульт оператора объединяет данные о сотрудниках, очередях и визитах, обеспечивая полный цикл обслуживания клиента: от открытия рабочего места до завершения визита. Ниже перечислены основные действия и используемые REST‑точки.
+
+### Подготовка рабочего места
+- Получение справочной информации об отделении: список филиалов (`GET /managementinformation/branches/tiny`) и детализация выбранного отделения (`GET /managementinformation/branches/{id}`).
+- Проверка конфигурации: рабочие профили (`GET /servicepoint/branches/{branchId}/workProfiles`), список точек обслуживания (`GET /servicepoint/branches/{branchId}/servicePoints`) и подробные сведения по ним, включая пулы (`GET /servicepoint/branches/{branchId}/servicePoints/detailed`).
+- Назначение рабочего места сотруднику: поиск станции по логину (`GET /servicepoint/branches/{branchId}/servicePoints/user/{userName}` или `GET /servicepoint/servicePoints/user/{userName}`), открытие рабочей станции (`POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open`). Если станция занята, сервис вернёт `409 Conflict`.
+- Актуализация доступных услуг: перечень услуг по профилю (`GET /servicepoint/branches/{branchId}/workProfile/{workProfileId}/services`) и доступные клиентские услуги в отделении (`GET /entrypoint/branches/{branchId}/services`).
+
+### Мониторинг сотрудников и очередей
+- Текущий состав смены: действующие сотрудники (`GET /servicepoint/branches/{branchId}/workingusers`).
+- Список очередей отделения (`GET /servicepoint/branches/{branchId}/queues`) и их содержимое (`GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/`), распределение визитов по пулам сотрудников и точек (`GET /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/queues`).
+- Контроль состояния станции, в том числе если сотрудник ушёл на перерыв (`GET /servicepoint/branches/{branchId}/servicePoints/{servicePointId}`).
+- Причины перерыва отображаются через `GET /configuration/branches/{branchId}/break/reasons`.
+
+### Управление визитами и очередями
+- Вызов талонов: автоматический с подтверждением (`POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call`), без подтверждения (`POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/call`), с предварительным подтверждением (`POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit`) или по конкретному идентификатору (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}/call`).
+- Работа с подтверждением: отметка о прибытии клиента (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}`), повторный вызов (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}`) и фиксация неявки (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow/{visitId}`).
+- Управление очередью: возврат вызванного талона (`POST /servicepoint/branches/{branchId}/visits/{visitId}/put_back`), возврат визита в очередь (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/put_back`), отложить визит (`POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/postpone`), отменить визит (`DELETE /servicepoint/branches/{branchId}/visits/{visitId}`) или отменить автоматический вызов (`POST /servicepoint/branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall`).
+- Завершение обслуживания: нормальное завершение (`PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end`).
+
+### Переводы и ручное распределение
+- Управление движением талонов между очередями и пулами:
+  - Перевод между очередями (`PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueueToStartOrToEnd/{visitId}`).
+  - Перенос визита в пул конкретного сотрудника (`PUT /servicepoint/branches/{branchId}/users/{userId}/visits/{visitId}`) и обратный перевод из точки обслуживания (`PUT /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/transfer`).
+  - Работа с пулом точки обслуживания: получение визита из очереди (`PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visits/{visitId}/transferFromQueue`), возврат из точки в пул (`PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer`) и перевод визита обратно в очередь (`PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint`).
+
+### Работа с услугами и результатами
+- Добавление услуг в визит (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/services`) и назначение фактических услуг (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}`).
+- Управление фактическими услугами: список возможных фактических услуг (`GET /servicepoint/branches/{branchId}/services/{serviceId}/deliveredServices`), удаление фактической услуги (`DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}`).
+- Итоги обслуживания: добавление итогов по текущей услуге (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}`), по фактической услуге (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}` и `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}/outcome/{outcomeId}`) и удаление итогов (`DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/service/{serviceId}/outcome`, `DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}/outcome`).
+
+### Примечания и контекст обслуживания
+- Получение заметок визита (`GET /servicepoint/branches/{branchId}/visits/{visitId}/notes`).
+- Добавление заметки от оператора (`POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/notes`).
+
+### Завершение смены
+- Закрытие рабочей станции (`POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close`). Повторный вызов приведёт к `409 Conflict`.
+- Создание виртуального визита оператором в случае обслуживания без печати талона (`POST /entrypoint/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit`).
+
+### Типовые сценарии
+1. **Создание виртуального талона и завершение обслуживания**
+   1. `POST /entrypoint/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit` — оператор создаёт талон.
+   2. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end` — визит закрывается после обслуживания.
+2. **Создание виртуального талона с итогами и дополнительными услугами**
+   1. `POST /entrypoint/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit` — формирование визита.
+   2. `GET /servicepoint/branches/{branchId}/services/{serviceId}/deliveredServices` — выбор фактических услуг.
+   3. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}` — фиксация результата основной услуги.
+   4. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}` — добавление фактической услуги.
+   5. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}` — итог по фактической услуге.
+   6. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end` — завершение визита.
+3. **Вызов талона по времени ожидания и завершение**
+   1. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — выбор талона с максимальным временем ожидания.
+   2. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end` — закрытие визита после обслуживания.
 
 ## 🖥️ Точки REST API менеджера визитов используемые приемной (ресепшеном)
 
