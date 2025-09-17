@@ -5,7 +5,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-380%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-405%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-47.1%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
@@ -794,7 +794,7 @@ class HttpExample {
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
-Команда ниже выполняет 368 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 47,0%.
+Команда ниже выполняет 390 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 47,0%.
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
@@ -910,6 +910,10 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceAddEventTest — тестирует добавление события визита.
 - ru.aritmos.service.VisitServiceAddServiceTest — проверяет добавление услуги в визит.
 - ru.aritmos.service.VisitServiceAutoCallTest — проверяет автоматический вызов визита.
+- ru.aritmos.service.VisitServiceCreateVisitTest — проверяет делегирование и проверки входных данных при создании визита.
+- ru.aritmos.service.VisitServiceCreateVisitFromReceptionTest — покрывает создание визита из приёмной и обработку ошибок входных параметров.
+- ru.aritmos.service.VisitServiceVisitAutoCallTest — покрывает `visitAutoCall`: выбор точки, подтверждение, сброс режима.
+- ru.aritmos.service.VisitServiceVisitCallTest — проверяет перевод визита из очереди, обработку ошибок и делегирование cherry-pick.
 - ru.aritmos.service.VisitServiceDeliveredServicesTest — проверяет получение завершённых услуг визита.
 - ru.aritmos.service.VisitServiceGetAllVisitsTest — проверяет получение всех визитов отделения.
 - ru.aritmos.service.VisitServiceGetMarksTest — тестирует получение оценок визита.
