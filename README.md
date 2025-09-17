@@ -6,9 +6,9 @@
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
 
-[![Tests](https://img.shields.io/badge/tests-435%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-441%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-63.5%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-64.8%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -796,7 +796,7 @@ class HttpExample {
 
 ## 🧪 Тестирование
 
-Команда ниже выполняет 435 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 63,5%.
+Команда ниже выполняет 441 модульный тест и формирует отчёт JaCoCo с линейным покрытием 64,8%.
 
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
@@ -918,6 +918,8 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceCreateVisitFromReceptionTest — покрывает создание визита из приёмной и обработку ошибок входных параметров.
 - ru.aritmos.service.VisitServiceCreateVisit2FromReceptionTest — проверяет создание визита через приёмную с сегментацией: выдачу талона, печать билета и ошибки при отсутствии очереди.
 - ru.aritmos.service.VisitServiceCreateVisit2FromReceptionLegacyTest — покрывает создание визита из приёмной без явного идентификатора правила сегментации: печать талона, виртуальные визиты и реакции на отсутствие очереди.
+
+- ru.aritmos.service.VisitServiceCreateVisit2Test — проверяет создание визита через терминал без явного правила сегментации: формирование талона, печать билета и ошибки при пустом списке услуг, отсутствии сервиса, точки входа или очереди.
 
 - ru.aritmos.service.VisitServiceCreateVisit2WithSegmentationRuleTest — проверяет создание визита через терминал с явным правилом сегментации: выдачу талона, печать билета, отказ при пустой очереди и ошибку отсутствия точки входа.
 - ru.aritmos.service.VisitServiceVisitAutoCallTest — покрывает `visitAutoCall`: выбор точки, подтверждение, сброс режима.
