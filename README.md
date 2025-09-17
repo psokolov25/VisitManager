@@ -248,277 +248,111 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ## 🏧 Работа терминала клиента
 
-Терминал самообслуживания использует ограниченный набор REST-запросов для оформления визита и отображения времени ожидания. Все обращения выполняются от имени авторизованного клиента терминала; при отсутствии сессии система вернёт `401 Unauthorized` или `403 Forbidden`.
+### Назначение и доступ
+Терминал самообслуживания помогает клиенту выбрать услуги и оформить визит, а также показывает актуальную информацию по очередям. Все запросы выполняются от имени сервисного пользователя терминала; при отсутствии авторизации backend вернёт `401 Unauthorized` или `403 Forbidden`.
 
-1. **POST `/entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit`** — создаёт визит по выбранным услугам и опционально печатает талон.
-    - Контроллер: `EntrypointController#createVisit` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L123-L198】
-    - Ответы:
-        - `200 OK` — визит создан и возвращён в ответе.
-        - `400 Bad Request` — переданы некорректные параметры (например, пустой список услуг).
-        - `404 Not Found` — не найдены отделение, выбранные услуги, точка терминала или очередь для услуг.
-        - `500 Internal Server Error` — внутренняя ошибка сервера.
+### Подготовка и запуск
+- `GET /entrypoint/branches/{branchId}/services` — перечень услуг, доступных для оформления талона в отделении.
+  - Контроллер: `EntrypointController#getAllAvailableServices` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L410-L433】
+  - Ответы: `200 OK` — услуги найдены, `404 Not Found` — отделение отсутствует или недоступно, `500 Internal Server Error` — ошибка сервера.
 
-2. **POST `/entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters`** — создаёт визит с передачей пользовательских параметров (анкеты, сегментация).
-    - Контроллер: `EntrypointController#createVisit` (перегрузка с параметрами) 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L201-L285】
-    - Ответы:
-        - `200 OK` — визит создан с указанными параметрами.
-        - `400 Bad Request` — нарушены требования к телу запроса.
-        - `404 Not Found` — не найдены отделение, услуги, точка терминала, очередь или правило сегментации и его данные.
-        - `500 Internal Server Error` — внутренняя ошибка сервера.
+### Основные операции
+- **Создание талона без дополнительных параметров** — `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit`.
+  - Контроллер: `EntrypointController#createVisit` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L123-L198】
+  - Ответы: `200 OK` — визит создан, `400 Bad Request` — некорректные данные (например, пустой список услуг), `404 Not Found` — не найдены отделение, услуги, точка терминала или очередь, `500 Internal Server Error` — внутренняя ошибка.
+- **Создание талона с пользовательскими параметрами** — `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters`.
+  - Контроллер: `EntrypointController#createVisit` (перегрузка с параметрами) 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L201-L285】
+  - Ответы: `200 OK` — визит сформирован с указанными параметрами, `400 Bad Request` — нарушены требования к телу запроса, `404 Not Found` — отсутствуют отделение, услуги, точка терминала, очередь или правило сегментации, `500 Internal Server Error` — ошибка сервера.
 
-3. **GET `/servicepoint/branches/{branchId}/queues/{queueId}/visits/`** — возвращает визиты в выбранной очереди, упорядоченные по времени ожидания.
-    - Контроллер: `ServicePointController#getVisits` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L647-L676】
-    - Ответы:
-        - `200 OK` — список ожидающих визитов.
-        - `404 Not Found` — отделение или очередь отсутствуют.
-        - `500 Internal Server Error` — ошибка сервера при получении данных.
+### Дополнительные возможности
+- `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — список визитов в очереди с сортировкой по времени ожидания.
+  - Контроллер: `ServicePointController#getVisits` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L647-L676】
+  - Ответы: `200 OK` — очередь получена, `404 Not Found` — отделение или очередь отсутствуют, `500 Internal Server Error` — ошибка сервера при получении данных.
 
-4. **GET `/entrypoint/branches/{branchId}/services`** — выдаёт перечень услуг, доступных для оформления талона в отделении.
-    - Контроллер: `EntrypointController#getAllAvailableServices` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L410-L433】
-    - Ответы:
-        - `200 OK` — доступные услуги возвращены в ответе.
-        - `404 Not Found` — отделение отсутствует или недоступно.
-        - `500 Internal Server Error` — ошибка сервера при получении услуг.
+### Завершение работы
+Терминал не закрывает смену самостоятельно: сессия завершается при выходе пользователя или истечении токена, а повторная авторизация выполняется автоматически на уровне киоска.
+
+### Типовые сценарии
+1. **Печать талона по выбранным услугам**
+   1. `GET /entrypoint/branches/{branchId}/services` — загрузка перечня услуг отделения.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L410-L433】
+   2. `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` — оформление визита и выдача талона клиенту.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L123-L198】
+2. **Оформление визита с параметрами и оценка времени ожидания**
+   1. `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters` — регистрация клиента с учётом анкетных данных.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L201-L285】
+   2. `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — отображение ожидающих визитов и времени ожидания на экране терминала.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L647-L676】
+
 ## 🕹️ Работа пульта оператора
 
-Пульт оператора объединяет данные о сотрудниках, очередях и визитах, обеспечивая полный цикл обслуживания клиента: от открытия рабочего места до завершения визита. Ниже перечислены основные действия и используемые REST‑точки. Для каждого запроса указаны варианты ответов (HTTP-коды), которые важно обрабатывать на фронтенде; при отсутствии авторизации возможны ответы `401 Unauthorized` или `403 Forbidden`.
+### Назначение и доступ
+Пульт оператора объединяет данные о сотрудниках, очередях и визитах, обеспечивая полный цикл обслуживания клиента: от открытия рабочего места до завершения визита. Все операции требуют авторизации; при отсутствии токена система вернёт `401 Unauthorized` или `403 Forbidden`.
 
-### Подготовка рабочего места
-- `GET /managementinformation/branches/tiny` — компактный список отделений.
-  - `200 OK` — массив `{ id, name }` доступных отделений.
-  - `400 Bad Request` — некорректный фильтр или параметры запроса.
-  - `500 Internal Server Error` — ошибка сервиса управления отделениями.
-- `GET /managementinformation/branches/{id}` — подробная информация об отделении.
-  - `200 OK` — состояние отделения и его конфигурация.
-  - `404 Not Found` — отделение не найдено.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/workProfiles` — перечень рабочих профилей отделения.
-  - `200 OK` — список профилей для выбора.
-  - `404 Not Found` — отделение отсутствует.
-  - `500 Internal Server Error` — ошибка сервиса.
-- `GET /servicepoint/branches/{branchId}/servicePoints` — доступные точки обслуживания и их статус.
-  - `200 OK` — список точек с признаком доступности.
-  - `404 Not Found` — отделение не найдено.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/servicePoints/detailed` — расширенные данные точек обслуживания (включая пулы и занятость).
-  - `200 OK` — подробная информация о точках.
-  - `404 Not Found` — отделение не найдено.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/servicePoints/user/{userName}` — поиск точки обслуживания сотрудника в отделении.
-  - `200 OK` — точка найдена.
-  - `404 Not Found` — отделение или сотрудник отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/servicePoints/user/{userName}` — глобальный поиск точки обслуживания по логину.
-  - `200 OK` — точка найдена.
-  - `404 Not Found` — сотрудник не найден.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — закрепление рабочего места за сотрудником.
-  - `200 OK` — рабочее место открыто.
-  - `404 Not Found` — отделение, рабочий профиль или точка обслуживания отсутствуют.
-  - `409 Conflict` — точка уже занята другим сотрудником (в ответе приходит информация о занятой станции).
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/workProfile/{workProfileId}/services` — услуги, доступные по выбранному профилю.
-  - `200 OK` — массив услуг профиля.
-  - `404 Not Found` — отделение или рабочий профиль не найдены.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /entrypoint/branches/{branchId}/services` — клиентские услуги отделения для карточки визита.
-  - `200 OK` — список доступных услуг.
-  - `404 Not Found` — отделение отсутствует.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /entrypoint/branches/{branchId}/services/all` — полный каталог услуг отделения.
-  - `200 OK` — расширенный список услуг.
-  - `404 Not Found` — отделение не найдено.
-  - `500 Internal Server Error` — ошибка сервера.
+### Подготовка и запуск
+- **Выбор отделения и рабочего места**
+  - `GET /managementinformation/branches/tiny` — компактный список отделений (`200 OK`; `400 Bad Request`/`500 Internal Server Error` при ошибках).
+  - `GET /managementinformation/branches/{id}` — подробная информация об отделении (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/servicePoints` — доступные точки обслуживания и их статус (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/servicePoints/detailed` — расширенные данные по точкам с учётом пулов и занятости (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/servicePoints/user/{userName}` — поиск точки для конкретного сотрудника (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/servicePoints/user/{userName}` — глобальный поиск точки обслуживания по логину (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+- **Настройка профиля и оборудования**
+  - `GET /servicepoint/branches/{branchId}/workProfiles` — перечень рабочих профилей отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/workProfile/{workProfileId}/services` — услуги профиля (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/users` — состав смены и статусы сотрудников (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/printers` — доступные принтеры для печати талонов (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /entrypoint/branches/{branchId}/services` — клиентские услуги отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /entrypoint/branches/{branchId}/services/all` — полный каталог услуг отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+- **Открытие точки обслуживания**
+  - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — закрепление рабочего места за сотрудником (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
 
-### Мониторинг сотрудников и очередей
-- `GET /servicepoint/branches/{branchId}/workingusers` — состав смены и статусы сотрудников.
-  - `200 OK` — список активных сотрудников.
-  - `404 Not Found` — отделение отсутствует.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/queues` — очереди отделения.
-  - `200 OK` — массив очередей.
-  - `404 Not Found` — отделение не найдено.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — талоны внутри очереди.
-  - `200 OK` — список визитов, отсортированный по времени ожидания.
-  - `404 Not Found` — отделение или очередь отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/queues` — очереди, доступные конкретной точке обслуживания.
-  - `200 OK` — доступные очереди.
-  - `403 Forbidden` — точка недоступна или сотрудник не авторизован.
-  - `404 Not Found` — отделение или точка обслуживания отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/servicePoints/{servicePointId}` — состояние точки обслуживания (учитывает сотрудника на перерыве).
-  - `200 OK` — возвращены актуальные данные точки.
-  - `404 Not Found` — отделение или точка не найдены.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /configuration/branches/{branchId}/break/reasons` — причины перерыва.
-  - `200 OK` — словарь причин.
-  - `404 Not Found` — отделение отсутствует.
-  - `500 Internal Server Error` — ошибка сервера.
+### Основные операции
+- **Мониторинг сотрудников и очередей**
+  - `GET /servicepoint/branches/{branchId}/workingusers` — активные сотрудники смены (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/queues` — очереди отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/queues/full` — агрегированное состояние очередей с талонами (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — талоны внутри очереди (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/queues` — очереди, доступные конкретной точке (`200 OK`; `403 Forbidden`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/servicePoints/{servicePointId}` — текущее состояние рабочей точки (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /configuration/branches/{branchId}/break/reasons` — справочник причин перерыва (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+- **Вызов и управление талонами**
+  - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/call` — вызов талона с максимальным ожиданием (`200 OK`; `204 No Content`; `207 Multi-Status`; `403 Forbidden`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — вызов с подтверждением прихода (`200 OK`; `204 No Content`; `207 Multi-Status`; `403 Forbidden`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit` — вызов конкретного визита с объектом `Visit` в теле (`200 OK`; `207 Multi-Status`; `403 Forbidden`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}` — вызов по идентификатору с подтверждением (`200 OK`; `207 Multi-Status`; `403 Forbidden`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}/call` — вызов талона без подтверждения (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — фиксация прихода клиента (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}` — повторный вызов клиента (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow/{visitId}` — отметка о неявке (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back` — вернуть текущий визит в очередь (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/visits/{visitId}/put_back` — вернуть вызванный визит в очередь (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/postpone` — отложить визит (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` — отмена визита (`204 No Content`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/cancelAutoCall` — отключение режима авто-вызова (`200 OK`; `207 Multi-Status`; `404 Not Found`; `500 Internal Server Error`).
+- **Обслуживание визита**
+  - `POST /entrypoint/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit` — создание виртуального талона (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end` — завершение обслуживания визита (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/services` — пакетное добавление услуг (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/services/{serviceId}` — добавление отдельной услуги (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}` — назначение фактической услуги (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/services/{serviceId}/deliveredServices` — справочник фактических услуг (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}` — удаление фактической услуги (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}` — итог по текущей услуге (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}` — итог по фактической услуге (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/service/{serviceId}/outcome` — удаление итога услуги (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}/outcome` — удаление итога фактической услуги (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `GET /servicepoint/branches/{branchId}/visits/{visitId}/notes` — заметки визита (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/notes` — добавление заметки (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
 
-### Управление визитами и очередями
-- `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/call` — вызов талона с максимальным временем ожидания.
-  - `200 OK` — визит вызван и возвращён в теле ответа.
-  - `204 No Content` — очередь пуста.
-  - `207 Multi-Status` — режим автоматического вызова уже включён.
-  - `403 Forbidden` — сотрудник не авторизован или точка недоступна.
-  - `404 Not Found` — отделение не найдено.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — вызов талона с подтверждением прихода.
-  - `200 OK` — визит вызван.
-  - `204 No Content` — очередь пуста.
-  - `207 Multi-Status` — режим автоматического вызова активен.
-  - `403 Forbidden` — нет доступа к точке обслуживания.
-  - `404 Not Found` — отделение не найдено.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/call/visit` — вызов выбранного визита (объект `Visit` в теле) с ожиданием подтверждения.
-  - `200 OK` — визит переведён в статус вызова.
-  - `207 Multi-Status` — автоматический вызов уже работает.
-  - `403 Forbidden` — нет доступа к точке обслуживания.
-  - `404 Not Found` — отделение или визит не найдены.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/call/{visitId}` — вызов по идентификатору с подтверждением прихода.
-  - `200 OK` — визит вызван.
-  - `207 Multi-Status` — авто-вызов активен.
-  - `403 Forbidden` — нет доступа к точке обслуживания.
-  - `404 Not Found` — отделение, визит или точка обслуживания отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visits/{visitId}/call` — вызов конкретного талона без подтверждения.
-  - `200 OK` — визит вызван и переведён в статус CALLED.
-  - `404 Not Found` — отделение, очередь или точка обслуживания отсутствуют.
-  - `409 Conflict` — визит уже вызван.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — подтверждение прихода клиента.
-  - `200 OK` — визит переведён в статус CONFIRMED.
-  - `404 Not Found` — визит или точка обслуживания отсутствуют.
-  - `409 Conflict` — визит уже подтверждён.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}` — повторный вызов клиента.
-  - `200 OK` — повторное оповещение отправлено.
-  - `404 Not Found` — визит или точка обслуживания отсутствуют.
-  - `409 Conflict` — визит уже вызван.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/noshow/{visitId}` — отметка о неявке клиента.
-  - `200 OK` — визит переведён в статус NO_SHOW.
-  - `404 Not Found` — отделение или визит отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/visit/put_back` — вернуть текущий визит в очередь.
-  - `200 OK` — визит возвращён.
-  - `404 Not Found` — отделение или точка обслуживания отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/visits/{visitId}/put_back` — вернуть вызванный визит в очередь.
-  - `200 OK` — визит возвращён с задержкой `returnTimeDelay`.
-  - `404 Not Found` — отделение или визит отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/postpone` — отложить визит в текущей точке.
-  - `200 OK` — визит отложен.
-  - `404 Not Found` — отделение или точка обслуживания отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` — отменить визит.
-  - `204 No Content` — визит удалён.
-  - `404 Not Found` — визит отсутствует.
-  - `409 Conflict` — визит нельзя удалить (например, уже обслуживается).
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/servicePoins/{servicePointId}/cancelAutoCall` — отключить автоматический вызов.
-  - `200 OK` — авто-вызов остановлен.
-  - `207 Multi-Status` — режим уже был отключён.
-  - `404 Not Found` — отделение или точка обслуживания отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end` — завершение обслуживания визита.
-  - `200 OK` — визит завершён.
-  - `404 Not Found` — отделение или точка обслуживания отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
+### Дополнительные возможности
+- **Переводы между очередями и пулами**
+  - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueueToStartOrToEnd/{visitId}` — перемещение талона между очередями с выбором позиции (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/users/{userId}/visits/{visitId}` — отправка визита в пул сотрудника (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/transfer` — возврат визита из точки в пул сотрудника (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visits/{visitId}/transferFromQueue` — перенос из очереди в пул точки (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer` — отправка визита в пул точки обслуживания (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
+  - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint` — возврат визита из точки в очередь (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
 
-### Переводы и ручное распределение
-- `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueueToStartOrToEnd/{visitId}` — перенос талона между очередями с выбором позиции.
-  - `200 OK` — визит перемещён.
-  - `404 Not Found` — отделение, очередь, визит или сотрудник отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/users/{userId}/visits/{visitId}` — перенос визита в пул сотрудника.
-  - `200 OK` — визит добавлен в пул.
-  - `404 Not Found` — отделение, сотрудник или визит отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/users/{userId}/transfer` — вернуть визит из точки обслуживания в пул сотрудника.
-  - `200 OK` — визит возвращён в пул.
-  - `404 Not Found` — отделение, точка или сотрудник отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visits/{visitId}/transferFromQueue` — забрать визит из очереди в пул точки обслуживания.
-  - `200 OK` — визит добавлен в пул точки.
-  - `404 Not Found` — отделение, точка, пул или визит отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer` — отправить визит из точки обслуживания в пул.
-  - `200 OK` — визит перемещён в пул.
-  - `404 Not Found` — отделение или точка отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint` — вернуть визит из точки обслуживания в конкретную очередь.
-  - `200 OK` — визит перемещён в очередь.
-  - `404 Not Found` — отделение, очередь или точка отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-
-### Работа с услугами и результатами
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/services` — пакетное добавление услуг в визит.
-  - `200 OK` — услуги добавлены.
-  - `404 Not Found` — отделение, визит или точка отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/services/{serviceId}` — добавление отдельной услуги.
-  - `200 OK` — услуга добавлена.
-  - `404 Not Found` — отделение, услуга, визит или точка отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}` — назначение фактической услуги.
-  - `200 OK` — фактическая услуга добавлена.
-  - `404 Not Found` — отделение, услуга, точка или конфигурация фактической услуги отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/services/{serviceId}/deliveredServices` — возможные фактические услуги для выбранной услуги.
-  - `200 OK` — список доступных фактических услуг.
-  - `404 Not Found` — отделение или услуга отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}` — удаление фактической услуги из визита.
-  - `200 OK` — фактическая услуга удалена.
-  - `404 Not Found` — отделение, услуга или точка отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}` — итог по текущей услуге.
-  - `200 OK` — итог сохранён.
-  - `404 Not Found` — отделение, услуга, визит или точка отсутствуют.
-  - `409 Conflict` — итог недоступен для текущей услуги.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}` — итог по фактической услуге.
-  - `200 OK` — итог сохранён.
-  - `404 Not Found` — отделение, услуга, визит, точка или фактическая услуга отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/service/{serviceId}/outcome` — удаление итога текущей услуги.
-  - `200 OK` — итог удалён.
-  - `404 Not Found` — отделение, услуга, визит или точка отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `DELETE /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredServices/{deliveredServiceId}/outcome` — удаление итога фактической услуги.
-  - `200 OK` — итог удалён.
-  - `404 Not Found` — отделение, визит, точка или фактическая услуга отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `GET /servicepoint/branches/{branchId}/visits/{visitId}/notes` — заметки визита.
-  - `200 OK` — список заметок.
-  - `404 Not Found` — отделение или визит отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/notes` — добавление текстовой заметки.
-  - `200 OK` — заметка добавлена.
-  - `404 Not Found` — отделение или визит отсутствуют.
-  - `500 Internal Server Error` — ошибка сервера.
-
-### Завершение смены
-- `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close` — закрыть рабочую станцию.
-  - `200 OK` — точка закрыта.
-  - `404 Not Found` — отделение или точка отсутствуют.
-  - `409 Conflict` — точка уже закрыта.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/logout` — закрыть точку и завершить сессию сотрудника.
-  - `200 OK` — точка закрыта, пользователь разлогинен.
-  - `404 Not Found` — отделение или точка отсутствуют.
-  - `409 Conflict` — точка уже закрыта.
-  - `500 Internal Server Error` — ошибка сервера.
-- `POST /entrypoint/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit` — создание визита без печати талона (виртуальный талон).
-  - `200 OK` — визит создан.
-  - `404 Not Found` — отделение, услуги или очередь отсутствуют.
-  - `409 Conflict` — визит уже создан (дублирование параметров).
-  - `500 Internal Server Error` — ошибка сервера.
+### Завершение работы
+- `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close` — закрытие рабочей станции (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
+- `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/logout` — завершение сессии сотрудника и закрытие точки (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
 
 ### Типовые сценарии
 1. **Создание виртуального талона и завершение обслуживания**
@@ -537,93 +371,47 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ## 🖥️ Работа приемной (ресепшен)
 
-Ниже приведены REST-запросы, которые использует приемная (ресепшен) в менеджере визитов. Для каждого запроса указан контроллер Micronaut, который его обрабатывает, и основные варианты ответов сервера. Все вызовы защищены авторизацией; при отсутствии токена ожидайте `401 Unauthorized` или `403 Forbidden`.
+### Назначение и доступ
+Приёмная регистрирует посетителей, управляет печатью талонов и распределяет визиты по очередям и пулам обслуживания. Все вызовы выполняются с авторизацией сервиса ресепшена; при отсутствии токена backend вернёт `401 Unauthorized` или `403 Forbidden`.
 
+### Подготовка и запуск
+- **Выбор отделения и контроль состояния**
+  - `GET /managementinformation/branches/tiny` — компактный список отделений для выбора филиала (`200 OK`; `400 Bad Request`/`500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】
+  - `GET /servicepoint/branches/{branchId}` — сводные данные отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】
+- **Настройка рабочих мест и ресурсов**
+  - `GET /servicepoint/branches/{branchId}/servicePoints` — список точек обслуживания для выбора рабочего места (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L168-L193】
+  - `GET /servicepoint/branches/{branchId}/users` — сотрудники отделения и их статусы (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L268-L291】
+  - `GET /servicepoint/branches/{branchId}/printers` — доступные принтеры для печати талонов (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L102-L117】
+  - `GET /entrypoint/branches/{branchId}/services/all` — полный каталог услуг отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
 
-1. **GET `/managementinformation/branches/tiny`** — компактный список отделений для выбора филиала.
-   - Контроллер: `ManagementController#getTinyBranches` 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】
-   - Ответы:
-     - `200 OK` — JSON-массив `{ id, name }`.
-     - `400 Bad Request` или `500 Internal Server Error` при ошибках.
-2. **GET `/servicepoint/branches/{branchId}/servicePoints`** — список точек обслуживания отделения для выбора рабочего места.
-   - Контроллер: `ServicePointController#getServicePoints` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L168-L193】
-   - Ответы:
-     - `200 OK` — точки с признаком доступности.
-     - `404 Not Found` или `500 Internal Server Error` при ошибках.
-3. **GET `/servicepoint/branches/{branchId}/users`** — возвращает сотрудников отделения и их статусы.
-   - Контроллер: `ServicePointController#getUsersOfBranch` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L268-L291】
-   - Ответы:
-     - `200 OK` — массив сотрудников.
-     - `404 Not Found` или `500 Internal Server Error` при ошибках.
-4. **GET `/entrypoint/branches/{branchId}/services/all`** — полный каталог услуг отделения для фильтров и карточек визита.
-   - Контроллер: `EntrypointController#getAllServices` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
-   - Ответы:
-     - `200 OK` — список услуг.
-     - `404 Not Found` или `500 Internal Server Error` при ошибках.
-5. **GET `/servicepoint/branches/{branchId}/queues/full`** — подробные данные по очередям отделения.
-   - Контроллер: `ServicePointController#getFullQueues` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】
-   - Ответы:
-     - `200 OK` — очереди и талоны.
-     - `404 Not Found` или `500 Internal Server Error` при ошибках.
-6. **DELETE `/servicepoint/branches/{branchId}/visits/{visitId}`** — отменяет визит по идентификатору.
-   - Контроллер: `ServicePointController#deleteVisit` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2334-L2363】
-   - Ответы:
-     - `204 No Content` — успешная отмена.
-     - `404 Not Found`, `409 Conflict` или `500 Internal Server Error` при ошибках.
-7. **GET `/servicepoint/branches/{branchId}/printers`** — список доступных принтеров отделения.
-   - Контроллер: `ServicePointController#getPrinters` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L102-L117】
-   - Ответы:
-     - `200 OK` — перечень устройств.
-     - `404 Not Found` или `500 Internal Server Error` при ошибках.
-8. **GET `/servicepoint/branches/{branchId}`** — возвращает сводные данные отделения (делегирует `ManagementController#getBranch`).
-   - Контроллер: `ManagementController#getBranch` 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】
-   - Ответы:
-     - `200 OK` — JSON отделения.
-     - `404 Not Found` или `500 Internal Server Error` при ошибках.
-9. **POST `/entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true`** — создаёт визит с печатью талона на выбранном принтере.
-   - Контроллер: `EntrypointController#createVisitFromReception` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
-   - Ответы:
-     - `200 OK` — созданный визит.
-     - `400 Bad Request`, `404 Not Found` или `500 Internal Server Error` при ошибках.
-10. **POST `/entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false`** — создаёт виртуальный визит без печати талона.
-    - Контроллер: `EntrypointController#createVisitFromReception` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
-    - Ответы:
-      - `200 OK` — созданный визит.
-      - `400 Bad Request`, `404 Not Found` или `500 Internal Server Error` при ошибках.
-11. **PUT `/servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=true`** — переносит визит внешней службой в конец очереди.
-    - Контроллер: `ServicePointController#visitTransferFromQueue` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】
-    - Ответы:
-      - `200 OK` — обновлённый визит.
-      - `404 Not Found` или `500 Internal Server Error` при ошибках.
-12. **PUT `/servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false`** — переносит визит внешней службой в начало очереди.
-    - Контроллер: `ServicePointController#visitTransferFromQueue` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】
-    - Ответы:
-      - `200 OK` — обновлённый визит.
-      - `404 Not Found` или `500 Internal Server Error` при ошибках.
-13. **PUT `/servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=true`** — добавляет визит в конец пула выбранной точки обслуживания.
-    - Контроллер: `ServicePointController#visitTransferFromQueueToServicePointPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】
-    - Ответы:
-      - `200 OK` — визит в пуле.
-      - `404 Not Found` или `500 Internal Server Error` при ошибках.
-14. **PUT `/servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=false`** — помещает визит в начало пула точки обслуживания.
-    - Контроллер: `ServicePointController#visitTransferFromQueueToServicePointPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】
-    - Ответы:
-      - `200 OK` — визит в пуле.
-      - `404 Not Found` или `500 Internal Server Error` при ошибках.
-15. **PUT `/servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=true`** — переносит визит в конец пула сотрудника.
-    - Контроллер: `ServicePointController#visitTransferFromQueueToUserPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】
-    - Ответы:
-      - `200 OK` — визит в пуле сотрудника.
-      - `404 Not Found` или `500 Internal Server Error` при ошибках.
-16. **PUT `/servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=false`** — переносит визит в начало пула сотрудника.
-    - Контроллер: `ServicePointController#visitTransferFromQueueToUserPool` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】
-    - Ответы:
-      - `200 OK` — визит в пуле сотрудника.
-      - `404 Not Found` или `500 Internal Server Error` при ошибках.
+### Основные операции
+- **Мониторинг очередей** — `GET /servicepoint/branches/{branchId}/queues/full` возвращает очереди и талоны отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】
+- **Регистрация визита с печатью** — `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` (`200 OK`; `400 Bad Request`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
+- **Регистрация виртуального визита** — `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` (`200 OK`; `400 Bad Request`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
+- **Отмена визита** — `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` (`204 No Content`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2334-L2363】
 
+### Дополнительные возможности
+- **Перераспределение между очередями и пулами**
+  - `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=true` — перенос визита внешней службой в конец очереди (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】
+  - `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false` — перенос визита в начало очереди (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】
+  - `PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` — добавление визита в конец пула точки (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】
+  - `PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=false` — постановка визита в начало пула точки (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】
+  - `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` — перенос визита в конец пула сотрудника (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】
+  - `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=false` — перенос визита в начало пула сотрудника (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】
 
+### Завершение работы
+Отдельного закрытия смены для приёмной не требуется: завершение рабочего дня выполняется на пульте оператора, после чего новые визиты ресепшн не создаёт.
 
-
+### Типовые сценарии
+1. **Регистрация клиента с печатью талона**
+   1. `GET /entrypoint/branches/{branchId}/services/all` — выбор услуги для клиента.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
+   2. `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` — оформление визита и печать талона.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
+2. **Создание виртуального визита и передача в пул точки**
+   1. `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` — оформление визита без печати.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
+   2. `PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` — добавление визита в конец пула выбранной точки.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】
+3. **Перенос талона в приоритетную очередь**
+   1. `GET /servicepoint/branches/{branchId}/queues/full` — проверка текущей загрузки очередей.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】
+   2. `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false` — перемещение визита в начало целевой очереди.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】
 
 ## 📦 Примеры кода
 
