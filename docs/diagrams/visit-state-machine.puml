@@ -1,0 +1,29 @@
+@startuml
+!include style.puml
+
+title Состояния жизненного цикла визита
+
+state "Создан\n(DRAFT)" as Draft
+state "Ожидает обслуживания\n(WAITING)" as Waiting
+state "Вызван\n(CALLED)" as Called
+state "Обслуживается\n(SERVING)" as Serving
+state "Отложен\n(PENDING)" as Paused
+state "Завершён\n(COMPLETED)" as Completed
+state "Отменён\n(CANCELLED)" as Cancelled
+state "Неявка\n(NO_SHOW)" as NoShow
+state "Архивирован\n(ARCHIVED)" as Archived
+
+[*] --> Draft : регистрация визита
+Draft --> Waiting : подтверждение очереди
+Waiting --> Called : оператор вызывает клиента
+Called --> Serving : клиент подтвердил вызов
+Serving --> Completed : оператор завершил обслуживание
+Waiting --> Cancelled : клиент или оператор отменил
+Called --> NoShow : истёк таймаут ожидания
+Called --> Waiting : возвращён в очередь
+Serving --> Paused : обслуживание поставлено на паузу
+Paused --> Waiting : возобновление обслуживания
+Completed --> Archived : завершение жизненного цикла
+Cancelled --> Archived : визит закрыт без обслуживания
+NoShow --> Archived : визит закрыт по таймауту
+@enduml
