@@ -22,7 +22,12 @@ import ru.aritmos.model.tiny.TinyClass;
 import ru.aritmos.service.BranchService;
 
 /**
- * @author Pavel Sokolov REST API управления зоной ожидания
+ * REST API для информационных запросов по отделениям.
+ *
+ * <p>Контроллер предоставляет вспомогательные методы для мониторинга очередей и
+ * проверки прав доступа сотрудников перед началом обслуживания клиентов.
+ *
+ * @author Pavel Sokolov
  */
 @Controller("/managementinformation")
 @ApiResponses({

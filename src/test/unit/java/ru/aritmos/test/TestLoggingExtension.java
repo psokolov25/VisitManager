@@ -4,6 +4,12 @@ import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
 
+/**
+ * JUnit-расширение, интегрирующее {@link TestLog} с жизненным циклом тестов.
+ *
+ * <p>Регистрируется в тестах для автоматического логирования начала и окончания
+ * каждого тестового метода, а также фиксации пропусков и ошибок.
+ */
 public class TestLoggingExtension implements BeforeTestExecutionCallback, TestWatcher {
 
     @Override
@@ -31,6 +37,12 @@ public class TestLoggingExtension implements BeforeTestExecutionCallback, TestWa
         TestLog.stepSkipped(displayName(context), reason.orElse("no reason provided"));
     }
 
+    /**
+     * Формирует человекочитаемое имя теста для журналирования.
+     *
+     * @param context контекст выполняемого теста
+     * @return строку вида {@code ClassName#methodName}
+     */
     private String displayName(ExtensionContext context) {
         return context.getRequiredTestClass().getSimpleName() + "#" + context.getRequiredTestMethod().getName();
     }

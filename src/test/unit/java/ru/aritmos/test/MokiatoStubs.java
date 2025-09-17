@@ -29,10 +29,23 @@ import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.rules.client.CallRuleClient;
 
+/**
+ * Набор тестовых заглушек Micronaut, заменяющих внешние клиенты и кеши в
+ * модульных тестах.
+ *
+ * <p>Компоненты объявлены как {@code @Replaces}, поэтому автоматически
+ * подставляются вместо настоящих реализаций при запуске unit-тестов. Это
+ * гарантирует повторяемость сценариев и отсутствие сетевых вызовов.
+ */
 @Factory
 @Requires(notEnv = "integration")
 public class MokiatoStubs {
 
+    /**
+     * Создает заглушку клиента Keycloak с предсказуемыми ответами для тестов.
+     *
+     * @return подмененный {@link KeyCloackClient}
+     */
     @Singleton
     @Replaces(KeyCloackClient.class)
     KeyCloackClient keyCloackClient() {
@@ -61,6 +74,11 @@ public class MokiatoStubs {
         return mock;
     }
 
+    /**
+     * Предоставляет упрощенную конфигурацию отделений, доступную офлайн.
+     *
+     * @return заглушка {@link ConfigurationClient}
+     */
     @Singleton
     @Replaces(ConfigurationClient.class)
     ConfigurationClient configurationClient() {
@@ -69,6 +87,12 @@ public class MokiatoStubs {
         return mock;
     }
 
+    /**
+     * Возвращает клиент бизнес-правил, всегда сообщающий об отсутствии
+     * ограничений.
+     *
+     * @return заглушка {@link CallRuleClient}
+     */
     @Singleton
     @Replaces(CallRuleClient.class)
     CallRuleClient callRuleClient() {
@@ -77,6 +101,12 @@ public class MokiatoStubs {
         return mock;
     }
 
+    /**
+     * Создает клиент печати талонов, подтверждающий успешную печать без
+     * взаимодействия с принтером.
+     *
+     * @return заглушка {@link PrinterClient}
+     */
     @Singleton
     @Replaces(PrinterClient.class)
     PrinterClient printerClient() {
@@ -85,6 +115,11 @@ public class MokiatoStubs {
         return mock;
     }
 
+    /**
+     * Возвращает клиент шины событий, имитирующий подтверждение отправки.
+     *
+     * @return заглушка {@link DataBusClient}
+     */
     @Singleton
     @Replaces(DataBusClient.class)
     DataBusClient dataBusClient() {
@@ -98,6 +133,12 @@ public class MokiatoStubs {
         return mock;
     }
 
+    /**
+     * Подменяет менеджер кешей на минимальную реализацию, чтобы исключить
+     * влияние кеширования на тесты.
+     *
+     * @return заглушка {@link CacheManager}
+     */
     @Singleton
     @Replaces(bean = io.micronaut.cache.DefaultCacheManager.class)
     @SuppressWarnings("unchecked")

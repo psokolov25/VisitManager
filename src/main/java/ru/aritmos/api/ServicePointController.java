@@ -33,7 +33,12 @@ import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
 /**
- * @author Pavel Sokolov REST API управления зоной ожидания
+ * REST API для работы с точками обслуживания и очередями.
+ *
+ * <p>Контроллер отвечает за выдачу талонов, управление очередями сотрудников и
+ * контроль занятости рабочих мест в отделении.
+ *
+ * @author Pavel Sokolов
  */
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 @SerdeImport(GroupRepresentation.class)

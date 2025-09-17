@@ -18,7 +18,13 @@ import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
 
 /**
- * @author Pavel Sokolov REST API управления конфигурацией отделений
+ * REST API управления конфигурацией отделений.
+ *
+ * <p>Контроллер предоставляет эндпоинты для публикации конфигурации отделений и
+ * синхронизации набора услуг с локальной базой визитов. Используется как в
+ * ежедневной эксплуатации, так и при загрузке демонстрационных данных.
+ *
+ * @author Pavel Sokolов
  */
 @lombok.extern.slf4j.Slf4j
 @Controller("/configuration")

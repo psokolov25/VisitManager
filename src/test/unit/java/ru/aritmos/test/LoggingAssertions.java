@@ -8,6 +8,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.api.function.ThrowingSupplier;
 
+/**
+ * Обертки над стандартными {@link org.junit.jupiter.api.Assertions},
+ * добавляющие логирование шагов и проверок.
+ *
+ * <p>Класс помогает получать подробные сообщения о ходе выполнения теста даже в
+ * случае падения утверждения. Все методы повторяют сигнатуры JUnit, поэтому
+ * могут использоваться как прямой заменитель статических методов
+ * {@code Assertions}.
+ */
 public final class LoggingAssertions {
 
     private static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
@@ -259,8 +268,20 @@ public final class LoggingAssertions {
             result -> result == null ? "result=null" : "result=" + formatValue(result));
     }
 
+    /**
+     * Выполняет проверку без возвращаемого значения и фиксирует подробности в
+     * логах тестов.
+     *
+     * @param assertionName название утверждения (используется в сообщениях лога)
+     * @param startDetailsSupplier ленивый источник описания входных данных
+     * @param failureDetailsSupplier ленивый источник деталей о провале
+     * @param assertion действие, выполняющее собственно проверку
+     */
     private static void runCheck(
-        String assertionName, Supplier<String> startDetailsSupplier, Supplier<String> failureDetailsSupplier, Runnable assertion) {
+        String assertionName,
+        Supplier<String> startDetailsSupplier,
+        Supplier<String> failureDetailsSupplier,
+        Runnable assertion) {
         String location = callerLocation();
         String startDetails = safeGet(startDetailsSupplier);
         TestLog.checkStart(location, formatDetails(assertionName, startDetails));
@@ -274,6 +295,18 @@ public final class LoggingAssertions {
         }
     }
 
+    /**
+     * Выполняет проверку с возвращаемым значением и формирует сообщения об
+     * исходных и итоговых данных проверки.
+     *
+     * @param assertionName название утверждения (используется в сообщениях лога)
+     * @param startDetailsSupplier ленивый источник описания входных данных
+     * @param failureDetailsSupplier ленивый источник деталей о провале
+     * @param assertionSupplier действие, выполняющее проверку и возвращающее результат
+     * @param successDetailsSupplier функция подготовки сообщения об успешном результате
+     * @param <R> тип возвращаемого значения
+     * @return результат выполнения {@code assertionSupplier}
+     */
     private static <R> R runCheckWithResult(
         String assertionName,
         Supplier<String> startDetailsSupplier,
@@ -295,6 +328,12 @@ public final class LoggingAssertions {
         }
     }
 
+    /**
+     * Определяет исходную точку вызова утверждения для последующего вывода в
+     * журнале проверок.
+     *
+     * @return строку в формате {@code класс#метод:строка}
+     */
     private static String callerLocation() {
         return STACK_WALKER.walk(stream ->
             stream.dropWhile(frame -> frame.getClassName().equals(LoggingAssertions.class.getName()))
