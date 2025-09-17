@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-351%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-368%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-43.8%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-47.0%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -794,7 +794,7 @@ class HttpExample {
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
-Команда ниже выполняет 351 модульный тест и формирует отчёт JaCoCo с линейным покрытием 43,8%.
+Команда ниже выполняет 368 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 47,0%.
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
@@ -854,7 +854,8 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.model.BasedServiceTest — проверяет базовую услугу и её поля.
 - ru.aritmos.model.BranchEntityTest — валидирует сущность отделения, включая список услуг.
 - ru.aritmos.model.BranchEntityWithVisitsTest — тестирует отделение с вложенными визитами.
-- ru.aritmos.model.BranchTest — проверяет доменную модель отделения и закрытие точки обслуживания.
+- ru.aritmos.model.BranchTest — проверяет доменную модель отделения:
+  инкремент счётчика талонов, агрегирование визитов, обновление точек обслуживания и обработку некорректных позиций в очереди.
 - ru.aritmos.model.DeliveredServiceTest — удостоверяется в корректности модели выполненной услуги визита.
 - ru.aritmos.model.EntityTest — проверяет билдер, геттеры/сеттеры и аннотацию `@Serdeable` базовой сущности.
 - ru.aritmos.model.OutcomeTest — проверяет перечисление исходов обслуживания.

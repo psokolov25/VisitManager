@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.keycloack.service.KeyCloackClient;
+import ru.aritmos.service.BranchService;
 import ru.aritmos.service.VisitService;
 
 /**
@@ -595,6 +597,159 @@ class BranchTest {
         verify(eventService)
                 .sendChangedEvent(
                         eq("config"), eq(false), isNull(), same(serviceToDelete), anyMap(), eq("Delete service"));
+    }
+
+
+    @Test
+    void updateVisitPlacesEntitiesAndSendsEvents() {
+        // Готовим отделение с очередью и пулом визитов
+        Branch branch = new Branch("b1", "Отделение");
+        Queue queue = new Queue("q1", "Очередь", "Q", 1);
+        Visit existingHead = Visit.builder().id("queue-1").build();
+        Visit existingTail = Visit.builder().id("queue-2").build();
+        queue.getVisits().addAll(List.of(existingHead, existingTail));
+        branch.getQueues().put(queue.getId(), queue);
+
+        ServicePoint mainPoint = new ServicePoint("sp-main", "Основная точка");
+        branch.getServicePoints().put(mainPoint.getId(), mainPoint);
+
+        ServicePoint poolPoint = new ServicePoint("sp-pool", "Пул точки");
+        User poolPointUser = new User("pool-point", null);
+        poolPoint.setUser(poolPointUser);
+        poolPoint.getVisits().add(Visit.builder().id("pool-old").build());
+        branch.getServicePoints().put(poolPoint.getId(), poolPoint);
+
+        ServicePoint poolUserPoint = new ServicePoint("sp-user", "Пул сотрудника");
+        User poolUser = new User("pool-user", null);
+        poolUser.getVisits().add(Visit.builder().id("saved").build());
+        poolUserPoint.setUser(poolUser);
+        branch.getServicePoints().put(poolUserPoint.getId(), poolUserPoint);
+
+        Visit visit =
+                Visit.builder()
+                        .id("visit-new")
+                        .branchId("b1")
+                        .queueId("q1")
+                        .servicePointId("sp-main")
+                        .poolServicePointId("sp-pool")
+                        .poolUserId(poolUser.getId())
+                        .visitEvents(new ArrayList<>())
+                        .events(new ArrayList<>())
+                        .servedServices(new ArrayList<>())
+                        .unservedServices(new ArrayList<>())
+                        .build();
+
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        when(visitService.getBranchService()).thenReturn(branchService);
+
+        branch.updateVisit(visit, eventService, VisitEvent.CALLED, visitService, 1);
+
+        assertEquals("CALLED", visit.getStatus());
+        assertEquals(
+                List.of("queue-1", "visit-new", "queue-2"),
+                queue.getVisits().stream().map(Visit::getId).toList());
+        assertSame(visit, mainPoint.getVisit());
+        assertTrue(poolPointUser.getVisits().isEmpty());
+        assertEquals(
+                List.of("pool-old", "visit-new"),
+                poolPoint.getVisits().stream().map(Visit::getId).toList());
+        assertEquals(2, poolUser.getVisits().size());
+        assertEquals("saved", poolUser.getVisits().get(0).getId());
+        assertSame(visit, poolUser.getVisits().get(1));
+        assertSame(poolUser, branch.getUsers().get(poolUser.getName()));
+        assertSame(poolPointUser, branch.getUsers().get(poolPointUser.getName()));
+
+        verify(visitService).addEvent(visit, VisitEvent.CALLED, eventService);
+        verify(branchService).add("b1", branch);
+
+        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        verify(eventService).send(eq("*"), eq(false), captor.capture());
+        assertEquals("VISIT_CALLED", captor.getValue().getEventType());
+        assertEquals("visit-new", ((Visit) captor.getValue().getBody()).getId());
+
+        verify(eventService)
+                .send(eq("stat"), eq(false), argThat(event -> "VISIT_CALLED".equals(event.getEventType())));
+        verify(eventService)
+                .send(eq("frontend"), eq(false), argThat(event -> "VISIT_CALLED".equals(event.getEventType())));
+    }
+
+    @Test
+    void updateVisitReplacesExistingServicePointVisit() {
+        // На точке обслуживания уже был другой визит и пользователь
+        Branch branch = new Branch("b1", "Отделение");
+        ServicePoint servicePoint = new ServicePoint("sp1", "СП1");
+        Visit previous = Visit.builder().id("existing").build();
+        servicePoint.setVisit(previous);
+        User staff = new User("staff", null);
+        staff.getVisits().add(previous);
+        servicePoint.setUser(staff);
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+        branch.getQueues().put("q1", new Queue("q1", "Очередь", "Q", 1));
+
+        Visit visit =
+                Visit.builder()
+                        .id("new")
+                        .branchId("b1")
+                        .queueId("q1")
+                        .servicePointId("sp1")
+                        .visitEvents(new ArrayList<>())
+                        .events(new ArrayList<>())
+                        .build();
+
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        when(visitService.getBranchService()).thenReturn(branchService);
+
+        branch.updateVisit(visit, eventService, VisitEvent.CALLED, visitService, 0);
+
+        assertSame(visit, servicePoint.getVisit());
+        assertTrue(staff.getVisits().stream().anyMatch(saved -> "existing".equals(saved.getId())));
+        assertTrue(staff.getVisits().stream().noneMatch(saved -> "new".equals(saved.getId())));
+        assertEquals(1, branch.getQueues().get("q1").getVisits().size());
+        assertSame(visit, branch.getQueues().get("q1").getVisits().get(0));
+
+        verify(visitService).addEvent(visit, VisitEvent.CALLED, eventService);
+        verify(branchService).add("b1", branch);
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+    }
+
+    @Test
+    void updateVisitFailsWhenQueueIndexOutOfRange() {
+        // Индекс вставки выходит за пределы очереди
+        Branch branch = new Branch("b1", "Отделение");
+        Queue queue = new Queue("q1", "Очередь", "Q", 1);
+        queue.getVisits().add(Visit.builder().id("keep").build());
+        branch.getQueues().put(queue.getId(), queue);
+
+        Visit visit =
+                Visit.builder()
+                        .id("new")
+                        .branchId("b1")
+                        .queueId("q1")
+                        .visitEvents(new ArrayList<>())
+                        .events(new ArrayList<>())
+                        .build();
+
+        EventService eventService = mock(EventService.class);
+        VisitService visitService = mock(VisitService.class);
+
+        HttpStatusException thrown =
+                assertThrows(
+                        HttpStatusException.class,
+                        () -> branch.updateVisit(visit, eventService, VisitEvent.CALLED, visitService, 5));
+
+        assertEquals(HttpStatus.CONFLICT, thrown.getStatus());
+        assertEquals(1, queue.getVisits().size());
+        assertEquals("keep", queue.getVisits().get(0).getId());
+
+        verify(visitService).addEvent(visit, VisitEvent.CALLED, eventService);
+        verify(eventService)
+                .send(eq("*"), eq(false), argThat(event -> "BUSINESS_ERROR".equals(event.getEventType())));
+        verify(eventService, never()).send(eq("stat"), anyBoolean(), any(Event.class));
+        verify(visitService, never()).getBranchService();
     }
 
 }
