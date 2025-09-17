@@ -11,6 +11,7 @@ state "Ожидает сотрудника\n(WAITING_IN_USER_POOL)" as WaitingUs
 state "Ожидает точку обслуживания\n(WAITING_IN_SERVICE_POOL)" as WaitingService
 state "Завершён\n(END)" as End
 
+
 [*] --> Created : Создание визита (CREATED)
 Created --> WaitingQueue : Постановка в очередь (PLACED_IN_QUEUE)
 Created --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
