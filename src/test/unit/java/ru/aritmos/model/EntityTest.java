@@ -1,6 +1,6 @@
 package ru.aritmos.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import io.micronaut.serde.annotation.Serdeable;
 import org.junit.jupiter.api.DisplayName;

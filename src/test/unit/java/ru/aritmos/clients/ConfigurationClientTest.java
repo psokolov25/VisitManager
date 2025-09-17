@@ -1,6 +1,6 @@
 package ru.aritmos.clients;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.client.annotation.Client;

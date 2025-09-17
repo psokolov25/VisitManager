@@ -1,6 +1,6 @@
 package ru.aritmos.events.model;
 
-import org.junit.jupiter.api.Assertions;
+import ru.aritmos.test.LoggingAssertions;
 import org.junit.jupiter.api.Test;
 
 class ChangedObjectTest {
@@ -15,9 +15,9 @@ class ChangedObjectTest {
                         .action("UPDATE")
                         .build();
 
-        Assertions.assertEquals("old", obj.getOldValue());
-        Assertions.assertEquals("new", obj.getNewValue());
-        Assertions.assertEquals("MyClass", obj.getClassName());
-        Assertions.assertEquals("UPDATE", obj.getAction());
+        LoggingAssertions.assertEquals("old", obj.getOldValue());
+        LoggingAssertions.assertEquals("new", obj.getNewValue());
+        LoggingAssertions.assertEquals("MyClass", obj.getClassName());
+        LoggingAssertions.assertEquals("UPDATE", obj.getAction());
     }
 }

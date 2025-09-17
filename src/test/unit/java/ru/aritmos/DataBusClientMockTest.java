@@ -4,7 +4,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Collections;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
+import ru.aritmos.test.LoggingAssertions;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import ru.aritmos.events.clients.DataBusClient;
@@ -27,7 +27,7 @@ class DataBusClientMockTest {
                                         Collections.emptyMap()))
                         .block();
 
-        Assertions.assertEquals("stubbed", result.get("status"));
-        Assertions.assertEquals("TEST", result.get("type"));
+        LoggingAssertions.assertEquals("stubbed", result.get("status"));
+        LoggingAssertions.assertEquals("TEST", result.get("type"));
     }
 }

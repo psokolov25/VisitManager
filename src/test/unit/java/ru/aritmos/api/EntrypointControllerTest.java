@@ -1,6 +1,6 @@
 package ru.aritmos.api;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;

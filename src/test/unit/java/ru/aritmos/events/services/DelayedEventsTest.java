@@ -1,7 +1,7 @@
 package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import io.micronaut.scheduling.TaskScheduler;
 import java.time.Duration;

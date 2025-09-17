@@ -1,6 +1,6 @@
 package ru.aritmos.events.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.micronaut.scheduling.TaskExecutors;

@@ -3,7 +3,7 @@ package ru.aritmos.service;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.GroovyScript;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 /** Unit tests for {@link GroovyScriptService}. */
 class GroovyScriptServiceTest {

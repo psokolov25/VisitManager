@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
+import ru.aritmos.test.LoggingAssertions;
 import ru.aritmos.model.visit.Visit;
 
 @Slf4j
@@ -82,8 +82,8 @@ public class GroovyTest {
     // Получение оптимального визита из двух, согласно алгоритму описанному в groovya crhbgnt
     Optional<Visit> optimalVisit = (Optional<Visit>) result.get("result");
 
-    Assertions.assertTrue(optimalVisit.isPresent());
-    Assertions.assertEquals("123", optimalVisit.get().getQueueId());
+    LoggingAssertions.assertTrue(optimalVisit.isPresent());
+    LoggingAssertions.assertEquals("123", optimalVisit.get().getQueueId());
     log.info("Оптимальный визит:{}!", optimalVisit);
   }
 }

@@ -1,6 +1,6 @@
 package ru.aritmos.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.UUID;
 import org.junit.jupiter.api.Test;

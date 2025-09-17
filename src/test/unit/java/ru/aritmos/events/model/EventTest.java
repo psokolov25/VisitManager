@@ -3,7 +3,7 @@ package ru.aritmos.events.model;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
+import ru.aritmos.test.LoggingAssertions;
 import org.junit.jupiter.api.Test;
 
 class EventTest {
@@ -21,10 +21,10 @@ class EventTest {
                         .body("body")
                         .build();
 
-        Assertions.assertEquals("svc", event.getSenderService());
-        Assertions.assertEquals(date, event.getEventDate());
-        Assertions.assertEquals("TYPE", event.getEventType());
-        Assertions.assertEquals(params, event.getParams());
-        Assertions.assertEquals("body", event.getBody());
+        LoggingAssertions.assertEquals("svc", event.getSenderService());
+        LoggingAssertions.assertEquals(date, event.getEventDate());
+        LoggingAssertions.assertEquals("TYPE", event.getEventType());
+        LoggingAssertions.assertEquals(params, event.getParams());
+        LoggingAssertions.assertEquals("body", event.getBody());
     }
 }
