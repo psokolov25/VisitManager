@@ -35,7 +35,7 @@ class KafkaListenerTest {
         Field f = KafkaListener.class.getDeclaredField("serviceHandlers");
         f.setAccessible(true);
         Map<String, EventHandler> map = (Map<String, EventHandler>) f.get(null);
-        org.junit.jupiter.api.Assertions.assertSame(handler, map.get("t"));
+        ru.aritmos.test.LoggingAssertions.assertSame(handler, map.get("t"));
     }
 
     @Test
@@ -45,7 +45,7 @@ class KafkaListenerTest {
         Field f = KafkaListener.class.getDeclaredField("allHandlers");
         f.setAccessible(true);
         Map<String, EventHandler> map = (Map<String, EventHandler>) f.get(null);
-        org.junit.jupiter.api.Assertions.assertSame(handler, map.get("t"));
+        ru.aritmos.test.LoggingAssertions.assertSame(handler, map.get("t"));
     }
 
     @Test

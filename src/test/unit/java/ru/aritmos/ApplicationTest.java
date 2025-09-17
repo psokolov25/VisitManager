@@ -1,6 +1,6 @@
 package ru.aritmos;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static ru.aritmos.test.LoggingAssertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mockStatic;
 
 import io.micronaut.runtime.Micronaut;

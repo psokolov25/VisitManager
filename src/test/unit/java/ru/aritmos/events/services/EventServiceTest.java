@@ -26,7 +26,7 @@ class EventServiceTest {
     void getDateStringFormatsAsRfc1123() {
         ZonedDateTime date = ZonedDateTime.of(2008, 4, 9, 23, 55, 38, 0, ZoneId.of("GMT"));
         String formatted = eventService.getDateString(date);
-        org.junit.jupiter.api.Assertions.assertEquals("Wed, 09 Apr 2008 23:55:38 GMT", formatted);
+        ru.aritmos.test.LoggingAssertions.assertEquals("Wed, 09 Apr 2008 23:55:38 GMT", formatted);
     }
 
     @Test
@@ -44,11 +44,11 @@ class EventServiceTest {
         verify(dataBusClient)
                 .send(eq("dest"), eq(false), anyString(), eq(eventService.applicationName), typeCaptor.capture(), bodyCaptor.capture());
 
-        org.junit.jupiter.api.Assertions.assertEquals("ENTITY_CHANGED", typeCaptor.getValue());
+        ru.aritmos.test.LoggingAssertions.assertEquals("ENTITY_CHANGED", typeCaptor.getValue());
         ChangedObject changed = (ChangedObject) bodyCaptor.getValue();
-        org.junit.jupiter.api.Assertions.assertEquals("UPDATE", changed.getAction());
-        org.junit.jupiter.api.Assertions.assertEquals(newValue, changed.getNewValue());
-        org.junit.jupiter.api.Assertions.assertEquals(oldValue, changed.getOldValue());
+        ru.aritmos.test.LoggingAssertions.assertEquals("UPDATE", changed.getAction());
+        ru.aritmos.test.LoggingAssertions.assertEquals(newValue, changed.getNewValue());
+        ru.aritmos.test.LoggingAssertions.assertEquals(oldValue, changed.getOldValue());
     }
 
     @Test
@@ -64,7 +64,7 @@ class EventServiceTest {
 
         verify(dataBusClient)
                 .send(eq("dest"), eq(false), anyString(), eq("vm"), eq("PING"), any());
-        org.junit.jupiter.api.Assertions.assertEquals("vm", event.getSenderService());
+        ru.aritmos.test.LoggingAssertions.assertEquals("vm", event.getSenderService());
     }
 
     @Test
@@ -111,17 +111,17 @@ class EventServiceTest {
                         typeCaptor.capture(),
                         bodyCaptor.capture());
 
-        org.junit.jupiter.api.Assertions.assertEquals(destinations, destinationCaptor.getAllValues());
-        typeCaptor.getAllValues().forEach(type -> org.junit.jupiter.api.Assertions.assertEquals("ENTITY_CHANGED", type));
+        ru.aritmos.test.LoggingAssertions.assertEquals(destinations, destinationCaptor.getAllValues());
+        typeCaptor.getAllValues().forEach(type -> ru.aritmos.test.LoggingAssertions.assertEquals("ENTITY_CHANGED", type));
         bodyCaptor
                 .getAllValues()
                 .forEach(
                         body -> {
                             ChangedObject changed = (ChangedObject) body;
-                            org.junit.jupiter.api.Assertions.assertEquals("UPDATE", changed.getAction());
-                            org.junit.jupiter.api.Assertions.assertEquals(oldValue, changed.getOldValue());
-                            org.junit.jupiter.api.Assertions.assertEquals(newValue, changed.getNewValue());
-                            org.junit.jupiter.api.Assertions.assertEquals(String.class.getName(), changed.getClassName());
+                            ru.aritmos.test.LoggingAssertions.assertEquals("UPDATE", changed.getAction());
+                            ru.aritmos.test.LoggingAssertions.assertEquals(oldValue, changed.getOldValue());
+                            ru.aritmos.test.LoggingAssertions.assertEquals(newValue, changed.getNewValue());
+                            ru.aritmos.test.LoggingAssertions.assertEquals(String.class.getName(), changed.getClassName());
                         });
     }
 }

@@ -1,6 +1,6 @@
 package ru.aritmos.keycloack.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import io.micronaut.security.authentication.Authentication;

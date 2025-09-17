@@ -18,7 +18,7 @@ import ru.aritmos.service.Configuration;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 /** End-to-end test for creating and cancelling a visit. */
 @MicronautTest(environments = "integration")

@@ -1,6 +1,6 @@
 package ru.aritmos.model.keycloak;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.List;
 import java.util.Map;

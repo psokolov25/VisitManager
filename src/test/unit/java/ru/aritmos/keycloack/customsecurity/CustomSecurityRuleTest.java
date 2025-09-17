@@ -1,6 +1,6 @@
 package ru.aritmos.keycloack.customsecurity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.aritmos.test.LoggingAssertions.assertEquals;
 
 import io.micronaut.security.rules.SecurityRuleResult;
 import org.junit.jupiter.api.Test;

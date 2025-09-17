@@ -1,6 +1,6 @@
 package ru.aritmos.keycloack.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import io.micronaut.context.BeanContext;
 import io.micronaut.security.config.SecurityConfiguration;

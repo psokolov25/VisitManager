@@ -2,7 +2,7 @@ package ru.aritmos.model.keycloak;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 class ModuleRoleAccessTest {
 

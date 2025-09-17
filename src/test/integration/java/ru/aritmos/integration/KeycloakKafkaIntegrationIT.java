@@ -1,8 +1,8 @@
 package ru.aritmos.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static ru.aritmos.test.LoggingAssertions.assertEquals;
+import static ru.aritmos.test.LoggingAssertions.assertFalse;
+import static ru.aritmos.test.LoggingAssertions.assertTrue;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import java.net.URI;

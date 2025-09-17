@@ -1,6 +1,6 @@
 package ru.aritmos.docs;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;

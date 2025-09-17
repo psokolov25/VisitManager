@@ -1,6 +1,6 @@
 package ru.aritmos;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;

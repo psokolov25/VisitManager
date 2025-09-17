@@ -1,6 +1,6 @@
 package ru.aritmos.model.tiny;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
