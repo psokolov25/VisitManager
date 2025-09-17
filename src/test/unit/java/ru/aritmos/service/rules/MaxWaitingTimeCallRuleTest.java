@@ -3,11 +3,13 @@ package ru.aritmos.service.rules;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.lang.reflect.Method;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
@@ -17,12 +19,15 @@ import ru.aritmos.model.visit.Visit;
  */
 class MaxWaitingTimeCallRuleTest {
 
+    private static final DateTimeFormatter RFC_1123 =
+            DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+
     /** Проверяем корректный парсинг даты из строки. */
     @Test
     void parseDateFromString() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
         ZonedDateTime expected = ZonedDateTime.parse("2024-01-01T10:15:30+03:00[Europe/Moscow]");
-        String formatted = expected.format(java.time.format.DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", java.util.Locale.US));
+        String formatted = expected.format(RFC_1123);
 
         ZonedDateTime actual = rule.getDateNyString(formatted);
         assertEquals(expected, actual);
@@ -171,6 +176,254 @@ class MaxWaitingTimeCallRuleTest {
 
         assertTrue(result1 > 0);
         assertTrue(result2 < 0);
+    }
+
+    /** Проверяем выбор визита с максимальным временем ожидания без списка очередей. */
+    @Test
+    void callSelectsVisitWithLongestWaitingTime() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+
+        Branch branch = new Branch("b1", "branch");
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().add("q1");
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        Queue queue = new Queue("q1", "queue", "A", 1);
+        branch.getQueues().put(queue.getId(), queue);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User();
+        user.setId("user");
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        ZonedDateTime now = ZonedDateTime.now();
+        Visit shorter = Visit.builder()
+                .id("shorter")
+                .status("WAITING")
+                .createDateTime(now.minusSeconds(10))
+                .parameterMap(new HashMap<>())
+                .build();
+        Visit longer = Visit.builder()
+                .id("longer")
+                .status("WAITING")
+                .createDateTime(now.minusSeconds(120))
+                .parameterMap(new HashMap<>())
+                .build();
+        queue.getVisits().addAll(List.of(shorter, longer));
+
+        Optional<Visit> result = rule.call(branch, servicePoint);
+
+        assertTrue(result.isPresent());
+        assertEquals("longer", result.get().getId());
+    }
+
+    /** Проверяем очистку флагов переноса/возврата после выбора визита. */
+    @Test
+    void callResetsTransferFlagsOnSelectedVisit() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+
+        Branch branch = new Branch("b1", "branch");
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().add("q1");
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        Queue queue = new Queue("q1", "queue", "A", 1);
+        branch.getQueues().put(queue.getId(), queue);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User();
+        user.setId("user");
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        ZonedDateTime flagTime = ZonedDateTime.now().minusMinutes(5);
+        Visit visit = Visit.builder()
+                .id("flagged")
+                .status("WAITING")
+                .returnDateTime(flagTime)
+                .transferDateTime(flagTime)
+                .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
+                .parameterMap(new HashMap<>(Map.of("isTransferredToStart", RFC_1123.format(flagTime))))
+                .build();
+        queue.getVisits().add(visit);
+
+        Optional<Visit> result = rule.call(branch, servicePoint);
+
+        assertTrue(result.isPresent());
+        assertNull(result.get().getReturnDateTime());
+        assertNull(result.get().getTransferDateTime());
+        assertFalse(result.get().getParameterMap().containsKey("isTransferredToStart"));
+    }
+
+    /** Проверяем, что при отсутствии пользователя выбрасывается исключение. */
+    @Test
+    void callThrowsWhenNoUserAssigned() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+        rule.eventService = org.mockito.Mockito.mock(ru.aritmos.events.services.EventService.class);
+
+        Branch branch = new Branch("b1", "branch");
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+
+        io.micronaut.http.exceptions.HttpStatusException ex =
+                assertThrows(io.micronaut.http.exceptions.HttpStatusException.class, () -> rule.call(branch, servicePoint));
+        assertEquals(io.micronaut.http.HttpStatus.FORBIDDEN, ex.getStatus());
+        org.mockito.Mockito.verify(rule.eventService)
+                .send(org.mockito.Mockito.eq("*"), org.mockito.Mockito.eq(false), org.mockito.Mockito.any());
+    }
+
+    /** Проверяем, что метод пропускает очереди без доступных визитов. */
+    @Test
+    void callWithQueueIdsSkipsEmptyQueues() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+
+        Branch branch = new Branch("b1", "branch");
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().addAll(List.of("q1", "q2"));
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User("user", "user", null);
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        Queue emptyQueue = new Queue("q1", "queue1", "A", 1);
+        branch.getQueues().put(emptyQueue.getId(), emptyQueue);
+
+        Queue populatedQueue = new Queue("q2", "queue2", "A", 1);
+        Visit target = Visit.builder()
+                .id("target")
+                .status("WAITING")
+                .createDateTime(ZonedDateTime.now().minusMinutes(3))
+                .parameterMap(new HashMap<>())
+                .build();
+        populatedQueue.getVisits().add(target);
+        branch.getQueues().put(populatedQueue.getId(), populatedQueue);
+
+        Optional<Visit> result = rule.call(branch, servicePoint, List.of("q1", "q2"));
+
+        assertTrue(result.isPresent());
+        assertEquals("target", result.get().getId());
+    }
+
+    /** Проверяем, что визиты с непросроченным возвратом или переносом пропускаются. */
+    @Test
+    void callWithQueueIdsSkipsVisitsNotReadyForService() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+
+        Branch branch = new Branch("b1", "branch");
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().add("q1");
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User("user", "user", null);
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        Queue queue = new Queue("q1", "queue", "A", 1);
+        ZonedDateTime now = ZonedDateTime.now();
+        Visit returning = Visit.builder()
+                .id("returning")
+                .status("WAITING")
+                .returnDateTime(now.minusSeconds(5))
+                .returnTimeDelay(20L)
+                .parameterMap(new HashMap<>())
+                .build();
+        Visit transferring = Visit.builder()
+                .id("transferring")
+                .status("WAITING")
+                .transferDateTime(now.minusSeconds(5))
+                .transferTimeDelay(30L)
+                .parameterMap(new HashMap<>())
+                .build();
+        queue.getVisits().addAll(List.of(returning, transferring));
+        branch.getQueues().put(queue.getId(), queue);
+
+        Optional<Visit> result = rule.call(branch, servicePoint, List.of("q1"));
+
+        assertTrue(result.isEmpty());
+    }
+
+    /** Проверяем очистку признаков переноса при вызове из конкретных очередей. */
+    @Test
+    void callWithQueueIdsResetsTransferFlags() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+
+        Branch branch = new Branch("b1", "branch");
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().add("q1");
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User("user", "user", null);
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        Queue queue = new Queue("q1", "queue", "A", 1);
+        ZonedDateTime flagTime = ZonedDateTime.now().minusMinutes(2);
+        Visit visit = Visit.builder()
+                .id("flagged")
+                .status("WAITING")
+                .returnDateTime(flagTime)
+                .transferDateTime(flagTime)
+                .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
+                .parameterMap(new HashMap<>(Map.of("isTransferredToStart", RFC_1123.format(flagTime))))
+                .build();
+        queue.getVisits().add(visit);
+        branch.getQueues().put(queue.getId(), queue);
+
+        Optional<Visit> result = rule.call(branch, servicePoint, List.of("q1"));
+
+        assertTrue(result.isPresent());
+        assertNull(result.get().getReturnDateTime());
+        assertNull(result.get().getTransferDateTime());
+        assertFalse(result.get().getParameterMap().containsKey("isTransferredToStart"));
+    }
+
+    /** Проверяем приоритет самого раннего перенесённого визита. */
+    @Test
+    void callPrefersOldestTransferredVisit() {
+        MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
+
+        Branch branch = new Branch("b1", "branch");
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().add("q1");
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User("user", "user", null);
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        Queue queue = new Queue("q1", "queue", "A", 1);
+        ZonedDateTime now = ZonedDateTime.now();
+        Visit oldestTransferred = Visit.builder()
+                .id("oldest")
+                .status("WAITING")
+                .parameterMap(new HashMap<>(Map.of("isTransferredToStart", RFC_1123.format(now.minusMinutes(10)))))
+                .build();
+        Visit newestTransferred = Visit.builder()
+                .id("newest")
+                .status("WAITING")
+                .parameterMap(new HashMap<>(Map.of("isTransferredToStart", RFC_1123.format(now.minusMinutes(1)))))
+                .build();
+        Visit regular = Visit.builder()
+                .id("regular")
+                .status("WAITING")
+                .createDateTime(now.minusHours(1))
+                .parameterMap(new HashMap<>())
+                .build();
+        queue.getVisits().addAll(List.of(newestTransferred, regular, oldestTransferred));
+        branch.getQueues().put(queue.getId(), queue);
+
+        Optional<Visit> result = rule.call(branch, servicePoint);
+
+        assertTrue(result.isPresent());
+        assertEquals("oldest", result.get().getId());
+        assertFalse(result.get().getParameterMap().containsKey("isTransferredToStart"));
     }
 }
 
