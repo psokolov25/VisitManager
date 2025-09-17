@@ -110,6 +110,7 @@ class CurlCheatsheetGeneratorTest {
         }
     }
 
+
     /**
      * Проверяет, что генератор извлекает метод и URI из аннотации даже при многострочном описании
      * с параметром {@code uri} на отдельной строке.
@@ -190,5 +191,6 @@ class CurlCheatsheetGeneratorTest {
             Files.deleteIfExists(file);
         }
     }
+
 }
 
