@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-408%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-412%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-52.9%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-54.8%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -915,6 +915,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceCreateVisitFromReceptionTest — покрывает создание визита из приёмной и обработку ошибок входных параметров.
 - ru.aritmos.service.VisitServiceVisitAutoCallTest — покрывает `visitAutoCall`: выбор точки, подтверждение, сброс режима.
 - ru.aritmos.service.VisitServiceVisitCallTest — проверяет перевод визита из очереди, обработку ошибок и делегирование cherry-pick.
+- ru.aritmos.service.VisitServiceVisitEndTest — покрывает завершение визита: возврат в очередь при наличии услуг, финализацию, а также ошибки отсутствия точки и визита.
 - ru.aritmos.service.VisitServiceDeliveredServicesTest — проверяет получение завершённых услуг визита.
 - ru.aritmos.service.VisitServiceGetAllVisitsTest — проверяет получение всех визитов отделения.
 - ru.aritmos.service.VisitServiceGetMarksTest — тестирует получение оценок визита.
