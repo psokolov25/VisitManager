@@ -102,5 +102,62 @@ class VisitServiceAutoCallTest {
                 () -> service.setAutoCallModeOfServicePoint("b1", "missing", true));
         verify(eventService).send(eq("*"), eq(false), any());
     }
+
+    @Test
+    void servicePointAutoCallModeReturnsExistingWhenDisablingWithBranchModeOff() {
+        Branch branch = new Branch("b1", "Branch");
+        branch.getParameterMap().put("autoCallMode", "false");
+        ServicePoint servicePoint = new ServicePoint("sp1", "SP1");
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch("b1")).thenReturn(branch);
+
+        EventService eventService = mock(EventService.class);
+
+        VisitService service = new VisitService();
+        service.branchService = branchService;
+        service.eventService = eventService;
+
+        Optional<ServicePoint> result = service.setAutoCallModeOfServicePoint("b1", "sp1", false);
+
+        assertTrue(result.isPresent());
+        assertSame(servicePoint, result.get());
+        assertFalse(branch.getServicePoints().get("sp1").getAutoCallMode());
+        verify(branchService, never()).add(anyString(), any());
+        verifyNoInteractions(eventService);
+    }
+
+    @Test
+    void cancelAutoCallModeDisablesPointAndEmitsEvent() {
+        Branch branch = new Branch("b1", "Branch");
+        branch.getParameterMap().put("autoCallMode", "true");
+        ServicePoint servicePoint = new ServicePoint("sp1", "SP1");
+        servicePoint.setAutoCallMode(true);
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch("b1")).thenReturn(branch);
+
+        EventService eventService = mock(EventService.class);
+
+        VisitService service = new VisitService();
+        service.branchService = branchService;
+        service.eventService = eventService;
+
+        Optional<ServicePoint> result = service.cancelAutoCallModeOfServicePoint("b1", "sp1");
+
+        assertTrue(result.isPresent());
+        assertFalse(branch.getServicePoints().get("sp1").getAutoCallMode());
+        verify(branchService).add("b1", branch);
+
+        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        verify(eventService).send(eq("frontend"), eq(false), captor.capture());
+        Event published = captor.getValue();
+        assertEquals("SERVICEPOINT_AUTOCALL_MODE_TURN_ON", published.getEventType());
+        assertEquals("b1", published.getParams().get("branchId"));
+        assertEquals("sp1", published.getParams().get("servicePointId"));
+        assertSame(servicePoint, published.getBody());
+    }
 }
 
