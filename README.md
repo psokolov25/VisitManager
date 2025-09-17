@@ -5,6 +5,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
+
 [![Tests](https://img.shields.io/badge/tests-435%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-63.5%25-orange)](#-тестирование)
@@ -794,7 +795,9 @@ class HttpExample {
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
+
 Команда ниже выполняет 435 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 63,5%.
+
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
@@ -915,6 +918,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceCreateVisitFromReceptionTest — покрывает создание визита из приёмной и обработку ошибок входных параметров.
 - ru.aritmos.service.VisitServiceCreateVisit2FromReceptionTest — проверяет создание визита через приёмную с сегментацией: выдачу талона, печать билета и ошибки при отсутствии очереди.
 - ru.aritmos.service.VisitServiceCreateVisit2FromReceptionLegacyTest — покрывает создание визита из приёмной без явного идентификатора правила сегментации: печать талона, виртуальные визиты и реакции на отсутствие очереди.
+
 - ru.aritmos.service.VisitServiceCreateVisit2WithSegmentationRuleTest — проверяет создание визита через терминал с явным правилом сегментации: выдачу талона, печать билета, отказ при пустой очереди и ошибку отсутствия точки входа.
 - ru.aritmos.service.VisitServiceVisitAutoCallTest — покрывает `visitAutoCall`: выбор точки, подтверждение, сброс режима.
 - ru.aritmos.service.VisitServiceVisitCallTest — проверяет перевод визита из очереди, обработку ошибок и делегирование cherry-pick.
