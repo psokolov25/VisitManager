@@ -4,12 +4,15 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Map;
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
+import ru.aritmos.events.model.EventHandler;
 import ru.aritmos.events.services.EventService;
+import ru.aritmos.events.services.KafkaListener;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
@@ -118,5 +121,80 @@ class EventHandlerContextTest {
         verify(branchService)
                 .closeServicePoint("b1", "sp1", visitService, false, false, "", true, "USER_SESSION_KILLED");
         verifyNoInteractions(eventService);
+    }
+
+    /**
+     * Проверяет, что метод {@link EventHandlerContext#AddHandlers()} регистрирует все типы событий
+     * и публикует демонстрационную конфигурацию отделений.
+     */
+    @Test
+    void addHandlersRegistersAllListenersAndPublishesDemoConfiguration() throws Exception {
+        Field allHandlersField = KafkaListener.class.getDeclaredField("allHandlers");
+        Field serviceHandlersField = KafkaListener.class.getDeclaredField("serviceHandlers");
+        allHandlersField.setAccessible(true);
+        serviceHandlersField.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        Map<String, EventHandler> originalAllHandlers = new HashMap<>((Map<String, EventHandler>) allHandlersField.get(null));
+        @SuppressWarnings("unchecked")
+        Map<String, EventHandler> originalServiceHandlers =
+                new HashMap<>((Map<String, EventHandler>) serviceHandlersField.get(null));
+
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, EventHandler> allHandlers = (Map<String, EventHandler>) allHandlersField.get(null);
+            @SuppressWarnings("unchecked")
+            Map<String, EventHandler> serviceHandlers =
+                    (Map<String, EventHandler>) serviceHandlersField.get(null);
+            allHandlers.clear();
+            serviceHandlers.clear();
+
+            Configuration configuration = mock(Configuration.class);
+            VisitService visitService = mock(VisitService.class);
+            EventService eventService = mock(EventService.class);
+            BranchService branchService = mock(BranchService.class);
+
+            EventHandlerContext context = new EventHandlerContext();
+            context.configuration = configuration;
+            context.visitService = visitService;
+            context.eventService = eventService;
+            context.branchService = branchService;
+
+            Map<String, Branch> demoBranches = Map.of("demo", new Branch("demo", "Demo"));
+            when(configuration.createDemoBranch()).thenReturn(demoBranches);
+
+            context.AddHandlers();
+
+            assertTrue(allHandlers.containsKey("BUSINESS_ERROR"));
+            assertTrue(allHandlers.get("BUSINESS_ERROR") instanceof EventHandlerContext.BusinesErrorHandler);
+            assertTrue(allHandlers.containsKey("SYSTEM_ERROR"));
+            assertTrue(allHandlers.get("SYSTEM_ERROR") instanceof EventHandlerContext.SystemErrorHandler);
+            assertTrue(allHandlers.containsKey("ENTITY_CHANGED"));
+            assertTrue(allHandlers.get("ENTITY_CHANGED") instanceof EventHandlerContext.EntityChangedHandler);
+
+            assertTrue(serviceHandlers.containsKey("ENTITY_CHANGED"));
+            assertTrue(serviceHandlers.get("ENTITY_CHANGED") instanceof EventHandlerContext.EntityChangedHandler);
+            assertTrue(serviceHandlers.containsKey("BRANCH_PUBLIC"));
+            assertTrue(serviceHandlers.get("BRANCH_PUBLIC") instanceof EventHandlerContext.BranchPublicHandler);
+            assertTrue(serviceHandlers.containsKey("PROCESSING_USER_LOGOUT_FORCE"));
+            assertTrue(serviceHandlers.get("PROCESSING_USER_LOGOUT_FORCE")
+                    instanceof EventHandlerContext.ForceUserLogoutHandler);
+            assertTrue(serviceHandlers.containsKey("PROCESSING_USER_LOGOUT_NOT_FORCE"));
+            assertTrue(serviceHandlers.get("PROCESSING_USER_LOGOUT_NOT_FORCE")
+                    instanceof EventHandlerContext.NotForceUserLogoutHandler);
+
+            verify(configuration).createDemoBranch();
+            verify(configuration).createBranchConfiguration(demoBranches);
+        } finally {
+            @SuppressWarnings("unchecked")
+            Map<String, EventHandler> allHandlers = (Map<String, EventHandler>) allHandlersField.get(null);
+            @SuppressWarnings("unchecked")
+            Map<String, EventHandler> serviceHandlers =
+                    (Map<String, EventHandler>) serviceHandlersField.get(null);
+            allHandlers.clear();
+            allHandlers.putAll(originalAllHandlers);
+            serviceHandlers.clear();
+            serviceHandlers.putAll(originalServiceHandlers);
+        }
     }
 }
