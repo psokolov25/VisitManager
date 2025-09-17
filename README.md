@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-425%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-428%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-59.4%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-60.8%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -794,7 +794,7 @@ class HttpExample {
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
-Команда ниже выполняет 425 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 59,4%.
+Команда ниже выполняет 428 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 60,8%.
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
@@ -913,6 +913,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceCreateVisitTest — проверяет делегирование и проверки входных данных при создании визита.
 - ru.aritmos.service.VisitServiceCreateVirtualVisit2Test — покрывает оформление виртуального визита оператором, заполнение событий и обработку отсутствующих очередей.
 - ru.aritmos.service.VisitServiceCreateVisitFromReceptionTest — покрывает создание визита из приёмной и обработку ошибок входных параметров.
+- ru.aritmos.service.VisitServiceCreateVisit2FromReceptionTest — проверяет создание визита через приёмную с сегментацией: выдачу талона, печать билета и ошибки при отсутствии очереди.
 - ru.aritmos.service.VisitServiceVisitAutoCallTest — покрывает `visitAutoCall`: выбор точки, подтверждение, сброс режима.
 - ru.aritmos.service.VisitServiceVisitCallTest — проверяет перевод визита из очереди, обработку ошибок и делегирование cherry-pick.
 - ru.aritmos.service.VisitServiceVisitEndTest — покрывает завершение визита: возврат в очередь при наличии услуг, финализацию, а также ошибки отсутствия точки и визита.
