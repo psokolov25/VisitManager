@@ -291,4 +291,157 @@ class MaxLifeTimeCallRuleTest {
         assertEquals(1, result.size());
         assertEquals("sp1", result.get(0).getId());
     }
+
+    /** Проверяем выбор визита при различном времени возвращения. */
+    @Test
+    void selectsVisitWithLongestReturningTime() {
+        LOG.info("Шаг 1: подготавливаем отделение и рабочий профиль");
+        Branch branch = new Branch("b1", "branch");
+        Queue queue = new Queue("q1", "queue", "A", 1);
+        branch.getQueues().put(queue.getId(), queue);
+
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().add(queue.getId());
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User();
+        user.setId("user");
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        LOG.info("Шаг 2: создаём визиты с разным временем возврата");
+        ZonedDateTime now = ZonedDateTime.now();
+        Visit longReturn = Visit.builder()
+                .id("longReturn")
+                .status("WAITING")
+                .returnDateTime(now.minusSeconds(180))
+                .createDateTime(now.minusSeconds(220))
+                .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
+                .parameterMap(new HashMap<>())
+                .build();
+        Visit shortReturn = Visit.builder()
+                .id("shortReturn")
+                .status("WAITING")
+                .returnDateTime(now.minusSeconds(30))
+                .createDateTime(now.minusSeconds(400))
+                .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
+                .parameterMap(new HashMap<>())
+                .build();
+        queue.getVisits().addAll(List.of(shortReturn, longReturn));
+
+        LOG.info("Шаг 3: убеждаемся, что выбран визит с большей задержкой возвращения");
+        MaxLifeTimeCallRule rule = new MaxLifeTimeCallRule();
+        Visit result = rule.call(branch, servicePoint).orElseThrow();
+        assertEquals("longReturn", result.getId());
+    }
+
+    /** Проверяем, что визиты с ненабранной задержкой перевода пропускаются при вызове по списку очередей. */
+    @Test
+    void callWithQueueIdsSkipsVisitsWhenTransferDelayNotReached() {
+        LOG.info("Шаг 1: подготавливаем очередь и профиль");
+        Branch branch = new Branch("b1", "branch");
+        Queue queue = new Queue("q1", "queue", "A", 1);
+        branch.getQueues().put(queue.getId(), queue);
+
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().add(queue.getId());
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User();
+        user.setId("user");
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        LOG.info("Шаг 2: добавляем визит с высокой задержкой перевода");
+        Visit notReady = Visit.builder()
+                .id("notReady")
+                .status("WAITING")
+                .transferDateTime(ZonedDateTime.now())
+                .transferTimeDelay(300L)
+                .returnTimeDelay(0L)
+                .parameterMap(new HashMap<>())
+                .build();
+        queue.getVisits().add(notReady);
+
+        LOG.info("Шаг 3: убеждаемся, что визит не выбирается");
+        MaxLifeTimeCallRule rule = new MaxLifeTimeCallRule();
+        Optional<Visit> result = rule.call(branch, servicePoint, List.of(queue.getId()));
+        assertTrue(result.isEmpty());
+    }
+
+    /** Проверяем обход списка очередей с выбором визита из следующей подходящей очереди. */
+    @Test
+    void callWithQueueIdsSelectsFromNextEligibleQueue() {
+        LOG.info("Шаг 1: формируем две очереди, первая содержит неподходящий визит");
+        Branch branch = new Branch("b1", "branch");
+        Queue queue1 = new Queue("q1", "queue1", "A", 1);
+        Queue queue2 = new Queue("q2", "queue2", "B", 1);
+        branch.getQueues().put(queue1.getId(), queue1);
+        branch.getQueues().put(queue2.getId(), queue2);
+
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().addAll(List.of(queue1.getId(), queue2.getId()));
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        ServicePoint servicePoint = new ServicePoint("sp1", "sp1");
+        User user = new User();
+        user.setId("user");
+        user.setCurrentWorkProfileId(profile.getId());
+        servicePoint.setUser(user);
+
+        Visit ready = Visit.builder()
+                .id("ready")
+                .status("WAITING")
+                .createDateTime(ZonedDateTime.now().minusSeconds(45))
+                .parameterMap(new HashMap<>())
+                .returnTimeDelay(0L)
+                .transferTimeDelay(0L)
+                .build();
+        queue2.getVisits().add(ready);
+
+        LOG.info("Шаг 2: вызываем правило и ожидаем визит из второй очереди");
+        MaxLifeTimeCallRule rule = new MaxLifeTimeCallRule();
+        Visit result = rule.call(branch, servicePoint, List.of(queue1.getId(), queue2.getId())).orElseThrow();
+        assertEquals("ready", result.getId());
+    }
+
+    /** Проверяем, что точки обслуживания без пользователя исключаются из результата. */
+    @Test
+    void availableServicePointsSkipWindowsWithoutUsers() {
+        LOG.info("Шаг 1: подготавливаем отделение и рабочие профили");
+        Branch branch = new Branch("b1", "branch");
+        WorkProfile profile = new WorkProfile("wp1", "wp1");
+        profile.getQueueIds().add("q1");
+        branch.getWorkProfiles().put(profile.getId(), profile);
+
+        ServicePoint suitable = new ServicePoint("sp-good", "sp-good");
+        User user = new User();
+        user.setId("u1");
+        user.setCurrentWorkProfileId(profile.getId());
+        suitable.setUser(user);
+        branch.getServicePoints().put(suitable.getId(), suitable);
+
+        ServicePoint withoutUser = new ServicePoint("sp-empty", "sp-empty");
+        branch.getServicePoints().put(withoutUser.getId(), withoutUser);
+
+        ServicePoint wrongProfile = new ServicePoint("sp-wrong", "sp-wrong");
+        User other = new User();
+        other.setId("u2");
+        other.setCurrentWorkProfileId("other");
+        wrongProfile.setUser(other);
+        branch.getServicePoints().put(wrongProfile.getId(), wrongProfile);
+
+        Service service = new Service("s1", "service", 60, "q1");
+        Visit visit = Visit.builder().currentService(service).parameterMap(new HashMap<>()).build();
+
+        LOG.info("Шаг 2: убеждаемся, что возвращается только подходящая точка");
+        MaxLifeTimeCallRule rule = new MaxLifeTimeCallRule();
+        List<ServicePoint> result = rule.getAvailiableServicePoints(branch, visit);
+        assertEquals(1, result.size());
+        assertEquals("sp-good", result.get(0).getId());
+    }
 }
