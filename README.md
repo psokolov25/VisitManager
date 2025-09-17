@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-412%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-420%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-54.8%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-57.8%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -794,7 +794,7 @@ class HttpExample {
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
-Команда ниже выполняет 390 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 47,0%.
+Команда ниже выполняет 420 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 57,8%.
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
@@ -924,6 +924,11 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceMarkModificationTest — проверяет изменение оценки визита.
 - ru.aritmos.service.VisitServiceNoteTest — проверяет добавление заметок к визиту.
 - ru.aritmos.service.VisitServiceOutcomeTest — тестирует установку исхода визита.
+- ru.aritmos.service.VisitServiceTransferToServicePointPoolTest — покрывает оба варианта
+  `visitTransferToServicePointPool` (без `serviceInfo` и с внешней службой), проверяя сброс
+  статуса обслуживания, очистку параметров визита, публикацию событий STOP_SERVING и
+  TRANSFER_TO_SERVICE_POINT_POOL, планирование отложенного уведомления и ошибки при
+  отсутствии точки обслуживания или визита.
 - ru.aritmos.service.VisitServiceTest — охватывает базовые операции `VisitService`.
 
 #### Правила вызова
