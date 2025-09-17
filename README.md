@@ -5,7 +5,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-367%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-351%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-43.8%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
@@ -794,10 +794,13 @@ class HttpExample {
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
-Всего модульных и интеграционных тестов: 367 (`mvn test`). Линейное покрытие по JaCoCo — 43,8%.
+Команда ниже выполняет 351 модульный тест и формирует отчёт JaCoCo с линейным покрытием 43,8%.
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
+
+Для запуска 11 интеграционных сценариев используйте профили Failsafe: `mvn -s .mvn/settings.xml -Pit-resources verify`
+(Micronaut Test Resources) или `mvn -s .mvn/settings.xml -Pit-external verify` (подключение к реальным сервисам).
 
 ### Модульные тесты
 
@@ -820,6 +823,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 #### Заглушки и утилиты
 - ru.aritmos.config.LocalNoDockerDataBusClientStubTest — убеждается в работе заглушки DataBus для режима без Docker.
 - ru.aritmos.config.LocalNoDockerKeycloakStubTest — проверяет, что заглушка клиента Keycloak возвращает фиктивные данные.
+- ru.aritmos.DataBusClientMockTest — проверяет, что Micronaut Test Resources подменяет DataBusClient предсказуемым ответом.
 - ru.aritmos.docs.CurlCheatsheetGeneratorTest — генерирует подсказку по `curl`, проверяя создание документа из OpenAPI‑описания.
 
 #### Внешние клиенты
@@ -928,7 +932,6 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 
 Интеграционные сценарии поднимают полный контекст приложения и взаимодействуют с внешними сервисами (Kafka, Keycloak, DataBus) через Testcontainers и встроенный HTTP‑клиент.
 
-- ru.aritmos.DataBusClientMockTest — проверяет заглушку клиента DataBus, обеспечивая совместимость событий.
 - ru.aritmos.ExternalServicesIT — убеждается в доступности внешних сервисов и корректных настройках окружения.
 - ru.aritmos.api.ConfigurationControllerE2EIT — сквозной тест получения конфигурации через HTTP‑запрос.
 - ru.aritmos.api.EntrypointControllerE2EIT — сквозной сценарий создания визита.
@@ -941,7 +944,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.integration.KeycloakKafkaIntegrationIT — запускает Keycloak и Kafka через Testcontainers и проверяет их взаимодействие.
 - ru.aritmos.service.rules.MaxWaitingTimeCallRuleIT — интеграционно проверяет выбор визита с максимальным ожиданием.
 
-Все тесты выполняются локально; при необходимости интеграций поднимите зависимые сервисы в Docker.
+Профиль `it-resources` поднимает тестовые контейнеры автоматически, а `it-external` ожидает заранее развернутые сервисы в Docker.
 
 
 ## 🌐 Переменные окружения
