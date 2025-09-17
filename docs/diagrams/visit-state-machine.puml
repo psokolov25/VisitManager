@@ -11,53 +11,55 @@ state "Ожидает сотрудника\n(WAITING_IN_USER_POOL)" as WaitingUs
 state "Ожидает точку обслуживания\n(WAITING_IN_SERVICE_POOL)" as WaitingService
 state "Завершён\n(END)" as End
 
-[*] --> Created : CREATED
-Created --> WaitingQueue : PLACED_IN_QUEUE
-Created --> Called : CALLED / RECALLED
 
-WaitingQueue --> Called : CALLED / RECALLED
-WaitingQueue --> WaitingUser : TRANSFER_TO_USER_POOL
-WaitingQueue --> WaitingService : TRANSFER_TO_SERVICE_POINT_POOL
-WaitingQueue --> End : NO_SHOW / END / DELETED
+[*] --> Created : Создание визита (CREATED)
+Created --> WaitingQueue : Постановка в очередь (PLACED_IN_QUEUE)
+Created --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
 
-Called --> Serving : START_SERVING
-Called --> WaitingQueue : BACK_TO_QUEUE / TRANSFER_TO_QUEUE
-Called --> WaitingUser : TRANSFER_TO_USER_POOL / BACK_TO_USER_POOL
-Called --> WaitingService : TRANSFER_TO_SERVICE_POINT_POOL / BACK_TO_SERVICE_POINT_POOL
-Called --> End : NO_SHOW / END / DELETED
+WaitingQueue --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+WaitingQueue --> WaitingUser : Перевод в пул сотрудников (TRANSFER_TO_USER_POOL)
+WaitingQueue --> WaitingService : Перевод в пул точек обслуживания (TRANSFER_TO_SERVICE_POINT_POOL)
+WaitingQueue --> End : Неявка (NO_SHOW)\n/ Завершение визита (END)\n/ Удаление визита (DELETED)
 
-Serving --> Called : CALLED / RECALLED
-Serving --> WaitingQueue : TRANSFER_TO_QUEUE
-Serving --> WaitingUser : TRANSFER_TO_USER_POOL
-Serving --> WaitingService : TRANSFER_TO_SERVICE_POINT_POOL
-Serving --> End : END / DELETED
+Called --> Serving : Начало обслуживания (START_SERVING)
+Called --> WaitingQueue : Возврат в очередь (BACK_TO_QUEUE)\n/ Перевод в очередь (TRANSFER_TO_QUEUE)
+Called --> WaitingUser : Перевод в пул сотрудников (TRANSFER_TO_USER_POOL)\n/ Возврат в пул сотрудников (BACK_TO_USER_POOL)
+Called --> WaitingService : Перевод в пул точек обслуживания (TRANSFER_TO_SERVICE_POINT_POOL)\n/ Возврат в пул точек обслуживания (BACK_TO_SERVICE_POINT_POOL)
+Called --> End : Неявка (NO_SHOW)\n/ Завершение визита (END)\n/ Удаление визита (DELETED)
 
-WaitingUser --> Called : CALLED / RECALLED
-WaitingUser --> WaitingService : TRANSFER_TO_SERVICE_POINT_POOL / BACK_TO_SERVICE_POINT_POOL
-WaitingUser --> End : END / DELETED
+Serving --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+Serving --> WaitingQueue : Перевод в очередь (TRANSFER_TO_QUEUE)
+Serving --> WaitingUser : Перевод в пул сотрудников (TRANSFER_TO_USER_POOL)
+Serving --> WaitingService : Перевод в пул точек обслуживания (TRANSFER_TO_SERVICE_POINT_POOL)
+Serving --> End : Завершение визита (END)\n/ Удаление визита (DELETED)
 
-WaitingService --> Called : CALLED / RECALLED
-WaitingService --> WaitingUser : TRANSFER_TO_USER_POOL / BACK_TO_USER_POOL
-WaitingService --> End : END / DELETED
+WaitingUser --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+WaitingUser --> WaitingService : Перевод в пул точек обслуживания (TRANSFER_TO_SERVICE_POINT_POOL)\n/ Возврат в пул точек обслуживания (BACK_TO_SERVICE_POINT_POOL)
+WaitingUser --> End : Завершение визита (END)\n/ Удаление визита (DELETED)
+
+WaitingService --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+WaitingService --> WaitingUser : Перевод в пул сотрудников (TRANSFER_TO_USER_POOL)\n/ Возврат в пул сотрудников (BACK_TO_USER_POOL)
+WaitingService --> End : Завершение визита (END)\n/ Удаление визита (DELETED)
 
 note right of Serving
   События без смены состояния:
-  * ADD_SERVICE
-  * ADDED_DELIVERED_SERVICE
-  * ADDED_DELIVERED_SERVICE_RESULT
-  * ADDED_SERVICE_RESULT
-  * ADDED_MARK
-  * ADDED_NOTE
-  * DELETED_MARK
-  * DELETED_DELIVERED_SERVICE
-  * DELETED_DELIVERED_SERVICE_RESULT
-  * DELETED_SERVICE_RESULT
-  * STOP_SERVING
+  * Добавление услуги (ADD_SERVICE)
+  * Добавление выполненной услуги (ADDED_DELIVERED_SERVICE)
+  * Добавление результата выполненной услуги (ADDED_DELIVERED_SERVICE_RESULT)
+  * Добавление результата услуги (ADDED_SERVICE_RESULT)
+  * Добавление отметки (ADDED_MARK)
+  * Добавление заметки (ADDED_NOTE)
+  * Удаление отметки (DELETED_MARK)
+  * Удаление выполненной услуги (DELETED_DELIVERED_SERVICE)
+  * Удаление результата выполненной услуги (DELETED_DELIVERED_SERVICE_RESULT)
+  * Удаление результата услуги (DELETED_SERVICE_RESULT)
+  * Остановка обслуживания (STOP_SERVING)
 end note
 
 note bottom of End
-  Также фиксируются системные события VISIT_END_TRANSACTION
-  и VISIT_TRANSFER_FROM_QUEUE без изменения состояния визита.
+  Также фиксируются системные события фиксации окончания визита
+  (VISIT_END_TRANSACTION) и переноса визита из очереди
+  (VISIT_TRANSFER_FROM_QUEUE) без изменения состояния визита.
 end note
 
 End --> [*]
