@@ -17,31 +17,49 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.KafkaContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 /**
  * Интеграционный тест, использующий реальные Keycloak и Kafka.
  */
-@Testcontainers
 class KeycloakKafkaIntegrationIT {
 
-    @Container
-    static final KeycloakContainer keycloak =
-        new KeycloakContainer("quay.io/keycloak/keycloak:22.0.1")
-            .withAdminUsername("admin")
-            .withAdminPassword("admin");
+    private static KeycloakContainer keycloak;
+    private static KafkaContainer kafka;
 
-    @Container
-    static final KafkaContainer kafka =
-        new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.5.0"));
+    @BeforeAll
+    static void setUp() {
+        Assumptions.assumeTrue(isDockerAvailable(), "Docker is required for this test");
+
+        keycloak =
+            new KeycloakContainer("quay.io/keycloak/keycloak:22.0.1")
+                .withAdminUsername("admin")
+                .withAdminPassword("admin");
+        keycloak.start();
+
+        kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.5.0"));
+        kafka.start();
+    }
+
+    @AfterAll
+    static void tearDown() {
+        if (keycloak != null) {
+            keycloak.stop();
+        }
+        if (kafka != null) {
+            kafka.stop();
+        }
+    }
 
     @Test
     void keycloakAndKafkaAreAccessible() throws Exception {
-        assertTrue(keycloak.isRunning(), "Keycloak должен быть запущен");
+        assertTrue(keycloak != null && keycloak.isRunning(), "Keycloak должен быть запущен");
         HttpResponse<String> response =
             HttpClient.newHttpClient().send(
                 HttpRequest.newBuilder(URI.create(keycloak.getAuthServerUrl()))
@@ -78,6 +96,14 @@ class KeycloakKafkaIntegrationIT {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(5));
             assertFalse(records.isEmpty(), "Kafka должен вернуть записанное сообщение");
             assertEquals("v", records.iterator().next().value());
+        }
+    }
+
+    private static boolean isDockerAvailable() {
+        try {
+            return DockerClientFactory.instance().isDockerAvailable();
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 }
