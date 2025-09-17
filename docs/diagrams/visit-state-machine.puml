@@ -1,29 +1,65 @@
 @startuml
 !include style.puml
 
-title Состояния жизненного цикла визита
+title Жизненный цикл визита и связанные события
 
-state "Создан\n(DRAFT)" as Draft
-state "Ожидает обслуживания\n(WAITING)" as Waiting
+state "Создан\n(CREATED)" as Created
+state "В очереди ожидания\n(WAITING_IN_QUEUE)" as WaitingQueue
 state "Вызван\n(CALLED)" as Called
 state "Обслуживается\n(SERVING)" as Serving
-state "Отложен\n(PENDING)" as Paused
-state "Завершён\n(COMPLETED)" as Completed
-state "Отменён\n(CANCELLED)" as Cancelled
-state "Неявка\n(NO_SHOW)" as NoShow
-state "Архивирован\n(ARCHIVED)" as Archived
+state "Ожидает сотрудника\n(WAITING_IN_USER_POOL)" as WaitingUser
+state "Ожидает точку обслуживания\n(WAITING_IN_SERVICE_POOL)" as WaitingService
+state "Завершён\n(END)" as End
 
-[*] --> Draft : регистрация визита
-Draft --> Waiting : подтверждение очереди
-Waiting --> Called : оператор вызывает клиента
-Called --> Serving : клиент подтвердил вызов
-Serving --> Completed : оператор завершил обслуживание
-Waiting --> Cancelled : клиент или оператор отменил
-Called --> NoShow : истёк таймаут ожидания
-Called --> Waiting : возвращён в очередь
-Serving --> Paused : обслуживание поставлено на паузу
-Paused --> Waiting : возобновление обслуживания
-Completed --> Archived : завершение жизненного цикла
-Cancelled --> Archived : визит закрыт без обслуживания
-NoShow --> Archived : визит закрыт по таймауту
+[*] --> Created : Создание визита (CREATED)
+Created --> WaitingQueue : Постановка в очередь (PLACED_IN_QUEUE)
+Created --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+
+WaitingQueue --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+WaitingQueue --> WaitingUser : Перевод в пул сотрудников (TRANSFER_TO_USER_POOL)
+WaitingQueue --> WaitingService : Перевод в пул точек обслуживания (TRANSFER_TO_SERVICE_POINT_POOL)
+WaitingQueue --> End : Неявка (NO_SHOW)\n/ Завершение визита (END)\n/ Удаление визита (DELETED)
+
+Called --> Serving : Начало обслуживания (START_SERVING)
+Called --> WaitingQueue : Возврат в очередь (BACK_TO_QUEUE)\n/ Перевод в очередь (TRANSFER_TO_QUEUE)
+Called --> WaitingUser : Перевод в пул сотрудников (TRANSFER_TO_USER_POOL)\n/ Возврат в пул сотрудников (BACK_TO_USER_POOL)
+Called --> WaitingService : Перевод в пул точек обслуживания (TRANSFER_TO_SERVICE_POINT_POOL)\n/ Возврат в пул точек обслуживания (BACK_TO_SERVICE_POINT_POOL)
+Called --> End : Неявка (NO_SHOW)\n/ Завершение визита (END)\n/ Удаление визита (DELETED)
+
+Serving --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+Serving --> WaitingQueue : Перевод в очередь (TRANSFER_TO_QUEUE)
+Serving --> WaitingUser : Перевод в пул сотрудников (TRANSFER_TO_USER_POOL)
+Serving --> WaitingService : Перевод в пул точек обслуживания (TRANSFER_TO_SERVICE_POINT_POOL)
+Serving --> End : Завершение визита (END)\n/ Удаление визита (DELETED)
+
+WaitingUser --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+WaitingUser --> WaitingService : Перевод в пул точек обслуживания (TRANSFER_TO_SERVICE_POINT_POOL)\n/ Возврат в пул точек обслуживания (BACK_TO_SERVICE_POINT_POOL)
+WaitingUser --> End : Завершение визита (END)\n/ Удаление визита (DELETED)
+
+WaitingService --> Called : Вызов (CALLED)\n/ Повторный вызов (RECALLED)
+WaitingService --> WaitingUser : Перевод в пул сотрудников (TRANSFER_TO_USER_POOL)\n/ Возврат в пул сотрудников (BACK_TO_USER_POOL)
+WaitingService --> End : Завершение визита (END)\n/ Удаление визита (DELETED)
+
+note right of Serving
+  События без смены состояния:
+  * Добавление услуги (ADD_SERVICE)
+  * Добавление выполненной услуги (ADDED_DELIVERED_SERVICE)
+  * Добавление результата выполненной услуги (ADDED_DELIVERED_SERVICE_RESULT)
+  * Добавление результата услуги (ADDED_SERVICE_RESULT)
+  * Добавление отметки (ADDED_MARK)
+  * Добавление заметки (ADDED_NOTE)
+  * Удаление отметки (DELETED_MARK)
+  * Удаление выполненной услуги (DELETED_DELIVERED_SERVICE)
+  * Удаление результата выполненной услуги (DELETED_DELIVERED_SERVICE_RESULT)
+  * Удаление результата услуги (DELETED_SERVICE_RESULT)
+  * Остановка обслуживания (STOP_SERVING)
+end note
+
+note bottom of End
+  Также фиксируются системные события фиксации окончания визита
+  (VISIT_END_TRANSACTION) и переноса визита из очереди
+  (VISIT_TRANSFER_FROM_QUEUE) без изменения состояния визита.
+end note
+
+End --> [*]
 @enduml
