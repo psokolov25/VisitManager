@@ -794,7 +794,7 @@ class HttpExample {
 Подробности сценариев см. в [docs/use-cases.md](docs/use-cases.md).
 
 ## 🧪 Тестирование
-Команда ниже выполняет 368 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 47,0%.
+Команда ниже выполняет 390 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 47,0%.
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
@@ -910,6 +910,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceAddEventTest — тестирует добавление события визита.
 - ru.aritmos.service.VisitServiceAddServiceTest — проверяет добавление услуги в визит.
 - ru.aritmos.service.VisitServiceAutoCallTest — проверяет автоматический вызов визита.
+- ru.aritmos.service.VisitServiceVisitAutoCallTest — покрывает `visitAutoCall`: выбор точки, подтверждение, сброс режима.
 - ru.aritmos.service.VisitServiceDeliveredServicesTest — проверяет получение завершённых услуг визита.
 - ru.aritmos.service.VisitServiceGetAllVisitsTest — проверяет получение всех визитов отделения.
 - ru.aritmos.service.VisitServiceGetMarksTest — тестирует получение оценок визита.
