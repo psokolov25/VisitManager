@@ -40,6 +40,10 @@ micronaut:
         access:
           - isAnonymous()
 
+      - pattern: /management/**
+        access:
+          - isAnonymous()
+
     oauth2:
       clients:
         keycloak:
