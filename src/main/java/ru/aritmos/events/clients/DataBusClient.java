@@ -1,5 +1,6 @@
 package ru.aritmos.events.clients;
 
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.async.annotation.SingleResult;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Header;
@@ -17,6 +18,7 @@ import org.reactivestreams.Publisher;
 /**
  * HTTP‑клиент для отправки событий на DataBus.
  */
+@Requires(notEnv = "local-no-docker")
 @Client(value = "${micronaut.application.dataBusUrl}")
 public interface DataBusClient {
   /**

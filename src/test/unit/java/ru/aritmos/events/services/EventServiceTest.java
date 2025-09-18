@@ -1,26 +1,21 @@
 package ru.aritmos.events.services;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import reactor.core.publisher.Mono;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import ru.aritmos.events.clients.DataBusClient;
 import ru.aritmos.events.model.ChangedObject;
 import ru.aritmos.events.model.Event;
+import ru.aritmos.config.LocalNoDockerDataBusClientStub;
 
 @MicronautTest
 class EventServiceTest {
 
     @Inject EventService eventService;
-    @Inject DataBusClient dataBusClient;
+    @Inject LocalNoDockerDataBusClientStub dataBusClient;
 
     @Test
     void getDateStringFormatsAsRfc1123() {
@@ -31,21 +26,21 @@ class EventServiceTest {
 
     @Test
     void sendChangedEventBuildsEntityChangedEvent() {
-        clearInvocations(dataBusClient);
+        dataBusClient.clearInvocations();
         Map<String, String> params = Map.of("id", "42");
         Map<String, String> oldValue = Map.of("field", "old");
         Map<String, String> newValue = Map.of("field", "new");
 
         eventService.sendChangedEvent("dest", false, oldValue, newValue, params, "UPDATE");
 
-        ArgumentCaptor<String> typeCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Object> bodyCaptor = ArgumentCaptor.forClass(Object.class);
-
-        verify(dataBusClient)
-                .send(eq("dest"), eq(false), anyString(), eq(eventService.applicationName), typeCaptor.capture(), bodyCaptor.capture());
-
-        ru.aritmos.test.LoggingAssertions.assertEquals("ENTITY_CHANGED", typeCaptor.getValue());
-        ChangedObject changed = (ChangedObject) bodyCaptor.getValue();
+        List<LocalNoDockerDataBusClientStub.InvocationRecord> invocations = dataBusClient.getInvocations();
+        ru.aritmos.test.LoggingAssertions.assertEquals(1, invocations.size());
+        LocalNoDockerDataBusClientStub.InvocationRecord invocation = invocations.get(0);
+        ru.aritmos.test.LoggingAssertions.assertEquals("dest", invocation.destinationServices());
+        ru.aritmos.test.LoggingAssertions.assertFalse(invocation.sendToOtherBus());
+        ru.aritmos.test.LoggingAssertions.assertEquals(eventService.applicationName, invocation.senderService());
+        ru.aritmos.test.LoggingAssertions.assertEquals("ENTITY_CHANGED", invocation.type());
+        ChangedObject changed = (ChangedObject) invocation.body();
         ru.aritmos.test.LoggingAssertions.assertEquals("UPDATE", changed.getAction());
         ru.aritmos.test.LoggingAssertions.assertEquals(newValue, changed.getNewValue());
         ru.aritmos.test.LoggingAssertions.assertEquals(oldValue, changed.getOldValue());
@@ -53,42 +48,46 @@ class EventServiceTest {
 
     @Test
     void sendSetsSenderAndCallsClient() {
-        clearInvocations(dataBusClient);
-        when(dataBusClient.send(anyString(), anyBoolean(), anyString(), anyString(), anyString(), any()))
-                .thenReturn(Mono.just(Map.of()));
+        dataBusClient.clearInvocations();
 
         Event event = Event.builder().eventType("PING").body(Map.of()).build();
         eventService.applicationName = "vm";
 
         eventService.send("dest", false, event);
 
-        verify(dataBusClient)
-                .send(eq("dest"), eq(false), anyString(), eq("vm"), eq("PING"), any());
+        List<LocalNoDockerDataBusClientStub.InvocationRecord> invocations = dataBusClient.getInvocations();
+        ru.aritmos.test.LoggingAssertions.assertEquals(1, invocations.size());
+        LocalNoDockerDataBusClientStub.InvocationRecord invocation = invocations.get(0);
+        ru.aritmos.test.LoggingAssertions.assertEquals("dest", invocation.destinationServices());
+        ru.aritmos.test.LoggingAssertions.assertEquals("vm", invocation.senderService());
+        ru.aritmos.test.LoggingAssertions.assertEquals("PING", invocation.type());
         ru.aritmos.test.LoggingAssertions.assertEquals("vm", event.getSenderService());
     }
 
     @Test
     void sendToMultipleDestinationsInvokesClientForEachService() {
-        clearInvocations(dataBusClient);
-        when(dataBusClient.send(anyString(), anyBoolean(), anyString(), anyString(), anyString(), any()))
-                .thenReturn(Mono.just(Map.of()));
+        dataBusClient.clearInvocations();
 
         Event event = Event.builder().eventType("PING").body(Map.of()).build();
         eventService.applicationName = "vm";
 
         eventService.send(List.of("dest-1", "dest-2"), true, event);
 
-        verify(dataBusClient)
-                .send(eq("dest-1"), eq(true), anyString(), eq("vm"), eq("PING"), any());
-        verify(dataBusClient)
-                .send(eq("dest-2"), eq(true), anyString(), eq("vm"), eq("PING"), any());
+        List<LocalNoDockerDataBusClientStub.InvocationRecord> invocations = dataBusClient.getInvocations();
+        ru.aritmos.test.LoggingAssertions.assertEquals(2, invocations.size());
+        ru.aritmos.test.LoggingAssertions.assertEquals("dest-1", invocations.get(0).destinationServices());
+        ru.aritmos.test.LoggingAssertions.assertEquals("dest-2", invocations.get(1).destinationServices());
+        invocations.forEach(
+            i -> {
+              ru.aritmos.test.LoggingAssertions.assertTrue(i.sendToOtherBus());
+              ru.aritmos.test.LoggingAssertions.assertEquals("vm", i.senderService());
+              ru.aritmos.test.LoggingAssertions.assertEquals("PING", i.type());
+            });
     }
 
     @Test
     void sendChangedEventToMultipleDestinationsBuildsEventForEachService() {
-        clearInvocations(dataBusClient);
-        when(dataBusClient.send(anyString(), anyBoolean(), anyString(), anyString(), anyString(), any()))
-                .thenReturn(Mono.just(Map.of()));
+        dataBusClient.clearInvocations();
 
         List<String> destinations = List.of("alpha", "beta");
         Map<String, String> params = Map.of("id", "42");
@@ -98,30 +97,19 @@ class EventServiceTest {
 
         eventService.sendChangedEvent(destinations, false, oldValue, newValue, params, "UPDATE");
 
-        ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> typeCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Object> bodyCaptor = ArgumentCaptor.forClass(Object.class);
-
-        verify(dataBusClient, times(destinations.size()))
-                .send(
-                        destinationCaptor.capture(),
-                        eq(false),
-                        anyString(),
-                        eq("vm"),
-                        typeCaptor.capture(),
-                        bodyCaptor.capture());
-
-        ru.aritmos.test.LoggingAssertions.assertEquals(destinations, destinationCaptor.getAllValues());
-        typeCaptor.getAllValues().forEach(type -> ru.aritmos.test.LoggingAssertions.assertEquals("ENTITY_CHANGED", type));
-        bodyCaptor
-                .getAllValues()
-                .forEach(
-                        body -> {
-                            ChangedObject changed = (ChangedObject) body;
-                            ru.aritmos.test.LoggingAssertions.assertEquals("UPDATE", changed.getAction());
-                            ru.aritmos.test.LoggingAssertions.assertEquals(oldValue, changed.getOldValue());
-                            ru.aritmos.test.LoggingAssertions.assertEquals(newValue, changed.getNewValue());
-                            ru.aritmos.test.LoggingAssertions.assertEquals(String.class.getName(), changed.getClassName());
-                        });
+        List<LocalNoDockerDataBusClientStub.InvocationRecord> invocations = dataBusClient.getInvocations();
+        ru.aritmos.test.LoggingAssertions.assertEquals(destinations.size(), invocations.size());
+        ru.aritmos.test.LoggingAssertions.assertEquals(destinations, invocations.stream().map(LocalNoDockerDataBusClientStub.InvocationRecord::destinationServices).toList());
+        invocations.forEach(
+            invocation -> {
+              ru.aritmos.test.LoggingAssertions.assertFalse(invocation.sendToOtherBus());
+              ru.aritmos.test.LoggingAssertions.assertEquals("vm", invocation.senderService());
+              ru.aritmos.test.LoggingAssertions.assertEquals("ENTITY_CHANGED", invocation.type());
+              ChangedObject changed = (ChangedObject) invocation.body();
+              ru.aritmos.test.LoggingAssertions.assertEquals("UPDATE", changed.getAction());
+              ru.aritmos.test.LoggingAssertions.assertEquals(oldValue, changed.getOldValue());
+              ru.aritmos.test.LoggingAssertions.assertEquals(newValue, changed.getNewValue());
+              ru.aritmos.test.LoggingAssertions.assertEquals(String.class.getName(), changed.getClassName());
+            });
     }
 }

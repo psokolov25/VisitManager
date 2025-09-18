@@ -1,6 +1,7 @@
 package ru.aritmos.keycloack.service;
 
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
@@ -32,6 +33,7 @@ import ru.aritmos.model.UserToken;
  */
 @Slf4j
 @Singleton
+@Requires(notEnv = "local-no-docker")
 @SuppressWarnings("all")
 public class KeyCloackClient {
   /** Сервис отправки событий. */
