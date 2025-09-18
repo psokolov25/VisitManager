@@ -3,12 +3,14 @@ package ru.aritmos.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +22,7 @@ import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
+
 import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
@@ -114,7 +117,6 @@ class VisitServiceUncoveredOperationsTest {
         assertNotNull(visit.getTransferDateTime());
         assertEquals("true", visit.getParameterMap().get("isTransferredToStart"));
         log.info("Наполнение очереди выполняет branchService, в локальной модели список визитов пока пуст");
-
         log.info("Проверяем параметры события обновления и отложенного уведомления");
         ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
         ArgumentCaptor<Boolean> toStartCaptor = ArgumentCaptor.forClass(Boolean.class);
@@ -437,6 +439,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getId(), body.get("visitId"));
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
+
 
     @Test
     void visitTransferPlacesVisitAtExactIndex() {
@@ -836,6 +839,7 @@ class VisitServiceUncoveredOperationsTest {
         assertTrue(Boolean.TRUE.equals(updatedServicePoint.getAutoCallMode()));
         verify(branchService).add(branch.getId(), branch);
     }
+
 
     private VisitService createVisitService(
             BranchService branchService,
