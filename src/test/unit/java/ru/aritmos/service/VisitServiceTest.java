@@ -4,6 +4,8 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
 
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.http.HttpStatus;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,19 +14,24 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.aritmos.events.model.Event;
+import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Entity;
 import ru.aritmos.model.Queue;
+import ru.aritmos.model.Service;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
+import ru.aritmos.model.visit.VisitEventInformation;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
 import ru.aritmos.model.Reception;
 import ru.aritmos.model.tiny.TinyClass;
 import ru.aritmos.service.rules.CallRule;
+import org.keycloak.representations.idm.UserRepresentation;
 
 class VisitServiceTest {
 
@@ -126,6 +133,265 @@ class VisitServiceTest {
         assertEquals(207, exception.getStatus().getCode());
         assertTrue(servicePoint.getAutoCallMode());
         verify(branchService).add(branch.getId(), branch);
+    }
+
+    @Test
+    void stopServingAndBackToQueueReturnsVisitToLastQueue() {
+        log.info("Формируем исходные данные для сценария возврата визита из обслуживания в очередь.");
+        String branchId = "branch-stop";
+        String servicePointId = "sp-stop";
+        String queueId = "queue-stop";
+
+        Branch branch = new Branch(branchId, "Отделение с возвратом");
+        Queue queue = new Queue(queueId, "Очередь возврата", "A", 1);
+        branch.getQueues().put(queueId, queue);
+
+        ServicePoint servicePoint = new ServicePoint(servicePointId, "Окно возврата");
+        User operator = new User("operator-1", "Оператор", null);
+        operator.setCurrentWorkProfileId("wp-13");
+        servicePoint.setUser(operator);
+        branch.getServicePoints().put(servicePointId, servicePoint);
+
+        Service currentService = new Service("srv-1", "Кредиты", 60, null);
+        assertEquals("srv-1", currentService.getId());
+        Visit visit = Visit.builder()
+                .id("visit-stop")
+                .branchId(branchId)
+                .ticket("A-001")
+                .currentService(currentService)
+                .parameterMap(new HashMap<>())
+                .events(List.of(
+                        VisitEventInformation.builder()
+                                .visitEvent(VisitEvent.START_SERVING)
+                                .eventDateTime(ZonedDateTime.now().minusMinutes(5))
+                                .parameters(Map.of("servicePointId", servicePointId))
+                                .build()))
+                .build();
+        visit.setCurrentService(currentService);
+        visit.getParameterMap().put("LastQueueId", queueId);
+        servicePoint.setVisit(visit);
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branchId)).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+
+        VisitService service = new VisitService();
+        service.branchService = branchService;
+        service.eventService = eventService;
+        service.delayedEvents = delayedEvents;
+
+        log.info("Запускаем остановку обслуживания визита с последующим возвратом в очередь.");
+        Visit result = service.stopServingAndBackToQueue(branchId, servicePointId, 30L);
+
+        log.info("Проверяем, что визит вернулся в очередь и данные очищены корректно.");
+        assertSame(visit, result);
+        assertEquals(queueId, visit.getQueueId());
+        assertNull(visit.getServicePointId());
+        assertNull(visit.getPoolServicePointId());
+        assertNull(visit.getPoolUserId());
+        assertEquals(30L, visit.getReturnTimeDelay());
+        assertTrue(queue.getVisits().contains(visit));
+
+        log.info("Проверяем параметры событий обновления визита.");
+        ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        verify(branchService, times(2)).updateVisit(eq(visit), eventCaptor.capture(), eq(service));
+        List<VisitEvent> capturedEvents = eventCaptor.getAllValues();
+        VisitEvent stopEvent = capturedEvents.get(0);
+        assertEquals(VisitEvent.STOP_SERVING, stopEvent);
+        log.info("Параметры STOP_SERVING события: {}", stopEvent.getParameters());
+        assertEquals("false", stopEvent.getParameters().get("isForced"));
+        assertEquals(servicePointId, stopEvent.getParameters().get("servicePointId"));
+        assertEquals(servicePoint.getName(), stopEvent.getParameters().get("servicePointName"));
+        assertEquals(branchId, stopEvent.getParameters().get("branchId"));
+
+        VisitEvent backEvent = capturedEvents.get(1);
+        assertEquals(VisitEvent.BACK_TO_QUEUE, backEvent);
+        assertEquals(branchId, backEvent.getParameters().get("branchId"));
+        assertEquals(queueId, backEvent.getParameters().get("queueId"));
+        assertEquals(servicePointId, backEvent.getParameters().get("servicePointId"));
+        assertEquals(operator.getId(), backEvent.getParameters().get("staffId"));
+        assertEquals(operator.getName(), backEvent.getParameters().get("staffName"));
+        assertNotNull(backEvent.dateTime);
+
+        log.info("Проверяем планирование отложенного события обновления очереди.");
+        ArgumentCaptor<Event> delayedEventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(delayedEvents)
+                .delayedEventService(
+                        eq("frontend"),
+                        eq(false),
+                        delayedEventCaptor.capture(),
+                        eq(30L),
+                        eq(eventService));
+        Event delayedEvent = delayedEventCaptor.getValue();
+        assertEquals("QUEUE_REFRESHED", delayedEvent.getEventType());
+        assertEquals(Map.of("queueId", queueId, "branchId", branchId), delayedEvent.getParams());
+        Map<?, ?> body = (Map<?, ?>) delayedEvent.getBody();
+        assertEquals(queueId, body.get("id"));
+        assertEquals(queue.getName(), body.get("name"));
+        assertEquals("RETURN_TIME_DELAY_FINISHED", body.get("reason"));
+        assertEquals(visit.getId(), body.get("visitId"));
+        assertEquals(visit.getTicket(), body.get("ticket"));
+        stopEvent.getParameters().clear();
+        stopEvent.dateTime = null;
+        backEvent.getParameters().clear();
+        backEvent.dateTime = null;
+    }
+
+    @Test
+    void stopServingAndBackToQueueFailsWhenLastQueueMissing() {
+        log.info("Настраиваем отделение, где визит не содержит информации о последней очереди.");
+        String branchId = "branch-stop-error";
+        String servicePointId = "sp-stop-error";
+
+        Branch branch = new Branch(branchId, "Отделение без очереди");
+        Queue queue = new Queue("queue-error", "Очередь ошибки", "B", 1);
+        branch.getQueues().put(queue.getId(), queue);
+
+        ServicePoint servicePoint = new ServicePoint(servicePointId, "Окно ошибки");
+        User operator = new User("operator-err", "Оператор", null);
+        servicePoint.setUser(operator);
+        branch.getServicePoints().put(servicePointId, servicePoint);
+
+        Service currentService = new Service("srv-2", "Ипотека", 120, null);
+        assertEquals("srv-2", currentService.getId());
+        Visit visit = Visit.builder()
+                .id("visit-stop-error")
+                .branchId(branchId)
+                .ticket("B-777")
+                .currentService(currentService)
+                .parameterMap(new HashMap<>())
+                .events(List.of(
+                        VisitEventInformation.builder()
+                                .visitEvent(VisitEvent.START_SERVING)
+                                .eventDateTime(ZonedDateTime.now().minusMinutes(3))
+                                .parameters(Map.of("servicePointId", servicePointId))
+                                .build()))
+                .build();
+        visit.setCurrentService(currentService);
+        servicePoint.setVisit(visit);
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branchId)).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+
+        VisitService service = new VisitService();
+        service.branchService = branchService;
+        service.eventService = eventService;
+        service.delayedEvents = delayedEvents;
+
+        log.info("Запускаем возврат визита и ожидаем бизнес-ошибку.");
+        HttpStatusException exception = assertThrows(
+                HttpStatusException.class,
+                () -> service.stopServingAndBackToQueue(branchId, servicePointId, 45L));
+
+        assertEquals(HttpStatus.CONFLICT, exception.getStatus());
+        assertEquals(45L, visit.getReturnTimeDelay());
+
+        log.info("Убеждаемся, что событие StopServing отправлено до возникновения ошибки.");
+        ArgumentCaptor<VisitEvent> stopEventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        verify(branchService).updateVisit(eq(visit), stopEventCaptor.capture(), eq(service));
+        assertEquals(VisitEvent.STOP_SERVING, stopEventCaptor.getValue());
+        verify(eventService).send(eq("*"), eq(false), any());
+        verifyNoInteractions(delayedEvents);
+        stopEventCaptor.getValue().getParameters().clear();
+        stopEventCaptor.getValue().dateTime = null;
+    }
+
+    @Test
+    void visitTransferFromQueueToServicePointPoolAddsExternalServiceMetadata() {
+        log.info("Очищаем параметры события перевода визита в пул точки обслуживания.");
+        VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
+
+        log.info("Готовим отделение с очередью и целевым пулом точки обслуживания.");
+        String branchId = "branch-transfer";
+        String poolServicePointId = "pool-sp";
+        String queueId = "queue-transfer";
+
+        Branch branch = new Branch(branchId, "Отделение перевода");
+        ServicePoint poolServicePoint = new ServicePoint(poolServicePointId, "Пул окна");
+        branch.getServicePoints().put(poolServicePointId, poolServicePoint);
+        Queue queue = new Queue(queueId, "Очередь перевода", "C", 1);
+        branch.getQueues().put(queueId, queue);
+
+        Visit visit = Visit.builder()
+                .id("visit-transfer")
+                .branchId(branchId)
+                .queueId(queueId)
+                .ticket("C-123")
+                .parameterMap(new HashMap<>(Map.of("LastQueueId", queueId)))
+                .build();
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branchId)).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+        ru.aritmos.keycloack.service.KeyCloackClient keyCloackClient =
+                mock(ru.aritmos.keycloack.service.KeyCloackClient.class);
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setId("kc-1");
+        userRepresentation.setUsername("keycloak-user");
+        when(keyCloackClient.getUserBySid("sid-123")).thenReturn(Optional.of(userRepresentation));
+
+        VisitService service = new VisitService();
+        service.branchService = branchService;
+        service.eventService = eventService;
+        service.delayedEvents = delayedEvents;
+        service.keyCloackClient = keyCloackClient;
+
+        HashMap<String, String> serviceInfo = new HashMap<>();
+        serviceInfo.put("externalSystem", "MI");
+        serviceInfo.put("requestId", "req-555");
+
+        log.info("Переводим визит во внешний пул точки обслуживания.");
+        Visit result = service.visitTransferFromQueueToServicePointPool(
+                branchId, poolServicePointId, visit, false, serviceInfo, 25L, "sid-123");
+
+        assertSame(visit, result);
+        assertNull(visit.getQueueId());
+        assertEquals(poolServicePointId, visit.getPoolServicePointId());
+        assertEquals(25L, visit.getTransferTimeDelay());
+
+        log.info("Проверяем параметры события TRANSFER_TO_SERVICE_POINT_POOL.");
+        ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        verify(branchService)
+                .updateVisit(eq(visit), eventCaptor.capture(), eq(service), eq(Boolean.TRUE));
+        VisitEvent event = eventCaptor.getValue();
+        assertEquals(VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL, event);
+        assertEquals(queueId, event.getParameters().get("queueId"));
+        assertEquals(poolServicePointId, event.getParameters().get("poolServicePointId"));
+        assertEquals("kc-1", event.getParameters().get("staffId"));
+        assertEquals("keycloak-user", event.getParameters().get("staffName"));
+        assertEquals("MI", event.getParameters().get("externalSystem"));
+        assertEquals("req-555", event.getParameters().get("requestId"));
+        assertEquals(branchId, event.getParameters().get("branchId"));
+        assertNotNull(event.dateTime);
+
+        log.info("Проверяем создание отложенного события обновления пула точки обслуживания.");
+        ArgumentCaptor<Event> delayedEventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(delayedEvents)
+                .delayedEventService(
+                        eq("frontend"),
+                        eq(false),
+                        delayedEventCaptor.capture(),
+                        eq(25L),
+                        eq(eventService));
+        Event delayedEvent = delayedEventCaptor.getValue();
+        assertEquals("SERVICEPOINT_POOL_REFRESHED", delayedEvent.getEventType());
+        Map<?, ?> body = (Map<?, ?>) delayedEvent.getBody();
+        assertEquals(poolServicePointId, body.get("id"));
+        assertEquals(poolServicePoint.getName(), body.get("name"));
+        assertEquals(branchId, body.get("branchId"));
+        assertEquals("RETURN_TIME_DELAY_FINISHED", body.get("reason"));
+        assertEquals(visit.getId(), body.get("visitId"));
+        assertEquals(visit.getTicket(), body.get("ticket"));
+        assertNull(delayedEvent.getParams());
+        event.getParameters().clear();
+        event.dateTime = null;
+        delayedEvent.setBody(null);
+        delayedEvent.setParams(null);
     }
 
     @Test
