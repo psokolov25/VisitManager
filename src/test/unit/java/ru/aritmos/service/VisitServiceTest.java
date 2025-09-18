@@ -6,20 +6,29 @@ import static org.mockito.Mockito.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Entity;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
 import ru.aritmos.model.Reception;
 import ru.aritmos.model.tiny.TinyClass;
+import ru.aritmos.service.rules.CallRule;
 
 class VisitServiceTest {
+
+    private static final Logger log = LoggerFactory.getLogger(VisitServiceTest.class);
 
     @Test
     void getVisitReturnsExistingVisit() {
@@ -40,6 +49,83 @@ class VisitServiceTest {
 
         Visit result = service.getVisit("b1", "v1");
         assertSame(visit, result);
+    }
+
+    @Test
+    void visitCallForConfirmWithMaxLifeTimeUpdatesVisitAndBuildsEvent() {
+        log.info("Подготавливаем отделение и точку обслуживания для сценария с успешным вызовом визита.");
+        Branch branch = new Branch("branch-life", "Отделение с визитами");
+        ServicePoint servicePoint = new ServicePoint("sp-life", "Окно 42");
+        User operator = new User("user-1", "Оператор", null);
+        operator.setCurrentWorkProfileId("wp-7");
+        servicePoint.setUser(operator);
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+        Visit visit = Visit.builder().id("visit-1").branchId(branch.getId()).build();
+
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        CallRule lifeTimeRule = mock(CallRule.class);
+        VisitService service = new VisitService();
+        service.branchService = branchService;
+        service.eventService = eventService;
+        service.setLifeTimeCallRule(lifeTimeRule);
+
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        when(lifeTimeRule.call(branch, servicePoint)).thenReturn(Optional.of(visit));
+
+        log.info("Запускаем вызов визита по максимальному времени жизни для точки {}.", servicePoint.getId());
+        Optional<Visit> result = service.visitCallForConfirmWithMaxLifeTime(branch.getId(), servicePoint.getId());
+
+        log.info("Проверяем, что визит получен и событие построено корректно.");
+        assertTrue(result.isPresent());
+        assertSame(visit, result.get());
+
+        ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        verify(branchService).updateVisit(eq(visit), eventCaptor.capture(), eq(service));
+
+        VisitEvent event = eventCaptor.getValue();
+        assertEquals(VisitEvent.CALLED, event);
+        assertNotNull(event.dateTime);
+
+        Map<String, String> params = event.getParameters();
+        log.info("Параметры события вызова: {}", params);
+        assertEquals(servicePoint.getId(), params.get("servicePointId"));
+        assertEquals(servicePoint.getName(), params.get("servicePointName"));
+        assertEquals(branch.getId(), params.get("branchId"));
+        assertEquals(operator.getId(), params.get("staffId"));
+        assertEquals(operator.getName(), params.get("staffName"));
+        assertEquals(operator.getCurrentWorkProfileId(), params.get("workProfileId"));
+        assertEquals("callNext", params.get("callMethod"));
+    }
+
+    @Test
+    void visitCallForConfirmWithMaxLifeTimeEnablesAutocallWhenNoVisitFound() {
+        log.info("Подготавливаем отделение в режиме автозапуска для проверки обработки отсутствующего визита.");
+        Branch branch = new Branch("branch-auto", "Отделение в автозапуске");
+        branch.getParameterMap().put("autoCallMode", Boolean.TRUE.toString());
+        ServicePoint servicePoint = new ServicePoint("sp-auto", "Окно автозапуска");
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        CallRule lifeTimeRule = mock(CallRule.class);
+        VisitService service = new VisitService();
+        service.branchService = branchService;
+        service.eventService = eventService;
+        service.setLifeTimeCallRule(lifeTimeRule);
+
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        when(lifeTimeRule.call(branch, servicePoint)).thenReturn(Optional.empty());
+
+        log.info("Проверяем, что вызов без визита приводит к включению автоворонку и исключению.");
+        HttpStatusException exception =
+                assertThrows(
+                        HttpStatusException.class,
+                        () -> service.visitCallForConfirmWithMaxLifeTime(branch.getId(), servicePoint.getId()));
+
+        assertEquals(207, exception.getStatus().getCode());
+        assertTrue(servicePoint.getAutoCallMode());
+        verify(branchService).add(branch.getId(), branch);
     }
 
     @Test
