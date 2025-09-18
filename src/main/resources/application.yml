@@ -28,6 +28,16 @@ kafka:
 
 
 micronaut:
+  http:
+    client:
+      pool:
+        enabled: true
+        max-connections: 2000           # под нагрузку
+        acquire-timeout: 2s
+      read-timeout: 3s
+      connect-timeout: 2s
+      # HTTP/2 = больше запросов на одно соединение
+      http2: true
   metrics:
     enabled: true
   server:
