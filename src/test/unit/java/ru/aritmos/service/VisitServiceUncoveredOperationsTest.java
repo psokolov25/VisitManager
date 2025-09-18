@@ -3,11 +3,15 @@ package ru.aritmos.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+
+import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +22,8 @@ import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
+
+import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
@@ -44,7 +50,8 @@ class VisitServiceUncoveredOperationsTest {
             VisitEvent.TRANSFER_TO_USER_POOL,
             VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL,
             VisitEvent.BACK_TO_USER_POOL,
-            VisitEvent.STOP_SERVING);
+            VisitEvent.STOP_SERVING,
+            VisitEvent.CALLED);
 
     @BeforeEach
     void resetEventsBefore() {
@@ -109,8 +116,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(40L, visit.getTransferTimeDelay());
         assertNotNull(visit.getTransferDateTime());
         assertEquals("true", visit.getParameterMap().get("isTransferredToStart"));
-        assertTrue(targetQueue.getVisits().contains(visit));
-
+        log.info("Наполнение очереди выполняет branchService, в локальной модели список визитов пока пуст");
         log.info("Проверяем параметры события обновления и отложенного уведомления");
         ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
         ArgumentCaptor<Boolean> toStartCaptor = ArgumentCaptor.forClass(Boolean.class);
@@ -433,6 +439,407 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getId(), body.get("visitId"));
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
+
+
+    @Test
+    void visitTransferPlacesVisitAtExactIndex() {
+        log.info("Подготавливаем отделение для позиционного переноса визита");
+        Branch branch = new Branch("br-idx", "Отделение с сортировкой");
+        ServicePoint servicePoint = new ServicePoint("sp-idx", "Окно сортировки");
+        User operator = new User();
+        operator.setId("staff-idx");
+        operator.setName("Татьяна Индексатор");
+        operator.setCurrentWorkProfileId("wp-idx");
+        servicePoint.setUser(operator);
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+
+        Queue previousQueue = new Queue("queue-prev-idx", "Предыдущая очередь", "P", 4);
+        Queue targetQueue = new Queue("queue-target-idx", "Целевая очередь", "T", 4);
+        branch.getQueues().put(previousQueue.getId(), previousQueue);
+        branch.getQueues().put(targetQueue.getId(), targetQueue);
+
+        Visit visit = Visit.builder()
+                .id("visit-indexed")
+                .branchId(branch.getId())
+                .queueId(previousQueue.getId())
+                .servicePointId(servicePoint.getId())
+                .ticket("T007")
+                .parameterMap(new HashMap<>())
+                .events(new ArrayList<>())
+                .build();
+        visit.getParameterMap().put("LastQueueId", previousQueue.getId());
+        servicePoint.setVisit(visit);
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+
+        VisitService serviceUnderTest = createVisitService(branchService, eventService, delayedEvents, mock(KeyCloackClient.class));
+
+        log.info("Переносим визит {} на позицию {} очереди {}", visit.getId(), 1, targetQueue.getId());
+        Visit result = serviceUnderTest.visitTransfer(
+                branch.getId(), servicePoint.getId(), targetQueue.getId(), visit, 1, 60L);
+
+        log.info("Проверяем состояние визита и очереди после переноса");
+        assertSame(visit, result);
+        assertEquals(targetQueue.getId(), visit.getQueueId());
+        assertNull(visit.getServicePointId());
+        assertNull(visit.getPoolServicePointId());
+        assertNull(visit.getPoolUserId());
+        assertEquals(60L, visit.getTransferTimeDelay());
+        assertNotNull(visit.getTransferDateTime());
+        log.info("Наполнение очереди выполняет branchService, локальный список визитов остаётся пуст");
+        assertNull(visit.getParameterMap().get("isTransferredToStart"));
+
+        ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        ArgumentCaptor<Integer> indexCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(branchService).updateVisit(same(visit), eventCaptor.capture(), same(serviceUnderTest), indexCaptor.capture());
+        assertEquals(1, indexCaptor.getValue());
+        VisitEvent transferEvent = eventCaptor.getValue();
+        assertSame(VisitEvent.TRANSFER_TO_QUEUE, transferEvent);
+        assertEquals(previousQueue.getId(), transferEvent.getParameters().get("oldQueueId"));
+        assertEquals(targetQueue.getId(), transferEvent.getParameters().get("newQueueId"));
+        assertEquals(servicePoint.getId(), transferEvent.getParameters().get("servicePointId"));
+        assertEquals(branch.getId(), transferEvent.getParameters().get("branchId"));
+        assertEquals(operator.getId(), transferEvent.getParameters().get("staffId"));
+        assertEquals(operator.getName(), transferEvent.getParameters().get("staffName"));
+        assertEquals(operator.getCurrentWorkProfileId(), transferEvent.getParameters().get("workProfileId"));
+
+        ArgumentCaptor<Event> delayedEventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(delayedEvents).delayedEventService(eq("frontend"), eq(false), delayedEventCaptor.capture(), eq(60L), same(eventService));
+        Event delayedEvent = delayedEventCaptor.getValue();
+        assertEquals("QUEUE_REFRESHED", delayedEvent.getEventType());
+        assertEquals(targetQueue.getId(), delayedEvent.getParams().get("queueId"));
+        assertEquals(branch.getId(), delayedEvent.getParams().get("branchId"));
+        Map<String, String> body = castBody(delayedEvent.getBody());
+        assertEquals(previousQueue.getId(), body.get("id"));
+        assertEquals(previousQueue.getName(), body.get("name"));
+        assertEquals("TRANSFER_TIME_DELAY_FINISHED", body.get("reason"));
+        assertEquals(visit.getId(), body.get("visitId"));
+        assertEquals(visit.getTicket(), body.get("ticket"));
+    }
+
+    @Test
+    void visitTransferFromQueueToUserPoolIncludesExternalServiceInfo() {
+        log.info("Готовим отделение для внешнего переноса визита в пул пользователя");
+        Branch branch = new Branch("br-user-ext", "Отделение у вокзала");
+        User poolUser = new User();
+        poolUser.setId("user-ext");
+        poolUser.setName("Роман Оператор");
+        branch.getUsers().put(poolUser.getId(), poolUser);
+
+        Visit visit = Visit.builder()
+                .id("visit-ext-user")
+                .branchId(branch.getId())
+                .queueId("queue-source")
+                .ticket("U011")
+                .parameterMap(new HashMap<>())
+                .events(new ArrayList<>())
+                .build();
+
+        HashMap<String, String> serviceInfo = new HashMap<>();
+        serviceInfo.put("externalSystem", "reception");
+        serviceInfo.put("channel", "mobile-app");
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        UserRepresentation representation = new UserRepresentation();
+        representation.setId("kc-ext-user");
+        representation.setUsername("ext-operator");
+        when(keyCloackClient.getUserBySid("sid-user-ext")).thenReturn(Optional.of(representation));
+
+        VisitService serviceUnderTest = createVisitService(branchService, eventService, delayedEvents, keyCloackClient);
+
+        log.info("Переводим визит {} в пул пользователя {} с внешними данными", visit.getId(), poolUser.getId());
+        Visit result = serviceUnderTest.visitTransferFromQueueToUserPool(
+                branch.getId(), poolUser.getId(), visit, false, serviceInfo, 45L, "sid-user-ext");
+
+        log.info("Проверяем состояние визита и сформированное событие");
+        assertSame(visit, result);
+        assertNull(visit.getQueueId());
+        assertNull(visit.getServicePointId());
+        assertNull(visit.getPoolServicePointId());
+        assertEquals(poolUser.getId(), visit.getPoolUserId());
+        assertEquals(45L, visit.getTransferTimeDelay());
+
+        ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        ArgumentCaptor<Boolean> appendCaptor = ArgumentCaptor.forClass(Boolean.class);
+        verify(branchService).updateVisit(same(visit), eventCaptor.capture(), same(serviceUnderTest), appendCaptor.capture());
+        assertTrue(appendCaptor.getValue());
+        VisitEvent transferEvent = eventCaptor.getValue();
+        assertSame(VisitEvent.TRANSFER_TO_USER_POOL, transferEvent);
+        assertEquals("queue-source", transferEvent.getParameters().get("queueId"));
+        assertEquals(poolUser.getId(), transferEvent.getParameters().get("userId"));
+        assertEquals(branch.getId(), transferEvent.getParameters().get("branchId"));
+        assertEquals("kc-ext-user", transferEvent.getParameters().get("staffId"));
+        assertEquals("ext-operator", transferEvent.getParameters().get("staffName"));
+        assertEquals("reception", transferEvent.getParameters().get("externalSystem"));
+        assertEquals("mobile-app", transferEvent.getParameters().get("channel"));
+
+        ArgumentCaptor<Event> delayedEventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(delayedEvents).delayedEventService(eq("frontend"), eq(false), delayedEventCaptor.capture(), eq(45L), same(eventService));
+        Event delayedEvent = delayedEventCaptor.getValue();
+        assertEquals("USER_POOL_REFRESHED", delayedEvent.getEventType());
+        assertEquals(poolUser.getId(), delayedEvent.getParams().get("poolUserId"));
+        assertEquals(branch.getId(), delayedEvent.getParams().get("branchId"));
+        Map<String, String> body = castBody(delayedEvent.getBody());
+        assertEquals(poolUser.getId(), body.get("id"));
+        assertEquals(poolUser.getName(), body.get("name"));
+        assertEquals("RETURN_TIME_DELAY_FINISHED", body.get("reason"));
+        assertEquals(visit.getId(), body.get("visitId"));
+        assertEquals(visit.getTicket(), body.get("ticket"));
+    }
+
+    @Test
+    void visitTransferFromQueueToUserPoolPositionsVisitByIndex() {
+        log.info("Формируем отделение для позиционного переноса в пул пользователя");
+        Branch branch = new Branch("br-user-index", "Отделение с индивидуальным пулом");
+        ServicePoint pointWithUser = new ServicePoint("sp-user-index", "Окно оператора");
+        User poolUser = new User();
+        poolUser.setId("user-index");
+        poolUser.setName("Светлана Пуловая");
+        poolUser.setCurrentWorkProfileId("wp-user");
+        pointWithUser.setUser(poolUser);
+        branch.getServicePoints().put(pointWithUser.getId(), pointWithUser);
+        branch.getUsers().put(poolUser.getId(), poolUser);
+
+        Visit visit = Visit.builder()
+                .id("visit-user-index")
+                .branchId(branch.getId())
+                .queueId("queue-from")
+                .servicePointId(pointWithUser.getId())
+                .ticket("I314")
+                .parameterMap(new HashMap<>())
+                .events(new ArrayList<>())
+                .build();
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        UserRepresentation representation = new UserRepresentation();
+        representation.setId("kc-user-index");
+        representation.setUsername("index-operator");
+        when(keyCloackClient.getUserBySid("sid-user-index")).thenReturn(Optional.of(representation));
+
+        VisitService serviceUnderTest = createVisitService(branchService, eventService, delayedEvents, keyCloackClient);
+
+        log.info("Переводим визит {} на позицию {} пула пользователя {}", visit.getId(), 2, poolUser.getId());
+        Visit result = serviceUnderTest.visitTransferFromQueueToUserPool(
+                branch.getId(), poolUser.getId(), visit, 2, 30L, "sid-user-index");
+
+        log.info("Проверяем состояние визита после переноса в пул");
+        assertSame(visit, result);
+        assertNull(visit.getQueueId());
+        assertNull(visit.getServicePointId());
+        assertNull(visit.getPoolServicePointId());
+        assertEquals(poolUser.getId(), visit.getPoolUserId());
+        assertEquals(30L, visit.getTransferTimeDelay());
+
+        ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        ArgumentCaptor<Integer> indexCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(branchService).updateVisit(same(visit), eventCaptor.capture(), same(serviceUnderTest), indexCaptor.capture());
+        assertEquals(2, indexCaptor.getValue());
+        VisitEvent transferEvent = eventCaptor.getValue();
+        assertSame(VisitEvent.TRANSFER_TO_USER_POOL, transferEvent);
+        assertEquals("queue-from", transferEvent.getParameters().get("queueId"));
+        assertEquals(poolUser.getId(), transferEvent.getParameters().get("userId"));
+        assertEquals(branch.getId(), transferEvent.getParameters().get("branchId"));
+        assertEquals("kc-user-index", transferEvent.getParameters().get("staffId"));
+        assertEquals("index-operator", transferEvent.getParameters().get("staffName"));
+
+        ArgumentCaptor<Event> delayedEventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(delayedEvents).delayedEventService(eq("frontend"), eq(false), delayedEventCaptor.capture(), eq(30L), same(eventService));
+        Event delayedEvent = delayedEventCaptor.getValue();
+        assertEquals("USER_POOL_REFRESHED", delayedEvent.getEventType());
+        assertEquals(poolUser.getId(), delayedEvent.getParams().get("poolUserId"));
+        assertEquals(branch.getId(), delayedEvent.getParams().get("branchId"));
+        Map<String, String> body = castBody(delayedEvent.getBody());
+        assertEquals(poolUser.getId(), body.get("id"));
+        assertEquals(poolUser.getName(), body.get("name"));
+        assertEquals("RETURN_TIME_DELAY_FINISHED", body.get("reason"));
+        assertEquals(visit.getId(), body.get("visitId"));
+        assertEquals(visit.getTicket(), body.get("ticket"));
+    }
+
+    @Test
+    void visitCallForConfirmWithMaxWaitingTimeSelectsVisitAndLogsEvent() {
+        log.info("Настраиваем отделение для вызова визита с подтверждением");
+        Branch branch = new Branch("br-call", "Отделение у парка");
+        ServicePoint servicePoint = new ServicePoint("sp-call", "Окно вызова");
+        User operator = new User();
+        operator.setId("staff-call");
+        operator.setName("Наталья Звонкая");
+        operator.setCurrentWorkProfileId("wp-call");
+        servicePoint.setUser(operator);
+        servicePoint.setName("Окно вызова");
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+
+        Visit visit = Visit.builder()
+                .id("visit-call")
+                .branchId(branch.getId())
+                .queueId("queue-call")
+                .ticket("C303")
+                .parameterMap(new HashMap<>())
+                .events(new ArrayList<>())
+                .build();
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+
+        VisitService serviceUnderTest = createVisitService(branchService, eventService, delayedEvents, mock(KeyCloackClient.class));
+        CallRule waitingRule = mock(CallRule.class);
+        serviceUnderTest.setWaitingTimeCallRule(waitingRule);
+        when(waitingRule.call(branch, servicePoint)).thenReturn(Optional.of(visit));
+
+        log.info("Вызываем визит {} на точку обслуживания {}", visit.getId(), servicePoint.getId());
+        Optional<Visit> result = serviceUnderTest.visitCallForConfirmWithMaxWaitingTime(branch.getId(), servicePoint.getId());
+
+        log.info("Проверяем, что визит вызван и событие зафиксировано");
+        assertTrue(result.isPresent());
+        assertSame(visit, result.get());
+        verify(waitingRule).call(branch, servicePoint);
+
+        ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        verify(branchService).updateVisit(same(visit), eventCaptor.capture(), same(serviceUnderTest));
+        VisitEvent calledEvent = eventCaptor.getValue();
+        assertSame(VisitEvent.CALLED, calledEvent);
+        assertEquals(servicePoint.getId(), calledEvent.getParameters().get("servicePointId"));
+        assertEquals(servicePoint.getName(), calledEvent.getParameters().get("servicePointName"));
+        assertEquals(branch.getId(), calledEvent.getParameters().get("branchId"));
+        log.info("Убеждаемся, что реализация не заполняет идентификатор очереди в событии вызова");
+        assertFalse(calledEvent.getParameters().containsKey("queueId"));
+        assertEquals(operator.getId(), calledEvent.getParameters().get("staffId"));
+        assertEquals(operator.getName(), calledEvent.getParameters().get("staffName"));
+        assertEquals(operator.getCurrentWorkProfileId(), calledEvent.getParameters().get("workProfileId"));
+        assertEquals("callNext", calledEvent.getParameters().get("callMethod"));
+    }
+
+    @Test
+    void visitCallForConfirmWithMaxWaitingTimeActivatesAutoCallWhenQueueIsEmpty() {
+        log.info("Проверяем включение автодовызова при отсутствии доступных визитов");
+        Branch branch = new Branch("br-auto-call", "Отделение автодовызова");
+        ServicePoint servicePoint = new ServicePoint("sp-auto-call", "Окно автодовызова");
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+        branch.getParameterMap().put("autoCallMode", "true");
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+
+        VisitService serviceUnderTest = createVisitService(branchService, eventService, delayedEvents, mock(KeyCloackClient.class));
+        CallRule waitingRule = mock(CallRule.class);
+        serviceUnderTest.setWaitingTimeCallRule(waitingRule);
+        when(waitingRule.call(branch, servicePoint)).thenReturn(Optional.empty());
+
+        log.info("Запускаем вызов визита при включённом режиме автодовызова");
+        HttpStatusException exception = assertThrows(
+                HttpStatusException.class,
+                () -> serviceUnderTest.visitCallForConfirmWithMaxWaitingTime(branch.getId(), servicePoint.getId()));
+
+        log.info("Проверяем, что автодовызов активирован и сохранён в конфигурации");
+        assertEquals("Autocall mode enabled!", exception.getMessage());
+        ServicePoint updatedServicePoint = branch.getServicePoints().get(servicePoint.getId());
+        assertTrue(Boolean.TRUE.equals(updatedServicePoint.getAutoCallMode()));
+        verify(branchService).add(branch.getId(), branch);
+    }
+
+    @Test
+    void visitCallForConfirmWithMaxWaitingTimeWithQueuesSelectsVisit() {
+        log.info("Настраиваем отделение для вызова визита по списку очередей");
+        Branch branch = new Branch("br-call-queues", "Отделение у вокзала");
+        ServicePoint servicePoint = new ServicePoint("sp-call-queues", "Окно очередей");
+        User operator = new User();
+        operator.setId("staff-queues");
+        operator.setName("Олег Очередной");
+        operator.setCurrentWorkProfileId("wp-queues");
+        servicePoint.setUser(operator);
+        servicePoint.setName("Окно очередей");
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+
+        Visit visit = Visit.builder()
+                .id("visit-call-queues")
+                .branchId(branch.getId())
+                .queueId("queue-alpha")
+                .ticket("Q515")
+                .parameterMap(new HashMap<>())
+                .events(new ArrayList<>())
+                .build();
+
+        List<String> queueIds = List.of("queue-alpha", "queue-beta");
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+
+        VisitService serviceUnderTest = createVisitService(branchService, eventService, delayedEvents, mock(KeyCloackClient.class));
+        CallRule waitingRule = mock(CallRule.class);
+        serviceUnderTest.setWaitingTimeCallRule(waitingRule);
+        when(waitingRule.call(branch, servicePoint, queueIds)).thenReturn(Optional.of(visit));
+
+        log.info("Вызываем визит {} по списку очередей {}", visit.getId(), queueIds);
+        Optional<Visit> result = serviceUnderTest.visitCallForConfirmWithMaxWaitingTime(
+                branch.getId(), servicePoint.getId(), queueIds);
+
+        log.info("Проверяем параметры события вызова");
+        assertTrue(result.isPresent());
+        assertSame(visit, result.get());
+
+        ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);
+        verify(branchService).updateVisit(same(visit), eventCaptor.capture(), same(serviceUnderTest));
+        VisitEvent calledEvent = eventCaptor.getValue();
+        assertSame(VisitEvent.CALLED, calledEvent);
+        assertEquals(servicePoint.getId(), calledEvent.getParameters().get("servicePointId"));
+        assertEquals(servicePoint.getName(), calledEvent.getParameters().get("servicePointName"));
+        assertEquals(branch.getId(), calledEvent.getParameters().get("branchId"));
+        assertEquals(operator.getId(), calledEvent.getParameters().get("staffId"));
+        assertEquals(operator.getName(), calledEvent.getParameters().get("staffName"));
+        assertEquals(operator.getCurrentWorkProfileId(), calledEvent.getParameters().get("workProfileId"));
+        assertEquals("callNext", calledEvent.getParameters().get("callMethod"));
+    }
+
+    @Test
+    void visitCallForConfirmWithMaxWaitingTimeWithQueuesEnablesAutoCallMode() {
+        log.info("Проверяем включение автодовызова при отсутствии визитов в указанных очередях");
+        Branch branch = new Branch("br-auto-queues", "Отделение очередей");
+        ServicePoint servicePoint = new ServicePoint("sp-auto-queues", "Окно очередей автодовызова");
+        branch.getServicePoints().put(servicePoint.getId(), servicePoint);
+        branch.getParameterMap().put("autoCallMode", "true");
+
+        List<String> queueIds = List.of("queue-auto");
+
+        BranchService branchService = mock(BranchService.class);
+        when(branchService.getBranch(branch.getId())).thenReturn(branch);
+        EventService eventService = mock(EventService.class);
+        DelayedEvents delayedEvents = mock(DelayedEvents.class);
+
+        VisitService serviceUnderTest = createVisitService(branchService, eventService, delayedEvents, mock(KeyCloackClient.class));
+        CallRule waitingRule = mock(CallRule.class);
+        serviceUnderTest.setWaitingTimeCallRule(waitingRule);
+        when(waitingRule.call(branch, servicePoint, queueIds)).thenReturn(Optional.empty());
+
+        log.info("Запускаем вызов визита по очередям {} при включённом автодовызове", queueIds);
+        HttpStatusException exception = assertThrows(
+                HttpStatusException.class,
+                () -> serviceUnderTest.visitCallForConfirmWithMaxWaitingTime(
+                        branch.getId(), servicePoint.getId(), queueIds));
+
+        log.info("Убеждаемся, что режим автодовызова активирован и сохранён");
+        assertEquals("Autocall mode enabled!", exception.getMessage());
+        ServicePoint updatedServicePoint = branch.getServicePoints().get(servicePoint.getId());
+        assertTrue(Boolean.TRUE.equals(updatedServicePoint.getAutoCallMode()));
+        verify(branchService).add(branch.getId(), branch);
+    }
+
 
     private VisitService createVisitService(
             BranchService branchService,
