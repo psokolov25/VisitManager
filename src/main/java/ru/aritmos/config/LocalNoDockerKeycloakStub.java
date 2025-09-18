@@ -1,6 +1,5 @@
 package ru.aritmos.config;
 
-import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
  */
 @Singleton
 @Requires(env = "local-no-docker")
-@Replaces(KeyCloackClient.class)
 public class LocalNoDockerKeycloakStub extends KeyCloackClient {
 
   /**

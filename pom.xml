@@ -637,15 +637,6 @@
             </build>
         </profile>
         <profile>
-            <id>stubs</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <tests.micronaut.environments>local-no-docker</tests.micronaut.environments>
-            </properties>
-        </profile>
-        <profile>
             <id>it-external</id>
             <properties>
                 <tests.micronaut.environments>integration</tests.micronaut.environments>
