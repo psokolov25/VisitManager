@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-449%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-461%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-70.5%25-orange)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-77.9%25-orange)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -796,7 +796,7 @@ class HttpExample {
 
 ## 🧪 Тестирование
 
-Команда ниже выполняет 444 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 66,0%.
+Команда ниже выполняет 461 модульный тест и формирует отчёт JaCoCo с линейным покрытием 77,9% (инструкции — 73,7%, ветви — 50,7%).
 
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
@@ -943,6 +943,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
   параметров визита, планирование обновления пула и обработку отсутствия точки обслуживания, визита или пула.
 - ru.aritmos.service.VisitServiceTransferToUserPoolTest — проверяет перевод визита из точки обслуживания в пул сотрудника, очистку
   рабочих полей визита, генерацию событий и обработку отсутствия точки, визита или сотрудника.
+- ru.aritmos.service.VisitServiceUncoveredOperationsTest — закрывает ранее непокрытые сценарии `VisitService`: перенос визита из точки обслуживания в очередь (включая позиционную вставку), возврат визита в пользовательский пул, перевод из очереди в пул пользователя с разными источниками данных, а также цепочки `visitCallForConfirmWithMaxWaitingTime(...)` с проверкой публикации событий и автодовызова.
 - ru.aritmos.service.VisitServiceTest — охватывает базовые операции `VisitService`.
 
 #### Правила вызова
