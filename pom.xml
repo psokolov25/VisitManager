@@ -44,6 +44,7 @@
         <micronaut.aot.packageName>ru.aritmos.aot.generated</micronaut.aot.packageName>
         <micronaut.runtime>netty</micronaut.runtime>
         <micronaut.test.resources.enabled>false</micronaut.test.resources.enabled>
+        <tests.micronaut.environments>local-no-docker</tests.micronaut.environments>
         <exec.mainClass>ru.aritmos.Application</exec.mainClass>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -394,6 +395,8 @@
                         <exclude>**/*IT.java</exclude>
                     </excludes>
                     <systemPropertyVariables>
+                        <micronaut.environments>${tests.micronaut.environments}</micronaut.environments>
+                        <micronaut.test.resources.enabled>${micronaut.test.resources.enabled}</micronaut.test.resources.enabled>
                         <junit.platform.listeners.uid.tracking.enabled>true</junit.platform.listeners.uid.tracking.enabled>
                         <junit.platform.listeners.uid.tracking.output.dir>${project.build.directory}/test-ids</junit.platform.listeners.uid.tracking.output.dir>
                     </systemPropertyVariables>
@@ -634,7 +637,19 @@
             </build>
         </profile>
         <profile>
+            <id>stubs</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <tests.micronaut.environments>local-no-docker</tests.micronaut.environments>
+            </properties>
+        </profile>
+        <profile>
             <id>it-external</id>
+            <properties>
+                <tests.micronaut.environments>integration</tests.micronaut.environments>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -646,7 +661,7 @@
                                 <include>**/*IT.java</include>
                             </includes>
                             <systemPropertyVariables>
-                                <micronaut.environments>integration</micronaut.environments>
+                                <micronaut.environments>${tests.micronaut.environments}</micronaut.environments>
                                 <micronaut.test.resources.enabled>false</micronaut.test.resources.enabled>
                             </systemPropertyVariables>
                         </configuration>
@@ -675,6 +690,7 @@
         <profile>
             <id>it-resources</id>
             <properties>
+                <tests.micronaut.environments>integration</tests.micronaut.environments>
                 <micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>
             </properties>
             <build>
@@ -688,7 +704,8 @@
                                 <include>**/*IT.java</include>
                             </includes>
                             <systemPropertyVariables>
-                                <micronaut.environments>integration</micronaut.environments>
+                                <micronaut.environments>${tests.micronaut.environments}</micronaut.environments>
+                                <micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>
                             </systemPropertyVariables>
                         </configuration>
                         <executions>
