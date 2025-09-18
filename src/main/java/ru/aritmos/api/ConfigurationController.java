@@ -17,6 +17,7 @@ import ru.aritmos.service.VisitService;
  * @author Pavel Sokolov REST API управления конфигурацией отделений
  */
 @lombok.extern.slf4j.Slf4j
+
 @Controller("/configuration")
 @Slf4j
 public class ConfigurationController {
@@ -30,6 +31,7 @@ public class ConfigurationController {
    * @param branchHashMap список отделений
    * @return список отделений
    */
+
   @Tag(name = "Конфигурация отделений")
   @Tag(name = "Полный список")
   @Post(uri = "/branches")
