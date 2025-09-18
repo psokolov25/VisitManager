@@ -3,7 +3,6 @@ package ru.aritmos.events.services;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
-import io.micronaut.context.annotation.Requires;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.ObjectMapper;
@@ -19,7 +18,6 @@ import ru.aritmos.exceptions.SystemException;
  * Подписчик Kafka для обработки событий шины данных.
  */
 @Slf4j
-@Requires(notEnv = "local-no-docker")
 @io.micronaut.configuration.kafka.annotation.KafkaListener(offsetReset = OffsetReset.LATEST)
 public class KafkaListener {
   /** Обработчики общих событий (topic `events`). */
