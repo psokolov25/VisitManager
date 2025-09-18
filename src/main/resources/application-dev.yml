@@ -14,6 +14,8 @@ micronaut:
 ---
 #tag::oauth2[]
 micronaut:
+  metrics:
+    enabled: true
   security:
     authentication: cookie
 
@@ -53,9 +55,24 @@ micronaut:
             issuer: '${OIDC_ISSUER_DOMAIN:`http://192.168.8.40:8282`}/realms/${KEYCLOAK_REALM:aritmos_platform}' # <5>
 
     endpoints:
+      all:
+        enabled: true
+        prometheus:
+          enabled: true    # GET /prometheus
+        metrics:
+          enabled: true    # GET /metrics (JSON)
+      micrometer:
+        enabled: true
+        binders:
+          web:
+            enabled: true
+        exporters:
+          prometheus:
+            enabled: true
       logout:
         get-allowed: true # <6>
     enabled: false
+
 #end::oauth2[]
 
 graphql:
