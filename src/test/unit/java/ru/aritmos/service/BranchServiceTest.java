@@ -4,10 +4,13 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
 
 import io.micronaut.http.exceptions.HttpStatusException;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
@@ -25,10 +28,13 @@ import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
+import ru.aritmos.test.TestLoggingExtension;
 
 /**
  * Тесты для {@link BranchService}.
  */
+@Slf4j
+@ExtendWith(TestLoggingExtension.class)
 class BranchServiceTest {
 
     /**
@@ -715,6 +721,97 @@ class BranchServiceTest {
                 eq("b1"), eq("old"), eq(visitService), eq(false), eq(false), eq(""), eq(false), eq(""));
         assertEquals("new", branch.getUsers().get("user").getServicePointId());
         assertSame(branch.getServicePoints().get("new").getUser(), branch.getUsers().get("user"));
+    }
+
+    /**
+
+     * Завершает активный перерыв и уведомляет каналы при открытии точки обслуживания.
+     */
+    @Test
+    void openServicePointCompletesActiveBreakAndNotifiesChannels() throws Exception {
+        log.info("Готовим отделение и пользователя с активным перерывом");
+        BranchService service = spy(new BranchService());
+        EventService eventService = mock(EventService.class);
+        service.eventService = eventService;
+        KeyCloackClient keyCloackClient = mock(KeyCloackClient.class);
+        UserRepresentation representation = new UserRepresentation();
+        representation.setId("user-id");
+        representation.setEmail("user@example.com");
+        representation.setFirstName("Ирина");
+        representation.setLastName("Петрова");
+        when(keyCloackClient.getUserInfo("user")).thenReturn(Optional.of(representation));
+        GroupRepresentation group = new GroupRepresentation();
+        HashMap<String, List<String>> attributes = new HashMap<>();
+        attributes.put("branchPrefix", List.of("BR"));
+        group.setAttributes(attributes);
+        when(keyCloackClient.getAllBranchesOfUser("user")).thenReturn(List.of(group));
+        when(keyCloackClient.isUserModuleTypeByUserName("user", "admin")).thenReturn(false);
+        service.keyCloackClient = keyCloackClient;
+        VisitService visitService = mock(VisitService.class);
+
+        Branch branch = new Branch("b1", "Branch");
+        branch.setPrefix("BR");
+        branch.getWorkProfiles().put("wp1", new WorkProfile("wp1", "Основной профиль"));
+        branch.getWorkProfiles().put("oldWp", new WorkProfile("oldWp", "Старый профиль"));
+        ServicePoint newPoint = new ServicePoint("sp1", "Новое окно");
+        branch.getServicePoints().put(newPoint.getId(), newPoint);
+        ServicePoint oldPoint = new ServicePoint("old", "Старое окно");
+        branch.getServicePoints().put(oldPoint.getId(), oldPoint);
+
+        User user = new User("u1", "user", null);
+        user.setName("user");
+        user.setAllBranches(List.of(group));
+        user.setIsAdmin(false);
+        user.setServicePointId(oldPoint.getId());
+        user.setCurrentWorkProfileId("oldWp");
+        user.setLastBreakStartTime(ZonedDateTime.now().minusMinutes(10));
+        user.setLastBreakEndTime(null);
+        oldPoint.setUser(user);
+        branch.getUsers().put("user", user);
+        service.branches.put("b1", branch);
+
+        doNothing()
+            .when(service)
+            .closeServicePoint(
+                eq("b1"),
+                eq(oldPoint.getId()),
+                any(),
+                anyBoolean(),
+                anyBoolean(),
+                anyString(),
+                anyBoolean(),
+                anyString());
+
+        log.info("Открываем точку {} для сотрудника {} после перерыва", newPoint.getId(), user.getName());
+        User result = service.openServicePoint("b1", "user", newPoint.getId(), "wp1", visitService);
+
+        log.info("Проверяем завершение перерыва и публикацию событий для каналов");
+        assertSame(user, result);
+        assertNotNull(user.getLastBreakEndTime());
+        assertTrue(user.getLastBreakEndTime().isAfter(user.getLastBreakStartTime()));
+        assertEquals(newPoint.getId(), user.getServicePointId());
+        assertEquals("wp1", user.getCurrentWorkProfileId());
+
+        ArgumentCaptor<String> channelCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(eventService, atLeast(3)).send(channelCaptor.capture(), eq(false), eventCaptor.capture());
+
+        assertStaffEndBreakEvent(channelCaptor.getAllValues(), eventCaptor.getAllValues(), "*");
+        assertStaffEndBreakEvent(channelCaptor.getAllValues(), eventCaptor.getAllValues(), "frontend");
+        assertStaffEndBreakEvent(channelCaptor.getAllValues(), eventCaptor.getAllValues(), "stat");
+    }
+
+    private void assertStaffEndBreakEvent(List<String> channels, List<Event> events, String channel) {
+        boolean found = false;
+        for (int i = 0; i < channels.size(); i++) {
+            if (channel.equals(channels.get(i))
+                    && events.get(i) != null
+                    && "STAFF_END_BREAK".equals(events.get(i).getEventType())) {
+                found = true;
+                break;
+            }
+        }
+        assertTrue(found, () -> "Не найдено событие STAFF_END_BREAK для канала " + channel);
     }
 
     /**
