@@ -5,7 +5,6 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-
 [![Tests](https://img.shields.io/badge/tests-449%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-70.5%25-orange)](#-тестирование)
