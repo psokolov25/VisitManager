@@ -71,3 +71,33 @@ redis:
       maximum-size: 1000       # Максимальное количество записей
 
 
+endpoints:
+  all:
+    enabled: true
+    path: /management/
+    sensitive: false
+  beans:
+    enabled: true
+  caches:
+    enabled: true
+  env:
+    enabled: true
+  health:
+    enabled: true
+    details-visible: ANONYMOUS
+  info:
+    enabled: true
+  loggers:
+    enabled: true
+  metrics:
+    enabled: true
+  refresh:
+    enabled: true
+  routes:
+    enabled: true
+  stop:
+    enabled: true
+  threaddump:
+    enabled: true
+
+
