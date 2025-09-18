@@ -26,21 +26,7 @@ kafka:
   bootstrap:
     servers: '${KAFKA_SERVER:`192.168.8.45:29092`}'
 
-endpoints:
-  all:
-    enabled: true
-  prometheus:
-    enabled: true    # GET /prometheus
-  metrics:
-    enabled: true    # GET /metrics (JSON)
-micrometer:
-  enabled: true
-  binders:
-    web:
-      enabled: true
-  exporters:
-    prometheus:
-      enabled: true
+
 micronaut:
   metrics:
     enabled: true
