@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-471%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-476%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-83.4%25-brightgreen)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-83.6%25-brightgreen)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -803,7 +803,7 @@ class HttpExample {
 ## 🧪 Тестирование
 
 
-Команда ниже выполняет 471 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 83,4% (инструкции — 78,9%, ветви — 53,6%).
+Команда ниже выполняет 476 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 83,6% (инструкции — 79,1%, ветви — 54,0%).【F:AGENTS.md†L85-L92】
 
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
@@ -953,7 +953,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceUncoveredOperationsTest — закрывает ранее непокрытые сценарии `VisitService`: перенос визита из точки обслуживания в очередь (включая позиционную вставку), возврат визита в пользовательский пул, перевод из очереди в пул пользователя с разными источниками данных, а также цепочки `visitCallForConfirmWithMaxWaitingTime(...)` с проверкой публикации событий и автодовызова.
 - ru.aritmos.service.VisitServiceCallAndReturnScenariosTest — расширяет покрытие вызовов визита: проверяет сценарии `visitCallForConfirmWithMaxWaitingTime(...)` и `visitCallForConfirmWithMaxLifeTime(...)`, возврат визита в очередь и остановку обслуживания с отложенной публикацией событий.
 - ru.aritmos.service.VisitServiceRecallAndReturnTest — дополняет покрытие повторного вызова, фиксации неявки, возврата вызванного визита и маршрутизации возврата по последнему пулу или очереди.
-- ru.aritmos.service.VisitServiceTest — охватывает базовые операции `VisitService`.
+- ru.aritmos.service.VisitServiceTest — проверяет возврат визита из обслуживания в очередь с генерацией событий STOP_SERVING и BACK_TO_QUEUE, планирование отложенного обновления очереди, обработку ошибки при отсутствии сохранённой очереди и перенос визита во внешний пул точки обслуживания с метаданными Keycloak.【F:src/test/unit/java/ru/aritmos/service/VisitServiceTest.java†L139-L337】
 
 #### Правила вызова
 - ru.aritmos.service.rules.CallRuleTest — проверяет сигнатуры базового правила вызова и возвращаемые типы `Optional<Visit>`.
