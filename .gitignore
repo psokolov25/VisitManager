@@ -1,31 +1,85 @@
-Thumbs.db
-.DS_Store
-.gradle
-build/
-target/
+# ---- IntelliJ IDEA ----
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/runConfigurations/
+!.idea/vcs.xml
+
+# личные файлы (не нужны в git)
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/shelf/
+.idea/dictionaries
+.idea/httpRequests/
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/sonarlint/
+
+# ---- Eclipse ----
+.project
+.classpath
+.settings/
+.loadpath
+
+# ---- VS Code ----
+.vscode/
+
+# ---- Build output ----
 out/
-.micronaut/
-.idea
+target/
+build/
+bin/
+
+# ---- Logs ----
+*.log
+*.out
+*.err
+
+# ---- OS junk ----
+.DS_Store
+Thumbs.db
+
+# ---- Maven ----
+.mvn/wrapper/maven-wrapper.jar
+
+# ---- Gradle ----
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# ---- Kotlin/Java specific ----
 *.iml
 *.ipr
 *.iws
-.project
-.settings
-.classpath
-.factorypath
-/entrypoint-0.2.jar
-/JavaDocs.zip
-docker
-# вспомогательный pom, создаваемый maven-shade-plugin
-dependency-reduced-pom.xml
-# JVM crash logs
-hs_err_pid*.log
+*.hprof
 
-# Temporary files
-__ec_tmp.java
-temp_dump.txt
-*.log
+# ---- Docker/Kubernetes ----
+*.pid
+*.seed
+*.pid.lock
+.docker/
+.kube/
+
+# ---- Micronaut specific ----
+# В Micronaut иногда используют "generated" для кода аннотаций
+generated/
+
+# ---- Coverage / Reports ----
+coverage/
+*.exec
+*.ec
+*.lcov
+jacoco.exec
+test-results/
+reports/
+
+# ---- Env/Secrets ----
+.env
+.env.*
+*.secret
+*.key
+*.pem
+
+# ---- Other ----
+*.swp
+*.bak
 *.tmp
-*.dump
-
-/.mvn/wrapper/maven-wrapper.jar
