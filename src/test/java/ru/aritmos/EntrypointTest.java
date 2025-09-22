@@ -711,6 +711,7 @@ class EntrypointTest {
     VisitParameters visitParameters =
         VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
     Visit visit = visitService.createVisit(branchId, "1", visitParameters, false);
+    Thread.sleep(400);
     visit =
         visitService.visitTransfer(
             branchId, servicePointFcId, "bd4b586e-c93e-4e07-9a76-586dd84ddea5", visit, true, 0L);

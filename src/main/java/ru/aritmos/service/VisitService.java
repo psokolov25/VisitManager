@@ -2682,27 +2682,29 @@ public class VisitService {
 
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     log.info("Visit {} transfered!", visit);
-    Event delayedEvent =
-        Event.builder()
-            .eventType("QUEUE_REFRESHED")
-            .body(
-                new HashMap<>(
-                    Map.ofEntries(
-                        Map.entry("id", visit.getParameterMap().get("LastQueueId")),
-                        Map.entry(
-                            "name",
-                            currentBranch
-                                .getQueues()
-                                .get(visit.getParameterMap().get("LastQueueId"))
-                                .getName()),
-                        Map.entry("branchId", currentBranch.getId()),
-                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
-                        Map.entry("visitId", visit.getId()),
-                        Map.entry("ticket", visit.getTicket()))))
-            .params(Map.of("queueId", queueId, "branchId", branchId))
-            .build();
-    delayedEvents.delayedEventService(
-        "frontend", false, delayedEvent, transferTimeDelay, eventService);
+    if (visit.getParameterMap().containsKey("LastQueueId")) {
+      Event delayedEvent =
+          Event.builder()
+              .eventType("QUEUE_REFRESHED")
+              .body(
+                  new HashMap<>(
+                      Map.ofEntries(
+                          Map.entry("id", visit.getParameterMap().get("LastQueueId")),
+                          Map.entry(
+                              "name",
+                              currentBranch
+                                  .getQueues()
+                                  .get(visit.getParameterMap().get("LastQueueId"))
+                                  .getName()),
+                          Map.entry("branchId", currentBranch.getId()),
+                          Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                          Map.entry("visitId", visit.getId()),
+                          Map.entry("ticket", visit.getTicket()))))
+              .params(Map.of("queueId", queueId, "branchId", branchId))
+              .build();
+      delayedEvents.delayedEventService(
+          "frontend", false, delayedEvent, transferTimeDelay, eventService);
+    }
     return visit;
   }
 
@@ -3184,22 +3186,24 @@ public class VisitService {
     branchService.updateVisit(visit, event, this, !isAppend);
     // changedVisitEventSend("CHANGED", oldVisit, visit, new HashMap<>());
     log.info("Visit {} transfered!", visit);
-    Event delayedEvent =
-        Event.builder()
-            .eventType("USER_POOL_REFRESHED")
-            .body(
-                new HashMap<>(
-                    Map.ofEntries(
-                        Map.entry("id", userId),
-                        Map.entry("name", currentBranch.getUsers().get(userId).getName()),
-                        Map.entry("branchId", currentBranch.getId()),
-                        Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
-                        Map.entry("visitId", visit.getId()),
-                        Map.entry("ticket", visit.getTicket()))))
-            .params(Map.of("poolUserId", userId, "branchId", branchId))
-            .build();
-    delayedEvents.delayedEventService(
-        "frontend", false, delayedEvent, transferTimeDelay, eventService);
+    if (currentBranch.getUsers().get(userId) != null) {
+      Event delayedEvent =
+          Event.builder()
+              .eventType("USER_POOL_REFRESHED")
+              .body(
+                  new HashMap<>(
+                      Map.ofEntries(
+                          Map.entry("id", userId),
+                          Map.entry("name", currentBranch.getUsers().get(userId).getName()),
+                          Map.entry("branchId", currentBranch.getId()),
+                          Map.entry("reason", "RETURN_TIME_DELAY_FINISHED"),
+                          Map.entry("visitId", visit.getId()),
+                          Map.entry("ticket", visit.getTicket()))))
+              .params(Map.of("poolUserId", userId, "branchId", branchId))
+              .build();
+      delayedEvents.delayedEventService(
+          "frontend", false, delayedEvent, transferTimeDelay, eventService);
+    }
     return visit;
   }
 
