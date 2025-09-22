@@ -3,9 +3,17 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
   <proxies>
     <proxy>
-      <id>default</id>
-      <active>false</active>
+      <id>default-http</id>
+      <active>true</active>
       <protocol>http</protocol>
+      <host>proxy</host>
+      <port>8080</port>
+      <nonProxyHosts>localhost|127.0.0.1|::1</nonProxyHosts>
+    </proxy>
+    <proxy>
+      <id>default-https</id>
+      <active>true</active>
+      <protocol>https</protocol>
       <host>proxy</host>
       <port>8080</port>
       <nonProxyHosts>localhost|127.0.0.1|::1</nonProxyHosts>
