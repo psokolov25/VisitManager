@@ -1,13 +1,11 @@
-# VisitManager
-
 Служба управления визитами и клиентопотоком, построенная на Micronaut 4.7.6 и Java 17. Сервис управляет очередями, точками обслуживания, сотрудниками и визитами клиентов в отделениях.
 
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-502%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-476%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-88.2%25-brightgreen)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-83.60%25-brightgreen)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -15,6 +13,11 @@
 ## 📑 Содержание
 - [🧾 Обзор](#-обзор)
 - [⚙️ Настройка окружения](#-настройка-окружения)
+  - [🧰 Требования](#-требования)
+  - [🚀 Сборка и запуск](#-сборка-и-запуск)
+  - [🧪 Micronaut профиль `local-no-docker`](#-micronaut-профиль-local-no-docker)
+  - [🌐 Работа за прокси](#-работа-за-прокси)
+  - [🗑️ Временные файлы](#-временные-файлы)
 - [🏗️ Архитектура](#-архитектура)
 - [🔄 Логика работы](#-логика-работы)
 - [🗂️ Структура проекта](#-структура-проекта)
@@ -27,19 +30,56 @@
   - [🧰 Back End разработчик](#-back-end-разработчик)
   - [🔗 Интегратор](#-интегратор)
 - [📡 REST API](#-rest-api)
+  - [📬 Варианты ответа сервера](#-варианты-ответа-сервера)
+  - [🧭 ManagementController](#-managementcontroller)
+  - [🎫 EntrypointController](#-entrypointcontroller)
+  - [🏢 ServicePointController](#-servicepointcontroller)
+  - [📌 Дополнительные примеры](#-дополнительные-примеры)
 - [🏧 Работа терминала клиента](#-работа-терминала-клиента)
+  - [🎯 Назначение и доступ терминала](#-назначение-и-доступ-терминала)
+  - [🏁 Подготовка и запуск терминала](#-подготовка-и-запуск-терминала)
+  - [⚙️ Основные операции терминала](#-основные-операции-терминала)
+  - [➕ Дополнительные возможности терминала](#-дополнительные-возможности-терминала)
+  - [🔚 Завершение работы терминала](#-завершение-работы-терминала)
+  - [📋 Типовые сценарии терминала](#-типовые-сценарии-терминала)
 - [🕹️ Работа пульта оператора](#-работа-пульта-оператора)
+  - [🎯 Назначение и доступ пульта](#-назначение-и-доступ-пульта)
+  - [🏁 Подготовка и запуск пульта](#-подготовка-и-запуск-пульта)
+  - [⚙️ Основные операции пульта](#-основные-операции-пульта)
+  - [➕ Дополнительные возможности пульта](#-дополнительные-возможности-пульта)
+  - [🔚 Завершение работы пульта](#-завершение-работы-пульта)
+  - [📋 Типовые сценарии пульта](#-типовые-сценарии-пульта)
 - [🖥️ Работа приемной (ресепшен)](#-работа-приемной-ресепшен)
+  - [🎯 Назначение и доступ ресепшена](#-назначение-и-доступ-ресепшена)
+  - [🏁 Подготовка и запуск ресепшена](#-подготовка-и-запуск-ресепшена)
+  - [⚙️ Основные операции ресепшена](#-основные-операции-ресепшена)
+  - [➕ Дополнительные возможности ресепшена](#-дополнительные-возможности-ресепшена)
+  - [🔚 Завершение работы ресепшена](#-завершение-работы-ресепшена)
+  - [📋 Типовые сценарии ресепшена](#-типовые-сценарии-ресепшена)
 - [📦 Примеры кода](#-примеры-кода)
+  - [🧩 Использование сервиса](#-использование-сервиса)
+  - [🌐 REST‑клиент Micronaut](#-rest-клиент-micronaut)
+  - [🔌 Работа с `HttpClient`](#-работа-с-httpclient)
 - [📊 Диаграммы](#-диаграммы)
   - [🧱 Класс VisitService и доменная модель](#-класс-visitservice-и-доменная-модель)
   - [🧩 Фрагмент: сервисный слой](#-фрагмент-сервисный-слой)
   - [🏢 Фрагмент: доменная модель отделения](#-фрагмент-доменная-модель-отделения)
 - [🧑‍💼 Сценарии работы сотрудника](#-сценарии-работы-сотрудника)
+  - [🟢 Открытие рабочего места](#-открытие-рабочего-места)
+  - [🔔 Вызов визита](#-вызов-визита)
+  - [🛎️ Начало обслуживания визита](#-начало-обслуживания-визита)
+  - [🔁 Перевод и возвращение визита](#-перевод-и-возвращение-визита)
+  - [🔂 Повторный вызов визита](#-повторный-вызов-визита)
+  - [✅ Завершение визита](#-завершение-визита)
+  - [🚪 Закрытие рабочего места](#-закрытие-рабочего-места)
 - [🤖 Документация для автотестеров](#-документация-для-автотестеров)
+  - [🗂️ Файлы настроек](#-файлы-настроек)
+  - [👥 Кейсы клиентов](#-кейсы-клиентов)
+  - [🧑‍💼 Кейсы операторов](#-кейсы-операторов)
+  - [🔐 Кейсы аутентификации](#-кейсы-аутентификации)
 - [🧪 Тестирование](#-тестирование)
-  - [Модульные тесты](#модульные-тесты)
-  - [Интеграционные тесты](#интеграционные-тесты)
+  - [🧬 Модульные тесты](#-модульные-тесты)
+  - [🔗 Интеграционные тесты](#-интеграционные-тесты)
 - [🆘 Траблшутинг](#-траблшутинг)
   - [🧩 Kafka: `java.net.ConnectException` (connection refused)](#-kafka-javanetconnectexception-connection-refused)
   - [🪫 Redis: `NOAUTH Authentication required`](#-redis-noauth-authentication-required)
@@ -50,18 +90,19 @@
 - [🤝 Contributing](#-contributing)
 - [📄 Лицензия](#-лицензия)
 
+
 ## 🧾 Обзор
 VisitManager предоставляет REST‑интерфейсы для создания визитов, управления очередями и обслуживания клиентов. Сервис обрабатывает события асинхронно через Kafka, кеширует конфигурацию в Redis и интегрируется с Keycloak как внешним источником пользовательских данных, сохраняя авторизационные проверки внутри Micronaut Security.【F:src/main/java/ru/aritmos/keycloack/service/KeyCloackClient.java†L101-L399】【F:src/main/java/ru/aritmos/keycloack/customsecurity/CustomSecurityRule.java†L16-L40】 Поддерживает горизонтальное масштабирование и расширяемую модель домена.
 
 ## ⚙️ Настройка окружения
 
-### Требования
+### 🧰 Требования
 - JDK 17
 - Maven 3 (локально установленный `mvn`, поддерживающий сохранение настроек и работу через прокси)
 - Подключение к Maven Central или зеркалу
 - Docker 20+ и Docker Compose для локального стенда
 
-### Сборка и запуск
+### 🚀 Сборка и запуск
 ```bash
 # полная сборка
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml clean verify
@@ -71,7 +112,7 @@ java -jar target/visitmanager.jar
 docker compose -f docker-compose.local.yml up -d --build
 ```
 
-### Micronaut профиль `local-no-docker`
+### 🧪 Micronaut профиль `local-no-docker`
 Используется для локальной разработки без Docker и внешних сервисов. Подменяет интеграции заглушками.
 ```bash
 MICRONAUT_ENVIRONMENTS=local-no-docker \
@@ -79,7 +120,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml mn:
 ```
 
 
-### Работа за прокси
+### 🌐 Работа за прокси
 Проект уже содержит файл `.mvn/settings.xml` с настройками прокси, поэтому достаточно запускать Maven с опцией `-s .mvn/settings.xml`.
 Если нужно переопределить настройки, добавьте в `~/.m2/settings.xml`:
 ```xml
@@ -107,7 +148,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml mn:
 </settings>
 ```
 
-### Временные файлы
+### 🗑️ Временные файлы
 JVM может создавать файлы `hs_err_pid*.log` и другие временные дампы при аварийных остановках.
 Они исключены через `.gitignore` и не должны попадать в репозиторий.
 
@@ -204,7 +245,7 @@ scripts/           демо-сценарии и утилиты для локал
 ## 📡 REST API
 Обзор основных контроллеров и типичных вызовов.
 
-### Варианты ответа сервера
+### 📬 Варианты ответа сервера
 Все контроллеры возвращают стандартные HTTP-коды:
 
 
@@ -221,7 +262,7 @@ scripts/           демо-сценарии и утилиты для локал
 - `500 Internal Server Error` — внутренняя ошибка сервера.
 
 
-### ManagementController
+### 🧭 ManagementController
 ```bash
 # список отделений
 curl http://localhost:8080/managementinformation/branches
@@ -229,7 +270,7 @@ curl http://localhost:8080/managementinformation/branches
 curl http://localhost:8080/managementinformation/branches/tiny
 ```
 
-### EntrypointController
+### 🎫 EntrypointController
 ```bash
 # создание визита
 curl -X POST \
@@ -238,7 +279,7 @@ curl -X POST \
   -d '["serviceId1","serviceId2"]'
 ```
 
-### ServicePointController
+### 🏢 ServicePointController
 ```bash
 # открыть точку обслуживания
 curl -X POST 'http://localhost:8080/servicepoint/branches/{branchId}/servicePoints/{spId}/workProfiles/{wpId}/users/{user}/open'
@@ -248,7 +289,7 @@ VISIT_ID=$(curl -s -X POST 'http://localhost:8080/servicepoint/branches/{branchI
 curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/servicePoints/{spId}/confirmed/confirm/${VISIT_ID}"
 ```
 
-### Дополнительные примеры
+### 📌 Дополнительные примеры
 - добавление заметки: `POST /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/notes`
 - завершение визита: `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/visit/end`
 - перевод в очередь: `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromQueue/{visitId}`
@@ -257,15 +298,15 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ## 🏧 Работа терминала клиента
 
-### Назначение и доступ
+### 🎯 Назначение и доступ терминала
 Терминал самообслуживания помогает клиенту выбрать услуги и оформить визит, а также показывает актуальную информацию по очередям. Все запросы выполняются от имени сервисного пользователя терминала; при отсутствии авторизации backend вернёт `401 Unauthorized` или `403 Forbidden`.
 
-### Подготовка и запуск
+### 🏁 Подготовка и запуск терминала
 - `GET /entrypoint/branches/{branchId}/services` — перечень услуг, доступных для оформления талона в отделении.
   - Контроллер: `EntrypointController#getAllAvailableServices` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L410-L433】
   - Ответы: `200 OK` — услуги найдены, `404 Not Found` — отделение отсутствует или недоступно, `500 Internal Server Error` — внутренняя ошибка сервера.
 
-### Основные операции
+### ⚙️ Основные операции терминала
 - **Создание талона без дополнительных параметров** — `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit`.
   - Контроллер: `EntrypointController#createVisit` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L123-L198】
   - Ответы: `200 OK` — визит создан, `400 Bad Request` — некорректные данные (например, пустой список услуг), `404 Not Found` — не найдены отделение, услуги, точка терминала или очередь, `500 Internal Server Error` — внутренняя ошибка сервера.
@@ -273,15 +314,15 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
   - Контроллер: `EntrypointController#createVisit` (перегрузка с параметрами) 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L201-L285】
   - Ответы: `200 OK` — визит сформирован с указанными параметрами, `400 Bad Request` — нарушены требования к телу запроса, `404 Not Found` — отсутствуют отделение, услуги, точка терминала, очередь или правило сегментации, `500 Internal Server Error` — внутренняя ошибка сервера.
 
-### Дополнительные возможности
+### ➕ Дополнительные возможности терминала
 - `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — список визитов в очереди с сортировкой по времени ожидания.
   - Контроллер: `ServicePointController#getVisits` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L647-L676】
   - Ответы: `200 OK` — очередь получена, `404 Not Found` — отделение или очередь отсутствуют, `500 Internal Server Error` — внутренняя ошибка сервера.
 
-### Завершение работы
+### 🔚 Завершение работы терминала
 Терминал не закрывает смену самостоятельно: сессия завершается при выходе пользователя или истечении токена, а повторная авторизация выполняется автоматически на уровне киоска.
 
-### Типовые сценарии
+### 📋 Типовые сценарии терминала
 1. **Печать талона по выбранным услугам**
    1. `GET /entrypoint/branches/{branchId}/services` — загрузка перечня услуг отделения.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L410-L433】
    2. `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` — оформление визита и выдача талона клиенту.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L123-L198】
@@ -291,10 +332,10 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ## 🕹️ Работа пульта оператора
 
-### Назначение и доступ
+### 🎯 Назначение и доступ пульта
 Пульт оператора объединяет данные о сотрудниках, очередях и визитах, обеспечивая полный цикл обслуживания клиента: от открытия рабочего места до завершения визита. Все операции требуют авторизации; при отсутствии токена система вернёт `401 Unauthorized` или `403 Forbidden`.
 
-### Подготовка и запуск
+### 🏁 Подготовка и запуск пульта
 - **Выбор отделения и рабочего места**
   - `GET /managementinformation/branches/tiny` — компактный список отделений (`200 OK`; `400 Bad Request`/`500 Internal Server Error` при ошибках).
   - `GET /managementinformation/branches/{id}` — подробная информация об отделении (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
@@ -312,7 +353,7 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 - **Открытие точки обслуживания**
   - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — закрепление рабочего места за сотрудником (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
 
-### Основные операции
+### ⚙️ Основные операции пульта
 - **Мониторинг сотрудников и очередей**
   - `GET /servicepoint/branches/{branchId}/workingusers` — активные сотрудники смены (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
   - `GET /servicepoint/branches/{branchId}/queues` — очереди отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
@@ -350,7 +391,7 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
   - `GET /servicepoint/branches/{branchId}/visits/{visitId}/notes` — заметки визита (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
   - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/notes` — добавление заметки (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
 
-### Дополнительные возможности
+### ➕ Дополнительные возможности пульта
 - **Переводы между очередями и пулами**
   - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueueToStartOrToEnd/{visitId}` — перемещение талона между очередями с выбором позиции (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
   - `PUT /servicepoint/branches/{branchId}/users/{userId}/visits/{visitId}` — отправка визита в пул сотрудника (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
@@ -359,11 +400,11 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
   - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer` — отправка визита в пул точки обслуживания (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
   - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint` — возврат визита из точки в очередь (`200 OK`; `404 Not Found`; `500 Internal Server Error`).
 
-### Завершение работы
+### 🔚 Завершение работы пульта
 - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close` — закрытие рабочей станции (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
 - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/logout` — завершение сессии сотрудника и закрытие точки (`200 OK`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`).
 
-### Типовые сценарии
+### 📋 Типовые сценарии пульта
 1. **Создание виртуального талона и завершение обслуживания**
    1. `POST /entrypoint/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit` — оператор создаёт талон.
    2. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end` — визит закрывается после обслуживания.
@@ -380,10 +421,10 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ## 🖥️ Работа приемной (ресепшен)
 
-### Назначение и доступ
+### 🎯 Назначение и доступ ресепшена
 Приёмная регистрирует посетителей, управляет печатью талонов и распределяет визиты по очередям и пулам обслуживания. Все вызовы выполняются с авторизацией сервиса ресепшена; при отсутствии токена backend вернёт `401 Unauthorized` или `403 Forbidden`.
 
-### Подготовка и запуск
+### 🏁 Подготовка и запуск ресепшена
 - **Выбор отделения и контроль состояния**
   - `GET /managementinformation/branches/tiny` — компактный список отделений для выбора филиала (`200 OK`; `400 Bad Request`/`500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】
   - `GET /servicepoint/branches/{branchId}` — сводные данные отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】
@@ -393,13 +434,13 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
   - `GET /servicepoint/branches/{branchId}/printers` — доступные принтеры для печати талонов (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L102-L117】
   - `GET /entrypoint/branches/{branchId}/services/all` — полный каталог услуг отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
 
-### Основные операции
+### ⚙️ Основные операции ресепшена
 - **Мониторинг очередей** — `GET /servicepoint/branches/{branchId}/queues/full` возвращает очереди и талоны отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】
 - **Регистрация визита с печатью** — `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` (`200 OK`; `400 Bad Request`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
 - **Регистрация виртуального визита** — `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` (`200 OK`; `400 Bad Request`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
 - **Отмена визита** — `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` (`204 No Content`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2334-L2363】
 
-### Дополнительные возможности
+### ➕ Дополнительные возможности ресепшена
 - **Перераспределение между очередями и пулами**
   - `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=true` — перенос визита внешней службой в конец очереди (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】
   - `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false` — перенос визита в начало очереди (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】
@@ -408,10 +449,10 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
   - `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` — перенос визита в конец пула сотрудника (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】
   - `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=false` — перенос визита в начало пула сотрудника (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】
 
-### Завершение работы
+### 🔚 Завершение работы ресепшена
 Отдельного закрытия смены для приёмной не требуется: завершение рабочего дня выполняется на пульте оператора, после чего новые визиты ресепшн не создаёт.
 
-### Типовые сценарии
+### 📋 Типовые сценарии ресепшена
 1. **Регистрация клиента с печатью талона**
    1. `GET /entrypoint/branches/{branchId}/services/all` — выбор услуги для клиента.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
    2. `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` — оформление визита и печать талона.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
@@ -424,7 +465,7 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ## 📦 Примеры кода
 
-### Использование сервиса
+### 🧩 Использование сервиса
 ```java
 import jakarta.inject.Inject;
 import ru.aritmos.model.visit.Visit;
@@ -445,7 +486,7 @@ class VisitFacade {
 }
 ```
 
-### REST‑клиент Micronaut
+### 🌐 REST‑клиент Micronaut
 Зависимость: `io.micronaut:micronaut-http-client`
 ```java
 import io.micronaut.http.annotation.Post;
@@ -476,7 +517,7 @@ class VisitCreator {
 }
 ```
 
-### Работа с `HttpClient`
+### 🔌 Работа с `HttpClient`
 ```java
 import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.HttpClient;
@@ -531,7 +572,7 @@ class HttpExample {
 
 ![Рабочий процесс сотрудника](docs/diagrams/employee-workflow.svg)
 
-### 1. Открытие рабочего места
+### 🟢 Открытие рабочего места
 1. `GET /managementinformation/branches/tiny` — пульт загружает компактный список отделений (`200 OK` + массив `{ id, name }`; `400/500` при ошибках). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】
 2. `GET /managementinformation/branches/{branchId}` — актуализирует состояние выбранного отделения перед началом смены (`200 OK`; `404/500` при проблемах). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】
 3. `GET /servicepoint/branches/{branchId}/servicePoints` — показывает доступные рабочие места и их статус (`200 OK`; `404/500` при ошибках). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L168-L193】
@@ -540,12 +581,12 @@ class HttpExample {
 6. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — оператор занимает точку обслуживания (`200 OK`; `404/409` при конфликтах). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L492-L511】
 
 
-### 2. Вызов визита
+### 🔔 Вызов визита
 1. `GET /servicepoint/branches/{branchId}/queues/full` — обновляет состояние очередей в дашборде (`200 OK`; `404/500` при сбое). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】
 2. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — запрос следующего визита (`200 OK` + JSON талона, `204 No Content` если очередь пуста, `207 Multi-Status` при активном авто-вызове). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L973-L982】
 
 
-### 3. Начало обслуживания визита
+### 🛎️ Начало обслуживания визита
 1. `GET /entrypoint/branches/{branchId}/services/all` — обновляет полный список услуг и их параметров перед началом обслуживания (`200 OK`; `404/500` при ошибках). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
 2. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — подтверждение прихода клиента (`200 OK`; `404 Not Found`; `409 Conflict`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1386-L1434】
 3. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}` — добавление фактической услуги. 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1700-L1741】
@@ -553,7 +594,7 @@ class HttpExample {
 5. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}` — итог обслуженной услуги. 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1939-L1969】
 
 
-### 4. Перевод и возвращение визита
+### 🔁 Перевод и возвращение визита
 1. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromServicePoint?isAppend=true` — перевод визита в другую очередь (`200 OK`; `404/500`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2366-L2414】
 2. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/transfer` — отправка визита в пул точки обслуживания. 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2468-L2517】
 3. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/poolServicePoint/{poolServicePointId}/visit/put_back` — возврат визита из пула. 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2418-L2465】
@@ -562,19 +603,19 @@ class HttpExample {
 6. `PUT /servicepoint/branches/{branchId}/users/{userId}/pool/visits/{visitId}/externalService/transfer?isAppend=false|true` — помещение визита во внешний пул конкретного сотрудника (`200 OK`; `404/500`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3295-L3321】
 
 
-### 5. Повторный вызов визита
+### 🔂 Повторный вызов визита
 1. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/recall/{visitId}` — повторное приглашение клиента (`ServicePointController#visitReCallForConfirm`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1292-L1360】
 
-### 6. Завершение визита
+### ✅ Завершение визита
 1. `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end?isForced=false` — фиксация завершения обслуживания (`ServicePointController#visitEnd`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3138-L3163】
 
-### 7. Закрытие рабочего места
+### 🚪 Закрытие рабочего места
 - Перерыв: `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close?isBreak=true&breakReason=...` (метод `ServicePointController#closeServicePoint`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L540-L551】
 - Выход из системы: `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/logout` (метод `ServicePointController#logoutUser`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L560-L592】
 
 ## 🤖 Документация для автотестеров
 
-### Файлы настроек
+### 🗂️ Файлы настроек
 - `src/test/resources/application.yml` — базовая конфигурация Micronaut для тестов;
 - `src/test/resources/application-test.yml` — профиль `test` для автотестов;
 - `src/test/resources/application-dev.yml` — конфигурация dev при локальном запуске;
@@ -582,7 +623,7 @@ class HttpExample {
 - `src/test/resources/loki.properties` — параметры отправки логов;
 - `src/test/resources/keycloak.json` — конфигурация Keycloak для тестов.
 
-### Кейсы клиентов
+### 👥 Кейсы клиентов
 
 - **Создание визита**
   - Запрос: `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit`.
@@ -654,7 +695,7 @@ class HttpExample {
     - `500 Internal Server Error` — внутренняя ошибка сервера.
 
 
-### Кейсы операторов
+### 🧑‍💼 Кейсы операторов
 
 Ниже приведены проверки интерфейса оператора. В описании каждого кейса указано, какой контроллер Micronaut обрабатывает соответствующий REST-запрос.
 
@@ -776,7 +817,7 @@ class HttpExample {
     - `500 Internal Server Error` — внутренняя ошибка сервера.
 
 
-### Кейсы аутентификации
+### 🔐 Кейсы аутентификации
 
 - **Валидный токен**
   - Запрос: любой защищённый REST-эндпоинт.
@@ -820,7 +861,7 @@ class HttpExample {
 ## 🧪 Тестирование
 
 
-Команда ниже выполняет 502 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 88,2% (инструкции — 83,8%, ветви — 59,3%).【F:AGENTS.md†L85-L92】
+Команда ниже выполняет 476 модульных тестов и формирует отчёт JaCoCo с покрытием 79,05% инструкций, 83,60% строк и 54,00% ветвей.【F:AGENTS.md†L96-L96】
 
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
@@ -829,7 +870,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 Для запуска 11 интеграционных сценариев используйте профили Failsafe: `mvn -s .mvn/settings.xml -Pit-resources verify`
 (Micronaut Test Resources) или `mvn -s .mvn/settings.xml -Pit-external verify` (подключение к реальным сервисам).
 
-### Модульные тесты
+### 🧬 Модульные тесты
 
 Ниже перечислены модульные проверки. Каждый тест изолирует компонент, подменяя внешние зависимости моками и проверяя поведение класса.
 
@@ -982,7 +1023,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.rules.SegmentationRuleTest — проверяет правило сегментации очереди.
 - ru.aritmos.service.rules.client.CallRuleClientTest — проверяет HTTP‑клиент вызова правила.
 
-### Интеграционные тесты
+### 🔗 Интеграционные тесты
 
 Интеграционные сценарии поднимают полный контекст приложения и взаимодействуют с внешними сервисами (Kafka, Keycloak, DataBus) через Testcontainers и встроенный HTTP‑клиент.
 
