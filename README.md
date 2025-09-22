@@ -3,9 +3,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-476%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-508%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-83.60%25-brightgreen)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-88.56%25-brightgreen)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -861,7 +861,7 @@ class HttpExample {
 ## 🧪 Тестирование
 
 
-Команда ниже выполняет 476 модульных тестов и формирует отчёт JaCoCo с покрытием 79,05% инструкций, 83,60% строк и 54,00% ветвей.【F:AGENTS.md†L96-L96】
+Команда ниже выполняет 508 модульных тестов и формирует отчёт JaCoCo с покрытием 84,26% инструкций, 88,56% строк и 60,01% ветвей.【F:target/site/jacoco/jacoco.xml†L1-L1】【6fad1d†L7-L13】
 
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
@@ -887,6 +887,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.api.KeyCloakControllerTest — тестирует ручки аутентификации Keycloak с использованием заглушек OAuth‑клиента.
 - ru.aritmos.api.ManagementControllerTest — проверяет административные операции, отправляя запросы к управленческим эндпоинтам.
 - ru.aritmos.api.ServicePointControllerTest — моделирует сценарии обслуживания: поиск визита в очереди, вызовы по списку очередей, подтверждение/отмену визитов и управление режимом автозапуска точек.
+- ru.aritmos.api.ServicePointControllerGetServicePointTest — проверяет возврат данных точки обслуживания: подстановку сотрудника, находящегося на перерыве, и пустой ответ при неизвестной точке.【F:src/test/unit/java/ru/aritmos/api/ServicePointControllerGetServicePointTest.java†L42-L82】
 
 #### Заглушки и утилиты
 - ru.aritmos.config.LocalNoDockerDataBusClientStubTest — убеждается в работе заглушки DataBus для режима без Docker.
@@ -999,6 +1000,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceGetQueuesTest — проверяет выбор очередей отделения.
 - ru.aritmos.service.VisitServiceGetVisitsTest — тестирует поиск визитов по параметрам.
 - ru.aritmos.service.VisitServiceMarkModificationTest — проверяет изменение оценки визита.
+- ru.aritmos.service.VisitServiceMarkLookupByIdTest — тестирует строковые перегрузки `addMark`/`deleteMark`: делегирование к основным методам и ошибки при отсутствии заметки в справочнике отделения.【F:src/test/unit/java/ru/aritmos/service/VisitServiceMarkLookupByIdTest.java†L28-L128】
 - ru.aritmos.service.VisitServiceNoteTest — проверяет добавление заметок к визиту.
 - ru.aritmos.service.VisitServiceOutcomeTest — тестирует установку исхода визита.
 - ru.aritmos.service.VisitServiceTransferToServicePointPoolTest — покрывает перевод визита в пул с передачей данных внешней службы,
