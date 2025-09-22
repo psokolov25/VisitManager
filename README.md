@@ -3,9 +3,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-521%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-524%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-88.85%25-brightgreen)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-89.02%25-brightgreen)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -861,7 +861,7 @@ class HttpExample {
 ## 🧪 Тестирование
 
 
-Команда ниже выполняет 521 модульный тест и формирует отчёт JaCoCo с покрытием 84,63% инструкций, 88,85% строк и 60,07% ветвей.【F:target/site/jacoco/jacoco.xml†L1-L1】【03b205†L18-L26】
+Команда ниже выполняет 524 модульных теста и формирует отчёт JaCoCo с покрытием 84,84% инструкций, 89,02% строк и 60,38% ветвей.【c0e94e†L11-L15】【40c901†L1-L18】
 
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
@@ -925,6 +925,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.model.BranchEntityWithVisitsTest — тестирует отделение с вложенными визитами.
 - ru.aritmos.model.BranchTest — проверяет доменную модель отделения:
   инкремент счётчика талонов, агрегирование визитов, обновление точек обслуживания и обработку некорректных позиций в очереди.
+- ru.aritmos.model.BranchUpdateVisitOverloadsTest — гарантирует корректную работу перегрузок `Branch.updateVisit`: размещение визитов в начале и конце очередей, обновление пулов и рассылку событий о переводе визита.【F:src/test/unit/java/ru/aritmos/model/BranchUpdateVisitOverloadsTest.java†L1-L134】
 - ru.aritmos.model.DeliveredServiceTest — удостоверяется в корректности модели выполненной услуги визита.
 - ru.aritmos.model.EntityTest — проверяет билдер, геттеры/сеттеры и аннотацию `@Serdeable` базовой сущности.
 - ru.aritmos.model.OutcomeTest — проверяет перечисление исходов обслуживания.
