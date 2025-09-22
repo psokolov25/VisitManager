@@ -1,0 +1,75 @@
+@startuml
+!include style.puml
+title VisitManager: ключевые классы обслуживания визитов
+
+skinparam classAttributeIconSize 0
+hide circle
+
+package "Сервисный слой" {
+  class VisitService {
+    +Visit getVisit(branchId, visitId)
+    +List<Visit> getVisits(branchId, queueId)
+    +Visit createVisit(branchId, entryPointId, VisitParameters, printTicket)
+    +Visit visitPostPone(branchId, visitId)
+    +void deleteVisit(branchId, visitId)
+  }
+  class BranchService
+  class EventService
+  class DelayedEvents
+  class PrinterService
+  class SegmentationRule
+  class CallRule
+}
+
+package "Интеграции" {
+  class KeyCloackClient
+}
+
+package "Домен" {
+  class Branch {
+    +HashMap<String, Queue> queues
+    +HashMap<String, ServicePoint> servicePoints
+    +HashMap<String, User> users
+    +HashMap<String, Visit> getAllVisits()
+  }
+  class Queue {
+    +List<Visit> visits
+  }
+  class ServicePoint {
+    +User user
+    +Visit visit
+    +List<Visit> visits
+  }
+  class User {
+    +List<Visit> visits
+  }
+  class Visit {
+    +String id
+    +String status
+    +ZonedDateTime createDateTime
+    +List<VisitEvent> visitEvents
+  }
+  class VisitEventInformation
+  enum VisitEvent
+}
+
+VisitService --> BranchService : конфигурация отделения
+VisitService --> EventService : события визита
+VisitService --> DelayedEvents : отложенные события
+VisitService --> PrinterService : печать талонов
+VisitService --> KeyCloackClient : пользователи и роли
+VisitService --> SegmentationRule : сегментация потоков
+VisitService --> CallRule : правила вызова
+BranchService --> Branch : возвращает состояние
+
+Branch "1" *-- "*" Queue
+Branch "1" *-- "*" ServicePoint
+Branch "1" *-- "*" User
+Queue "1" o-- "*" Visit : ожидающие визиты
+ServicePoint "1" o-- "*" Visit : пул визитов
+ServicePoint "1" o-- "0..1" Visit : активный визит
+User "1" o-- "*" Visit : обслуживаемые визиты
+Visit --> "события" VisitEventInformation
+Visit --> "типы" VisitEvent
+
+@enduml

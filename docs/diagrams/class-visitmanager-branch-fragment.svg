@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="564px" preserveAspectRatio="none" style="width:644px;height:564px;" version="1.1" viewBox="0 0 644 564" width="644px" zoomAndPan="magnify"><defs><filter height="300%" id="f4pcsndolqdn8" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><rect width="100%" height="100%" fill="#FFFFFF"/><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="630" x="2" y="16.708">Branch: агрегирование очередей, точек обслуживания и визитов</text><!--MD5=[6d7d587a021629470fd0d5f8ef3407c9]
+class Branch--><rect fill="#FEFECE" filter="url(#f4pcsndolqdn8)" height="91.1875" id="Branch" style="stroke: #A80036; stroke-width: 1.5;" width="283" x="163.5" y="28.9531"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="44" x="283" y="45.0918">Branch</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="164.5" x2="445.5" y1="52.9219" y2="52.9219"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="204" x="169.5" y="67.1323">+HashMap&lt;String, Queue&gt; queues</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="271" x="169.5" y="79.937">+HashMap&lt;String, ServicePoint&gt; servicePoints</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="185" x="169.5" y="92.7417">+HashMap&lt;String, User&gt; users</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="164.5" x2="445.5" y1="99.3359" y2="99.3359"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="219" x="169.5" y="113.5464">+HashMap&lt;String, Visit&gt; getAllVisits()</text><!--MD5=[15b0de36700cf8bf422172734e699e19]
+class Queue--><rect fill="#FEFECE" filter="url(#f4pcsndolqdn8)" height="65.5781" id="Queue" style="stroke: #A80036; stroke-width: 1.5;" width="140" x="66" y="186.9531"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="41" x="115.5" y="203.0918">Queue</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="67" x2="205" y1="210.9219" y2="210.9219"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="105" x="72" y="225.1323">+List&lt;Visit&gt; visits</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="128" x="72" y="237.937">+Integer ticketCounter</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="67" x2="205" y1="244.5313" y2="244.5313"/><!--MD5=[5c6bdac1067f19015598057cf3c0e827]
+class ServicePoint--><rect fill="#FEFECE" filter="url(#f4pcsndolqdn8)" height="78.3828" id="ServicePoint" style="stroke: #A80036; stroke-width: 1.5;" width="117" x="246.5" y="180.9531"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="77" x="266.5" y="197.0918">ServicePoint</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="247.5" x2="362.5" y1="204.9219" y2="204.9219"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="66" x="252.5" y="219.1323">+User user</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="60" x="252.5" y="231.937">+Visit visit</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="105" x="252.5" y="244.7417">+List&lt;Visit&gt; visits</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="247.5" x2="362.5" y1="251.3359" y2="251.3359"/><!--MD5=[3fd616f346a44cd59a91eb10b19e157c]
+class User--><rect fill="#FEFECE" filter="url(#f4pcsndolqdn8)" height="52.7734" id="User" style="stroke: #A80036; stroke-width: 1.5;" width="117" x="401.5" y="193.4531"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="29" x="445.5" y="209.5918">User</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="402.5" x2="517.5" y1="217.4219" y2="217.4219"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="105" x="407.5" y="231.6323">+List&lt;Visit&gt; visits</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="402.5" x2="517.5" y1="238.2266" y2="238.2266"/><!--MD5=[e049a9fc6087ec9a0b5519edf8a49765]
+class Visit--><rect fill="#FEFECE" filter="url(#f4pcsndolqdn8)" height="116.7969" id="Visit" style="stroke: #A80036; stroke-width: 1.5;" width="221" x="136.5" y="335.9531"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="26" x="234" y="352.0918">Visit</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="137.5" x2="356.5" y1="359.9219" y2="359.9219"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="57" x="142.5" y="374.1323">+String id</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="83" x="142.5" y="386.937">+String status</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="194" x="142.5" y="399.7417">+ZonedDateTime createDateTime</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="177" x="142.5" y="412.5464">+ZonedDateTime callDateTime</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="108" x="142.5" y="425.3511">+Long waitingTime</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="209" x="142.5" y="438.1558">+List&lt;VisitEventInformation&gt; events</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="137.5" x2="356.5" y1="444.75" y2="444.75"/><!--MD5=[e9199e5d83860710d0f0a7459559bf32]
+class VisitEventInformation--><rect fill="#FEFECE" filter="url(#f4pcsndolqdn8)" height="39.9688" id="VisitEventInformation" style="stroke: #A80036; stroke-width: 1.5;" width="138" x="109" y="513.9531"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="132" x="112" y="530.0918">VisitEventInformation</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="110" x2="246" y1="537.9219" y2="537.9219"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="110" x2="246" y1="545.9219" y2="545.9219"/><!--MD5=[7c89ce455441375b65ed2921a6a13cde]
+class VisitEvent--><rect fill="#FEFECE" filter="url(#f4pcsndolqdn8)" height="39.9688" id="VisitEvent" style="stroke: #A80036; stroke-width: 1.5;" width="67" x="282.5" y="513.9531"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="61" x="285.5" y="530.0918">VisitEvent</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="283.5" x2="348.5" y1="537.9219" y2="537.9219"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="283.5" x2="348.5" y1="545.9219" y2="545.9219"/><!--MD5=[f6a1aa7ee2b8db32efde7c7cac2a7ee5]
+reverse link Branch to Queue--><path d="M242.4,128.6131 C219.34,148.1831 193.95,169.7431 173.76,186.8931 " fill="none" id="Branch&lt;-Queue" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="252.45,120.0731,245.2871,120.9059,243.3009,127.838,250.4637,127.0053,252.45,120.0731" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="8" x="235.7908" y="140.2698">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="173.8261" y="175.6517">*</text><!--MD5=[2ce2188abde5c1138ca4c7d31fc95916]
+reverse link Branch to ServicePoint--><path d="M305,133.1831 C305,149.1531 305,166.0931 305,180.6531 " fill="none" id="Branch&lt;-ServicePoint" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="305,120.0731,301,126.0731,305,132.0731,309,126.0731,305,120.0731" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="8" x="296.3875" y="140.2698">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="297.4203" y="169.9481">*</text><!--MD5=[970067afbdb7393561ef2e1a995cafa4]
+reverse link Branch to User--><path d="M362.82,128.9831 C386.54,150.9431 412.89,175.3331 432.16,193.1831 " fill="none" id="Branch&lt;-User" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="353.19,120.0731,354.8779,127.0839,361.9985,128.2223,360.3107,121.2116,353.19,120.0731" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="8" x="351.9566" y="140.2698">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="417.9126" y="182.3666">*</text><!--MD5=[a627f750c035aef3ff6b2a55296cc550]
+reverse link Queue to Visit--><path d="M150.61,265.7031 C155.84,279.1131 162.37,293.5331 170,305.9531 C176.25,316.1231 183.71,326.2531 191.49,335.8231 " fill="none" id="Queue&lt;-Visit" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="145.99,253.2631,144.3234,260.279,150.1586,264.5158,151.8252,257.4999,145.99,253.2631" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="8" x="139.057" y="272.6487">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="185.1513" y="324.8509">*</text><!--MD5=[07a923935ad3c83ba2ce51e0b6a0485f]
+reverse link ServicePoint to Visit--><path d="M234.63,256.0731 C209.02,269.5631 185.44,283.1231 182,288.9531 C172.99,304.2231 176.66,320.5831 185.72,335.7131 " fill="none" id="ServicePoint&lt;-Visit" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="246.47,249.9131,239.301,249.1349,235.8253,255.4531,242.9943,256.2313,246.47,249.9131" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="83" x="183" y="302.02">пул визитов</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="8" x="230.4583" y="249.8417">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="170.8249" y="324.7275">*</text><!--MD5=[07a923935ad3c83ba2ce51e0b6a0485f]
+reverse link ServicePoint to Visit--><path d="M287.95,271.6531 C281.17,291.8231 273.33,315.1431 266.34,335.9331 " fill="none" id="ServicePoint&lt;-Visit-1" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="292.13,259.2331,286.4272,263.6465,288.3076,270.6081,294.0104,266.1947,292.13,259.2331" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="111" x="283" y="302.02">активный визит</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="8" x="281.2305" y="279.3188">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="24" x="243.2346" y="324.9743">0..1</text><!--MD5=[1732ef40fe141570229cb416b418e147]
+reverse link User to Visit--><path d="M440.15,258.4131 C430.44,274.3831 417.67,292.4131 403,305.9531 C389.43,318.4831 373.73,329.9231 357.64,340.0931 " fill="none" id="User&lt;-Visit" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="446.97,246.7131,440.4949,249.887,440.9342,257.0847,447.4093,253.9108,446.97,246.7131" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="135" x="420" y="302.02">визиты сотрудника</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="8" x="435.2447" y="266.3137">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="365.6655" y="332.8223">*</text><!--MD5=[e9093063cbce812edbb39001438d2b97]
+link Visit to VisitEventInformation--><path d="M218.14,452.9731 C208.23,472.7131 197.69,493.7231 189.89,509.2531 " fill="none" id="Visit-&gt;VisitEventInformation" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="187.57,513.8931,195.1886,507.6516,189.8175,509.4267,188.0424,504.0556,187.57,513.8931" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="58" x="123.8624" y="502.8884">события</text><!--MD5=[1e4d2d57c33ac4fbfb30d2a24337b1e6]
+link Visit to VisitEvent--><path d="M275.86,452.9731 C285.77,472.7131 296.31,493.7231 304.11,509.2531 " fill="none" id="Visit-&gt;VisitEvent" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="306.43,513.8931,305.9576,504.0556,304.1825,509.4267,298.8114,507.6516,306.43,513.8931" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="35" x="263.4782" y="502.8884">типы</text><!--MD5=[c4e27d0a1b694b91cce882bdd0c00b79]
+@startuml
+skinparam backgroundColor #FFFFFF
+title Branch: агрегирование очередей, точек обслуживания и визитов
+
+skinparam classAttributeIconSize 0
+hide circle
+
+class Branch {
+  +HashMap<String, Queue> queues
+  +HashMap<String, ServicePoint> servicePoints
+  +HashMap<String, User> users
+  +HashMap<String, Visit> getAllVisits()
+}
+
+class Queue {
+  +List<Visit> visits
+  +Integer ticketCounter
+}
+
+class ServicePoint {
+  +User user
+  +Visit visit
+  +List<Visit> visits
+}
+
+class User {
+  +List<Visit> visits
+}
+
+class Visit {
+  +String id
+  +String status
+  +ZonedDateTime createDateTime
+  +ZonedDateTime callDateTime
+  +Long waitingTime
+  +List<VisitEventInformation> events
+}
+
+class VisitEventInformation
+enum VisitEvent
+
+Branch "1" *- - "*" Queue
+Branch "1" *- - "*" ServicePoint
+Branch "1" *- - "*" User
+Queue "1" o- - "*" Visit
+ServicePoint "1" o- - "*" Visit : пул визитов
+ServicePoint "1" o- - "0..1" Visit : активный визит
+User "1" o- - "*" Visit : визиты сотрудника
+Visit - -> "события" VisitEventInformation
+Visit - -> "типы" VisitEvent
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 UTC 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.2+13-58
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

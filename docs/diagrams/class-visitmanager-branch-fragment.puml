@@ -1,0 +1,52 @@
+@startuml
+!include style.puml
+title Branch: агрегирование очередей, точек обслуживания и визитов
+
+skinparam classAttributeIconSize 0
+hide circle
+
+class Branch {
+  +HashMap<String, Queue> queues
+  +HashMap<String, ServicePoint> servicePoints
+  +HashMap<String, User> users
+  +HashMap<String, Visit> getAllVisits()
+}
+
+class Queue {
+  +List<Visit> visits
+  +Integer ticketCounter
+}
+
+class ServicePoint {
+  +User user
+  +Visit visit
+  +List<Visit> visits
+}
+
+class User {
+  +List<Visit> visits
+}
+
+class Visit {
+  +String id
+  +String status
+  +ZonedDateTime createDateTime
+  +ZonedDateTime callDateTime
+  +Long waitingTime
+  +List<VisitEventInformation> events
+}
+
+class VisitEventInformation
+enum VisitEvent
+
+Branch "1" *-- "*" Queue
+Branch "1" *-- "*" ServicePoint
+Branch "1" *-- "*" User
+Queue "1" o-- "*" Visit
+ServicePoint "1" o-- "*" Visit : пул визитов
+ServicePoint "1" o-- "0..1" Visit : активный визит
+User "1" o-- "*" Visit : визиты сотрудника
+Visit --> "события" VisitEventInformation
+Visit --> "типы" VisitEvent
+
+@enduml

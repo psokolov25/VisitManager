@@ -1,0 +1,35 @@
+@startuml
+!include style.puml
+title VisitService: зависимости и правила управления визитом
+
+skinparam classAttributeIconSize 0
+hide circle
+
+class VisitService {
+  +Visit getVisit(branchId, visitId)
+  +List<Visit> getVisits(branchId, queueId)
+  +Visit createVisit(branchId, entryPointId, VisitParameters, printTicket)
+  +Visit visitPostPone(branchId, visitId)
+  +void deleteVisit(branchId, visitId)
+  -CallRule waitingTimeCallRule
+  -CallRule lifeTimeCallRule
+  -SegmentationRule segmentationRule
+}
+
+class BranchService
+class EventService
+class DelayedEvents
+class PrinterService
+class KeyCloackClient
+class CallRule
+class SegmentationRule
+
+VisitService --> BranchService : состояние отделений
+VisitService --> EventService : публикация событий
+VisitService --> DelayedEvents : планирование задач
+VisitService --> PrinterService : печать талонов
+VisitService --> KeyCloackClient : сведения о пользователях
+VisitService --> CallRule : правила автодозвона
+VisitService --> SegmentationRule : сегментация визитов
+
+@enduml
