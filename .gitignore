@@ -83,3 +83,5 @@ reports/
 *.swp
 *.bak
 *.tmp
+dependency-reduced-pom.xml
+mvnw.bak
