@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.DeliveredService;
 import ru.aritmos.model.Entity;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.Outcome;
@@ -458,6 +459,140 @@ class ServicePointControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         verify(controller.eventService).send(eq("*"), eq(false), any());
+    }
+
+    @Test
+    void visitCallMaxLifeTimeDelegatesToService() {
+        ServicePointController controller = controller();
+        Optional<Visit> expected = Optional.of(Visit.builder().id("visit-1").build());
+        when(controller.visitService.visitCallWithMaxLifeTime("b1", "sp1")).thenReturn(expected);
+
+        Optional<Visit> actual = controller.visitCallMaxLifeTime("b1", "sp1");
+
+        assertSame(expected, actual);
+        verify(controller.visitService).visitCallWithMaxLifeTime("b1", "sp1");
+    }
+
+    @Test
+    void visitCallMaxLifeTimeFromQueuesDelegatesToService() {
+        ServicePointController controller = controller();
+        Optional<Visit> expected = Optional.of(Visit.builder().id("visit-queues").build());
+        List<String> queueIds = List.of("q1", "q2");
+        when(controller.visitService.visitCallWithMaxLifeTime("b1", "sp1", queueIds)).thenReturn(expected);
+
+        Optional<Visit> actual = controller.visitCallMaxLifeTime("b1", "sp1", queueIds);
+
+        assertSame(expected, actual);
+        verify(controller.visitService).visitCallWithMaxLifeTime("b1", "sp1", queueIds);
+    }
+
+    @Test
+    void visitCallForConfirmMaxLifeTimeDelegatesToService() {
+        ServicePointController controller = controller();
+        Optional<Visit> expected = Optional.of(Visit.builder().id("confirm-visit").build());
+        when(controller.visitService.visitCallForConfirmWithMaxLifeTime("b1", "sp1"))
+            .thenReturn(expected);
+
+        Optional<Visit> actual = controller.visitCallForConfirmMaxLifeTime("b1", "sp1");
+
+        assertSame(expected, actual);
+        verify(controller.visitService).visitCallForConfirmWithMaxLifeTime("b1", "sp1");
+    }
+
+    @Test
+    void visitCallForConfirmMaxLifeTimeFromQueuesDelegatesToService() {
+        ServicePointController controller = controller();
+        Optional<Visit> expected = Optional.of(Visit.builder().id("confirm-queues").build());
+        List<String> queueIds = List.of("qa", "qb");
+        when(controller.visitService.visitCallForConfirmWithMaxLifeTime("b1", "sp1", queueIds))
+            .thenReturn(expected);
+
+        Optional<Visit> actual = controller.visitCallForConfirmMaxLifeTime("b1", "sp1", queueIds);
+
+        assertSame(expected, actual);
+        verify(controller.visitService).visitCallForConfirmWithMaxLifeTime("b1", "sp1", queueIds);
+    }
+
+    @Test
+    void getDeliveredServiceFiltersByServiceId() {
+        ServicePointController controller = controller();
+        Branch branch = new Branch("b1", "Branch-1");
+        Service service = new Service("s1", "Service 1", 1, "queue-1");
+        branch.getServices().put("s1", service);
+        DeliveredService delivered = new DeliveredService("ds1", "Delivered 1");
+        delivered.getServiceIds().add("s1");
+        DeliveredService ignored = new DeliveredService("ds2", "Delivered 2");
+        ignored.getServiceIds().add("s2");
+        branch.getPossibleDeliveredServices().put("ds1", delivered);
+        branch.getPossibleDeliveredServices().put("ds2", ignored);
+        when(controller.branchService.getBranch("b1")).thenReturn(branch);
+
+        Map<String, DeliveredService> result = controller.getDeliveredService("b1", "s1");
+
+        assertEquals(1, result.size());
+        assertTrue(result.containsKey("ds1"));
+        assertSame(delivered, result.get("ds1"));
+        verify(controller.branchService).getBranch("b1");
+    }
+
+    @Test
+    void getDeliveredServiceOfCurrentServiceDelegatesToVisitService() {
+        ServicePointController controller = controller();
+        Map<String, DeliveredService> delivered = Map.of("ds1", new DeliveredService("ds1", "Delivered"));
+        when(controller.visitService.getDeliveredServices("b1", "sp1")).thenReturn(delivered);
+
+        Map<String, DeliveredService> result = controller.getDeliveredServiceOfCurrentService("b1", "sp1");
+
+        assertSame(delivered, result);
+        verify(controller.visitService).getDeliveredServices("b1", "sp1");
+    }
+
+    @Test
+    void getServicesByWorkProfileIdDelegatesToBranchService() {
+        ServicePointController controller = controller();
+        List<Service> services = List.of(new Service("s1", "Service", 1, "queue-2"));
+        when(controller.branchService.getServicesByWorkProfileId("b1", "wp1")).thenReturn(services);
+
+        List<Service> result = controller.getServicesByWorkProfileId("b1", "wp1");
+
+        assertSame(services, result);
+        verify(controller.branchService).getServicesByWorkProfileId("b1", "wp1");
+    }
+
+    @Test
+    void getServicesByQueueIdDelegatesToBranchService() {
+        ServicePointController controller = controller();
+        List<Service> services = List.of(new Service("s1", "Service", 1, "queue-3"));
+        when(controller.branchService.getServicesByQueueId("b1", "q1")).thenReturn(services);
+
+        List<Service> result = controller.getServicesByQueueId("b1", "q1");
+
+        assertSame(services, result);
+        verify(controller.branchService).getServicesByQueueId("b1", "q1");
+    }
+
+    @Test
+    void getDeliveredServicesByBranchIdDelegatesToBranchService() {
+        ServicePointController controller = controller();
+        List<DeliveredService> delivered = List.of(new DeliveredService("ds1", "Delivered"));
+        when(controller.branchService.getDeliveredServicesByBranchId("b1")).thenReturn(delivered);
+
+        List<DeliveredService> result = controller.getDeliveredServicesByBranchId("b1");
+
+        assertSame(delivered, result);
+        verify(controller.branchService).getDeliveredServicesByBranchId("b1");
+    }
+
+    @Test
+    void addDeliveredServiceDelegatesToVisitService() {
+        ServicePointController controller = controller();
+        Visit visit = Visit.builder().id("v-delivered").build();
+        when(controller.visitService.addDeliveredService("b1", "sp1", "ds1")).thenReturn(visit);
+
+        Visit result = controller.addDeliveredService("b1", "sp1", "ds1");
+
+        assertSame(visit, result);
+        verify(controller.visitService).addDeliveredService("b1", "sp1", "ds1");
     }
 
     @Test

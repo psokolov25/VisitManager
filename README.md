@@ -3,9 +3,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-508%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-521%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-88.56%25-brightgreen)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-88.85%25-brightgreen)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -861,7 +861,7 @@ class HttpExample {
 ## 🧪 Тестирование
 
 
-Команда ниже выполняет 508 модульных тестов и формирует отчёт JaCoCo с покрытием 84,26% инструкций, 88,56% строк и 60,01% ветвей.【F:target/site/jacoco/jacoco.xml†L1-L1】【6fad1d†L7-L13】
+Команда ниже выполняет 521 модульный тест и формирует отчёт JaCoCo с покрытием 84,63% инструкций, 88,85% строк и 60,07% ветвей.【F:target/site/jacoco/jacoco.xml†L1-L1】【03b205†L18-L26】
 
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
@@ -886,7 +886,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.api.HttpErrorHandlerTest — подтверждает формирование унифицированного тела ответа при обработке `HttpStatusException`.
 - ru.aritmos.api.KeyCloakControllerTest — тестирует ручки аутентификации Keycloak с использованием заглушек OAuth‑клиента.
 - ru.aritmos.api.ManagementControllerTest — проверяет административные операции, отправляя запросы к управленческим эндпоинтам.
-- ru.aritmos.api.ServicePointControllerTest — моделирует сценарии обслуживания: поиск визита в очереди, вызовы по списку очередей, подтверждение/отмену визитов и управление режимом автозапуска точек.
+- ru.aritmos.api.ServicePointControllerTest — моделирует сценарии обслуживания: поиск визита в очереди, вызовы с максимальным временем жизни (в том числе из наборов очередей), получение фактических услуг и списков сервисов, подтверждение/отмену визитов и управление режимом автозапуска точек.【F:src/test/unit/java/ru/aritmos/api/ServicePointControllerTest.java†L465-L596】
 - ru.aritmos.api.ServicePointControllerGetServicePointTest — проверяет возврат данных точки обслуживания: подстановку сотрудника, находящегося на перерыве, и пустой ответ при неизвестной точке.【F:src/test/unit/java/ru/aritmos/api/ServicePointControllerGetServicePointTest.java†L42-L82】
 
 #### Заглушки и утилиты
@@ -979,6 +979,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceAddEventTest — тестирует добавление события визита.
 - ru.aritmos.service.VisitServiceAddServiceTest — проверяет добавление услуги в визит.
 - ru.aritmos.service.VisitServiceAutoCallTest — проверяет автоматический вызов визита.
+- ru.aritmos.service.VisitServiceAutoCallModeTest — проверяет включение режима автозвонка точки обслуживания: успешный запуск, конфликт при отключённом режиме отделения и обработку отсутствующей точки.【F:src/test/unit/java/ru/aritmos/service/VisitServiceAutoCallModeTest.java†L21-L95】
 - ru.aritmos.service.VisitServiceCreateVisitTest — проверяет делегирование и проверки входных данных при создании визита.
 - ru.aritmos.service.VisitServiceCreateVirtualVisit2Test — покрывает оформление виртуального визита оператором, заполнение событий и обработку отсутствующих очередей.
 - ru.aritmos.service.VisitServiceCreateVisitFromReceptionTest — покрывает создание визита из приёмной и обработку ошибок входных параметров.
