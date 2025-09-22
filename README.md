@@ -5,9 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-476%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-502%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
-[![Coverage](https://img.shields.io/badge/Coverage-83.6%25-brightgreen)](#-тестирование)
+[![Coverage](https://img.shields.io/badge/Coverage-88.2%25-brightgreen)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 [![License: Named User](https://img.shields.io/badge/License-Простая%20Named%20User-blue)](#-лицензия)
 [![Contributing](https://img.shields.io/badge/Contributing-guidelines-blue)](#-contributing)
@@ -803,7 +803,7 @@ class HttpExample {
 ## 🧪 Тестирование
 
 
-Команда ниже выполняет 476 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 83,6% (инструкции — 79,1%, ветви — 54,0%).【F:AGENTS.md†L85-L92】
+Команда ниже выполняет 502 модульных тестов и формирует отчёт JaCoCo с линейным покрытием 88,2% (инструкции — 83,8%, ветви — 59,3%).【F:AGENTS.md†L85-L92】
 
 ```bash
 JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
@@ -934,6 +934,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml tes
 - ru.aritmos.service.VisitServiceVisitConfirmTest — покрывает подтверждение визита: присвоение точки обслуживания,
   перенос параметров очередей и пулов, публикацию события START_SERVING и ошибки занятости или отсутствия точки.
 - ru.aritmos.service.VisitServiceVisitEndTest — покрывает завершение визита: возврат в очередь при наличии услуг, финализацию, а также ошибки отсутствия точки и визита.
+- ru.aritmos.service.VisitServiceVisitPostPoneTest — покрывает `visitPostPone`: успешный возврат визита в пул пользователя и обработку отсутствия визита или оператора с публикацией событий BUSINESS_ERROR.【F:src/test/unit/java/ru/aritmos/service/VisitServiceVisitPostPoneTest.java†L1-L123】
 - ru.aritmos.service.VisitServiceDeliveredServicesTest — проверяет получение завершённых услуг визита.
 - ru.aritmos.service.VisitServiceGetAllVisitsTest — проверяет получение всех визитов отделения.
 - ru.aritmos.service.VisitServiceGetMarksTest — тестирует получение оценок визита.
