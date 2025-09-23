@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,13 +27,34 @@ import java.util.Set;
     })
 public class Application {
 
+  private static final Logger LOG = LoggerFactory.getLogger(Application.class);
+  private static final String TEST_RESOURCES_PROPERTY = "micronaut.test.resources.enabled";
+  private static final String TEST_RESOURCES_ENV = "MICRONAUT_TEST_RESOURCES_ENABLED";
+
   /**
    * Запуск приложения Micronaut.
    *
    * @param args аргументы командной строки
    */
   public static void main(String[] args) {
+    disableMicronautTestResourcesIfNotExplicitlyConfigured();
     Micronaut.run(Application.class, args);
+  }
+
+  private static void disableMicronautTestResourcesIfNotExplicitlyConfigured() {
+    boolean propertyDefined = hasNonBlankValue(System.getProperty(TEST_RESOURCES_PROPERTY));
+    boolean environmentDefined = hasNonBlankValue(System.getenv(TEST_RESOURCES_ENV));
+    if (propertyDefined || environmentDefined) {
+      return;
+    }
+    System.setProperty(TEST_RESOURCES_PROPERTY, Boolean.FALSE.toString());
+    LOG.info(
+        "Micronaut Test Resources отключены: системный параметр '{}' не задан, используем значение по умолчанию 'false'.",
+        TEST_RESOURCES_PROPERTY);
+  }
+
+  private static boolean hasNonBlankValue(String value) {
+    return value != null && !value.isBlank();
   }
 
   /**
