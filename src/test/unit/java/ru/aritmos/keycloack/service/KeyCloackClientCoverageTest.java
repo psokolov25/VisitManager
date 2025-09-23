@@ -305,7 +305,7 @@ class KeyCloackClientCoverageTest {
 
         log.info("Проверяем, что возврат произошел с кодом 404 и отправкой события");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Region Центр not found!", thrown.getMessage());
+        assertEquals("Region Центр not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
     }
 

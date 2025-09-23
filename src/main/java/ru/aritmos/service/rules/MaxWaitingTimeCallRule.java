@@ -102,13 +102,13 @@ public class MaxWaitingTimeCallRule implements CallRule {
         return result;
       } else {
         throw new BusinessException(
-            "User with not correct workprofile in in service point!",
+            "User has an incorrect work profile for the service point",
             eventService,
             HttpStatus.FORBIDDEN);
       }
     }
     throw new BusinessException(
-        "User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
+        "User is not logged into the service point", eventService, HttpStatus.FORBIDDEN);
   }
 
   /**
@@ -150,7 +150,7 @@ public class MaxWaitingTimeCallRule implements CallRule {
 
     } else {
       throw new BusinessException(
-          "User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
+          "User is not logged into the service point", eventService, HttpStatus.FORBIDDEN);
     }
     return Optional.empty();
   }

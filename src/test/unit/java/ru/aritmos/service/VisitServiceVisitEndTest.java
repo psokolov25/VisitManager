@@ -221,7 +221,7 @@ class VisitServiceVisitEndTest {
                 () -> service.visitEnd(branch.getId(), "missing", Boolean.FALSE, "Ошибка"));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("ServicePoint not found in branch configuration!", exception.getMessage());
+        assertEquals("Service point not found in branch configuration", exception.getMessage());
 
         verify(branchService).getBranch(branch.getId());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));

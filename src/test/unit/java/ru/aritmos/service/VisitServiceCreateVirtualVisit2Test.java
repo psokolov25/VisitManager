@@ -253,7 +253,7 @@ class VisitServiceCreateVirtualVisit2Test {
             () -> service.createVirtualVisit2(branch.getId(), servicePoint.getId(), services, parameters, "sid-3"));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("Queue not found in branch configuration!", exception.getMessage());
+        assertEquals("Queue not found in branch configuration", exception.getMessage());
         assertEquals(3, externalQueue.getTicketCounter());
 
         ArgumentCaptor<VisitEvent> eventCaptor = ArgumentCaptor.forClass(VisitEvent.class);

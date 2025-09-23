@@ -28,7 +28,7 @@ class HttpErrorHandlerE2EIT {
                 () -> client.toBlocking().retrieve(HttpRequest.GET("/managementinformation/branches/missing"), Map.class));
         assertEquals(404, ex.getStatus().getCode());
         Map body = ex.getResponse().getBody(Map.class).orElse(Map.of());
-        assertEquals("Branch not found!!", body.get("message"));
+        assertEquals("Branch not found", body.get("message"));
     }
 }
 

@@ -74,7 +74,7 @@ public class MaxLifeTimeCallRule implements CallRule {
 
     } else {
       throw new BusinessException(
-          "User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
+          "User is not logged into the service point", eventService, HttpStatus.FORBIDDEN);
     }
     return Optional.empty();
   }
@@ -121,7 +121,7 @@ public class MaxLifeTimeCallRule implements CallRule {
 
     } else {
       throw new BusinessException(
-          "User not logged in in service point!", eventService, HttpStatus.FORBIDDEN);
+          "User is not logged into the service point", eventService, HttpStatus.FORBIDDEN);
     }
     return Optional.empty();
   }

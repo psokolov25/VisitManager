@@ -117,7 +117,7 @@ public class KeyCloackClient {
             .orElseThrow(
                 () ->
                     new BusinessException(
-                        String.format("Region %s not found!", regionName),
+                        String.format("Region %s not found", regionName),
                         eventService,
                         HttpStatus.NOT_FOUND))
             .getId();
