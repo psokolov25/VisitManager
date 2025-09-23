@@ -746,7 +746,7 @@ class VisitServiceUncoveredOperationsTest {
                 () -> serviceUnderTest.visitCallForConfirmWithMaxWaitingTime(branch.getId(), servicePoint.getId()));
 
         log.info("Проверяем, что автодовызов активирован и сохранён в конфигурации");
-        assertEquals("Autocall mode enabled!", exception.getMessage());
+        assertEquals("Automatic call mode is enabled", exception.getMessage());
         ServicePoint updatedServicePoint = branch.getServicePoints().get(servicePoint.getId());
         assertTrue(Boolean.TRUE.equals(updatedServicePoint.getAutoCallMode()));
         verify(branchService).add(branch.getId(), branch);
@@ -834,7 +834,7 @@ class VisitServiceUncoveredOperationsTest {
                         branch.getId(), servicePoint.getId(), queueIds));
 
         log.info("Убеждаемся, что режим автодовызова активирован и сохранён");
-        assertEquals("Autocall mode enabled!", exception.getMessage());
+        assertEquals("Automatic call mode is enabled", exception.getMessage());
         ServicePoint updatedServicePoint = branch.getServicePoints().get(servicePoint.getId());
         assertTrue(Boolean.TRUE.equals(updatedServicePoint.getAutoCallMode()));
         verify(branchService).add(branch.getId(), branch);

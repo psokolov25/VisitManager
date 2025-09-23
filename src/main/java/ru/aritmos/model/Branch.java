@@ -264,7 +264,7 @@ public class Branch extends BranchEntity {
               new HashMap<>(
                   Map.of(
                       "message",
-                      "The service point is already busy!",
+                      "The service point is already busy",
                       "ticket",
                       ticket,
                       "servicePointId",
@@ -416,7 +416,7 @@ public class Branch extends BranchEntity {
 
       } else {
         throw new BusinessException(
-            String.format("ServicePoint %s already closed!", servicePointId),
+            String.format("Service point %s is already closed", servicePointId),
             eventService,
             HttpStatus.CONFLICT);
       }
@@ -564,7 +564,7 @@ public class Branch extends BranchEntity {
         } catch (IndexOutOfBoundsException e) {
           throw new BusinessException(
               String.format(
-                  "Visit position %s out of range of list range %s!", index, v.getVisits().size()),
+                  "Visit position %s is out of range for list size %s", index, v.getVisits().size()),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -604,7 +604,7 @@ public class Branch extends BranchEntity {
         } catch (IndexOutOfBoundsException e) {
           throw new BusinessException(
               String.format(
-                  "Visit position %s out of range of list range %s!",
+                  "Visit position %s is out of range for list size %s",
                   index, value.getVisits().size()),
               eventService,
               HttpStatus.CONFLICT);
@@ -625,7 +625,7 @@ public class Branch extends BranchEntity {
           } catch (IndexOutOfBoundsException e) {
             throw new BusinessException(
                 String.format(
-                    "Visit position %s out of range of list range %s!",
+                    "Visit position %s is out of range for list size %s",
                     index, value.getUser().getVisits().size()),
                 eventService,
                 HttpStatus.CONFLICT);
@@ -729,7 +729,7 @@ public class Branch extends BranchEntity {
                                 .anyMatch(am -> am.getId().equals(k))
                             || v2.getCurrentService().getId().equals(k)) {
                           throw new BusinessException(
-                              "Updated service " + k + " is in use now!",
+                              "Updated service " + k + " is currently in use",
                               eventService,
                               HttpStatus.CONFLICT);
                         }
@@ -806,7 +806,7 @@ public class Branch extends BranchEntity {
                                 .anyMatch(am -> am.getId().equals(id))
                             || v2.getCurrentService().getId().equals(id)) {
                           throw new BusinessException(
-                              "Delete service " + id + " is in use now!",
+                              "Delete service " + id + " is currently in use",
                               eventService,
                               HttpStatus.CONFLICT);
                         }
@@ -835,7 +835,7 @@ public class Branch extends BranchEntity {
                 serviceId -> {
                   if (!this.getServices().containsKey(serviceId)) {
                     throw new BusinessException(
-                        "Service " + serviceId + " not found!", eventService, HttpStatus.NOT_FOUND);
+                        "Service " + serviceId + " not found", eventService, HttpStatus.NOT_FOUND);
                   } else {
                     this.getServices().get(serviceId).setServiceGroupId(key);
                   }
@@ -984,7 +984,7 @@ public class Branch extends BranchEntity {
         (key, value) -> {
           if (!this.getServiceGroups().containsKey(value.serviceGroupId)) {
             throw new BusinessException(
-                "Service group " + value.serviceGroupId + " not found!",
+                "Service group " + value.serviceGroupId + " not found",
                 eventService,
                 HttpStatus.NOT_FOUND);
           }

@@ -114,7 +114,7 @@ class VisitServiceVisitPostPoneTest {
         HttpStatusException exception =
                 assertThrows(HttpStatusException.class, () -> service.visitPostPone("b1", "sp1"));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("User not exist!", exception.getMessage());
+        assertEquals("User does not exist", exception.getMessage());
 
         LOG.info("Шаг 4: убеждаемся, что событие ошибки отправлено");
         ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);

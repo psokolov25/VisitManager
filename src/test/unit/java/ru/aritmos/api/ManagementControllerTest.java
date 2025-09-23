@@ -35,7 +35,7 @@ class ManagementControllerTest {
     void getBranchThrowsNotFound() {
         BranchService branchService = mock(BranchService.class);
         when(branchService.getBranch("b1"))
-            .thenThrow(new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found!"));
+            .thenThrow(new HttpStatusException(HttpStatus.NOT_FOUND, "Branch not found"));
         ManagementController controller = new ManagementController();
         controller.branchService = branchService;
         controller.keyCloakClient = mock(KeyCloackClient.class);

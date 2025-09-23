@@ -131,7 +131,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: проверяем детали ошибки и публикацию события");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Queue not found!", thrown.getMessage());
+        assertEquals("Queue not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verify(visitService, never()).getVisit(anyString(), anyString());
     }
@@ -368,7 +368,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: подтверждаем публикацию события и статус ответа");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Service point not found!", thrown.getMessage());
+        assertEquals("Service point not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
     }
 
@@ -448,7 +448,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: проверяем статус и факт отправки события");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Queue not found!", thrown.getMessage());
+        assertEquals("Queue not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verify(visitService, never()).getVisit(anyString(), anyString());
     }
@@ -478,7 +478,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: убеждаемся, что ошибка преобразована в 404 и событие отправлено");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Branch not found!", thrown.getMessage());
+        assertEquals("Branch not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verifyNoInteractions(visitService);
     }
@@ -532,7 +532,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: проверяем статус ошибки и публикацию события");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Queue not found!", thrown.getMessage());
+        assertEquals("Queue not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verifyNoInteractions(visitService);
     }
@@ -556,7 +556,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: убеждаемся в корректности статуса и сообщения");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Branch not found!", thrown.getMessage());
+        assertEquals("Branch not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verifyNoInteractions(visitService);
     }
@@ -609,7 +609,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: убеждаемся, что событие отправлено, а статус равен 404");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Service point not found!", thrown.getMessage());
+        assertEquals("Service point not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verifyNoInteractions(visitService);
     }
@@ -633,7 +633,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: проверяем статус и текст ошибки");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Branch not found!", thrown.getMessage());
+        assertEquals("Branch not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verifyNoInteractions(visitService);
     }
@@ -691,7 +691,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: убеждаемся, что событие отправлено и статус соответствует 404");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Service point not found!", thrown.getMessage());
+        assertEquals("Service point not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verifyNoInteractions(visitService);
     }
@@ -715,7 +715,7 @@ class ServicePointControllerVisitTransferTest {
 
         LOG.info("Шаг 3: проверяем, что статус соответствует 404 и сообщение понятное");
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
-        assertEquals("Branch not found!", thrown.getMessage());
+        assertEquals("Branch not found", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verifyNoInteractions(visitService);
     }

@@ -843,7 +843,7 @@ class BranchServiceTest {
             HttpStatusException.class,
             () -> service.openServicePoint("b1", "user", "sp1", "wp2", visitService));
 
-        assertTrue(exception.getMessage().contains("dont have permissions"));
+        assertTrue(exception.getMessage().contains("does not have permission"));
     }
 
     /**

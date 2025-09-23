@@ -159,7 +159,7 @@ class VisitServiceTransferToServicePointPoolTest {
 
         HttpStatusException exception = assertThrows(HttpStatusException.class, () ->
                 service.visitTransferToServicePointPool("b1", "sp-main", "sp-pool", new HashMap<>(), 5L));
-        assertEquals("ServicePoint sp-main! not exist!", exception.getMessage());
+        assertEquals("Service point sp-main does not exist", exception.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), eq(service));
         verifyNoInteractions(service.delayedEvents);
@@ -182,7 +182,7 @@ class VisitServiceTransferToServicePointPoolTest {
 
         HttpStatusException exception = assertThrows(HttpStatusException.class, () ->
                 service.visitTransferToServicePointPool("b1", servicePoint.getId(), "sp-pool", new HashMap<>(), 5L));
-        assertEquals("Visit in ServicePoint sp-main! not exist!", exception.getMessage());
+        assertEquals("Visit in service point sp-main does not exist", exception.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), eq(service));
         verifyNoInteractions(service.delayedEvents);
@@ -212,7 +212,7 @@ class VisitServiceTransferToServicePointPoolTest {
 
         HttpStatusException exception = assertThrows(HttpStatusException.class, () ->
                 service.visitTransferToServicePointPool("b1", sourcePoint.getId(), "sp-pool", new HashMap<>(), 5L));
-        assertEquals("Service point not found in branch configuration!", exception.getMessage());
+        assertEquals("Service point not found in branch configuration", exception.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), eq(service));
         verifyNoInteractions(service.delayedEvents);

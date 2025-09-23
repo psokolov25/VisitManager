@@ -167,7 +167,7 @@ class VisitServiceTransferToUserPoolTest {
 
         LOG.info("Шаг 3: проверяем параметры ошибки и отсутствие побочных эффектов");
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("ServicePoint missing-sp! not exist!", exception.getMessage());
+        assertEquals("Service point missing-sp does not exist", exception.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), eq(service));
         verifyNoInteractions(delayedEvents);
@@ -196,7 +196,7 @@ class VisitServiceTransferToUserPoolTest {
 
         LOG.info("Шаг 3: удостоверяемся, что вызовы обновления и отложенные события не выполнялись");
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("Visit in ServicePoint sp-empty! not exist!", exception.getMessage());
+        assertEquals("Visit in service point sp-empty does not exist", exception.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), eq(service));
         verifyNoInteractions(delayedEvents);
@@ -234,7 +234,7 @@ class VisitServiceTransferToUserPoolTest {
 
         LOG.info("Шаг 3: проверяем, что обработка ошибки не создала побочных действий");
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("User not found in branch configuration!", exception.getMessage());
+        assertEquals("User not found in branch configuration", exception.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), eq(service));
         verifyNoInteractions(delayedEvents);
