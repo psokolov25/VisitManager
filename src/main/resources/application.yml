@@ -28,6 +28,9 @@ kafka:
 
 
 micronaut:
+  test:
+    resources:
+      enabled: false
   http:
     client:
       pool:
