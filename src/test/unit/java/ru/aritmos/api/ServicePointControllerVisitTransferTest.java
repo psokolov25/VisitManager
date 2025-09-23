@@ -54,6 +54,13 @@ class ServicePointControllerVisitTransferTest {
         return branch;
     }
 
+    private Branch branchWithServicePoint(String branchId, String servicePointId) {
+        LOG.info("Готовим отделение {} с точкой обслуживания {}", branchId, servicePointId);
+        Branch branch = new Branch(branchId, "Отделение с точкой");
+        branch.getServicePoints().put(servicePointId, new ServicePoint(servicePointId, "Окно №1"));
+        return branch;
+    }
+
     @Test
     void visitTransferFromQueueByIdInvertsAppendFlag() {
         LOG.info("Шаг 1: настраиваем окружение для перевода визита по идентификатору");
@@ -363,5 +370,353 @@ class ServicePointControllerVisitTransferTest {
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
         assertEquals("Service point not found!", thrown.getMessage());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
+    }
+
+    @Test
+    void visitTransferFromQueueByVisitIdDelegatesIndexAndVisitLookup() {
+        LOG.info("Шаг 1: готовим отделение с очередью и визит в хранилище");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        Branch branch = branchWithQueue("branch-idx", "queue-target");
+        when(branchService.getBranch("branch-idx")).thenReturn(branch);
+
+        Visit storedVisit = Visit.builder().id("visit-idx").build();
+        when(visitService.getVisit("branch-idx", "visit-idx")).thenReturn(storedVisit);
+        Visit expected = Visit.builder().id("visit-idx").status("reordered").build();
+        when(
+            visitService.visitTransfer(
+                anyString(),
+                anyString(),
+                anyString(),
+                same(storedVisit),
+                anyInt(),
+                anyLong()
+            )
+        ).thenReturn(expected);
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: переводим визит на позицию с идентификатором");
+        Visit actual = controller.visitTransferFromQueue(
+            "branch-idx",
+            "sp-main",
+            "queue-target",
+            "visit-idx",
+            4,
+            12L
+        );
+
+        LOG.info("Шаг 3: убеждаемся, что индекс и визит переданы корректно");
+        ArgumentCaptor<Integer> indexCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(visitService).visitTransfer(
+            eq("branch-idx"),
+            eq("sp-main"),
+            eq("queue-target"),
+            same(storedVisit),
+            indexCaptor.capture(),
+            eq(12L)
+        );
+        assertSame(expected, actual);
+        assertEquals(4, indexCaptor.getValue());
+        verify(visitService).getVisit("branch-idx", "visit-idx");
+    }
+
+    @Test
+    void visitTransferFromQueueByVisitIdFailsWhenQueueMissing() {
+        LOG.info("Шаг 1: создаем отделение без требуемой очереди");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        Branch branch = new Branch("branch-no-queue", "Отделение без очередей");
+        when(branchService.getBranch("branch-no-queue")).thenReturn(branch);
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: ожидаем ошибку 404 из-за отсутствующей очереди");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> controller.visitTransferFromQueue(
+                "branch-no-queue",
+                "sp-missing",
+                "queue-unknown",
+                "visit-x",
+                0,
+                0L
+            )
+        );
+
+        LOG.info("Шаг 3: проверяем статус и факт отправки события");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Queue not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+        verify(visitService, never()).getVisit(anyString(), anyString());
+    }
+
+    @Test
+    void visitTransferFromQueueByVisitIdFailsWhenBranchMissing() {
+        LOG.info("Шаг 1: настраиваем сервис отделений на выброс исключения");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        when(branchService.getBranch("branch-error")).thenThrow(new IllegalStateException("branch missing"));
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: ожидаем BusinessException, оборачивающуюся в HttpStatusException");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> controller.visitTransferFromQueue(
+                "branch-error",
+                "sp-any",
+                "queue-any",
+                "visit-any",
+                1,
+                5L
+            )
+        );
+
+        LOG.info("Шаг 3: убеждаемся, что ошибка преобразована в 404 и событие отправлено");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Branch not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+        verifyNoInteractions(visitService);
+    }
+
+    @Test
+    void visitTransferFromServicePointDelegatesAppendFlag() {
+        LOG.info("Шаг 1: подготавливаем отделение с очередью для перевода из сервиса");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        Branch branch = branchWithQueue("branch-transfer", "queue-main");
+        when(branchService.getBranch("branch-transfer")).thenReturn(branch);
+
+        Visit expected = Visit.builder().id("visit-transfer").status("delegated").build();
+        when(
+            visitService.visitTransfer(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyBoolean(),
+                anyLong()
+            )
+        ).thenReturn(expected);
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: выполняем перевод визита с параметром вставки");
+        Visit actual = controller.visitTransfer("branch-transfer", "sp-1", "queue-main", false, 7L);
+
+        LOG.info("Шаг 3: проверяем делегирование параметров");
+        verify(visitService).visitTransfer("branch-transfer", "sp-1", "queue-main", false, 7L);
+        assertSame(expected, actual);
+    }
+
+    @Test
+    void visitTransferFromServicePointFailsWhenQueueMissing() {
+        LOG.info("Шаг 1: создаем отделение без требуемой очереди для перевода");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        Branch branch = new Branch("branch-transfer-missing", "Отделение без очередей");
+        when(branchService.getBranch("branch-transfer-missing")).thenReturn(branch);
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: ожидаем исключение при попытке перевода");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> controller.visitTransfer("branch-transfer-missing", "sp-1", "queue-absent", true, 0L)
+        );
+
+        LOG.info("Шаг 3: проверяем статус ошибки и публикацию события");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Queue not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+        verifyNoInteractions(visitService);
+    }
+
+    @Test
+    void visitTransferFromServicePointFailsWhenBranchUnavailable() {
+        LOG.info("Шаг 1: подготавливаем сервис отделений к ошибке получения данных");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        when(branchService.getBranch("branch-transfer-error"))
+            .thenThrow(new IllegalArgumentException("not found"));
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: вызываем метод и фиксируем исключение");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> controller.visitTransfer("branch-transfer-error", "sp-err", "queue", true, 9L)
+        );
+
+        LOG.info("Шаг 3: убеждаемся в корректности статуса и сообщения");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Branch not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+        verifyNoInteractions(visitService);
+    }
+
+    @Test
+    void visitBackToServicePointPoolDelegatesToService() {
+        LOG.info("Шаг 1: формируем отделение с пулом точки обслуживания");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        Branch branch = branchWithServicePoint("branch-back", "sp-pool");
+        when(branchService.getBranch("branch-back")).thenReturn(branch);
+
+        Visit expected = Visit.builder().id("visit-back").status("pool").build();
+        when(
+            visitService.visitBackToServicePointPool(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyLong()
+            )
+        ).thenReturn(expected);
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: возвращаем визит в пул");
+        Visit actual = controller.visitBackToServicePointPool("branch-back", "sp-main", "sp-pool", 30L);
+
+        LOG.info("Шаг 3: проверяем делегирование параметров и результат");
+        verify(visitService).visitBackToServicePointPool("branch-back", "sp-main", "sp-pool", 30L);
+        assertSame(expected, actual);
+    }
+
+    @Test
+    void visitBackToServicePointPoolFailsWhenPoolMissing() {
+        LOG.info("Шаг 1: создаем отделение без пула точек обслуживания");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        Branch branch = new Branch("branch-no-pool", "Отделение без пула");
+        when(branchService.getBranch("branch-no-pool")).thenReturn(branch);
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: ожидаем BusinessException при отсутствии точки пула");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> controller.visitBackToServicePointPool("branch-no-pool", "sp-main", "sp-missing", 15L)
+        );
+
+        LOG.info("Шаг 3: убеждаемся, что событие отправлено, а статус равен 404");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Service point not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+        verifyNoInteractions(visitService);
+    }
+
+    @Test
+    void visitBackToServicePointPoolFailsWhenBranchUnavailable() {
+        LOG.info("Шаг 1: конфигурируем сервис отделений на выброс исключения при получении отдела");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        when(branchService.getBranch("branch-back-error"))
+            .thenThrow(new IllegalStateException("branch missing"));
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: вызываем метод и ловим HttpStatusException");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> controller.visitBackToServicePointPool("branch-back-error", "sp", "pool", 20L)
+        );
+
+        LOG.info("Шаг 3: проверяем статус и текст ошибки");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Branch not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+        verifyNoInteractions(visitService);
+    }
+
+    @Test
+    void visitTransferToServicePointPoolDelegatesToService() {
+        LOG.info("Шаг 1: подготавливаем отделение с доступным пулом обслуживания");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        Branch branch = branchWithServicePoint("branch-transfer-pool", "sp-pool");
+        when(branchService.getBranch("branch-transfer-pool")).thenReturn(branch);
+
+        Visit expected = Visit.builder().id("visit-pool").status("pool").build();
+        when(
+            visitService.visitTransferToServicePointPool(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyLong()
+            )
+        ).thenReturn(expected);
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: выполняем перевод визита в пул");
+        Visit actual = controller.visitTransferToServicePointPool("branch-transfer-pool", "sp-main", "sp-pool", 18L);
+
+        LOG.info("Шаг 3: проверяем, что параметры переданы сервису без искажений");
+        verify(visitService).visitTransferToServicePointPool("branch-transfer-pool", "sp-main", "sp-pool", 18L);
+        assertSame(expected, actual);
+    }
+
+    @Test
+    void visitTransferToServicePointPoolFailsWhenPoolMissing() {
+        LOG.info("Шаг 1: создаем отделение без зарегистрированных пулов");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        Branch branch = new Branch("branch-transfer-no-pool", "Отделение без пула");
+        when(branchService.getBranch("branch-transfer-no-pool")).thenReturn(branch);
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: ожидаем исключение из-за отсутствующей точки пула");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> controller.visitTransferToServicePointPool(
+                "branch-transfer-no-pool",
+                "sp-main",
+                "sp-missing",
+                25L
+            )
+        );
+
+        LOG.info("Шаг 3: убеждаемся, что событие отправлено и статус соответствует 404");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Service point not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+        verifyNoInteractions(visitService);
+    }
+
+    @Test
+    void visitTransferToServicePointPoolFailsWhenBranchUnavailable() {
+        LOG.info("Шаг 1: конфигурируем сервис отделений на ошибку при поиске отделения");
+        VisitService visitService = mock(VisitService.class);
+        BranchService branchService = mock(BranchService.class);
+        EventService eventService = mock(EventService.class);
+        when(branchService.getBranch("branch-transfer-pool-error"))
+            .thenThrow(new RuntimeException("not found"));
+
+        ServicePointController controller = controllerWith(visitService, branchService, eventService);
+
+        LOG.info("Шаг 2: вызываем перевод в пул и фиксируем ошибку");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> controller.visitTransferToServicePointPool("branch-transfer-pool-error", "sp", "pool", 5L)
+        );
+
+        LOG.info("Шаг 3: проверяем, что статус соответствует 404 и сообщение понятное");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Branch not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
+        verifyNoInteractions(visitService);
     }
 }

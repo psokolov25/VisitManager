@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -245,6 +247,66 @@ class KeyCloackClientCoverageTest {
         verify(eventService).send(eq("frontend"), eq(false), any(Event.class));
         verify(eventService).send(eq("stat"), eq(false), any(Event.class));
         verify(userResource).logout();
+    }
+
+    @Test
+    void getAllBranchesByRegionNameReturnsRecursiveBranches() {
+        log.info("Готовим KeyCloackClient и структуру регионов для поиска отделений");
+        KeyCloackClient client = spy(new KeyCloackClient());
+        client.realm = "realm";
+        client.eventService = mock(EventService.class);
+
+        Keycloak keycloak = mock(Keycloak.class);
+        RealmResource realmResource = mock(RealmResource.class);
+        GroupsResource groupsResource = mock(GroupsResource.class);
+        when(keycloak.realm("realm")).thenReturn(realmResource);
+        when(realmResource.groups()).thenReturn(groupsResource);
+
+        GroupRepresentation region = new GroupRepresentation();
+        region.setId("region-1");
+        region.setName("Центр");
+        when(groupsResource.groups(0, 1000000000)).thenReturn(List.of(region));
+
+        List<GroupRepresentation> expectedBranches = List.of(new GroupRepresentation(), new GroupRepresentation());
+        doReturn(expectedBranches).when(client).getAllBranchesByRegionId("region-1", keycloak);
+
+        log.info("Вызываем getAllBranchesByRegionName для региона Центр");
+        List<GroupRepresentation> result = client.getAllBranchesByRegionName("Центр", keycloak);
+
+        log.info("Проверяем, что найденный регион передан в рекурсивный метод и возвращены ожидаемые отделения");
+        assertEquals(expectedBranches, result, "Список отделений должен совпадать с подготовленным");
+        verify(client).getAllBranchesByRegionId("region-1", keycloak);
+    }
+
+    @Test
+    void getAllBranchesByRegionNameThrowsWhenRegionMissing() {
+        log.info("Готовим KeyCloackClient и список регионов без совпадений");
+        KeyCloackClient client = new KeyCloackClient();
+        client.realm = "realm";
+        EventService eventService = mock(EventService.class);
+        client.eventService = eventService;
+
+        Keycloak keycloak = mock(Keycloak.class);
+        RealmResource realmResource = mock(RealmResource.class);
+        GroupsResource groupsResource = mock(GroupsResource.class);
+        when(keycloak.realm("realm")).thenReturn(realmResource);
+        when(realmResource.groups()).thenReturn(groupsResource);
+
+        GroupRepresentation anotherRegion = new GroupRepresentation();
+        anotherRegion.setId("region-2");
+        anotherRegion.setName("Север");
+        when(groupsResource.groups(0, 1000000000)).thenReturn(List.of(anotherRegion));
+
+        log.info("Вызываем getAllBranchesByRegionName и ожидаем HttpStatusException");
+        HttpStatusException thrown = assertThrows(
+            HttpStatusException.class,
+            () -> client.getAllBranchesByRegionName("Центр", keycloak)
+        );
+
+        log.info("Проверяем, что возврат произошел с кодом 404 и отправкой события");
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
+        assertEquals("Region Центр not found!", thrown.getMessage());
+        verify(eventService).send(eq("*"), eq(false), any(Event.class));
     }
 
     private UserRepresentation createUser(String id, String username) {
