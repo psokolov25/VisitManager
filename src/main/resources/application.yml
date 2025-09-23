@@ -16,18 +16,12 @@ graphql:
     enabled: true
 loki:
   url: '${LOKI_SERVER:`http://192.168.3.13:3100/loki/api/v1/push`}'
-kafka:
-  consumers:
-    default:
-      allow.auto.create.topics: true
-  producers:
-    default:
-      allow.auto.create.topics: true
-  bootstrap:
-    servers: '${KAFKA_SERVER:`192.168.8.45:29092`}'
 
 
 micronaut:
+  test:
+    resources:
+      enabled: false
   http:
     client:
       pool:
@@ -69,20 +63,6 @@ micronaut:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
 
-redis:
-  uri: '${REDIS_SERVER:`redis://192.168.8.45:7379`}'
-  #uri: redis://192.168.8.45:7379/5
-  #uri: ${REDIS_SERVER}
-  caches:
-    branches:
-      charset: UTF-8
-      key-serializer: io.micronaut.core.serialize.ObjectSerializer
-      value-serializer: io.micronaut.core.serialize.ObjectSerializer
-      expire-after-write: 1h  # Время жизни записи
-      expire-after-access: 30m # Время жизни после последнего доступа
-      maximum-size: 1000       # Максимальное количество записей
-
-
 endpoints:
   all:
     enabled: true
@@ -111,5 +91,4 @@ endpoints:
     enabled: true
   threaddump:
     enabled: true
-
 

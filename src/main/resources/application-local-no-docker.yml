@@ -3,6 +3,12 @@ micronaut:
     name: visitmanager
   server:
     port: 8080
+  caches:
+    branches:
+      charset: UTF-8
+      expire-after-write: 1h
+      expire-after-access: 30m
+      maximum-size: 1000
 
 # Отключаем интеграции, требующие внешние сервисы
 kafka:
