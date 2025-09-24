@@ -6,6 +6,7 @@ import io.micronaut.serde.annotation.Serdeable;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
@@ -147,7 +148,8 @@ public class BusinessException extends RuntimeException {
     }
     log.error(effectiveLogMessage);
     HttpStatus httpStatus = Objects.requireNonNull(status, "HTTP status must not be null");
-    return new HttpStatusException(httpStatus, responseBodyToSend);
+    String messageForClient = Objects.requireNonNullElse(clientMessage, effectiveEventMessage);
+    return new DetailedHttpStatusException(httpStatus, messageForClient, responseBodyToSend);
   }
 
   @Data
@@ -155,5 +157,19 @@ public class BusinessException extends RuntimeException {
   @SuppressWarnings("unused")
   static class BusinessError {
     String message;
+  }
+
+  private static final class DetailedHttpStatusException extends HttpStatusException {
+    private final Object responseBody;
+
+    private DetailedHttpStatusException(HttpStatus status, String message, Object responseBody) {
+      super(status, message);
+      this.responseBody = responseBody;
+    }
+
+    @Override
+    public Optional<Object> getBody() {
+      return Optional.ofNullable(responseBody);
+    }
   }
 }
