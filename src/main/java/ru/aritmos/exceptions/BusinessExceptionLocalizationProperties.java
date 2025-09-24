@@ -143,10 +143,35 @@ public class BusinessExceptionLocalizationProperties {
     }
 
     private static String normalizeLanguage(String language) {
-      if (language == null || language.isBlank()) {
+      if (language == null) {
         return null;
       }
-      return language.trim().toLowerCase(Locale.ROOT);
+      String trimmed = language.trim();
+      if (trimmed.isEmpty()) {
+        return null;
+      }
+      String unquoted = trimmed;
+      String candidate = stripWrappingQuotes(unquoted);
+      while (!candidate.equals(unquoted)) {
+        unquoted = candidate.trim();
+        candidate = stripWrappingQuotes(unquoted);
+      }
+      if (unquoted.isEmpty()) {
+        return null;
+      }
+      return unquoted.toLowerCase(Locale.ROOT);
+    }
+
+    private static String stripWrappingQuotes(String value) {
+      if (value.length() < 2) {
+        return value;
+      }
+      char first = value.charAt(0);
+      char last = value.charAt(value.length() - 1);
+      if (first == last && (first == '"' || first == '\'' || first == '`')) {
+        return value.substring(1, value.length() - 1);
+      }
+      return value;
     }
   }
 }
