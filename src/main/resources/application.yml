@@ -17,6 +17,18 @@ graphql:
 loki:
   url: '${LOKI_SERVER:`http://192.168.3.13:3100/loki/api/v1/push`}'
 
+business-exception:
+  localization:
+    http:
+      language: '${BUSINESS_EXCEPTION_HTTP_LANG:`en`}'
+      default-language: en
+    log:
+      language: '${BUSINESS_EXCEPTION_LOG_LANG:`ru`}'
+      default-language: ru
+    event:
+      language: '${BUSINESS_EXCEPTION_EVENT_LANG:`ru`}'
+      default-language: ru
+
 
 micronaut:
   test:
