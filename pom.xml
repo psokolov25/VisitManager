@@ -20,9 +20,9 @@
         </license>
     </licenses>
     <scm>
-        <url>https://192.168.8.32/pavel.sokolov/entrypoint</url>
-        <developerConnection>scm:git:https://192.168.8.32/pavel.sokolov/entrypoint</developerConnection>
-        <connection>scm:git:https://192.168.8.32/pavel.sokolov/entrypoint</connection>
+        <url>https://192.168.8.32/aritmosplatform/visitmanager</url>
+        <developerConnection>scm:git:https://192.168.8.32/aritmosplatform/visitmanager</developerConnection>
+        <connection>scm:git:https://192.168.8.32/aritmosplatform/visitmanager</connection>
     </scm>
     <developers>
         <developer>
