@@ -4,19 +4,19 @@
   <proxies>
     <proxy>
       <id>default-http</id>
-      <active>true</active>
+      <active>${maven.proxy.active}</active>
       <protocol>http</protocol>
-      <host>proxy</host>
-      <port>8080</port>
-      <nonProxyHosts>localhost|127.0.0.1|::1</nonProxyHosts>
+      <host>${maven.proxy.host}</host>
+      <port>${maven.proxy.port}</port>
+      <nonProxyHosts>${maven.proxy.nonProxyHosts}</nonProxyHosts>
     </proxy>
     <proxy>
       <id>default-https</id>
-      <active>true</active>
+      <active>${maven.proxy.active}</active>
       <protocol>https</protocol>
-      <host>proxy</host>
-      <port>8080</port>
-      <nonProxyHosts>localhost|127.0.0.1|::1</nonProxyHosts>
+      <host>${maven.proxy.host}</host>
+      <port>${maven.proxy.port}</port>
+      <nonProxyHosts>${maven.proxy.nonProxyHosts}</nonProxyHosts>
     </proxy>
   </proxies>
 </settings>
