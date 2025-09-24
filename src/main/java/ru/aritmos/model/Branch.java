@@ -275,11 +275,23 @@ public class Branch extends BranchEntity {
                       servicePoint.getUser().getName()));
           ObjectMapper objectMapper = ObjectMapper.getDefault();
 
-          throw new BusinessException(errorBody, eventService, HttpStatus.CONFLICT, objectMapper);
+          throw new BusinessException(
+              errorBody,
+              String.format(
+                  "Точка обслуживания %s уже занята пользователем %s",
+                  servicePoint.getName(),
+                  servicePoint.getUser().getName()),
+              eventService,
+              HttpStatus.CONFLICT,
+              objectMapper);
         }
       } else {
         throw new BusinessException(
             String.format("ServicePoint %s not found in %s", user.servicePointId, this.getName()),
+            String.format(
+                "Точка обслуживания %s не найдена в отделении %s",
+                user.servicePointId,
+                this.getName()),
             eventService,
             HttpStatus.CONFLICT);
       }
@@ -417,6 +429,7 @@ public class Branch extends BranchEntity {
       } else {
         throw new BusinessException(
             String.format("Service point %s is already closed", servicePointId),
+            String.format("Точка обслуживания %s уже закрыта", servicePointId),
             eventService,
             HttpStatus.CONFLICT);
       }
@@ -424,6 +437,10 @@ public class Branch extends BranchEntity {
     } else {
       throw new BusinessException(
           String.format("ServicePoint %s not found in %s", servicePointId, this.getName()),
+          String.format(
+              "Точка обслуживания %s не найдена в отделении %s",
+              servicePointId,
+              this.getName()),
           eventService,
           HttpStatus.NOT_FOUND);
     }
@@ -467,6 +484,10 @@ public class Branch extends BranchEntity {
                   String.format(
                       "In ServicePoint %s already exists visit %s",
                       value.getId(), value.getVisit().getId()),
+                  String.format(
+                      "В точке обслуживания %s уже закреплён визит %s",
+                      value.getId(),
+                      value.getVisit().getId()),
                   eventService,
                   HttpStatus.CONFLICT);
             }
@@ -565,6 +586,10 @@ public class Branch extends BranchEntity {
           throw new BusinessException(
               String.format(
                   "Visit position %s is out of range for list size %s", index, v.getVisits().size()),
+              String.format(
+                  "Позиция визита %s выходит за пределы размера списка %s",
+                  index,
+                  v.getVisits().size()),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -588,6 +613,10 @@ public class Branch extends BranchEntity {
               String.format(
                   "In ServicePoint %s already exists visit %s",
                   value.getId(), value.getVisit().getId()),
+              String.format(
+                  "В точке обслуживания %s уже закреплён визит %s",
+                  value.getId(),
+                  value.getVisit().getId()),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -606,6 +635,10 @@ public class Branch extends BranchEntity {
               String.format(
                   "Visit position %s is out of range for list size %s",
                   index, value.getVisits().size()),
+              String.format(
+                  "Позиция визита %s выходит за пределы размера списка %s",
+                  index,
+                  value.getVisits().size()),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -627,6 +660,10 @@ public class Branch extends BranchEntity {
                 String.format(
                     "Visit position %s is out of range for list size %s",
                     index, value.getUser().getVisits().size()),
+                String.format(
+                    "Позиция визита %s выходит за пределы размера списка %s",
+                    index,
+                    value.getUser().getVisits().size()),
                 eventService,
                 HttpStatus.CONFLICT);
           }
@@ -730,6 +767,7 @@ public class Branch extends BranchEntity {
                             || v2.getCurrentService().getId().equals(k)) {
                           throw new BusinessException(
                               "Updated service " + k + " is currently in use",
+                              String.format("Обновляемая услуга %s используется в текущих визитах", k),
                               eventService,
                               HttpStatus.CONFLICT);
                         }
@@ -807,6 +845,7 @@ public class Branch extends BranchEntity {
                             || v2.getCurrentService().getId().equals(id)) {
                           throw new BusinessException(
                               "Delete service " + id + " is currently in use",
+                              String.format("Удаляемая услуга %s используется в текущих визитах", id),
                               eventService,
                               HttpStatus.CONFLICT);
                         }
@@ -835,7 +874,10 @@ public class Branch extends BranchEntity {
                 serviceId -> {
                   if (!this.getServices().containsKey(serviceId)) {
                     throw new BusinessException(
-                        "Service " + serviceId + " not found", eventService, HttpStatus.NOT_FOUND);
+                        "Service " + serviceId + " not found",
+                        String.format("Услуга %s не найдена", serviceId),
+                        eventService,
+                        HttpStatus.NOT_FOUND);
                   } else {
                     this.getServices().get(serviceId).setServiceGroupId(key);
                   }
@@ -985,6 +1027,7 @@ public class Branch extends BranchEntity {
           if (!this.getServiceGroups().containsKey(value.serviceGroupId)) {
             throw new BusinessException(
                 "Service group " + value.serviceGroupId + " not found",
+                String.format("Группа услуг %s не найдена", value.serviceGroupId),
                 eventService,
                 HttpStatus.NOT_FOUND);
           }

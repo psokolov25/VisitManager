@@ -20,10 +20,12 @@ class BusinessExceptionTest {
 
         HttpStatusException thrown = assertThrows(
                 HttpStatusException.class,
-                () -> new BusinessException("ошибка", eventService, HttpStatus.BAD_REQUEST)
+                () ->
+                    new BusinessException(
+                        "Error occurred", "Произошла ошибка", eventService, HttpStatus.BAD_REQUEST)
         );
         assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatus());
-        assertEquals("ошибка", thrown.getMessage());
+        assertEquals("Error occurred", thrown.getMessage());
 
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventService).send(eq("*"), eq(false), captor.capture());
@@ -36,9 +38,11 @@ class BusinessExceptionTest {
 
         HttpStatusException thrown = assertThrows(
                 HttpStatusException.class,
-                () -> new BusinessException("client", "log", eventService, HttpStatus.CONFLICT)
+                () ->
+                    new BusinessException(
+                        "Client message", "Сообщение для лога", eventService, HttpStatus.CONFLICT)
         );
-        assertEquals("client", thrown.getMessage());
+        assertEquals("Client message", thrown.getMessage());
         assertEquals(HttpStatus.CONFLICT, thrown.getStatus());
 
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
@@ -54,7 +58,9 @@ class BusinessExceptionTest {
 
         HttpStatusException thrown = assertThrows(
                 HttpStatusException.class,
-                () -> new BusinessException(new Object(), eventService, HttpStatus.I_AM_A_TEAPOT, mapper)
+                () ->
+                    new BusinessException(
+                        new Object(), "Сообщение для лога", eventService, HttpStatus.I_AM_A_TEAPOT, mapper)
         );
         assertEquals(HttpStatus.I_AM_A_TEAPOT, thrown.getStatus());
 
@@ -71,7 +77,9 @@ class BusinessExceptionTest {
 
         HttpStatusException thrown = assertThrows(
                 HttpStatusException.class,
-                () -> new BusinessException(body, "log", eventService, HttpStatus.NOT_FOUND)
+                () ->
+                    new BusinessException(
+                        body, "Сообщение для лога", eventService, HttpStatus.NOT_FOUND)
         );
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
 
@@ -86,9 +94,15 @@ class BusinessExceptionTest {
 
         HttpStatusException thrown = assertThrows(
                 HttpStatusException.class,
-                () -> new BusinessException("client", "log", "event", eventService, HttpStatus.BAD_REQUEST)
+                () ->
+                    new BusinessException(
+                        "Client message",
+                        "Сообщение для лога",
+                        "Event payload",
+                        eventService,
+                        HttpStatus.BAD_REQUEST)
         );
-        assertEquals("client", thrown.getMessage());
+        assertEquals("Client message", thrown.getMessage());
         assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatus());
 
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
