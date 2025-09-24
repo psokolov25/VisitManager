@@ -22,6 +22,25 @@ public class BusinessException extends RuntimeException {
   /** Сервис отправки событий. */
   final EventService eventService;
 
+  private static final BusinessExceptionLocalization DEFAULT_LOCALIZATION =
+      BusinessExceptionLocalization.defaultLocalization();
+
+  private static volatile BusinessExceptionLocalization localization = DEFAULT_LOCALIZATION;
+
+  /**
+   * Настроить локализацию сообщений. Используется конфигуратором и тестами.
+   *
+   * @param newLocalization локализация
+   */
+  public static void configureLocalization(BusinessExceptionLocalization newLocalization) {
+    localization = newLocalization != null ? newLocalization : DEFAULT_LOCALIZATION;
+  }
+
+  /** Сбросить локализацию к настройкам по умолчанию. */
+  static void resetLocalization() {
+    localization = DEFAULT_LOCALIZATION;
+  }
+
   /**
    * Создать исключение с сообщениями для клиента и лога.
    *
@@ -134,9 +153,19 @@ public class BusinessException extends RuntimeException {
         responseBody != null
             ? responseBody
             : Objects.requireNonNullElse(clientMessage, effectiveEventMessage);
+    String messageForClient = Objects.requireNonNullElse(clientMessage, effectiveEventMessage);
+
+    BusinessExceptionLocalization.LocalizedMessages localizedMessages =
+        localization.localize(responseBodyToSend, messageForClient, effectiveLogMessage, effectiveEventMessage);
+
+    Object localizedBody = localizedMessages.responseBody();
+    String localizedClient = localizedMessages.clientMessage();
+    String localizedLog = localizedMessages.logMessage();
+    String localizedEvent = localizedMessages.eventMessage();
+
     if (currentEventService != null) {
       BusinessError businessError = new BusinessError();
-      businessError.setMessage(effectiveEventMessage);
+      businessError.setMessage(localizedEvent);
       currentEventService.send(
           "*",
           false,
@@ -146,10 +175,9 @@ public class BusinessException extends RuntimeException {
               .body(businessError)
               .build());
     }
-    log.error(effectiveLogMessage);
+    log.error(localizedLog);
     HttpStatus httpStatus = Objects.requireNonNull(status, "HTTP status must not be null");
-    String messageForClient = Objects.requireNonNullElse(clientMessage, effectiveEventMessage);
-    return new DetailedHttpStatusException(httpStatus, messageForClient, responseBodyToSend);
+    return new DetailedHttpStatusException(httpStatus, localizedClient, localizedBody);
   }
 
   @Data
