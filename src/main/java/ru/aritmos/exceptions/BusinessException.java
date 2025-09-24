@@ -5,6 +5,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.serde.annotation.Serdeable;
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
@@ -21,142 +22,132 @@ public class BusinessException extends RuntimeException {
   final EventService eventService;
 
   /**
-   * Создать исключение с сообщением и HTTP‑статусом.
-   * Публикует событие BUSINESS_ERROR и выбрасывает {@link HttpStatusException}.
+   * Создать исключение с сообщениями для клиента и лога.
    *
-   * @param errorMessage сообщение об ошибке
+   * @param clientMessage сообщение для HTTP-ответа (английский)
+   * @param logMessage сообщение для лога (русский)
    * @param eventService сервис событий
-   * @param status HTTP‑статус
+   * @param status HTTP-статус
    */
-  public BusinessException(String errorMessage, EventService eventService, HttpStatus status) {
-    super(errorMessage);
-    BusinessError businessError = new BusinessError();
-    businessError.setMessage(errorMessage);
+  public BusinessException(
+      String clientMessage, String logMessage, EventService eventService, HttpStatus status) {
+    super(logMessage);
     this.eventService = eventService;
-    eventService.send(
-        "*",
-        false,
-        Event.builder()
-            .eventDate(ZonedDateTime.now())
-            .eventType("BUSINESS_ERROR")
-            .body(businessError)
-            .build());
-    log.error(errorMessage);
-    throw new HttpStatusException(status, errorMessage);
+    throw toHttpStatusException(clientMessage, clientMessage, logMessage, logMessage, status);
   }
 
   /**
-   * Создать исключение с произвольным телом и HTTP‑статусом.
+   * Создать исключение с сообщениями для клиента, лога и события.
    *
-   * @param errorMessage тело ошибки (будет сериализовано)
+   * @param clientMessage сообщение для HTTP-ответа (английский)
+   * @param logMessage сообщение для лога (русский)
+   * @param eventMessage сообщение для события
    * @param eventService сервис событий
-   * @param status HTTP‑статус
-   * @param mapper сериализатор
+   * @param status HTTP-статус
+   */
+  public BusinessException(
+      String clientMessage,
+      String logMessage,
+      String eventMessage,
+      EventService eventService,
+      HttpStatus status) {
+    super(logMessage);
+    this.eventService = eventService;
+    throw toHttpStatusException(clientMessage, clientMessage, logMessage, eventMessage, status);
+  }
+
+  /**
+   * Создать исключение с произвольным телом ответа и сообщением для лога.
+   *
+   * @param responseBody тело ответа (англоязычное)
+   * @param logMessage сообщение для лога (русский)
+   * @param eventService сервис событий
+   * @param status HTTP-статус
+   */
+  public BusinessException(
+      Object responseBody, String logMessage, EventService eventService, HttpStatus status) {
+    super(logMessage);
+    this.eventService = eventService;
+    throw toHttpStatusException(responseBody, null, logMessage, logMessage, status);
+  }
+
+  /**
+   * Создать исключение с произвольным телом ответа, сообщением для лога и отдельным сообщением для
+   * события.
+   *
+   * @param responseBody тело ответа (англоязычное)
+   * @param logMessage сообщение для лога (русский)
+   * @param eventMessage сообщение для события
+   * @param eventService сервис событий
+   * @param status HTTP-статус
+   */
+  public BusinessException(
+      Object responseBody,
+      String logMessage,
+      String eventMessage,
+      EventService eventService,
+      HttpStatus status) {
+    super(logMessage);
+    this.eventService = eventService;
+    throw toHttpStatusException(responseBody, null, logMessage, eventMessage, status);
+  }
+
+  /**
+   * Создать исключение с произвольным телом, сообщением для лога и сериализацией сообщения события.
+   *
+   * @param responseBody тело ответа (англоязычное)
+   * @param logMessage сообщение для лога (русский)
+   * @param eventService сервис событий
+   * @param status HTTP-статус
+   * @param mapper сериализатор тела
    * @throws IOException ошибка сериализации
    */
   public BusinessException(
-      Object errorMessage,
+      Object responseBody,
+      String logMessage,
       EventService eventService,
       HttpStatus status,
       io.micronaut.serde.ObjectMapper mapper)
       throws IOException {
-    super(mapper.writeValueAsString(errorMessage));
-    BusinessError businessError = new BusinessError();
-    businessError.setMessage(mapper.writeValueAsString(errorMessage));
+    super(logMessage);
     this.eventService = eventService;
-    eventService.send(
-        "*",
-        false,
-        Event.builder()
-            .eventDate(ZonedDateTime.now())
-            .eventType("BUSINESS_ERROR")
-            .body(businessError)
-            .build());
-    log.error(mapper.writeValueAsString(errorMessage));
-    throw new HttpStatusException(status, errorMessage);
+    throw toHttpStatusException(
+        responseBody,
+        null,
+        logMessage,
+        mapper != null ? mapper.writeValueAsString(responseBody) : String.valueOf(responseBody),
+        status);
   }
 
-  /**
-   * Создать исключение с сообщением и отдельным сообщением для лога.
-   *
-   * @param errorMessage сообщение для клиента
-   * @param errorLogMessage сообщение для лога
-   * @param eventService сервис событий
-   * @param status HTTP‑статус
-   */
-  public BusinessException(
-      String errorMessage, String errorLogMessage, EventService eventService, HttpStatus status) {
-    super(errorMessage);
-    BusinessError businessError = new BusinessError();
-    businessError.setMessage(errorMessage);
-    this.eventService = eventService;
-    eventService.send(
-        "*",
-        false,
-        Event.builder()
-            .eventDate(ZonedDateTime.now())
-            .eventType("BUSINESS_ERROR")
-            .body(businessError)
-            .build());
-    log.error(errorLogMessage);
-    throw new HttpStatusException(status, errorMessage);
-  }
-
-  /**
-   * Создать исключение с произвольным телом и отдельным сообщением для лога.
-   *
-   * @param errorMessage тело ошибки
-   * @param errorLogMessage сообщение для лога
-   * @param eventService сервис событий
-   * @param status HTTP‑статус
-   */
-  public BusinessException(
-      Object errorMessage, String errorLogMessage, EventService eventService, HttpStatus status) {
-    super(errorLogMessage);
-    BusinessError businessError = new BusinessError();
-    businessError.setMessage(errorLogMessage);
-    this.eventService = eventService;
-    eventService.send(
-        "*",
-        false,
-        Event.builder()
-            .eventDate(ZonedDateTime.now())
-            .eventType("BUSINESS_ERROR")
-            .body(businessError)
-            .build());
-    log.error(errorLogMessage);
-    throw new HttpStatusException(status, errorMessage);
-  }
-
-  /**
-   * Создать исключение с отдельным сообщением для клиента, лога и события.
-   *
-   * @param errorMessage сообщение для клиента
-   * @param errorLogMessage сообщение для лога
-   * @param errorEventMessage сообщение для события
-   * @param eventService сервис событий
-   * @param status HTTP‑статус
-   */
-  public BusinessException(
-      String errorMessage,
-      String errorLogMessage,
-      String errorEventMessage,
-      EventService eventService,
+  private HttpStatusException toHttpStatusException(
+      Object responseBody,
+      String clientMessage,
+      String logMessage,
+      String eventMessage,
       HttpStatus status) {
-    super(errorMessage);
-    BusinessError businessError = new BusinessError();
-    businessError.setMessage(errorEventMessage);
-    this.eventService = eventService;
-    eventService.send(
-        "*",
-        false,
-        Event.builder()
-            .eventDate(ZonedDateTime.now())
-            .eventType("BUSINESS_ERROR")
-            .body(businessError)
-            .build());
-    log.error(errorLogMessage);
-    throw new HttpStatusException(status, errorMessage);
+    EventService currentEventService = this.eventService;
+    String effectiveLogMessage =
+        Objects.requireNonNullElse(logMessage, Objects.requireNonNullElse(clientMessage, eventMessage));
+    String effectiveEventMessage = Objects.requireNonNullElse(eventMessage, effectiveLogMessage);
+    Object responseBodyToSend =
+        responseBody != null
+            ? responseBody
+            : Objects.requireNonNullElse(clientMessage, effectiveEventMessage);
+    if (currentEventService != null) {
+      BusinessError businessError = new BusinessError();
+      businessError.setMessage(effectiveEventMessage);
+      currentEventService.send(
+          "*",
+          false,
+          Event.builder()
+              .eventDate(ZonedDateTime.now())
+              .eventType("BUSINESS_ERROR")
+              .body(businessError)
+              .build());
+    }
+    log.error(effectiveLogMessage);
+    HttpStatus httpStatus = Objects.requireNonNull(status, "HTTP status must not be null");
+    return new HttpStatusException(httpStatus, responseBodyToSend);
   }
 
   @Data

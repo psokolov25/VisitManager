@@ -112,7 +112,8 @@ public class EntrypointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(serviceIds)) {
@@ -122,7 +123,8 @@ public class EntrypointController {
       return visitService.createVirtualVisit(branchId, servicePointId, visitParameters, sid);
 
     } else {
-      throw new BusinessException("Services not found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Services not found", "Услуги не найдены", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -185,7 +187,8 @@ public class EntrypointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(serviceIds)) {
@@ -200,7 +203,8 @@ public class EntrypointController {
       }
 
     } else {
-      throw new BusinessException("Services not found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Services not found", "Услуги не найдены", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -274,7 +278,8 @@ public class EntrypointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(parameters.getServiceIds())) {
@@ -286,7 +291,8 @@ public class EntrypointController {
       }
 
     } else {
-      throw new BusinessException("Services not found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Services not found", "Услуги не найдены", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -361,7 +367,8 @@ public class EntrypointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(parameters.getServiceIds())) {
@@ -374,7 +381,8 @@ public class EntrypointController {
       }
 
     } else {
-      throw new BusinessException("Services not found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          "Services not found", "Услуги не найдены", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
