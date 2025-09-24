@@ -14,7 +14,8 @@
 - Запуск JAR: `java -jar target/visitmanager.jar`.
 - Запуск в dev (если подключен плагин): `mvn -s .mvn/settings.xml mn:run`.
 - Тесты: `mvn -s .mvn/settings.xml test`.
-- Сетевое окружение использует обязательный HTTP(S)-прокси `proxy:8080`; параметры уже прописаны в `.mvn/jvm.config` и `.mvn/settings.xml`. При работе вне текущей инфраструктуры обновляйте `proxy`, `port` и `nonProxyHosts` в этих файлах или задавайте собственные значения через `JAVA_TOOL_OPTIONS`/`MAVEN_OPTS` перед запуском Maven.
+
+- Сетевое окружение использует обязательный HTTP(S)-прокси `proxy:8080`; параметры уже прописаны в `.mvn/jvm.config` и `.mvn/settings.xml`. При работе вне текущей инфраструктуры обновляйте `proxy` и `port` в этих файлах или задавайте собственные значения через `JAVA_TOOL_OPTIONS`/`MAVEN_OPTS` перед запуском Maven. Значение `http.nonProxyHosts` указывайте только через `settings.xml` или переменные окружения (`MAVEN_OPTS`, `JAVA_TOOL_OPTIONS`), чтобы избежать ошибок интерпретации символа `|` в `mvnw.cmd` на Windows (сообщение вида «"127.0.0.1" не является внутренней или внешней командой...»).
 - Локально в Docker: `docker compose -f docker-compose.local.yml up -d --build`; остановка — `docker compose -f docker-compose.local.yml down`.
 
 ## Стиль кодирования и соглашения
