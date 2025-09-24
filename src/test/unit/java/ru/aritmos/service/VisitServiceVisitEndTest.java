@@ -248,7 +248,9 @@ class VisitServiceVisitEndTest {
                 () -> service.visitEnd(branch.getId(), servicePoint.getId(), Boolean.TRUE, "Ошибка"));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("Visit not found in ServicePoint ", exception.getMessage());
+        assertEquals(
+                String.format("Visit not found in service point %s", servicePoint.getId()),
+                exception.getMessage());
 
         verify(branchService).getBranch(branch.getId());
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
