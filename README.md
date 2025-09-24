@@ -1,4 +1,4 @@
-Служба управления визитами и клиентопотоком, построенная на Micronaut 4.7.6 и Java 17. Сервис управляет очередями, точками обслуживания, сотрудниками и визитами клиентов в отделениях.
+Служба управления визитами и клиентопотоком на Micronaut 4.7.6 и Java 17 управляет очередями, точками обслуживания, сотрудниками и визитами клиентов в отделениях; она использует Keycloak только для получения данных о пользователях и филиалах, сохраняя авторизационные решения внутри кастомного правила Micronaut Security.【F:pom.xml†L40-L51】【F:src/main/java/ru/aritmos/keycloack/service/KeyCloackClient.java†L100-L180】【F:src/main/java/ru/aritmos/keycloack/customsecurity/CustomSecurityRule.java†L1-L37】
 
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
@@ -176,24 +176,28 @@ JVM может создавать файлы `hs_err_pid*.log` и другие �
 
 ## 🗂️ Структура проекта
 Основные каталоги и их назначение:
-```
+```text
 src/
   main/java/ru/aritmos/
-    api/           REST-контроллеры
-    clients/       HTTP-клиенты конфигурации, печати и шины данных
-    config/        профильные бины и заглушки (например, local-no-docker)
-    docs/          генераторы документации и вспомогательные утилиты
-    events/        модели, клиенты и сервисы событий
-    exceptions/    бизнес- и системные исключения
-    handlers/      регистрация обработчиков событий
-    keycloack/     интеграция с Keycloak (клиенты, модели, безопасность)
-    model/         доменные сущности (Branch, Service, Visit и т.д.)
-    service/       бизнес-логика и правила вызова
-  main/resources/  конфигурация Micronaut, схемы GraphQL, настройки логирования
-  test/            модульные и интеграционные тесты
-docs/              документация, диаграммы, curl-примеры
-scripts/           демо-сценарии и утилиты для локального запуска
+    api/                   REST-контроллеры (Entrypoint, Management, ServicePoint)
+    clients/               HTTP-клиенты конфигурации, печати и шины данных
+    config/                профильные бины и заглушки (например, local-no-docker)
+    docs/                  генераторы документации и вспомогательные утилиты
+    events/                модели, клиенты и сервисы событий
+    exceptions/            бизнес- и системные исключения
+    handlers/              регистрация обработчиков событий Kafka
+    keycloack/             интеграция с Keycloak (клиенты, модели, безопасность)
+    model/                 доменные сущности (Branch, Service, Visit и т.д.)
+    service/               бизнес-логика и правила вызова
+  main/resources/          конфигурация Micronaut, GraphQL-схема и логирование
+  test/unit/java/          модульные тесты
+  test/integration/java/   интеграционные сценарии
+  test/resources/          фикстуры и настройки для тестов
+docs/                      документация, диаграммы, curl-примеры
+scripts/                   генерация документации и вспомогательные скрипты
 ```
+
+Контроллеры и сервисы располагаются в указанных пакетах, что видно на примере `EntrypointController`, HTTP-клиента DataBus и заглушки для профиля `local-no-docker`; тесты разделены на модульные и интеграционные сценарии, а документация и скрипты лежат в одноимённых каталогах.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L1-L45】【F:src/main/java/ru/aritmos/events/clients/DataBusClient.java†L18-L52】【F:src/main/java/ru/aritmos/config/LocalNoDockerDataBusClientStub.java†L13-L48】【F:src/test/unit/java/ru/aritmos/api/ServicePointControllerTest.java†L1-L20】【F:src/test/integration/java/ru/aritmos/api/ServicePointControllerE2EIT.java†L1-L20】【F:docs/REST-Examples.md†L1-L19】【F:scripts/generate-cheatsheet.sh†L1-L39】
 
 ## 👥 Инструкции по ролям
 
@@ -248,7 +252,6 @@ scripts/           демо-сценарии и утилиты для локал
 ### 📬 Варианты ответа сервера
 Все контроллеры возвращают стандартные HTTP-коды:
 
-
 - `200 OK` — успешный запрос.
 - `204 No Content` — успешный запрос без содержимого.
 - `207 Multi-Status` — режим автоматического вызова уже активен или отключён.
@@ -261,40 +264,85 @@ scripts/           демо-сценарии и утилиты для локал
 - `415 Unsupported Media Type` — неподдерживаемый тип данных.
 - `500 Internal Server Error` — внутренняя ошибка сервера.
 
-
 ### 🧭 ManagementController
+- `GET /managementinformation/branches/{id}` — подробная информация об отделении (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ManagementController.java†L50-L77】
+- `GET /managementinformation/branches` — карта доступных отделений с фильтрацией по пользователю (`200 OK`, `400 Bad Request`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ManagementController.java†L79-L125】
+- `GET /managementinformation/branches/tiny` — компактный список идентификаторов и названий (`200 OK`, `400 Bad Request`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L148】
+
 ```bash
-# список отделений
-curl http://localhost:8080/managementinformation/branches
-# короткий список
 curl http://localhost:8080/managementinformation/branches/tiny
+curl http://localhost:8080/managementinformation/branches/37493d1c-8282-4417-a729-dceac1f3e2b4
 ```
 
 ### 🎫 EntrypointController
+- `GET /entrypoint/branches/{branchId}/services` — доступные услуги киоска (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/EntrypointController.java†L424-L439】
+- `GET /entrypoint/branches/{branchId}/services/all` — полный каталог услуг отделения (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/EntrypointController.java†L451-L463】
+- `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` — создание визита по списку услуг (`200 OK`, `400 Bad Request`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/EntrypointController.java†L142-L204】
+- `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters` — визит с пользовательскими параметрами и опциональным правилом сегментации (`200 OK`, `400 Bad Request`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/EntrypointController.java†L207-L289】
+- `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters` — оформление визита из приёмной с печатью талона или без неё (`200 OK`, `400 Bad Request`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/EntrypointController.java†L308-L378】
+
 ```bash
-# создание визита
-curl -X POST \
-  'http://localhost:8080/entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit' \
+curl -X POST "http://localhost:8080/entrypoint/branches/$BRANCH/entryPoints/$ENTRY_POINT/visit" \
   -H 'Content-Type: application/json' \
-  -d '["serviceId1","serviceId2"]'
+  -d '["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]'
+
+curl -X POST "http://localhost:8080/entrypoint/branches/$BRANCH/entryPoints/$ENTRY_POINT/visitWithParameters?printTicket=true" \
+  -H 'Content-Type: application/json' \
+  -d '{"serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b"],"parameters":{"priority":"vip"}}'
 ```
 
 ### 🏢 ServicePointController
-```bash
-# открыть точку обслуживания
-curl -X POST 'http://localhost:8080/servicepoint/branches/{branchId}/servicePoints/{spId}/workProfiles/{wpId}/users/{user}/open'
+- **Мониторинг и подготовка:**
+  - `GET /servicepoint/branches/{branchId}/queues/full` — агрегированное состояние очередей (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L155-L170】
+  - `GET /servicepoint/branches/{branchId}/servicePoints` — точки обслуживания и их доступность (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L179-L197】
+  - `GET /servicepoint/branches/{branchId}/users` — сотрудники отделения и их статусы (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L279-L297】
+  - `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — список визитов в очереди по времени ожидания (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L660-L681】
+- **Управление рабочим местом:**
+  - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — открытие точки обслуживания сотрудником (`200 OK`, `404 Not Found`, `409 Conflict`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L505-L516】
+  - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/close` — завершение смены или уход на перерыв (`200 OK`, `404 Not Found`, `409 Conflict`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L535-L556】
+- **Вызов и подтверждение визита:**
+  - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — вызов талона с максимальным ожиданием (`200 OK`, `207 Multi-Status`, `403 Forbidden`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L954-L987】
+  - `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/callfromQueues` — вызов из заданного набора очередей (`200 OK`, `207 Multi-Status`, `403/404`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L999-L1030】
+  - `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — подтверждение прихода клиента по идентификатору (`200 OK`, `404 Not Found`, `409 Conflict`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1412-L1439】
+- **Возврат и перевод:**
+  - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/put_back` — возврат визита из обслуживания в очередь с задержкой (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2584-L2602】
+  - `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end` — завершение обслуживания (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3148-L3168】
 
-# вызов визита и подтверждение
-VISIT_ID=$(curl -s -X POST 'http://localhost:8080/servicepoint/branches/{branchId}/servicePoints/{spId}/confirmed/visits/call' | jq -r '.id')
-curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/servicePoints/{spId}/confirmed/confirm/${VISIT_ID}"
+```bash
+curl -X POST "http://localhost:8080/servicepoint/branches/$BRANCH/servicePoints/$SP/workProfiles/$WP/users/$USER/open"
+VISIT_ID=$(curl -s -X POST "http://localhost:8080/servicepoint/branches/$BRANCH/servicePoints/$SP/confirmed/visits/call" | jq -r '.id // empty')
+curl -X PUT "http://localhost:8080/servicepoint/branches/$BRANCH/visits/servicePoints/$SP/visit/put_back?returnTimeDelay=60"
+```
+
+### 🛠️ ConfigurationController
+- `POST /configuration/branches` — публикация конфигурации отделений (`200 OK`, `400 Bad Request`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ConfigurationController.java†L51-L70】
+- `POST /configuration/branches/hardcode` — загрузка преднастроенной демо-конфигурации (`200 OK`, `400 Bad Request`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ConfigurationController.java†L72-L91】
+- `PUT /configuration/branches/{branchId}/services?checkVisits=true` — добавление или обновление услуг (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ConfigurationController.java†L93-L117】
+- `DELETE /configuration/branches/{branchId}/services` — удаление услуг с учётом активных визитов (`204 No Content`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ConfigurationController.java†L142-L176】
+- `GET /configuration/branches/{branchId}/break/reasons` — перечень причин перерыва (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ConfigurationController.java†L119-L140】
+
+```bash
+curl -X POST "http://localhost:8080/configuration/branches" \
+  -H 'Content-Type: application/json' \
+  -d '{"37493d1c-8282-4417-a729-dceac1f3e2b4":{}}'
+```
+
+### 🔐 KeyCloakController
+- `POST /keycloak` — выдача токенов Keycloak по пользовательским учётным данным (`200 OK`, `401 Unauthorized`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/KeyCloakController.java†L41-L73】
+- `POST /keycloak/users/{login}` — завершение пользовательской сессии (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/KeyCloakController.java†L75-L105】
+
+```bash
+curl -X POST http://localhost:8080/keycloak \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"demo","password":"secret"}'
 ```
 
 ### 📌 Дополнительные примеры
-- добавление заметки: `POST /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/notes`
-- завершение визита: `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/visit/end`
-- перевод в очередь: `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{spId}/queue/{queueId}/visit/transferFromQueue/{visitId}`
+- `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/notes` — добавить текстовую заметку к визиту (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1885-L1904】
+- `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/visit/end` — зафиксировать завершение обслуживания (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L3148-L3168】
+- `PUT /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/queue/{queueId}/visit/transferFromQueue/{visitId}` — вернуть визит в определённую очередь с контролем позиции (`200 OK`, `404 Not Found`, `500 Internal Server Error`).【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2605-L2635】
 
-Полный список запросов см. в [docs/curl-examples.md](docs/curl-examples.md) и Swagger UI.
+Полную подборку сценариев с переменными окружения см. в [docs/curl-examples.md](docs/curl-examples.md).【F:docs/curl-examples.md†L1-L40】
 
 ## 🏧 Работа терминала клиента
 
@@ -303,20 +351,20 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ### 🏁 Подготовка и запуск терминала
 - `GET /entrypoint/branches/{branchId}/services` — перечень услуг, доступных для оформления талона в отделении.
-  - Контроллер: `EntrypointController#getAllAvailableServices` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L410-L433】
+  - Контроллер: `EntrypointController#getAllAvailableServices` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L424-L439】
   - Ответы: `200 OK` — услуги найдены, `404 Not Found` — отделение отсутствует или недоступно, `500 Internal Server Error` — внутренняя ошибка сервера.
 
 ### ⚙️ Основные операции терминала
 - **Создание талона без дополнительных параметров** — `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit`.
-  - Контроллер: `EntrypointController#createVisit` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L123-L198】
+  - Контроллер: `EntrypointController#createVisit` 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L142-L204】
   - Ответы: `200 OK` — визит создан, `400 Bad Request` — некорректные данные (например, пустой список услуг), `404 Not Found` — не найдены отделение, услуги, точка терминала или очередь, `500 Internal Server Error` — внутренняя ошибка сервера.
 - **Создание талона с пользовательскими параметрами** — `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters`.
-  - Контроллер: `EntrypointController#createVisit` (перегрузка с параметрами) 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L201-L285】
+  - Контроллер: `EntrypointController#createVisit` (перегрузка с параметрами) 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L207-L289】
   - Ответы: `200 OK` — визит сформирован с указанными параметрами, `400 Bad Request` — нарушены требования к телу запроса, `404 Not Found` — отсутствуют отделение, услуги, точка терминала, очередь или правило сегментации, `500 Internal Server Error` — внутренняя ошибка сервера.
 
 ### ➕ Дополнительные возможности терминала
 - `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — список визитов в очереди с сортировкой по времени ожидания.
-  - Контроллер: `ServicePointController#getVisits` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L647-L676】
+  - Контроллер: `ServicePointController#getVisits` 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L660-L681】
   - Ответы: `200 OK` — очередь получена, `404 Not Found` — отделение или очередь отсутствуют, `500 Internal Server Error` — внутренняя ошибка сервера.
 
 ### 🔚 Завершение работы терминала
@@ -324,11 +372,11 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ### 📋 Типовые сценарии терминала
 1. **Печать талона по выбранным услугам**
-   1. `GET /entrypoint/branches/{branchId}/services` — загрузка перечня услуг отделения.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L410-L433】
-   2. `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` — оформление визита и выдача талона клиенту.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L123-L198】
+   1. `GET /entrypoint/branches/{branchId}/services` — загрузка перечня услуг отделения.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L424-L439】
+   2. `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visit` — оформление визита и выдача талона клиенту.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L142-L204】
 2. **Оформление визита с параметрами и оценка времени ожидания**
-   1. `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters` — регистрация клиента с учётом анкетных данных.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L201-L285】
-   2. `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — отображение ожидающих визитов и времени ожидания на экране терминала.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L647-L676】
+   1. `POST /entrypoint/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters` — регистрация клиента с учётом анкетных данных.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L207-L289】
+   2. `GET /servicepoint/branches/{branchId}/queues/{queueId}/visits/` — отображение ожидающих визитов и времени ожидания на экране терминала.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L660-L681】
 
 ## 🕹️ Работа пульта оператора
 
@@ -429,15 +477,15 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
   - `GET /managementinformation/branches/tiny` — компактный список отделений для выбора филиала (`200 OK`; `400 Bad Request`/`500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】
   - `GET /servicepoint/branches/{branchId}` — сводные данные отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】
 - **Настройка рабочих мест и ресурсов**
-  - `GET /servicepoint/branches/{branchId}/servicePoints` — список точек обслуживания для выбора рабочего места (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L168-L193】
-  - `GET /servicepoint/branches/{branchId}/users` — сотрудники отделения и их статусы (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L268-L291】
-  - `GET /servicepoint/branches/{branchId}/printers` — доступные принтеры для печати талонов (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L102-L117】
-  - `GET /entrypoint/branches/{branchId}/services/all` — полный каталог услуг отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
+  - `GET /servicepoint/branches/{branchId}/servicePoints` — список точек обслуживания для выбора рабочего места (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L179-L197】
+  - `GET /servicepoint/branches/{branchId}/users` — сотрудники отделения и их статусы (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L279-L297】
+  - `GET /servicepoint/branches/{branchId}/printers` — доступные принтеры для печати талонов (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L107-L123】
+  - `GET /entrypoint/branches/{branchId}/services/all` — полный каталог услуг отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L451-L463】
 
 ### ⚙️ Основные операции ресепшена
-- **Мониторинг очередей** — `GET /servicepoint/branches/{branchId}/queues/full` возвращает очереди и талоны отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】
-- **Регистрация визита с печатью** — `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` (`200 OK`; `400 Bad Request`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
-- **Регистрация виртуального визита** — `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` (`200 OK`; `400 Bad Request`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
+- **Мониторинг очередей** — `GET /servicepoint/branches/{branchId}/queues/full` возвращает очереди и талоны отделения (`200 OK`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L155-L170】
+- **Регистрация визита с печатью** — `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` (`200 OK`; `400 Bad Request`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L308-L378】
+- **Регистрация виртуального визита** — `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` (`200 OK`; `400 Bad Request`; `404 Not Found`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L308-L378】
 - **Отмена визита** — `DELETE /servicepoint/branches/{branchId}/visits/{visitId}` (`204 No Content`; `404 Not Found`; `409 Conflict`; `500 Internal Server Error`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2334-L2363】
 
 ### ➕ Дополнительные возможности ресепшена
@@ -454,13 +502,13 @@ curl -X POST "http://localhost:8080/servicepoint/branches/{branchId}/visits/serv
 
 ### 📋 Типовые сценарии ресепшена
 1. **Регистрация клиента с печатью талона**
-   1. `GET /entrypoint/branches/{branchId}/services/all` — выбор услуги для клиента.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
-   2. `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` — оформление визита и печать талона.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
+   1. `GET /entrypoint/branches/{branchId}/services/all` — выбор услуги для клиента.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L451-L463】
+   2. `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=true` — оформление визита и печать талона.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L308-L378】
 2. **Создание виртуального визита и передача в пул точки**
-   1. `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` — оформление визита без печати.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L302-L372】
+   1. `POST /entrypoint/branches/{branchId}/printer/{printerId}/visitWithParameters?printTicket=false` — оформление визита без печати.【F:src/main/java/ru/aritmos/api/EntrypointController.java†L308-L378】
    2. `PUT /servicepoint/branches/{branchId}/servicePoint/{servicePointId}/pool/visits/{visitId}/externalService/transfer?isAppend=true` — добавление визита в конец пула выбранной точки.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2994-L3034】
 3. **Перенос талона в приоритетную очередь**
-   1. `GET /servicepoint/branches/{branchId}/queues/full` — проверка текущей загрузки очередей.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】
+   1. `GET /servicepoint/branches/{branchId}/queues/full` — проверка текущей загрузки очередей.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L155-L170】
    2. `PUT /servicepoint/branches/{branchId}/queue/{queueId}/visits/{visitId}/externalService/transfer?isAppend=false` — перемещение визита в начало целевой очереди.【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2724-L2764】
 
 ## 📦 Примеры кода
@@ -575,20 +623,20 @@ class HttpExample {
 ### 🟢 Открытие рабочего места
 1. `GET /managementinformation/branches/tiny` — пульт загружает компактный список отделений (`200 OK` + массив `{ id, name }`; `400/500` при ошибках). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L127-L142】
 2. `GET /managementinformation/branches/{branchId}` — актуализирует состояние выбранного отделения перед началом смены (`200 OK`; `404/500` при проблемах). 【F:src/main/java/ru/aritmos/api/ManagementController.java†L65-L71】
-3. `GET /servicepoint/branches/{branchId}/servicePoints` — показывает доступные рабочие места и их статус (`200 OK`; `404/500` при ошибках). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L168-L193】
-4. `GET /servicepoint/branches/{branchId}/users` — отображает сотрудников отделения и их занятость (`200 OK`; `404/500`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L268-L291】
-5. `GET /servicepoint/branches/{branchId}/printers` — перечень принтеров для выбора устройства печати (`200 OK`; `404/500`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L102-L117】
+3. `GET /servicepoint/branches/{branchId}/servicePoints` — показывает доступные рабочие места и их статус (`200 OK`; `404/500` при ошибках). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L179-L197】
+4. `GET /servicepoint/branches/{branchId}/users` — отображает сотрудников отделения и их занятость (`200 OK`; `404/500`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L279-L297】
+5. `GET /servicepoint/branches/{branchId}/printers` — перечень принтеров для выбора устройства печати (`200 OK`; `404/500`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L107-L123】
 6. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open` — оператор занимает точку обслуживания (`200 OK`; `404/409` при конфликтах). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L492-L511】
 
 
 ### 🔔 Вызов визита
-1. `GET /servicepoint/branches/{branchId}/queues/full` — обновляет состояние очередей в дашборде (`200 OK`; `404/500` при сбое). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L150-L165】
-2. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — запрос следующего визита (`200 OK` + JSON талона, `204 No Content` если очередь пуста, `207 Multi-Status` при активном авто-вызове). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L973-L982】
+1. `GET /servicepoint/branches/{branchId}/queues/full` — обновляет состояние очередей в дашборде (`200 OK`; `404/500` при сбое). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L155-L170】
+2. `POST /servicepoint/branches/{branchId}/servicePoints/{servicePointId}/confirmed/visits/call` — запрос следующего визита (`200 OK` + JSON талона, `204 No Content` если очередь пуста, `207 Multi-Status` при активном авто-вызове). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L954-L987】
 
 
 ### 🛎️ Начало обслуживания визита
-1. `GET /entrypoint/branches/{branchId}/services/all` — обновляет полный список услуг и их параметров перед началом обслуживания (`200 OK`; `404/500` при ошибках). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L442-L457】
-2. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — подтверждение прихода клиента (`200 OK`; `404 Not Found`; `409 Conflict`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1386-L1434】
+1. `GET /entrypoint/branches/{branchId}/services/all` — обновляет полный список услуг и их параметров перед началом обслуживания (`200 OK`; `404/500` при ошибках). 【F:src/main/java/ru/aritmos/api/EntrypointController.java†L451-L463】
+2. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/confirmed/confirm/{visitId}` — подтверждение прихода клиента (`200 OK`; `404 Not Found`; `409 Conflict`). 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1412-L1439】
 3. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredservice/{deliveredServiceId}` — добавление фактической услуги. 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1700-L1741】
 4. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/deliveredService/{deliveredServiceId}/outcome/{outcomeId}` — фиксация исхода фактической услуги. 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L2055-L2093】
 5. `POST /servicepoint/branches/{branchId}/visits/servicePoints/{servicePointId}/outcome/{outcomeId}` — итог обслуженной услуги. 【F:src/main/java/ru/aritmos/api/ServicePointController.java†L1939-L1969】
