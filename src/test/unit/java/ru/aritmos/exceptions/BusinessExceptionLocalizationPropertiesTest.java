@@ -45,6 +45,7 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("Услуга не найдена", messages.responseBody());
     }
 
+
     @Test
     void локализацияПоРесурсамПодставляетРусскийПеревод() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
@@ -88,4 +89,5 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("Delayed return has not yet been completed", messages.clientMessage());
         assertEquals("Delayed return has not yet been completed", messages.responseBody());
     }
+
 }

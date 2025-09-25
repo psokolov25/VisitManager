@@ -186,6 +186,7 @@ public class BusinessExceptionLocalizationProperties {
 
     private static String normalizeLanguage(String language) {
       if (language == null) {
+
         return null;
       }
       String trimmed = language.trim();
@@ -259,6 +260,7 @@ public class BusinessExceptionLocalizationProperties {
       }
       Locale locale = Locale.forLanguageTag(normalized);
       return Objects.equals(locale.toLanguageTag(), "") ? null : locale;
+
     }
   }
 }
