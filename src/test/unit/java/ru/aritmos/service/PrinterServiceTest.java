@@ -12,7 +12,7 @@ import ru.aritmos.model.visit.Visit;
 
 class PrinterServiceTest {
 
-    @DisplayName("Print Delegates To Client")
+    @DisplayName("Печать делегируется клиенту")
     @Test
     void printDelegatesToClient() {
         PrinterClient client = mock(PrinterClient.class);
@@ -30,7 +30,7 @@ class PrinterServiceTest {
     /**
      * Не выбрасывает исключение при ошибке клиента печати.
      */
-    @DisplayName("Print Handles Client Error")
+    @DisplayName("Печать обрабатывает ошибку клиента")
     @Test
     void printHandlesClientError() {
         PrinterClient client = mock(PrinterClient.class);
