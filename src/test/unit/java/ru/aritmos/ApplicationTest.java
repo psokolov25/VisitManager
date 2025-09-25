@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 class ApplicationTest {
-    @DisplayName("Main")
+    @DisplayName("Метод main передаёт аргументы в Micronaut.run")
     @Test
     void main() {
         try (MockedStatic<Micronaut> mic = mockStatic(Micronaut.class)) {
@@ -21,7 +21,7 @@ class ApplicationTest {
         }
     }
 
-    @DisplayName("Get Configuration")
+    @DisplayName("Получение конфигурации приложения не выбрасывает исключений")
     @Test
     void getConfiguration() {
         Application app = new Application();

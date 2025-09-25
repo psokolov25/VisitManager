@@ -62,7 +62,7 @@ class VisitServiceVisitEndTest {
         VisitEvent.END.getParameters().clear();
     }
 
-    @DisplayName("Visit End Returns Visit To Queue When Next Service Available")
+    @DisplayName("Завершение визита возвращает клиента в очередь при наличии следующей услуги")
     @Test
     void visitEndReturnsVisitToQueueWhenNextServiceAvailable() {
         Branch branch = new Branch("branch-1", "Отделение №1");
@@ -138,7 +138,7 @@ class VisitServiceVisitEndTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("Visit End Completes Visit When No Unserved Services Left")
+    @DisplayName("Завершение визита завершает обслуживание, когда все услуги оказаны")
     @Test
     void visitEndCompletesVisitWhenNoUnservedServicesLeft() {
         Branch branch = new Branch("branch-2", "Отделение №2");
@@ -208,7 +208,7 @@ class VisitServiceVisitEndTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("Visit End Fails When Service Point Missing")
+    @DisplayName("Завершение визита возвращает 404 при отсутствии точки обслуживания")
     @Test
     void visitEndFailsWhenServicePointMissing() {
         Branch branch = new Branch("branch-3", "Отделение №3");
@@ -233,7 +233,7 @@ class VisitServiceVisitEndTest {
                 .updateVisit(any(Visit.class), any(VisitEvent.class), any(VisitService.class), anyBoolean());
     }
 
-    @DisplayName("Visit End Fails When Service Point Has No Visit")
+    @DisplayName("Завершение визита возвращает 404, если на точке нет активного визита")
     @Test
     void visitEndFailsWhenServicePointHasNoVisit() {
         Branch branch = new Branch("branch-4", "Отделение №4");

@@ -15,7 +15,7 @@ import ru.aritmos.model.ServicePoint;
 
 class VisitServiceAutoCallTest {
 
-    @DisplayName("Branch Auto Call Mode Disables Service Points")
+    @DisplayName("Отключение автодозвона филиала снимает режим с окон обслуживания")
     @Test
     void branchAutoCallModeDisablesServicePoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -38,7 +38,7 @@ class VisitServiceAutoCallTest {
         verify(branchService).add("b1", branch);
     }
 
-    @DisplayName("Service Point Auto Call Mode Enables When Branch Mode On")
+    @DisplayName("Включение автодозвона окна проходит успешно при активном автодозвоне филиала")
     @Test
     void servicePointAutoCallModeEnablesWhenBranchModeOn() {
         Branch branch = new Branch("b1", "Branch");
@@ -66,7 +66,7 @@ class VisitServiceAutoCallTest {
         verify(branchService).add("b1", branch);
     }
 
-    @DisplayName("Service Point Auto Call Mode Fails When Branch Mode Off")
+    @DisplayName("Включение автодозвона окна при выключенном филиале завершается ошибкой")
     @Test
     void servicePointAutoCallModeFailsWhenBranchModeOff() {
         Branch branch = new Branch("b1", "Branch");
@@ -88,7 +88,7 @@ class VisitServiceAutoCallTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("Service Point Auto Call Mode Throws When Service Point Missing")
+    @DisplayName("Включение автодозвона окна при отсутствии окна обслуживания приводит к ошибке")
     @Test
     void servicePointAutoCallModeThrowsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -108,7 +108,7 @@ class VisitServiceAutoCallTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("Service Point Auto Call Mode Returns Existing When Disabling With Branch Mode Off")
+    @DisplayName("Отключение автодозвона окна при выключенном филиале возвращает текущее окно")
     @Test
     void servicePointAutoCallModeReturnsExistingWhenDisablingWithBranchModeOff() {
         Branch branch = new Branch("b1", "Branch");
@@ -134,7 +134,7 @@ class VisitServiceAutoCallTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("Cancel Auto Call Mode Disables Point And Emits Event")
+    @DisplayName("Отмена автодозвона окна отключает режим и публикует событие")
     @Test
     void cancelAutoCallModeDisablesPointAndEmitsEvent() {
         Branch branch = new Branch("b1", "Branch");

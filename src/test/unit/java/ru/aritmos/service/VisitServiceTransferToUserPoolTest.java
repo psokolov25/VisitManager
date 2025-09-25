@@ -45,7 +45,7 @@ class VisitServiceTransferToUserPoolTest {
         VisitEvent.TRANSFER_TO_USER_POOL.getParameters().clear();
     }
 
-    @DisplayName("Visit Transfer To User Pool Moves Visit And Publishes Notifications")
+    @DisplayName("Перевод визита в пул оператора снимает визит с точки и публикует уведомления")
     @Test
     void visitTransferToUserPoolMovesVisitAndPublishesNotifications() {
         LOG.info("Шаг 1: формируем отделение, оператора и визит");
@@ -149,7 +149,7 @@ class VisitServiceTransferToUserPoolTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer To User Pool Fails When Service Point Missing")
+    @DisplayName("Перевод визита в пул оператора возвращает 404, если точка обслуживания не найдена")
     @Test
     void visitTransferToUserPoolFailsWhenServicePointMissing() {
         LOG.info("Шаг 1: настраиваем отделение без нужной точки обслуживания");
@@ -176,7 +176,7 @@ class VisitServiceTransferToUserPoolTest {
         verifyNoInteractions(delayedEvents);
     }
 
-    @DisplayName("Visit Transfer To User Pool Fails When Visit Missing")
+    @DisplayName("Перевод визита в пул оператора возвращает 404, если на точке нет визита")
     @Test
     void visitTransferToUserPoolFailsWhenVisitMissing() {
         LOG.info("Шаг 1: создаём отделение с точкой без активного визита");
@@ -206,7 +206,7 @@ class VisitServiceTransferToUserPoolTest {
         verifyNoInteractions(delayedEvents);
     }
 
-    @DisplayName("Visit Transfer To User Pool Fails When User Not Found")
+    @DisplayName("Перевод визита в пул оператора возвращает 404, если в отделении нет оператора")
     @Test
     void visitTransferToUserPoolFailsWhenUserNotFound() {
         LOG.info("Шаг 1: готовим отделение с визитом, но без работающих операторов");

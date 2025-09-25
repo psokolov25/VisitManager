@@ -15,7 +15,7 @@ import ru.aritmos.events.services.EventService;
 
 class BusinessExceptionTest {
 
-    @DisplayName("Publishes Event And Throws")
+    @DisplayName("Публикует событие и выбрасывает исключение")
     @Test
     void publishesEventAndThrows() {
         EventService eventService = mock(EventService.class);
@@ -34,7 +34,7 @@ class BusinessExceptionTest {
         assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
     }
 
-    @DisplayName("Publishes Event With Log Message")
+    @DisplayName("Публикует событие и пишет сообщение в лог")
     @Test
     void publishesEventWithLogMessage() {
         EventService eventService = mock(EventService.class);
@@ -53,7 +53,7 @@ class BusinessExceptionTest {
         assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
     }
 
-    @DisplayName("Publishes Event With Mapper")
+    @DisplayName("Публикует событие с использованием маппера")
     @Test
     void publishesEventWithMapper() throws Exception {
         EventService eventService = mock(EventService.class);
@@ -74,7 +74,7 @@ class BusinessExceptionTest {
         verify(mapper, atLeastOnce()).writeValueAsString(any());
     }
 
-    @DisplayName("Publishes Event With Object Body")
+    @DisplayName("Публикует событие с объектом в теле")
     @Test
     void publishesEventWithObjectBody() {
         EventService eventService = mock(EventService.class);
@@ -93,7 +93,7 @@ class BusinessExceptionTest {
         assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
     }
 
-    @DisplayName("Publishes Event With Separate Event Message")
+    @DisplayName("Публикует событие с отдельным сообщением события")
     @Test
     void publishesEventWithSeparateEventMessage() {
         EventService eventService = mock(EventService.class);

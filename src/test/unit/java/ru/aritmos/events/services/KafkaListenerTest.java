@@ -29,7 +29,7 @@ class KafkaListenerTest {
         ((Map<?, ?>) service.get(null)).clear();
     }
 
-    @DisplayName("Add Service Event Handler Registers Handler")
+    @DisplayName("Регистрация сервисного обработчика сохраняет его в карте обработчиков")
     @Test
     void addServiceEventHandlerRegistersHandler() throws Exception {
         EventHandler handler = mock(EventHandler.class);
@@ -40,7 +40,7 @@ class KafkaListenerTest {
         ru.aritmos.test.LoggingAssertions.assertSame(handler, map.get("t"));
     }
 
-    @DisplayName("Add All Event Handler Registers Handler")
+    @DisplayName("Регистрация универсального обработчика сохраняет его в карте общих обработчиков")
     @Test
     void addAllEventHandlerRegistersHandler() throws Exception {
         EventHandler handler = mock(EventHandler.class);
@@ -51,7 +51,7 @@ class KafkaListenerTest {
         ru.aritmos.test.LoggingAssertions.assertSame(handler, map.get("t"));
     }
 
-    @DisplayName("Receive Calls Service Handler")
+    @DisplayName("Получение сервисного события вызывает соответствующий обработчик")
     @Test
     void receiveCallsServiceHandler() throws Exception {
         Event event = Event.builder().eventType("t").build();
@@ -62,7 +62,7 @@ class KafkaListenerTest {
         verify(handler).Handle(event);
     }
 
-    @DisplayName("Receive All Calls All Handler")
+    @DisplayName("Получение общего события активирует универсальный обработчик")
     @Test
     void receiveAllCallsAllHandler() throws Exception {
         Event event = Event.builder().eventType("t").build();
