@@ -13,7 +13,7 @@ import ru.aritmos.events.model.Event;
 class MultiserviceEventTaskTest {
 
     /** Проверяет отправку события нескольким адресатам. */
-    @DisplayName("Run Sends Event To All Destinations")
+    @DisplayName("Запуск задачи отправляет событие всем адресатам")
     @Test
     void runSendsEventToAllDestinations() {
         EventService eventService = mock(EventService.class);
