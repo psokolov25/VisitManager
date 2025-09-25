@@ -21,7 +21,7 @@ business-exception:
   localization:
     http:
       language: '${BUSINESS_EXCEPTION_HTTP_LANG:`ru`}'
-      default-language: ru
+      default-language: en
     log:
       language: '${BUSINESS_EXCEPTION_LOG_LANG:`ru`}'
       default-language: ru

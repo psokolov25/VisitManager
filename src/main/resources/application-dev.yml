@@ -1,3 +1,15 @@
+business-exception:
+  localization:
+    http:
+      language: '${BUSINESS_EXCEPTION_HTTP_LANG:`ru`}'
+      default-language: en
+    log:
+      language: '${BUSINESS_EXCEPTION_LOG_LANG:`ru`}'
+      default-language: ru
+    event:
+      language: '${BUSINESS_EXCEPTION_EVENT_LANG:`ru`}'
+      default-language: ru
+
 #tag::port[]
 micronaut:
   http:
