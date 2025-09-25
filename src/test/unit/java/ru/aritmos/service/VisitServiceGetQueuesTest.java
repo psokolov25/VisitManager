@@ -19,7 +19,7 @@ import ru.aritmos.model.visit.Visit;
 
 class VisitServiceGetQueuesTest {
 
-    @DisplayName("Returns Queues For Service Point")
+    @DisplayName("Получение очередей точки обслуживания возвращает доступные очереди оператора")
     @Test
     void returnsQueuesForServicePoint() {
         Branch branch = new Branch("b1", "Branch");
@@ -57,7 +57,7 @@ class VisitServiceGetQueuesTest {
         assertEquals("v1", queues.get(0).getVisits().get(0).getId());
     }
 
-    @DisplayName("Throws When User Not Logged In")
+    @DisplayName("Получение очередей выбрасывает исключение при незалогиненном операторе")
     @Test
     void throwsWhenUserNotLoggedIn() {
         Branch branch = new Branch("b1", "Branch");

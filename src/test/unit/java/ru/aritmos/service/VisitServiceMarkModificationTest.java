@@ -24,7 +24,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceMarkModificationTest {
 
-    @DisplayName("Add Mark Appends To Visit Marks")
+    @DisplayName("Добавление отметки дополняет список отметок визита")
     @Test
     void addMarkAppendsToVisitMarks() {
         Branch branch = new Branch("b1", "Branch");
@@ -60,7 +60,7 @@ class VisitServiceMarkModificationTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
-    @DisplayName("Delete Mark Removes From Visit")
+    @DisplayName("Удаление отметки убирает её из визита")
     @Test
     void deleteMarkRemovesFromVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -91,7 +91,7 @@ class VisitServiceMarkModificationTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
-    @DisplayName("Add Mark Throws When Current Service Missing")
+    @DisplayName("Добавление отметки выбрасывает исключение при отсутствии текущей услуги")
     @Test
     void addMarkThrowsWhenCurrentServiceMissing() {
         Branch branch = new Branch("b1", "Branch");
