@@ -1,6 +1,7 @@
 package ru.aritmos.keycloack.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class KeyCloackUserTest {
 
+    @DisplayName("Fields Can Be Set And Read")
     @Test
     void fieldsCanBeSetAndRead() {
         KeyCloackUser user = new KeyCloackUser();

@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceDeliveredServicesTest {
 
+    @DisplayName("Returns Delivered Services Of Current Service")
     @Test
     void returnsDeliveredServicesOfCurrentService() {
         VisitService service = new VisitService();
@@ -54,6 +56,7 @@ class VisitServiceDeliveredServicesTest {
         assertSame(delivered, result.get("ds1"));
     }
 
+    @DisplayName("Throws When Current Service Missing")
     @Test
     void throwsWhenCurrentServiceMissing() {
         VisitService service = new VisitService();
@@ -75,6 +78,7 @@ class VisitServiceDeliveredServicesTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("Add Delivered Service Adds To Current Service")
     @Test
     void addDeliveredServiceAddsToCurrentService() {
         Branch branch = new Branch("b1", "Branch");
@@ -106,6 +110,7 @@ class VisitServiceDeliveredServicesTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
+    @DisplayName("Delete Delivered Service Removes From Current Service")
     @Test
     void deleteDeliveredServiceRemovesFromCurrentService() {
         Branch branch = new Branch("b1", "Branch");
@@ -137,6 +142,7 @@ class VisitServiceDeliveredServicesTest {
     }
 
 
+    @DisplayName("Add Outcome Of Delivered Service Sets Outcome")
     @Test
     void addOutcomeOfDeliveredServiceSetsOutcome() {
         Branch branch = new Branch("b1", "Branch");
@@ -168,6 +174,7 @@ class VisitServiceDeliveredServicesTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
+    @DisplayName("Add Outcome Of Delivered Service Throws When Missing Delivered Service")
     @Test
     void addOutcomeOfDeliveredServiceThrowsWhenMissingDeliveredService() {
         Branch branch = new Branch("b1", "Branch");
@@ -194,6 +201,7 @@ class VisitServiceDeliveredServicesTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("Delete Outcome Delivered Service Clears Outcome")
     @Test
     void deleteOutcomeDeliveredServiceClearsOutcome() {
         Branch branch = new Branch("b1", "Branch");

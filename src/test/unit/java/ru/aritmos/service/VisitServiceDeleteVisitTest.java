@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -36,6 +37,7 @@ class VisitServiceDeleteVisitTest {
         resetVisitEvent();
     }
 
+    @DisplayName("Delete Visit Clears Assignments And Notifies Branch")
     @Test
     void deleteVisitClearsAssignmentsAndNotifiesBranch() {
         LOG.info("Шаг 1: создаём визит с привязкой к очереди и точке обслуживания");
@@ -68,6 +70,7 @@ class VisitServiceDeleteVisitTest {
         verifyNoInteractions(service.eventService);
     }
 
+    @DisplayName("Delete Visit Throws When Return Delay Not Elapsed")
     @Test
     void deleteVisitThrowsWhenReturnDelayNotElapsed() {
         LOG.info("Шаг 1: готовим визит, недавно вернувшийся в очередь");
@@ -97,6 +100,7 @@ class VisitServiceDeleteVisitTest {
         assertEquals("sp-1", visit.getServicePointId());
     }
 
+    @DisplayName("Delete Visit Throws When Transfer Delay Not Elapsed")
     @Test
     void deleteVisitThrowsWhenTransferDelayNotElapsed() {
         LOG.info("Шаг 1: формируем визит, недавно переведённый из очереди");

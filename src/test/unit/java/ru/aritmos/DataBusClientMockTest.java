@@ -8,12 +8,14 @@ import ru.aritmos.test.LoggingAssertions;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import ru.aritmos.events.clients.DataBusClient;
+import org.junit.jupiter.api.DisplayName;
 
 @MicronautTest
 class DataBusClientMockTest {
 
     @Inject DataBusClient dataBusClient;
 
+    @DisplayName("Data Bus Client Stubbed")
     @Test
     void dataBusClientStubbed() {
         Map<String, String> result =

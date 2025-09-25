@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import ru.aritmos.service.rules.CallRule;
  */
 class VisitServiceVisitAutoCallTest {
 
+    @DisplayName("Auto Call Disables Mode After Successful Call")
     @Test
     void autoCallDisablesModeAfterSuccessfulCall() {
         Branch branch = new Branch("b1", "Branch");
@@ -49,6 +51,7 @@ class VisitServiceVisitAutoCallTest {
         verify(service, never()).visitCallForConfirmWithMaxWaitingTime(anyString(), anyString(), any(Visit.class));
     }
 
+    @DisplayName("Auto Call Uses Confirm Flow When Required")
     @Test
     void autoCallUsesConfirmFlowWhenRequired() {
         Branch branch = new Branch("b1", "Branch");
@@ -85,6 +88,7 @@ class VisitServiceVisitAutoCallTest {
         verify(service).visitCallForConfirmWithMaxWaitingTime(eq("b1"), eq("sp1"), same(visit));
     }
 
+    @DisplayName("Auto Call Returns Original When Mode Disabled")
     @Test
     void autoCallReturnsOriginalWhenModeDisabled() {
         Branch branch = new Branch("b1", "Branch");
@@ -109,6 +113,7 @@ class VisitServiceVisitAutoCallTest {
         verifyNoInteractions(waitingRule);
     }
 
+    @DisplayName("Auto Call Returns Original When No Service Point Found")
     @Test
     void autoCallReturnsOriginalWhenNoServicePointFound() {
         Branch branch = new Branch("b1", "Branch");
@@ -136,6 +141,7 @@ class VisitServiceVisitAutoCallTest {
         verify(waitingRule).getAvailiableServicePoints(same(branch), same(visit));
     }
 
+    @DisplayName("Auto Call Keeps Mode When Call Returns Empty")
     @Test
     void autoCallKeepsModeWhenCallReturnsEmpty() {
         Branch branch = new Branch("b1", "Branch");

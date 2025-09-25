@@ -1,6 +1,7 @@
 package ru.aritmos;
 
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.context.ApplicationContextBuilder;
 import org.junit.jupiter.api.AfterEach;
@@ -39,6 +40,7 @@ class ApplicationConfigurerTest {
         }
     }
 
+    @DisplayName("Sets Local Defaults When Infra Absent")
     @Test
     void setsLocalDefaultsWhenInfraAbsent() {
         Application.Configurer configurer = new Application.Configurer();
@@ -50,6 +52,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
+    @DisplayName("Enables Infra By Default When Remote Endpoints Available")
     @Test
     void enablesInfraByDefaultWhenRemoteEndpointsAvailable() {
         System.setProperty("redis.uri", "redis://example");
@@ -63,6 +66,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
+    @DisplayName("Appends Infra When Explicit Environments Provided")
     @Test
     void appendsInfraWhenExplicitEnvironmentsProvided() {
         System.setProperty("micronaut.environments", "dev");
@@ -77,6 +81,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
+    @DisplayName("Keeps Explicit Local Profile Even With Infra Signals")
     @Test
     void keepsExplicitLocalProfileEvenWithInfraSignals() {
         System.setProperty("micronaut.environments", "local-no-docker");

@@ -1,6 +1,7 @@
 package ru.aritmos.service.rules;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -33,6 +34,7 @@ class MaxLifeTimeCallRuleTest {
     private static final Logger LOG = LoggerFactory.getLogger(MaxLifeTimeCallRuleTest.class);
 
     /** Проверяем выбор визита с максимальным временем жизни. */
+    @DisplayName("Selects Visit With Longest Life Time")
     @Test
     void selectsVisitWithLongestLifeTime() {
         LOG.info("Шаг 1: формируем отделение с очередью и рабочим профилем");
@@ -88,6 +90,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем, что без пользователя выбрасывается ошибка. */
+    @DisplayName("Call Throws When No User")
     @Test
     void callThrowsWhenNoUser() {
         LOG.info("Шаг 1: создаём правило и подменяем сервис событий");
@@ -106,6 +109,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем, что при отсутствующем рабочем профиле результат пустой. */
+    @DisplayName("Call Returns Empty When Work Profile Missing")
     @Test
     void callReturnsEmptyWhenWorkProfileMissing() {
         LOG.info("Шаг 1: формируем отделение без нужного рабочего профиля");
@@ -126,6 +130,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем, что визиты с неподходящими таймерами игнорируются. */
+    @DisplayName("Call Returns Empty When Visits Do Not Meet Timing Criteria")
     @Test
     void callReturnsEmptyWhenVisitsDoNotMeetTimingCriteria() {
         LOG.info("Шаг 1: формируем очередь с визитом, не успевшим набрать задержку");
@@ -161,6 +166,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем вызов визита по списку очередей и очистку флагов. */
+    @DisplayName("Call With Queue Ids Resets Flags")
     @Test
     void callWithQueueIdsResetsFlags() {
         LOG.info("Шаг 1: формируем очередь с визитом и рабочий профиль");
@@ -202,6 +208,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем, что пустые очереди пропускаются. */
+    @DisplayName("Call With Queue Ids Skips Empty Queues")
     @Test
     void callWithQueueIdsSkipsEmptyQueues() {
         LOG.info("Шаг 1: формируем несколько пустых очередей для рабочего профиля");
@@ -229,6 +236,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем, что при отсутствии пользователя для выбора очереди выбрасывается ошибка. */
+    @DisplayName("Call With Queue Ids Throws When No User")
     @Test
     void callWithQueueIdsThrowsWhenNoUser() {
         LOG.info("Шаг 1: подготавливаем правило и мок сервиса событий");
@@ -251,6 +259,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем фильтрацию доступных точек обслуживания по рабочему профилю. */
+    @DisplayName("Available Service Points Filtered By Work Profile")
     @Test
     void availableServicePointsFilteredByWorkProfile() {
         LOG.info("Шаг 1: формируем два рабочих профиля и точки обслуживания");
@@ -293,6 +302,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем выбор визита при различном времени возвращения. */
+    @DisplayName("Selects Visit With Longest Returning Time")
     @Test
     void selectsVisitWithLongestReturningTime() {
         LOG.info("Шаг 1: подготавливаем отделение и рабочий профиль");
@@ -339,6 +349,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем, что визиты с ненабранной задержкой перевода пропускаются при вызове по списку очередей. */
+    @DisplayName("Call With Queue Ids Skips Visits When Transfer Delay Not Reached")
     @Test
     void callWithQueueIdsSkipsVisitsWhenTransferDelayNotReached() {
         LOG.info("Шаг 1: подготавливаем очередь и профиль");
@@ -374,6 +385,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем обход списка очередей с выбором визита из следующей подходящей очереди. */
+    @DisplayName("Call With Queue Ids Selects From Next Eligible Queue")
     @Test
     void callWithQueueIdsSelectsFromNextEligibleQueue() {
         LOG.info("Шаг 1: формируем две очереди, первая содержит неподходящий визит");
@@ -410,6 +422,7 @@ class MaxLifeTimeCallRuleTest {
     }
 
     /** Проверяем, что точки обслуживания без пользователя исключаются из результата. */
+    @DisplayName("Available Service Points Skip Windows Without Users")
     @Test
     void availableServicePointsSkipWindowsWithoutUsers() {
         LOG.info("Шаг 1: подготавливаем отделение и рабочие профили");

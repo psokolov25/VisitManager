@@ -1,12 +1,14 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 
 class UserSessionTest {
 
+    @DisplayName("Builder Should Provide Empty Params By Default")
     @Test
     void builderShouldProvideEmptyParamsByDefault() {
         UserSession session = UserSession.builder().login("ivan").build();
@@ -16,6 +18,7 @@ class UserSessionTest {
         assertTrue(session.getParams().isEmpty());
     }
 
+    @DisplayName("Setters Should Update Mutable Fields")
     @Test
     void settersShouldUpdateMutableFields() {
         UserSession session = new UserSession();

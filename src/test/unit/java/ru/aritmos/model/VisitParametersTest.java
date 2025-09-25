@@ -1,6 +1,7 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class VisitParametersTest {
 
+    @DisplayName("Builder Should Create Empty Collections By Default")
     @Test
     void builderShouldCreateEmptyCollectionsByDefault() {
         VisitParameters parameters = VisitParameters.builder().build();
@@ -19,6 +21,7 @@ class VisitParametersTest {
         assertTrue(parameters.getParameters().isEmpty());
     }
 
+    @DisplayName("Builder Should Accept Custom Values")
     @Test
     void builderShouldAcceptCustomValues() {
         ArrayList<String> serviceIds = new ArrayList<>(List.of("s1"));

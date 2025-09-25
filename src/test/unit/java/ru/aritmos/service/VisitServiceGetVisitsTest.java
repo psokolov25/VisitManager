@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -21,6 +22,7 @@ import ru.aritmos.model.visit.Visit;
 class VisitServiceGetVisitsTest {
 
     /** Проверяет фильтрацию визитов и сортировку по времени ожидания. */
+    @DisplayName("Filters And Sorts Visits")
     @Test
     void filtersAndSortsVisits() {
         VisitService service = new VisitService();
@@ -56,6 +58,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Проверяет фильтрацию по ограничению времени перевода визита. */
+    @DisplayName("Filters Visits By Transfer Delay")
     @Test
     void filtersVisitsByTransferDelay() {
         VisitService service = new VisitService();
@@ -94,6 +97,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Ограничивает количество возвращаемых визитов. */
+    @DisplayName("Limits Number Of Visits")
     @Test
     void limitsNumberOfVisits() {
         VisitService service = new VisitService();
@@ -119,6 +123,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Бросает HTTP-исключение, если очередь не найдена. */
+    @DisplayName("Throws When Queue Missing")
     @Test
     void throwsWhenQueueMissing() {
         VisitService service = new VisitService();

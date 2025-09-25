@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 class EntityTest {
 
-    @Test
     @DisplayName("билдер создает сущность с указанными значениями")
+    @Test
     void builderCreatesEntity() {
         Entity entity = Entity.builder()
                 .id("123")
@@ -20,8 +20,8 @@ class EntityTest {
         assertEquals("касса", entity.getName());
     }
 
-    @Test
     @DisplayName("геттеры, сеттеры и equals/hashCode работают корректно")
+    @Test
     void gettersSettersAndEqualityWorkCorrectly() {
         Entity первый = new Entity();
         первый.setId("id-1");
@@ -36,8 +36,8 @@ class EntityTest {
         assertNotEquals(первый, второй);
     }
 
-    @Test
     @DisplayName("класс Entity аннотирован Serdeable")
+    @Test
     void verifySerdeableAnnotation() {
         assertTrue(Entity.class.isAnnotationPresent(Serdeable.class));
     }

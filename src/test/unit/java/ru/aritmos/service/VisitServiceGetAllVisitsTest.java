@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import ru.aritmos.model.visit.Visit;
  */
 class VisitServiceGetAllVisitsTest {
 
+    @DisplayName("Get Available Visits Filters Only Waiting And Timed Out")
     @Test
     void getAvailableVisitsFiltersOnlyWaitingAndTimedOut() {
         VisitService service = new VisitService();
@@ -41,6 +43,7 @@ class VisitServiceGetAllVisitsTest {
         assertEquals(List.of(valid), result);
     }
 
+    @DisplayName("Get All Visits Returns Branch Visits")
     @Test
     void getAllVisitsReturnsBranchVisits() {
         Branch branch = new Branch("b1", "Branch");
@@ -63,6 +66,7 @@ class VisitServiceGetAllVisitsTest {
         assertSame(visit, visits.get("v1"));
     }
 
+    @DisplayName("Get Visits By Statuses Filters By Status")
     @Test
     void getVisitsByStatusesFiltersByStatus() {
         Branch branch = new Branch("b1", "Branch");

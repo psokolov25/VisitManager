@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpResponse;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import ru.aritmos.model.visit.Visit;
 
 class PrinterServiceTest {
 
+    @DisplayName("Print Delegates To Client")
     @Test
     void printDelegatesToClient() {
         PrinterClient client = mock(PrinterClient.class);
@@ -28,6 +30,7 @@ class PrinterServiceTest {
     /**
      * Не выбрасывает исключение при ошибке клиента печати.
      */
+    @DisplayName("Print Handles Client Error")
     @Test
     void printHandlesClientError() {
         PrinterClient client = mock(PrinterClient.class);

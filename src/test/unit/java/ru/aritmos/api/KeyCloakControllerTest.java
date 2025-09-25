@@ -2,6 +2,7 @@ package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class KeyCloakControllerTest {
 
+    @DisplayName("Auth Delegates To Client")
     @Test
     void authDelegatesToClient() {
         KeyCloakController controller = new KeyCloakController();
@@ -25,6 +27,7 @@ class KeyCloakControllerTest {
         verify(client).Auth(credentials);
     }
 
+    @DisplayName("Delete Session Delegates To Client")
     @Test
     void deleteSessionDelegatesToClient() {
         KeyCloakController controller = new KeyCloakController();

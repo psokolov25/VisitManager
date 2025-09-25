@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ class ServicesTest {
         return branch;
     }
 
+    @DisplayName("Get All Services Marks Availability")
     @Test
     void getAllServicesMarksAvailability() {
         Branch branch = prepareBranch();
@@ -48,6 +50,7 @@ class ServicesTest {
         assertFalse(branch.getServices().get("s2").getIsAvailable());
     }
 
+    @DisplayName("Get All Available Services Returns Only Available")
     @Test
     void getAllAvailableServicesReturnsOnlyAvailable() {
         Branch branch = prepareBranch();

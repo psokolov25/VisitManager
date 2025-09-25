@@ -1,6 +1,7 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 
 class RealmAccessTest {
 
+    @DisplayName("Builder And Setters Construct Full Access")
     @Test
     void builderAndSettersConstructFullAccess() {
         GroupRepresentation branch = new GroupRepresentation();

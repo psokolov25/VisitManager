@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -41,6 +42,7 @@ class VisitServiceVisitConfirmTest {
         VisitEvent.START_SERVING.getParameters().clear();
     }
 
+    @DisplayName("Visit Confirm Moves Visit To Service Point And Publishes Start Serving Event")
     @Test
     void visitConfirmMovesVisitToServicePointAndPublishesStartServingEvent() {
         log.info("Готовим отделение и точку обслуживания для позитивного сценария подтверждения визита");
@@ -116,6 +118,7 @@ class VisitServiceVisitConfirmTest {
         assertEquals("wp-1", params.get("workProfileId"));
     }
 
+    @DisplayName("Visit Confirm Fails When Service Point Already Has Visit")
     @Test
     void visitConfirmFailsWhenServicePointAlreadyHasVisit() {
         log.info("Готовим отделение с занятой точкой обслуживания");
@@ -142,6 +145,7 @@ class VisitServiceVisitConfirmTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(serviceUnderTest));
     }
 
+    @DisplayName("Visit Confirm Fails When Service Point Missing")
     @Test
     void visitConfirmFailsWhenServicePointMissing() {
         log.info("Готовим отделение без нужной точки обслуживания");

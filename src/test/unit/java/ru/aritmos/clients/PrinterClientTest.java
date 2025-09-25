@@ -1,6 +1,7 @@
 package ru.aritmos.clients;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.client.annotation.Client;
@@ -13,6 +14,7 @@ import ru.aritmos.model.visit.Visit;
 
 class PrinterClientTest {
 
+    @DisplayName("Interface Is Annotated As Micronaut Client")
     @Test
     void interfaceIsAnnotatedAsMicronautClient() {
         Client annotation = PrinterClient.class.getAnnotation(Client.class);
@@ -20,6 +22,7 @@ class PrinterClientTest {
         assertEquals("${micronaut.application.printerServiceURL}", annotation.value());
     }
 
+    @DisplayName("Print Method Has Retry Annotations")
     @Test
     void printMethodHasRetryAnnotations() throws NoSuchMethodException {
         Method method = PrinterClient.class.getMethod("print", String.class, Boolean.class, Visit.class);

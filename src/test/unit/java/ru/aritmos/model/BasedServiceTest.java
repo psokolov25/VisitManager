@@ -1,11 +1,13 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 
 class BasedServiceTest {
 
+    @DisplayName("Clone Should Clone Outcome Independently")
     @Test
     void cloneShouldCloneOutcomeIndependently() {
         Outcome outcome = new Outcome("1", "name");

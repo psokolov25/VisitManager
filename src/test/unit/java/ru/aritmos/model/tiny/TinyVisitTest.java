@@ -1,6 +1,7 @@
 package ru.aritmos.model.tiny;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class TinyVisitTest {
 
+    @DisplayName("Calculates Waiting Time From Transfer Date")
     @Test
     void calculatesWaitingTimeFromTransferDate() {
         ZonedDateTime now = ZonedDateTime.now();
@@ -23,6 +25,7 @@ class TinyVisitTest {
         assertTrue(Math.abs(actual - expected) <= 1, "waiting time should match");
     }
 
+    @DisplayName("Calculates Total Waiting Time From Create Date")
     @Test
     void calculatesTotalWaitingTimeFromCreateDate() {
         ZonedDateTime now = ZonedDateTime.now();

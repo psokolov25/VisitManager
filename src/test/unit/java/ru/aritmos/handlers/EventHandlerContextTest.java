@@ -3,6 +3,7 @@ package ru.aritmos.handlers;
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ class EventHandlerContextTest {
         Body(Branch branch) { this.b1 = branch; }
     }
 
+    @DisplayName("Branch Public Handler Converts Body To Map")
     @Test
     void branchPublicHandlerConvertsBodyToMap() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -50,6 +52,7 @@ class EventHandlerContextTest {
         assertEquals(branch, captor.getValue().get("b1"));
     }
 
+    @DisplayName("Simple Handlers Just Log")
     @Test
     void simpleHandlersJustLog() {
         Event event = Event.builder().eventType("TEST").build();
@@ -58,6 +61,7 @@ class EventHandlerContextTest {
         assertDoesNotThrow(() -> new EventHandlerContext.EntityChangedHandler().Handle(event));
     }
 
+    @DisplayName("Not Force Logout Closes Point And Ends Visit")
     @Test
     void notForceLogoutClosesPointAndEndsVisit() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -93,6 +97,7 @@ class EventHandlerContextTest {
                 .closeServicePoint("b1", "sp1", visitService, false, false, "", false, "");
     }
 
+    @DisplayName("Force Logout Closes Point")
     @Test
     void forceLogoutClosesPoint() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -127,6 +132,7 @@ class EventHandlerContextTest {
      * Проверяет, что метод {@link EventHandlerContext#AddHandlers()} регистрирует все типы событий
      * и публикует демонстрационную конфигурацию отделений.
      */
+    @DisplayName("Add Handlers Registers All Listeners And Publishes Demo Configuration")
     @Test
     void addHandlersRegistersAllListenersAndPublishesDemoConfiguration() throws Exception {
         Field allHandlersField = KafkaListener.class.getDeclaredField("allHandlers");

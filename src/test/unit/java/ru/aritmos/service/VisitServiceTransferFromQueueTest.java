@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ class VisitServiceTransferFromQueueTest {
         resetVisitEvents();
     }
 
+    @DisplayName("Visit Transfer From Queue To Service Point Pool Places Visit At Exact Index")
     @Test
     void visitTransferFromQueueToServicePointPoolPlacesVisitAtExactIndex() {
         log.info("Готовим отделение с оператором и пулом точки обслуживания");
@@ -124,6 +126,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals("A001", body.get("ticket"));
     }
 
+    @DisplayName("Visit Transfer To Queue From Service Point Places Visit To Start When Requested")
     @Test
     void visitTransferToQueueFromServicePointPlacesVisitToStartWhenRequested() {
         log.info("Готовим отделение с очередью и оператором точки обслуживания");
@@ -200,6 +203,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("Visit Transfer To Queue From External Service Propagates Service Info And Sid")
     @Test
     void visitTransferToQueueFromExternalServicePropagatesServiceInfoAndSid() {
         log.info("Готовим отделение с очередями и заполняем информацию Keycloak");
@@ -277,6 +281,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("Visit Transfer From Queue To Service Point Pool Respects Append Flag")
     @Test
     void visitTransferFromQueueToServicePointPoolRespectsAppendFlag() {
         log.info("Готовим отделение с точкой обслуживания и пулом");
@@ -345,6 +350,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals("RETURN_TIME_DELAY_FINISHED", body.get("reason"));
     }
 
+    @DisplayName("Visit Back To Service Point Pool Stops Serving And Returns To Pool")
     @Test
     void visitBackToServicePointPoolStopsServingAndReturnsToPool() {
         log.info("Готовим отделение с точкой обслуживания, пулом и активным визитом");

@@ -1,6 +1,7 @@
 package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -28,6 +29,7 @@ class KafkaListenerTest {
         ((Map<?, ?>) service.get(null)).clear();
     }
 
+    @DisplayName("Add Service Event Handler Registers Handler")
     @Test
     void addServiceEventHandlerRegistersHandler() throws Exception {
         EventHandler handler = mock(EventHandler.class);
@@ -38,6 +40,7 @@ class KafkaListenerTest {
         ru.aritmos.test.LoggingAssertions.assertSame(handler, map.get("t"));
     }
 
+    @DisplayName("Add All Event Handler Registers Handler")
     @Test
     void addAllEventHandlerRegistersHandler() throws Exception {
         EventHandler handler = mock(EventHandler.class);
@@ -48,6 +51,7 @@ class KafkaListenerTest {
         ru.aritmos.test.LoggingAssertions.assertSame(handler, map.get("t"));
     }
 
+    @DisplayName("Receive Calls Service Handler")
     @Test
     void receiveCallsServiceHandler() throws Exception {
         Event event = Event.builder().eventType("t").build();
@@ -58,6 +62,7 @@ class KafkaListenerTest {
         verify(handler).Handle(event);
     }
 
+    @DisplayName("Receive All Calls All Handler")
     @Test
     void receiveAllCallsAllHandler() throws Exception {
         Event event = Event.builder().eventType("t").build();

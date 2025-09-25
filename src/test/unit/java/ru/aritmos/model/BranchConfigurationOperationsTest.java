@@ -3,6 +3,7 @@ package ru.aritmos.model;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -29,6 +30,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class BranchConfigurationOperationsTest {
 
+    @DisplayName("Update Visit With Custom Action Places Entities And Sends Events")
     @Test
     void updateVisitWithCustomActionPlacesEntitiesAndSendsEvents() {
         log.info("Формируем отделение с очередью, пулом точек и сотрудниками");
@@ -97,6 +99,7 @@ class BranchConfigurationOperationsTest {
         assertEquals(visit.getId(), ((Visit) events.get(0).getBody()).getId());
     }
 
+    @DisplayName("Update Visit With Custom Action Throws When Point Busy")
     @Test
     void updateVisitWithCustomActionThrowsWhenPointBusy() {
         log.info("Готовим отделение с занятой точкой обслуживания");
@@ -128,6 +131,7 @@ class BranchConfigurationOperationsTest {
         assertEquals(HttpStatus.CONFLICT, exception.getStatus());
     }
 
+    @DisplayName("Add Update Service Point Restores State And Publishes Events")
     @Test
     void addUpdateServicePointRestoresStateAndPublishesEvents() {
         log.info("Настраиваем отделение с существующей точкой и назначенным визитом");
@@ -161,6 +165,7 @@ class BranchConfigurationOperationsTest {
         verify(eventService).sendChangedEvent(eq("config"), eq(false), isNull(), eq(newcomer), anyMap(), eq("Add service point"));
     }
 
+    @DisplayName("Add Update Queues Restores Visits And Notifies Consumers")
     @Test
     void addUpdateQueuesRestoresVisitsAndNotifiesConsumers() {
         log.info("Готовим отделение с очередями и точкой обслуживания");

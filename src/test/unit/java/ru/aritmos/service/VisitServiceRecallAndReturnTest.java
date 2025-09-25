@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ class VisitServiceRecallAndReturnTest {
         resetVisitEvents();
     }
 
+    @DisplayName("Visit Re Call For Confirm Updates Event With Service Point Data")
     @Test
     void visitReCallForConfirmUpdatesEventWithServicePointData() {
         log.info("Готовим отделение с точкой обслуживания и оператором для повторного вызова");
@@ -103,6 +105,7 @@ class VisitServiceRecallAndReturnTest {
         assertNotNull(event.dateTime);
     }
 
+    @DisplayName("Visit No Show Resets Visit State And Produces Event")
     @Test
     void visitNoShowResetsVisitStateAndProducesEvent() {
         log.info("Готовим визит и точку обслуживания для фиксации неявки клиента");
@@ -154,6 +157,7 @@ class VisitServiceRecallAndReturnTest {
         assertEquals(operator.getCurrentWorkProfileId(), event.getParameters().get("workProfileId"));
     }
 
+    @DisplayName("Back Called Visit Returns Visit To Queue With Last Service Data")
     @Test
     void backCalledVisitReturnsVisitToQueueWithLastServiceData() {
         log.info("Настраиваем отделение с визитом для возврата вызванного клиента в очередь");
@@ -201,6 +205,7 @@ class VisitServiceRecallAndReturnTest {
         assertEquals(currentService.getName(), event.getParameters().get("serviceName"));
     }
 
+    @DisplayName("Visit Put Back Delegates To Service Point Pool When Previous Pool Stored")
     @Test
     void visitPutBackDelegatesToServicePointPoolWhenPreviousPoolStored() {
         log.info("Готовим визит в точке обслуживания с последним пулом точки");

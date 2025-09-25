@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import ru.aritmos.events.model.ChangedObject;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.config.LocalNoDockerDataBusClientStub;
+import org.junit.jupiter.api.DisplayName;
 
 @MicronautTest
 class EventServiceTest {
@@ -17,6 +18,7 @@ class EventServiceTest {
     @Inject EventService eventService;
     @Inject LocalNoDockerDataBusClientStub dataBusClient;
 
+    @DisplayName("Get Date String Formats As Rfc1123")
     @Test
     void getDateStringFormatsAsRfc1123() {
         ZonedDateTime date = ZonedDateTime.of(2008, 4, 9, 23, 55, 38, 0, ZoneId.of("GMT"));
@@ -24,6 +26,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals("Wed, 09 Apr 2008 23:55:38 GMT", formatted);
     }
 
+    @DisplayName("Send Changed Event Builds Entity Changed Event")
     @Test
     void sendChangedEventBuildsEntityChangedEvent() {
         dataBusClient.clearInvocations();
@@ -46,6 +49,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals(oldValue, changed.getOldValue());
     }
 
+    @DisplayName("Send Sets Sender And Calls Client")
     @Test
     void sendSetsSenderAndCallsClient() {
         dataBusClient.clearInvocations();
@@ -64,6 +68,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals("vm", event.getSenderService());
     }
 
+    @DisplayName("Send To Multiple Destinations Invokes Client For Each Service")
     @Test
     void sendToMultipleDestinationsInvokesClientForEachService() {
         dataBusClient.clearInvocations();
@@ -85,6 +90,7 @@ class EventServiceTest {
             });
     }
 
+    @DisplayName("Send Changed Event To Multiple Destinations Builds Event For Each Service")
     @Test
     void sendChangedEventToMultipleDestinationsBuildsEventForEachService() {
         dataBusClient.clearInvocations();

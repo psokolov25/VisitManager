@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import ru.aritmos.model.ServicePoint;
  */
 class VisitServiceConfirmRequiredModeTest {
 
+    @DisplayName("Enable Confirm Required Mode Updates Service Point And Sends Event")
     @Test
     void enableConfirmRequiredModeUpdatesServicePointAndSendsEvent() {
         Branch branch = new Branch("b1", "Branch");
@@ -47,6 +49,7 @@ class VisitServiceConfirmRequiredModeTest {
         assertSame(servicePoint, published.getBody());
     }
 
+    @DisplayName("Disable Confirm Required Mode Publishes Off Event")
     @Test
     void disableConfirmRequiredModePublishesOffEvent() {
         Branch branch = new Branch("b1", "Branch");
@@ -78,6 +81,7 @@ class VisitServiceConfirmRequiredModeTest {
         assertSame(servicePoint, published.getBody());
     }
 
+    @DisplayName("Set Confirm Required Mode Throws When Service Point Missing")
     @Test
     void setConfirmRequiredModeThrowsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");

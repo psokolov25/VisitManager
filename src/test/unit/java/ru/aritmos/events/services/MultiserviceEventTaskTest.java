@@ -1,6 +1,7 @@
 package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import ru.aritmos.events.model.Event;
 class MultiserviceEventTaskTest {
 
     /** Проверяет отправку события нескольким адресатам. */
+    @DisplayName("Run Sends Event To All Destinations")
     @Test
     void runSendsEventToAllDestinations() {
         EventService eventService = mock(EventService.class);

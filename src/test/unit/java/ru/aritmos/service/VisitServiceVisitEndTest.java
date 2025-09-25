@@ -16,6 +16,7 @@ import static ru.aritmos.test.LoggingAssertions.assertNull;
 import static ru.aritmos.test.LoggingAssertions.assertSame;
 import static ru.aritmos.test.LoggingAssertions.assertThrows;
 import static ru.aritmos.test.LoggingAssertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -61,6 +62,7 @@ class VisitServiceVisitEndTest {
         VisitEvent.END.getParameters().clear();
     }
 
+    @DisplayName("Visit End Returns Visit To Queue When Next Service Available")
     @Test
     void visitEndReturnsVisitToQueueWhenNextServiceAvailable() {
         Branch branch = new Branch("branch-1", "Отделение №1");
@@ -136,6 +138,7 @@ class VisitServiceVisitEndTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("Visit End Completes Visit When No Unserved Services Left")
     @Test
     void visitEndCompletesVisitWhenNoUnservedServicesLeft() {
         Branch branch = new Branch("branch-2", "Отделение №2");
@@ -205,6 +208,7 @@ class VisitServiceVisitEndTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("Visit End Fails When Service Point Missing")
     @Test
     void visitEndFailsWhenServicePointMissing() {
         Branch branch = new Branch("branch-3", "Отделение №3");
@@ -229,6 +233,7 @@ class VisitServiceVisitEndTest {
                 .updateVisit(any(Visit.class), any(VisitEvent.class), any(VisitService.class), anyBoolean());
     }
 
+    @DisplayName("Visit End Fails When Service Point Has No Visit")
     @Test
     void visitEndFailsWhenServicePointHasNoVisit() {
         Branch branch = new Branch("branch-4", "Отделение №4");

@@ -1,12 +1,14 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 
 class ReceptionSessionTest {
 
+    @DisplayName("Builder Should Populate All Fields")
     @Test
     void builderShouldPopulateAllFields() {
         User user = new User();

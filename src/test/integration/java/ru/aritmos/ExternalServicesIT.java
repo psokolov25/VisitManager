@@ -1,6 +1,7 @@
 package ru.aritmos;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -14,12 +15,14 @@ class ExternalServicesIT {
     @Inject DataBusClient dataBusClient;
     @Inject KeyCloackClient keyCloackClient;
 
+    @DisplayName("Data Bus Client Available")
     @Test
     void dataBusClientAvailable() {
         assertNotNull(dataBusClient);
     }
 
 
+    @DisplayName("Keycloak Client Available")
     @Test
     void keycloakClientAvailable() {
         assertNotNull(keyCloackClient);

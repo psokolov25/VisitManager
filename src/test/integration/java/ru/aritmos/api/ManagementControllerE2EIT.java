@@ -1,6 +1,7 @@
 package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
@@ -26,6 +27,7 @@ class ManagementControllerE2EIT {
     @Inject
     Configuration configuration;
 
+    @DisplayName("Returns Branch By Id")
     @Test
     void returnsBranchById() {
         Branch branch = new Branch("b1", "Branch");
@@ -36,6 +38,7 @@ class ManagementControllerE2EIT {
         assertEquals("Branch", fetched.getName());
     }
 
+    @DisplayName("Returns Tiny Branches")
     @Test
     void returnsTinyBranches() {
         Branch branch = new Branch("b2", "B2");

@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 
 class GroovyScriptTest {
 
-    @Test
     @DisplayName("по умолчанию билдер создает пустые изменяемые карты входных и выходных параметров")
+    @Test
     void builderCreatesEmptyMapsByDefault() {
         GroovyScript script = GroovyScript.builder().build();
 
@@ -29,8 +29,8 @@ class GroovyScriptTest {
         assertEquals(42, script.getOutputParameters().get("результат"));
     }
 
-    @Test
     @DisplayName("билдер позволяет задать код правила и собственные параметры")
+    @Test
     void builderSupportsPopulatingData() {
         HashMap<Object, Object> output = new HashMap<>();
         output.put("result", "готово");
@@ -46,8 +46,8 @@ class GroovyScriptTest {
         assertSame(output, script.getOutputParameters());
     }
 
-    @Test
     @DisplayName("модель GroovyScript помечена Serdeable и использует JsonInclude.ALWAYS для карт")
+    @Test
     void verifiesAnnotations() throws NoSuchFieldException {
         assertTrue(GroovyScript.class.isAnnotationPresent(Serdeable.class));
 

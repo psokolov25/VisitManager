@@ -1,6 +1,7 @@
 package ru.aritmos.keycloack.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.context.BeanContext;
 import io.micronaut.security.config.SecurityConfiguration;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 
 class EndSessionEndpointResolverReplacementTest {
 
+    @DisplayName("Resolve Returns Okta Endpoint")
     @Test
     void resolveReturnsOktaEndpoint() {
         BeanContext beanContext = Mockito.mock(BeanContext.class);

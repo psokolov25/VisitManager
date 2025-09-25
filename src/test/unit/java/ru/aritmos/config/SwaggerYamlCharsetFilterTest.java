@@ -26,8 +26,8 @@ class SwaggerYamlCharsetFilterTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SwaggerYamlCharsetFilterTest.class);
 
-    @Test
     @DisplayName("Добавление базового заголовка Content-Type для YAML без заголовка и логирование всех шагов")
+    @Test
     void addsDefaultYamlContentTypeWhenHeaderMissing() {
         LOG.info("Шаг 1: создаём ответ без заголовка Content-Type для YAML-спецификации.");
         MutableHttpResponse<?> response = HttpResponse.ok();
@@ -40,9 +40,8 @@ class SwaggerYamlCharsetFilterTest {
         assertEquals("text/yaml; charset=UTF-8", result.getHeaders().get(HttpHeaders.CONTENT_TYPE));
     }
 
-    @Test
     @DisplayName("Добавление кодировки UTF-8 к YAML-ответу без charset при обработке swagger-файла")
-
+    @Test
     void appendsCharsetForYamlWithoutEncoding() {
         LOG.info("Шаг 1: подготавливаем ответ с типом application/yaml без charset.");
         MutableHttpResponse<?> response = HttpResponse.ok();
@@ -55,8 +54,8 @@ class SwaggerYamlCharsetFilterTest {
         assertEquals("application/yaml; charset=UTF-8", result.getHeaders().get(HttpHeaders.CONTENT_TYPE));
     }
 
-    @Test
     @DisplayName("Сохранение исходной кодировки YAML-ответа при повторном прохождении фильтра")
+    @Test
     void keepsExistingCharsetIntact() {
         LOG.info("Шаг 1: настраиваем ответ с уже указанной кодировкой.");
         MutableHttpResponse<?> response = HttpResponse.ok();
@@ -69,9 +68,8 @@ class SwaggerYamlCharsetFilterTest {
         assertEquals("application/yaml; charset=UTF-8", result.getHeaders().get(HttpHeaders.CONTENT_TYPE));
     }
 
-    @Test
     @DisplayName("Пропуск нерелевантных ответов: не-YAML содержимое и не-YAML запросы остаются неизменными")
-
+    @Test
     void skipsNonYamlResponsesAndRequests() {
         LOG.info("Шаг 1: ответ с типом application/json для запроса не к YAML-спецификации.");
         MutableHttpResponse<?> jsonResponse = HttpResponse.ok();

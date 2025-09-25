@@ -2,9 +2,11 @@ package ru.aritmos.events.model;
 
 import ru.aritmos.test.LoggingAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class ChangedObjectTest {
 
+    @DisplayName("Builder Sets Fields")
     @Test
     void builderSetsFields() {
         ChangedObject obj =

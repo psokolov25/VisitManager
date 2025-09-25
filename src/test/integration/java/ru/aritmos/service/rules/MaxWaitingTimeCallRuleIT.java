@@ -1,6 +1,7 @@
 package ru.aritmos.service.rules;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -20,6 +21,7 @@ class MaxWaitingTimeCallRuleIT {
     MaxWaitingTimeCallRule rule;
 
     /** Проверяет выбор визита с максимальным временем ожидания. */
+    @DisplayName("Selects Visit With Max Waiting Time")
     @Test
     void selectsVisitWithMaxWaitingTime() {
         // отделение с рабочим профилем и очередью
@@ -60,6 +62,7 @@ class MaxWaitingTimeCallRuleIT {
     }
 
     /** Проверяет, что без пользователя выбрасывается исключение. */
+    @DisplayName("Call Without User Throws")
     @Test
     void callWithoutUserThrows() {
         Branch branch = new Branch("b1", "branch");
