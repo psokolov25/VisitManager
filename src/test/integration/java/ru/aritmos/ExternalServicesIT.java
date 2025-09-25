@@ -15,14 +15,14 @@ class ExternalServicesIT {
     @Inject DataBusClient dataBusClient;
     @Inject KeyCloackClient keyCloackClient;
 
-    @DisplayName("Data Bus Client Available")
+    @DisplayName("Клиент Data Bus доступен в интеграционном контексте")
     @Test
     void dataBusClientAvailable() {
         assertNotNull(dataBusClient);
     }
 
 
-    @DisplayName("Keycloak Client Available")
+    @DisplayName("Клиент Keycloak доступен в интеграционном контексте")
     @Test
     void keycloakClientAvailable() {
         assertNotNull(keyCloackClient);
