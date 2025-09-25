@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class VisitParametersTest {
 
-    @DisplayName("Builder Should Create Empty Collections By Default")
+    @DisplayName("Билдер создаёт пустые коллекции по умолчанию")
     @Test
     void builderShouldCreateEmptyCollectionsByDefault() {
         VisitParameters parameters = VisitParameters.builder().build();
@@ -21,7 +21,7 @@ class VisitParametersTest {
         assertTrue(parameters.getParameters().isEmpty());
     }
 
-    @DisplayName("Builder Should Accept Custom Values")
+    @DisplayName("Билдер принимает переданные значения")
     @Test
     void builderShouldAcceptCustomValues() {
         ArrayList<String> serviceIds = new ArrayList<>(List.of("s1"));
