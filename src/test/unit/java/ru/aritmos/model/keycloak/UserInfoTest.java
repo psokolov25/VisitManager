@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class UserInfoTest {
 
     @Test
-    void билдерИСеттерыПоддерживаютВсеПоля() {
+    void builderAndSettersSupportAllFields() {
         RealmAccess realmAccess = RealmAccess.builder()
                 .roles(java.util.List.of("admin"))
                 .build();

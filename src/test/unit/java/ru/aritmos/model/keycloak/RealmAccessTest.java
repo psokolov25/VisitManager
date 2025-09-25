@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class RealmAccessTest {
 
     @Test
-    void билдерИСеттерыФормируютСписокРолей() {
+    void builderAndSettersFormRoleList() {
         RealmAccess viaBuilder = RealmAccess.builder()
                 .roles(List.of("admin", "operator"))
                 .build();

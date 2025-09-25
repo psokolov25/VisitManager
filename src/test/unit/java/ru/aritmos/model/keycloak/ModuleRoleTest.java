@@ -7,7 +7,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 class ModuleRoleTest {
 
     @Test
-    void цепочкиМетодовФормируютКорректныйОбъект() {
+    void methodChainsProduceCorrectObject() {
         ModuleRole direct = new ModuleRole()
                 .name("module")
                 .role("operator");

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class UserInfoTest {
 
     @Test
-    void билдерИСеттерыРаботаютОдинаково() {
+    void builderAndSettersBehaveTheSame() {
         RealmAccess access = RealmAccess.builder()
                 .roles(java.util.List.of("admin"))
                 .build();

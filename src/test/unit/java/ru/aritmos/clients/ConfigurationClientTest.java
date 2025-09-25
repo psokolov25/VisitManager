@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 class ConfigurationClientTest {
 
     @Test
-    void интерфейсОтмеченClientСОжидаемымURL() {
+    void interfaceIsAnnotatedWithClientUsingExpectedUrl() {
         Client annotation = ConfigurationClient.class.getAnnotation(Client.class);
         assertNotNull(annotation);
         assertEquals("${micronaut.application.configurationURL}", annotation.value());
     }
 
     @Test
-    void методGetConfigurationИмеетАннотациюGet() throws NoSuchMethodException {
+    void getConfigurationMethodHasGetAnnotation() throws NoSuchMethodException {
         Method method = ConfigurationClient.class.getMethod("getConfiguration");
         assertEquals(HashMap.class, method.getReturnType());
         assertTrue(method.isAnnotationPresent(Get.class));

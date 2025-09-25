@@ -14,14 +14,14 @@ import ru.aritmos.model.visit.Visit;
 class PrinterClientTest {
 
     @Test
-    void интерфейсАннотированКакMicronautКлиент() {
+    void interfaceIsAnnotatedAsMicronautClient() {
         Client annotation = PrinterClient.class.getAnnotation(Client.class);
         assertNotNull(annotation, "Ожидался @Client на интерфейсе");
         assertEquals("${micronaut.application.printerServiceURL}", annotation.value());
     }
 
     @Test
-    void методPrintПокрытАннотациямиПовторныхПопыток() throws NoSuchMethodException {
+    void printMethodHasRetryAnnotations() throws NoSuchMethodException {
         Method method = PrinterClient.class.getMethod("print", String.class, Boolean.class, Visit.class);
 
         assertTrue(method.isAnnotationPresent(Post.class));

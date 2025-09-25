@@ -10,7 +10,7 @@ class VisitStateTest {
 
     @Test
     @DisplayName("перечисление содержит последовательность состояний визита")
-    void проверяемСписокСостояний() {
+    void verifyListOfStates() {
         VisitState[] ожидаемыеСостояния = {
             VisitState.CREATED,
             VisitState.WAITING_IN_QUEUE,
@@ -25,13 +25,13 @@ class VisitStateTest {
 
     @Test
     @DisplayName("можно получить состояние по его имени")
-    void получаемСостояниеПоИмени() {
+    void retrievesStateByName() {
         assertEquals(VisitState.WAITING_IN_QUEUE, VisitState.valueOf("WAITING_IN_QUEUE"));
     }
 
     @Test
     @DisplayName("перечисление VisitState также аннотировано Serdeable")
-    void проверяемАннотациюSerdeable() {
+    void verifySerdeableAnnotation() {
         assertTrue(VisitState.class.isAnnotationPresent(Serdeable.class));
     }
 }

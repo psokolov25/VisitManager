@@ -10,7 +10,7 @@ class EntityTest {
 
     @Test
     @DisplayName("билдер создает сущность с указанными значениями")
-    void билдерСоздаетСущность() {
+    void builderCreatesEntity() {
         Entity entity = Entity.builder()
                 .id("123")
                 .name("касса")
@@ -22,7 +22,7 @@ class EntityTest {
 
     @Test
     @DisplayName("геттеры, сеттеры и equals/hashCode работают корректно")
-    void проверкиГеттеровИСеттеров() {
+    void gettersSettersAndEqualityWorkCorrectly() {
         Entity первый = new Entity();
         первый.setId("id-1");
         первый.setName("отделение");
@@ -38,7 +38,7 @@ class EntityTest {
 
     @Test
     @DisplayName("класс Entity аннотирован Serdeable")
-    void проверяемАннотациюSerdeable() {
+    void verifySerdeableAnnotation() {
         assertTrue(Entity.class.isAnnotationPresent(Serdeable.class));
     }
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class KeyCloackUserTest {
 
     @Test
-    void поляМожноУстановитьИСчитать() {
+    void fieldsCanBeSetAndRead() {
         KeyCloackUser user = new KeyCloackUser();
         user.setEmail("user@example.com");
         user.setName("User");

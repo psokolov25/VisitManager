@@ -25,7 +25,7 @@ class DataBusClientTest {
 
   /** Проверяет наличие аннотации клиента с ожидаемым значением URL. */
   @Test
-  void клиентАннотированАдресомСервиса() {
+  void clientIsAnnotatedWithServiceUrl() {
     Client client = DataBusClient.class.getAnnotation(Client.class);
 
     assertNotNull(client, "Аннотация @Client отсутствует");
@@ -34,7 +34,7 @@ class DataBusClientTest {
 
   /** Убеждаемся, что метод send настроен на POST с ретраями и асинхронным исполнением. */
   @Test
-  void методSendСодержитHttpИАсинхронныеАннотации() throws NoSuchMethodException {
+  void sendMethodContainsHttpAndAsyncAnnotations() throws NoSuchMethodException {
     Method send =
         DataBusClient.class.getMethod(
             "send",
@@ -66,7 +66,7 @@ class DataBusClientTest {
 
   /** Проверяем ожидаемые аннотации на параметрах метода send. */
   @Test
-  void методSendИмеетВсеЗаголовкиИПараметры() throws NoSuchMethodException {
+  void sendMethodHasAllHeadersAndParameters() throws NoSuchMethodException {
     Method send =
         DataBusClient.class.getMethod(
             "send",

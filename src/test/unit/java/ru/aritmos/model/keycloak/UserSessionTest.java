@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class UserSessionTest {
 
     @Test
-    void билдерИСеттерыСоздаютПолнуюСессию() {
+    void builderAndSettersCreateCompleteSession() {
         UserToken token = UserToken.builder()
                 .user(UserInfo.builder().sub("sub").build())
                 .tokenInfo(Token.builder().access_token("access").build())

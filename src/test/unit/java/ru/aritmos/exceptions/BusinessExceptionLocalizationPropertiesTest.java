@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class BusinessExceptionLocalizationPropertiesTest {
 
     @Test
-    void языкНормализуетсяСУдалениемОбрамляющихКавычек() {
+    void languageIsNormalizedByRemovingWrappingQuotes() {
         BusinessExceptionLocalizationProperties.ChannelLocalization localization =
                 new BusinessExceptionLocalizationProperties.ChannelLocalization();
         localization.setLanguage("`Ru`");
@@ -20,7 +20,7 @@ class BusinessExceptionLocalizationPropertiesTest {
     }
 
     @Test
-    void плейсхолдерСЗначениемПоУмолчаниюВозвращаетЕго() {
+    void placeholderWithDefaultValueReturnsIt() {
         BusinessExceptionLocalizationProperties.ChannelLocalization localization =
                 new BusinessExceptionLocalizationProperties.ChannelLocalization();
 
@@ -30,7 +30,7 @@ class BusinessExceptionLocalizationPropertiesTest {
     }
 
     @Test
-    void плейсхолдерБезЗначенияПоУмолчаниюОбнуляетЯзык() {
+    void placeholderWithoutDefaultValueClearsLanguage() {
         BusinessExceptionLocalizationProperties.ChannelLocalization localization =
                 new BusinessExceptionLocalizationProperties.ChannelLocalization();
 
@@ -40,7 +40,7 @@ class BusinessExceptionLocalizationPropertiesTest {
     }
 
     @Test
-    void падениеКЛогуВключаетсяКогдаЯзыкиСовпадаютПослеНормализации() {
+    void logFallbackEnabledWhenLanguagesMatchAfterNormalization() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
                 new BusinessExceptionLocalizationProperties.ChannelLocalization();
         http.setLanguage("`ru`");
@@ -69,7 +69,7 @@ class BusinessExceptionLocalizationPropertiesTest {
 
 
     @Test
-    void локализацияПоРесурсамПодставляетРусскийПеревод() {
+    void resourceLocalizationProvidesRussianTranslation() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
                 new BusinessExceptionLocalizationProperties.ChannelLocalization();
         http.setLanguage("ru");
@@ -91,7 +91,7 @@ class BusinessExceptionLocalizationPropertiesTest {
     }
 
     @Test
-    void локализацияПоРесурсамВозвращаетАнглийскийПереводДляРусскогоКлюча() {
+    void resourceLocalizationReturnsEnglishTranslationForRussianKey() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
                 new BusinessExceptionLocalizationProperties.ChannelLocalization();
         http.setLanguage("en");
@@ -113,7 +113,7 @@ class BusinessExceptionLocalizationPropertiesTest {
     }
 
     @Test
-    void конфигураторПеренастраиваетЛокализациюПослеОбновления() {
+    void configurerReconfiguresLocalizationAfterUpdate() {
         BusinessException.resetLocalization();
         try {
             BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();

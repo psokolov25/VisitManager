@@ -14,7 +14,7 @@ class GroovyScriptTest {
 
     @Test
     @DisplayName("по умолчанию билдер создает пустые изменяемые карты входных и выходных параметров")
-    void поУмолчаниюСоздаютсяПустыеКарты() {
+    void builderCreatesEmptyMapsByDefault() {
         GroovyScript script = GroovyScript.builder().build();
 
         assertNotNull(script.getInputParameters());
@@ -31,7 +31,7 @@ class GroovyScriptTest {
 
     @Test
     @DisplayName("билдер позволяет задать код правила и собственные параметры")
-    void билдерПоддерживаетЗаполнениеДанных() {
+    void builderSupportsPopulatingData() {
         HashMap<Object, Object> output = new HashMap<>();
         output.put("result", "готово");
 
@@ -48,7 +48,7 @@ class GroovyScriptTest {
 
     @Test
     @DisplayName("модель GroovyScript помечена Serdeable и использует JsonInclude.ALWAYS для карт")
-    void проверяемАннотации() throws NoSuchFieldException {
+    void verifiesAnnotations() throws NoSuchFieldException {
         assertTrue(GroovyScript.class.isAnnotationPresent(Serdeable.class));
 
         Field input = GroovyScript.class.getDeclaredField("inputParameters");

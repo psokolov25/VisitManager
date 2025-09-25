@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class TokenTest {
 
     @Test
-    void билдерИСеттерыПереносятСведенияОТокене() {
+    void builderAndSettersTransferTokenData() {
         Token viaBuilder = Token.builder()
                 .access_token("access")
                 .expires_at(100L)

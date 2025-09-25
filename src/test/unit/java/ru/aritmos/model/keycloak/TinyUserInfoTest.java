@@ -7,7 +7,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 class TinyUserInfoTest {
 
     @Test
-    void цепочкиМетодовФормируютПолеИСтроку() {
+    void methodChainsPopulateFieldsAndString() {
         TinyUserInfo expected = new TinyUserInfo()
                 .name("Иванов Иван")
                 .description("админ")
