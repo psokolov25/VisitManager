@@ -20,7 +20,7 @@ loki:
 business-exception:
   localization:
     http:
-      language: '${BUSINESS_EXCEPTION_HTTP_LANG:`ru`}'
+      language: '${BUSINESS_EXCEPTION_HTTP_LANG:`en`}'
       default-language: en
     log:
       language: '${BUSINESS_EXCEPTION_LOG_LANG:`ru`}'
