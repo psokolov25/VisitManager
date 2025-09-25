@@ -1,6 +1,11 @@
 package ru.aritmos.exceptions;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -10,6 +15,9 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Настройки локализации сообщений {@link BusinessException}.
@@ -17,9 +25,27 @@ import java.util.ResourceBundle;
 @ConfigurationProperties("business-exception.localization")
 public class BusinessExceptionLocalizationProperties {
 
-  private ChannelLocalization http = ChannelLocalization.httpDefaults();
-  private ChannelLocalization log = ChannelLocalization.logDefaults();
-  private ChannelLocalization event = ChannelLocalization.eventDefaults();
+  private static final Logger LOG =
+      LoggerFactory.getLogger(BusinessExceptionLocalizationProperties.class);
+
+  private static final Map<String, ChannelLocalization> CONFIG_DEFAULTS = loadConfiguredDefaults();
+
+  private ChannelLocalization http = defaultChannel("http", ChannelLocalization.httpDefaults());
+  private ChannelLocalization log = defaultChannel("log", ChannelLocalization.logDefaults());
+  private ChannelLocalization event = defaultChannel("event", ChannelLocalization.eventDefaults());
+
+  private static ChannelLocalization defaultChannel(String key, ChannelLocalization fallback) {
+    ChannelLocalization configured = CONFIG_DEFAULTS.get(key);
+    if (configured == null) {
+      return fallback;
+    }
+    ChannelLocalization channel = new ChannelLocalization();
+    channel.setLanguage(configured.getLanguage());
+    channel.setDefaultLanguage(configured.getDefaultLanguage());
+    channel.setMessages(configured.getMessages());
+    channel.setResources(configured.getResources());
+    return channel;
+  }
 
   public ChannelLocalization getHttp() {
     return http;
@@ -43,6 +69,130 @@ public class BusinessExceptionLocalizationProperties {
 
   public void setEvent(ChannelLocalization event) {
     this.event = event != null ? event : ChannelLocalization.eventDefaults();
+  }
+
+  private static Map<String, ChannelLocalization> loadConfiguredDefaults() {
+    Map<String, ChannelLocalization> defaults = new ConcurrentHashMap<>();
+    Map<String, String> languageSettings = readLanguagesFromApplicationYaml();
+
+    ChannelLocalization http = ChannelLocalization.httpDefaults();
+    applyLanguageOverride(http, languageSettings.get("http.language"));
+    applyDefaultLanguageOverride(http, languageSettings.get("http.default-language"));
+    defaults.put("http", http);
+
+    ChannelLocalization log = ChannelLocalization.logDefaults();
+    applyLanguageOverride(log, languageSettings.get("log.language"));
+    applyDefaultLanguageOverride(log, languageSettings.get("log.default-language"));
+    defaults.put("log", log);
+
+    ChannelLocalization event = ChannelLocalization.eventDefaults();
+    applyLanguageOverride(event, languageSettings.get("event.language"));
+    applyDefaultLanguageOverride(event, languageSettings.get("event.default-language"));
+    defaults.put("event", event);
+
+    return defaults;
+  }
+
+  private static Map<String, String> readLanguagesFromApplicationYaml() {
+    Map<String, String> values = new ConcurrentHashMap<>();
+    try (InputStream inputStream =
+            BusinessExceptionLocalizationProperties.class
+                .getClassLoader()
+                .getResourceAsStream("application.yml");
+        BufferedReader reader =
+            inputStream != null
+                ? new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                : null) {
+      if (reader == null) {
+        return values;
+      }
+      int businessExceptionIndent = -1;
+      int localizationIndent = -1;
+      int channelIndent = -1;
+      String currentChannel = null;
+      String line;
+      while ((line = reader.readLine()) != null) {
+        if (line.isBlank()) {
+          continue;
+        }
+        String trimmed = line.trim();
+        if (trimmed.startsWith("#")) {
+          continue;
+        }
+        int indent = countLeadingSpaces(line);
+        if (trimmed.endsWith(":")) {
+          String section = trimmed.substring(0, trimmed.length() - 1).trim();
+          if (indent == 0 && "business-exception".equals(section)) {
+            businessExceptionIndent = indent;
+            localizationIndent = -1;
+            channelIndent = -1;
+            currentChannel = null;
+            continue;
+          }
+          if (businessExceptionIndent >= 0
+              && indent > businessExceptionIndent
+              && "localization".equals(section)) {
+            localizationIndent = indent;
+            channelIndent = -1;
+            currentChannel = null;
+            continue;
+          }
+          if (localizationIndent >= 0 && indent > localizationIndent) {
+            currentChannel = section;
+            channelIndent = indent;
+            continue;
+          }
+          if (indent <= localizationIndent) {
+            currentChannel = null;
+            channelIndent = -1;
+          }
+          continue;
+        }
+        if (localizationIndent < 0 || currentChannel == null) {
+          continue;
+        }
+        if (indent <= channelIndent) {
+          currentChannel = null;
+          channelIndent = -1;
+          continue;
+        }
+        int separator = trimmed.indexOf(':');
+        if (separator < 0) {
+          continue;
+        }
+        String key = trimmed.substring(0, separator).trim();
+        if (!"language".equals(key) && !"default-language".equals(key)) {
+          continue;
+        }
+        String value = trimmed.substring(separator + 1).trim();
+        if (!value.isEmpty()) {
+          values.put(currentChannel + "." + key, value);
+        }
+      }
+    } catch (IOException ex) {
+      LOG.warn("Не удалось прочитать языковые настройки BusinessException из application.yml", ex);
+    }
+    return values;
+  }
+
+  private static void applyLanguageOverride(ChannelLocalization channel, String language) {
+    if (language != null) {
+      channel.setLanguage(language);
+    }
+  }
+
+  private static void applyDefaultLanguageOverride(ChannelLocalization channel, String language) {
+    if (language != null) {
+      channel.setDefaultLanguage(language);
+    }
+  }
+
+  private static int countLeadingSpaces(String line) {
+    int count = 0;
+    while (count < line.length() && line.charAt(count) == ' ') {
+      count++;
+    }
+    return count;
   }
 
   /**
