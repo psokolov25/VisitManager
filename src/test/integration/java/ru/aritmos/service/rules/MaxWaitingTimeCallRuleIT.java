@@ -21,7 +21,7 @@ class MaxWaitingTimeCallRuleIT {
     MaxWaitingTimeCallRule rule;
 
     /** Проверяет выбор визита с максимальным временем ожидания. */
-    @DisplayName("Selects Visit With Max Waiting Time")
+    @DisplayName("Выбирает визит с максимальным временем ожидания")
     @Test
     void selectsVisitWithMaxWaitingTime() {
         // отделение с рабочим профилем и очередью
@@ -62,7 +62,7 @@ class MaxWaitingTimeCallRuleIT {
     }
 
     /** Проверяет, что без пользователя выбрасывается исключение. */
-    @DisplayName("Call Without User Throws")
+    @DisplayName("Выбрасывает ошибку при вызове без пользователя")
     @Test
     void callWithoutUserThrows() {
         Branch branch = new Branch("b1", "branch");
