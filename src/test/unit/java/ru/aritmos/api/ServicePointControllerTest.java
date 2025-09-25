@@ -41,7 +41,7 @@ class ServicePointControllerTest {
         return controller;
     }
 
-    @DisplayName("Get Free Service Points Delegates To Visit Service")
+    @DisplayName("getFreeServicePoints делегирует загрузку свободных точек сервису визитов")
     @Test
     void getFreeServicePointsDelegatesToVisitService() {
         ServicePointController controller = controller();
@@ -52,7 +52,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getStringServicePointHashMap("b1");
     }
 
-    @DisplayName("Get Users Of Branch Uses Branch Service")
+    @DisplayName("getUsersOfBranch получает сотрудников через BranchService")
     @Test
     void getUsersOfBranchUsesBranchService() {
         ServicePointController controller = controller();
@@ -65,7 +65,7 @@ class ServicePointControllerTest {
         verify(controller.branchService).getUsers("b1");
     }
 
-    @DisplayName("Change User Workprofile Delegates")
+    @DisplayName("changeUserWorkprofile делегирует смену рабочего профиля BranchService")
     @Test
     void changeUserWorkprofileDelegates() {
         ServicePointController controller = controller();
@@ -76,7 +76,7 @@ class ServicePointControllerTest {
         verify(controller.branchService).changeUserWorkProfileInServicePoint("b1", "sp1", "wp1");
     }
 
-    @DisplayName("Open Service Point Delegates")
+    @DisplayName("openServicePoint делегирует открытие точки BranchService")
     @Test
     void openServicePointDelegates() throws IOException {
         ServicePointController controller = controller();
@@ -87,7 +87,7 @@ class ServicePointControllerTest {
         verify(controller.branchService).openServicePoint("b1", "u1", "sp1", "wp1", controller.visitService);
     }
 
-    @DisplayName("Close Service Point Delegates")
+    @DisplayName("closeServicePoint делегирует закрытие точки BranchService")
     @Test
     void closeServicePointDelegates() {
         ServicePointController controller = controller();
@@ -98,7 +98,7 @@ class ServicePointControllerTest {
                 eq(false), isNull(), eq(false), eq(""));
     }
 
-    @DisplayName("Get Printers Delegates")
+    @DisplayName("getPrinters запрашивает список принтеров через VisitService")
     @Test
     void getPrintersDelegates() {
         ServicePointController controller = controller();
@@ -107,7 +107,7 @@ class ServicePointControllerTest {
         assertEquals(printers, controller.getPrinters("b1"));
     }
 
-    @DisplayName("Get Queues Delegates")
+    @DisplayName("getQueues запрашивает очереди через VisitService")
     @Test
     void getQueuesDelegates() {
         ServicePointController controller = controller();
@@ -116,7 +116,7 @@ class ServicePointControllerTest {
         assertEquals(queues, controller.getQueues("b1"));
     }
 
-    @DisplayName("Get Full Queues Delegates")
+    @DisplayName("getFullQueues возвращает очереди с деталями через VisitService")
     @Test
     void getFullQueuesDelegates() {
         ServicePointController controller = controller();
@@ -125,7 +125,7 @@ class ServicePointControllerTest {
         assertEquals(queues, controller.getFullQueues("b1"));
     }
 
-    @DisplayName("Get Service Points Maps To Tiny")
+    @DisplayName("getServicePoints преобразует точки обслуживания к Tiny-модели")
     @Test
     void getServicePointsMapsToTiny() {
         ServicePointController controller = controller();
@@ -138,7 +138,7 @@ class ServicePointControllerTest {
         assertEquals("sp1", result.get(0).getId());
     }
 
-    @DisplayName("Get Detailed Service Points Delegates")
+    @DisplayName("getDetailedServicePoints делегирует возврат детальной карты точек")
     @Test
     void getDetailedServicePointsDelegates() {
         ServicePointController controller = controller();
@@ -148,7 +148,7 @@ class ServicePointControllerTest {
         assertEquals(List.of(sp), controller.getDetailedServicePoints("b1"));
     }
 
-    @DisplayName("Get Service Points By User Name Returns Point")
+    @DisplayName("getServicePointsByUserName возвращает точку по имени пользователя")
     @Test
     void getServicePointsByUserNameReturnsPoint() {
         ServicePointController controller = controller();
@@ -164,7 +164,7 @@ class ServicePointControllerTest {
         assertEquals(sp, result.get());
     }
 
-    @DisplayName("Get All Working Users Delegates")
+    @DisplayName("getAllWorkingUsersOfBranch делегирует выборку работающих сотрудников")
     @Test
     void getAllWorkingUsersDelegates() {
         ServicePointController controller = controller();
@@ -175,7 +175,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getAllWorkingUsers("b1");
     }
 
-    @DisplayName("Global Get Service Point By User Name Delegates")
+    @DisplayName("глобальный getServicePointsByUserName ищет точку через BranchService")
     @Test
     void globalGetServicePointByUserNameDelegates() {
         ServicePointController controller = controller();
@@ -191,7 +191,7 @@ class ServicePointControllerTest {
         assertTrue(result.isPresent());
     }
 
-    @DisplayName("Get User By User Name Returns User")
+    @DisplayName("getUserByUserName возвращает пользователя из VisitService")
     @Test
     void getUserByUserNameReturnsUser() {
         ServicePointController controller = controller();
@@ -205,7 +205,7 @@ class ServicePointControllerTest {
         assertEquals(user, result.get());
     }
 
-    @DisplayName("Get Work Profiles Delegates")
+    @DisplayName("getWorkProfiles делегирует получение профилей VisitService")
     @Test
     void getWorkProfilesDelegates() {
         ServicePointController controller = controller();
@@ -214,7 +214,7 @@ class ServicePointControllerTest {
         assertEquals(profiles, controller.getWorkProfiles("b1"));
     }
 
-    @DisplayName("Logout User Delegates")
+    @DisplayName("logoutUser закрывает точку через BranchService")
     @Test
     void logoutUserDelegates() {
         ServicePointController controller = controller();
@@ -224,7 +224,7 @@ class ServicePointControllerTest {
                 eq(false), isNull(), eq(false), eq(""));
     }
 
-    @DisplayName("Get Visits With Limit Delegates")
+    @DisplayName("getVisits с лимитом делегирует загрузку визитов VisitService")
     @Test
     void getVisitsWithLimitDelegates() {
         ServicePointController controller = controller();
@@ -233,7 +233,7 @@ class ServicePointControllerTest {
         assertEquals(1, controller.getVisits("b1", "q1", 5L).size());
     }
 
-    @DisplayName("Get Visits Delegates")
+    @DisplayName("getVisits без лимита делегирует загрузку VisitService")
     @Test
     void getVisitsDelegates() {
         ServicePointController controller = controller();
@@ -242,7 +242,7 @@ class ServicePointControllerTest {
         assertEquals(1, controller.getVisits("b1", "q1").size());
     }
 
-    @DisplayName("Get All Visits Delegates")
+    @DisplayName("getAllVisits возвращает карту визитов VisitService")
     @Test
     void getAllVisitsDelegates() {
         ServicePointController controller = controller();
@@ -251,7 +251,7 @@ class ServicePointControllerTest {
         assertEquals(visits, controller.getAllVisits("b1"));
     }
 
-    @DisplayName("Get Visit Delegates")
+    @DisplayName("getVisit делегирует поиск визита VisitService")
     @Test
     void getVisitDelegates() {
         ServicePointController controller = controller();
@@ -260,7 +260,7 @@ class ServicePointControllerTest {
         assertEquals(visit, controller.getVisit("b1", "v1"));
     }
 
-    @DisplayName("Get Visits By Statuses Delegates")
+    @DisplayName("getVisitsByStatuses делегирует фильтрацию статусов VisitService")
     @Test
     void getVisitsByStatusesDelegates() {
         ServicePointController controller = controller();
@@ -270,7 +270,7 @@ class ServicePointControllerTest {
         assertEquals(visits, controller.getVisitsByStatuses("b1", List.of("NEW")));
     }
 
-    @DisplayName("Visit Call With Max Waiting Delegates")
+    @DisplayName("visitCallWithMaximalWaitingTime использует VisitService для поиска визита")
     @Test
     void visitCallWithMaxWaitingDelegates() {
         ServicePointController controller = controller();
@@ -280,7 +280,7 @@ class ServicePointControllerTest {
         assertEquals(visit, controller.visitCallWithMaximalWaitingTime("b1", "sp1"));
     }
 
-    @DisplayName("Get Visit From Queue Returns Match")
+    @DisplayName("getVisit по очереди возвращает найденный визит")
     @Test
     void getVisitFromQueueReturnsMatch() {
         ServicePointController controller = controller();
@@ -293,7 +293,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getVisits("b1", "q1");
     }
 
-    @DisplayName("Get Visit From Queue Throws When Missing")
+    @DisplayName("getVisit по очереди выбрасывает 404 при отсутствии визита")
     @Test
     void getVisitFromQueueThrowsWhenMissing() {
         ServicePointController controller = controller();
@@ -305,7 +305,7 @@ class ServicePointControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
     }
 
-    @DisplayName("Call Visit Delegates To Service")
+    @DisplayName("callVisit делегирует вызов визита VisitService")
     @Test
     void callVisitDelegatesToService() {
         ServicePointController controller = controller();
@@ -315,7 +315,7 @@ class ServicePointControllerTest {
         assertEquals(visit, controller.callVisit("b1", "sp1", "v1"));
     }
 
-    @DisplayName("Visit Call For Confirm Uses Service Result")
+    @DisplayName("visitCallForConfirm возвращает результат VisitService")
     @Test
     void visitCallForConfirmUsesServiceResult() {
         ServicePointController controller = controller();
@@ -327,7 +327,7 @@ class ServicePointControllerTest {
         assertEquals(expected, controller.visitCallForConfirm("b1", "sp1", visit));
     }
 
-    @DisplayName("Visit Call For Confirm By Id Loads Visit First")
+    @DisplayName("visitCallForConfirmByVisitId загружает визит и делегирует подтверждение")
     @Test
     void visitCallForConfirmByIdLoadsVisitFirst() {
         ServicePointController controller = controller();
@@ -341,7 +341,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getVisit("b1", "v1");
     }
 
-    @DisplayName("Visit Call For Confirm Max Waiting Delegates")
+    @DisplayName("visitCallForConfirmMaxWaitingTime использует VisitService")
     @Test
     void visitCallForConfirmMaxWaitingDelegates() {
         ServicePointController controller = controller();
@@ -352,7 +352,7 @@ class ServicePointControllerTest {
         assertEquals(expected, controller.visitCallForConfirmMaxWaitingTime("b1", "sp1"));
     }
 
-    @DisplayName("Visit Call From Queues Delegates")
+    @DisplayName("visitCall с несколькими очередями делегирует выбор визита")
     @Test
     void visitCallFromQueuesDelegates() {
         ServicePointController controller = controller();
@@ -364,7 +364,7 @@ class ServicePointControllerTest {
         assertEquals(expected, controller.visitCall("b1", "sp1", queueIds));
     }
 
-    @DisplayName("Visit Call From Queues With Confirmation Delegates")
+    @DisplayName("visitCallForConfirmMaxWaitingTime с очередями делегирует выбор визита")
     @Test
     void visitCallFromQueuesWithConfirmationDelegates() {
         ServicePointController controller = controller();
@@ -377,7 +377,7 @@ class ServicePointControllerTest {
             expected, controller.visitCallForConfirmMaxWaitingTime("b1", "sp1", queueIds));
     }
 
-    @DisplayName("Visit No Show Delegates To Service")
+    @DisplayName("visitNoShow делегирует обработку VisitService")
     @Test
     void visitNoShowDelegatesToService() {
         ServicePointController controller = controller();
@@ -388,7 +388,7 @@ class ServicePointControllerTest {
         assertEquals(expected, controller.visitNoShow("b1", "sp1", visit));
     }
 
-    @DisplayName("Visit Call No Show Retrieves Visit")
+    @DisplayName("visitCallNoShow загружает визит и делегирует обработку отсутствия клиента")
     @Test
     void visitCallNoShowRetrievesVisit() {
         ServicePointController controller = controller();
@@ -401,7 +401,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getVisit("b1", "v1");
     }
 
-    @DisplayName("Visit Re Call For Confirm Delegates")
+    @DisplayName("visitReCallForConfirm делегирует повторный вызов VisitService")
     @Test
     void visitReCallForConfirmDelegates() {
         ServicePointController controller = controller();
@@ -411,7 +411,7 @@ class ServicePointControllerTest {
         assertEquals(visit, controller.visitReCallForConfirm("b1", "sp1", visit));
     }
 
-    @DisplayName("Visit Re Call For Confirm By Id Loads Visit")
+    @DisplayName("visitReCallForConfirm по идентификатору загружает визит из VisitService")
     @Test
     void visitReCallForConfirmByIdLoadsVisit() {
         ServicePointController controller = controller();
@@ -423,7 +423,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getVisit("b1", "v1");
     }
 
-    @DisplayName("Visit Confirm Delegates")
+    @DisplayName("visitConfirm делегирует подтверждение VisitService")
     @Test
     void visitConfirmDelegates() {
         ServicePointController controller = controller();
@@ -433,7 +433,7 @@ class ServicePointControllerTest {
         assertEquals(visit, controller.visitConfirm("b1", "sp1", visit));
     }
 
-    @DisplayName("Visit Confirm By Id Delegates")
+    @DisplayName("visitConfirm по идентификатору загружает визит и делегирует подтверждение")
     @Test
     void visitConfirmByIdDelegates() {
         ServicePointController controller = controller();
@@ -445,7 +445,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getVisit("b1", "v1");
     }
 
-    @DisplayName("Cancel Auto Call Delegates")
+    @DisplayName("cancelAutoCallModeOfServicePoint делегирует отмену автообзвона VisitService")
     @Test
     void cancelAutoCallDelegates() {
         ServicePointController controller = controller();
@@ -456,7 +456,7 @@ class ServicePointControllerTest {
         assertEquals(expected, controller.cancelAutoCallModeOfServicePoint("b1", "sp1"));
     }
 
-    @DisplayName("Start Auto Call Enables Branch And Point")
+    @DisplayName("startAutoCallModeOfServicePoint включает автообзвон отделения и точки")
     @Test
     void startAutoCallEnablesBranchAndPoint() {
         ServicePointController controller = controller();
@@ -469,7 +469,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).startAutoCallModeOfServicePoint("b1", "sp1");
     }
 
-    @DisplayName("Get Outcomes Returns Configured Map")
+    @DisplayName("getOutcomes возвращает настроенные исходы из BranchService")
     @Test
     void getOutcomesReturnsConfiguredMap() {
         ServicePointController controller = controller();
@@ -488,7 +488,7 @@ class ServicePointControllerTest {
         verify(controller.branchService).getBranch("b1");
     }
 
-    @DisplayName("Get Outcomes Throws When Service Missing")
+    @DisplayName("getOutcomes выбрасывает 404 при отсутствии услуги")
     @Test
     void getOutcomesThrowsWhenServiceMissing() {
         ServicePointController controller = controller();
@@ -502,7 +502,7 @@ class ServicePointControllerTest {
         verify(controller.eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("Visit Call Max Life Time Delegates To Service")
+    @DisplayName("visitCallMaxLifeTime делегирует стратегию максимального времени ожидания")
     @Test
     void visitCallMaxLifeTimeDelegatesToService() {
         ServicePointController controller = controller();
@@ -515,7 +515,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).visitCallWithMaxLifeTime("b1", "sp1");
     }
 
-    @DisplayName("Visit Call Max Life Time From Queues Delegates To Service")
+    @DisplayName("visitCallMaxLifeTime с очередями использует VisitService")
     @Test
     void visitCallMaxLifeTimeFromQueuesDelegatesToService() {
         ServicePointController controller = controller();
@@ -529,7 +529,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).visitCallWithMaxLifeTime("b1", "sp1", queueIds);
     }
 
-    @DisplayName("Visit Call For Confirm Max Life Time Delegates To Service")
+    @DisplayName("visitCallForConfirmMaxLifeTime делегирует стратегию максимального времени подтверждения")
     @Test
     void visitCallForConfirmMaxLifeTimeDelegatesToService() {
         ServicePointController controller = controller();
@@ -543,7 +543,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).visitCallForConfirmWithMaxLifeTime("b1", "sp1");
     }
 
-    @DisplayName("Visit Call For Confirm Max Life Time From Queues Delegates To Service")
+    @DisplayName("visitCallForConfirmMaxLifeTime с очередями использует VisitService")
     @Test
     void visitCallForConfirmMaxLifeTimeFromQueuesDelegatesToService() {
         ServicePointController controller = controller();
@@ -558,7 +558,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).visitCallForConfirmWithMaxLifeTime("b1", "sp1", queueIds);
     }
 
-    @DisplayName("Get Delivered Service Filters By Service Id")
+    @DisplayName("getDeliveredService фильтрует выдаваемые услуги по идентификатору")
     @Test
     void getDeliveredServiceFiltersByServiceId() {
         ServicePointController controller = controller();
@@ -581,7 +581,7 @@ class ServicePointControllerTest {
         verify(controller.branchService).getBranch("b1");
     }
 
-    @DisplayName("Get Delivered Service Of Current Service Delegates To Visit Service")
+    @DisplayName("getDeliveredServiceOfCurrentService делегирует загрузку VisitService")
     @Test
     void getDeliveredServiceOfCurrentServiceDelegatesToVisitService() {
         ServicePointController controller = controller();
@@ -594,7 +594,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getDeliveredServices("b1", "sp1");
     }
 
-    @DisplayName("Get Services By Work Profile Id Delegates To Branch Service")
+    @DisplayName("getServicesByWorkProfileId делегирует выборку BranchService")
     @Test
     void getServicesByWorkProfileIdDelegatesToBranchService() {
         ServicePointController controller = controller();
@@ -607,7 +607,7 @@ class ServicePointControllerTest {
         verify(controller.branchService).getServicesByWorkProfileId("b1", "wp1");
     }
 
-    @DisplayName("Get Services By Queue Id Delegates To Branch Service")
+    @DisplayName("getServicesByQueueId делегирует выборку BranchService")
     @Test
     void getServicesByQueueIdDelegatesToBranchService() {
         ServicePointController controller = controller();
@@ -620,7 +620,7 @@ class ServicePointControllerTest {
         verify(controller.branchService).getServicesByQueueId("b1", "q1");
     }
 
-    @DisplayName("Get Delivered Services By Branch Id Delegates To Branch Service")
+    @DisplayName("getDeliveredServicesByBranchId запрашивает BranchService")
     @Test
     void getDeliveredServicesByBranchIdDelegatesToBranchService() {
         ServicePointController controller = controller();
@@ -633,7 +633,7 @@ class ServicePointControllerTest {
         verify(controller.branchService).getDeliveredServicesByBranchId("b1");
     }
 
-    @DisplayName("Add Delivered Service Delegates To Visit Service")
+    @DisplayName("addDeliveredService делегирует добавление VisitService")
     @Test
     void addDeliveredServiceDelegatesToVisitService() {
         ServicePointController controller = controller();
@@ -646,7 +646,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).addDeliveredService("b1", "sp1", "ds1");
     }
 
-    @DisplayName("Add Services Invokes Visit Service Sequentially")
+    @DisplayName("addServices последовательно вызывает VisitService")
     @Test
     void addServicesInvokesVisitServiceSequentially() {
         ServicePointController controller = controller();
@@ -662,7 +662,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).addService("b1", "sp1", "s2");
     }
 
-    @DisplayName("Delete Visit Removes Visit When Found")
+    @DisplayName("deleteVisit удаляет найденный визит через VisitService")
     @Test
     void deleteVisitRemovesVisitWhenFound() {
         ServicePointController controller = controller();
@@ -675,7 +675,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).deleteVisit(visit);
     }
 
-    @DisplayName("Delete Visit Throws When Missing")
+    @DisplayName("deleteVisit выбрасывает 404 при отсутствии визита")
     @Test
     void deleteVisitThrowsWhenMissing() {
         ServicePointController controller = controller();

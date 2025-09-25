@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class TokenTest {
 
-    @DisplayName("Builder And Setters Populate Token Fields")
+    @DisplayName("Builder и сеттеры заполняют поля токена")
     @Test
     void builderAndSettersPopulateTokenFields() {
         Token viaBuilder = Token.builder()

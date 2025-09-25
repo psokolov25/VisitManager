@@ -37,7 +37,7 @@ class VisitServiceTransferToServicePointPoolTest {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Moves Visit And Publishes Events")
+    @DisplayName("Перенос визита в пул точки обслуживания перемещает визит и публикует события")
     @Test
     void visitTransferToServicePointPoolMovesVisitAndPublishesEvents() {
         Branch branch = new Branch("b1", "Branch");
@@ -147,7 +147,7 @@ class VisitServiceTransferToServicePointPoolTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Fails When Service Point Missing")
+    @DisplayName("Перенос визита в пул точки обслуживания завершается ошибкой при отсутствии точки обслуживания")
     @Test
     void visitTransferToServicePointPoolFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -168,7 +168,7 @@ class VisitServiceTransferToServicePointPoolTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Fails When Visit Missing")
+    @DisplayName("Перенос визита в пул точки обслуживания завершается ошибкой при отсутствии визита")
     @Test
     void visitTransferToServicePointPoolFailsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -192,7 +192,7 @@ class VisitServiceTransferToServicePointPoolTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Fails When Pool Point Missing")
+    @DisplayName("Перенос визита в пул точки обслуживания завершается ошибкой при отсутствии пула точки")
     @Test
     void visitTransferToServicePointPoolFailsWhenPoolPointMissing() {
         Branch branch = new Branch("b1", "Branch");
