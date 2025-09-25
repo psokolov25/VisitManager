@@ -2,14 +2,15 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
   <!--
-    В среде контейнера Maven должен использовать локальный прокси, доступный по имени
-    хоста «proxy». Активируем HTTP(S) прокси и явно прописываем адрес и порт,
-    чтобы сборка могла скачать зависимости без дополнительных переменных окружения.
+    Прокси-сервер (host «proxy», порт 8080) включается только при явной передаче
+    системного свойства visitmanager.proxyEnabled=true в командной строке Maven.
+    Это позволяет выполнять локальные сборки без проксирования и при необходимости
+    активировать его флагом `-Dvisitmanager.proxyEnabled=true`.
   -->
   <proxies>
     <proxy>
       <id>container-http</id>
-      <active>true</active>
+      <active>${sys.visitmanager.proxyEnabled:-false}</active>
       <protocol>http</protocol>
       <host>proxy</host>
       <port>8080</port>
@@ -17,7 +18,7 @@
     </proxy>
     <proxy>
       <id>container-https</id>
-      <active>true</active>
+      <active>${sys.visitmanager.proxyEnabled:-false}</active>
       <protocol>https</protocol>
       <host>proxy</host>
       <port>8080</port>
