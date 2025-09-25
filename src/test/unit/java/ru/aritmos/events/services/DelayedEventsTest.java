@@ -17,7 +17,7 @@ import ru.aritmos.events.model.Event;
 class DelayedEventsTest {
 
     /** Проверяет планирование события для одного адресата. */
-    @DisplayName("Schedules Event For Single Destination")
+    @DisplayName("Планирование события для одного адресата")
     @Test
     void schedulesEventForSingleDestination() {
         TaskScheduler scheduler = mock(TaskScheduler.class);
@@ -35,7 +35,7 @@ class DelayedEventsTest {
     }
 
     /** Проверяет планирование события для списка адресатов. */
-    @DisplayName("Schedules Event For Multiple Destinations")
+    @DisplayName("Планирование события для нескольких адресатов")
     @Test
     void schedulesEventForMultipleDestinations() {
         TaskScheduler scheduler = mock(TaskScheduler.class);

@@ -20,7 +20,8 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceOutcomeTest {
 
-    @DisplayName("addOutcomeService устанавливает исход услуги")
+
+    @DisplayName("Назначение исхода услуги фиксирует выбранный результат")
     @Test
     void addOutcomeServiceSetsOutcome() {
         Branch branch = new Branch("b1", "Branch");
@@ -50,7 +51,8 @@ class VisitServiceOutcomeTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
-    @DisplayName("addOutcomeService выбрасывает исключение при отсутствии исхода")
+
+    @DisplayName("Назначение исхода выбрасывает исключение при отсутствии подходящего результата")
     @Test
     void addOutcomeServiceThrowsWhenOutcomeMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -76,7 +78,9 @@ class VisitServiceOutcomeTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("deleteOutcomeService очищает исход услуги")
+
+    @DisplayName("Удаление исхода очищает результат услуги")
+
     @Test
     void deleteOutcomeServiceClearsOutcome() {
         Branch branch = new Branch("b1", "Branch");

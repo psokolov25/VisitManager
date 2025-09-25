@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 class EventTaskTest {
 
     /** Проверяет делегирование сервису отправки событий. */
-    @DisplayName("Метод run отправляет событие через сервис")
+    @DisplayName("Запуск задачи отправляет событие через сервис")
     @Test
     void runSendsEventViaService() {
         EventService eventService = mock(EventService.class);

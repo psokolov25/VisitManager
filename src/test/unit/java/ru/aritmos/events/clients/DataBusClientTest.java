@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 class DataBusClientTest {
 
   /** Проверяет наличие аннотации клиента с ожидаемым значением URL. */
-  @DisplayName("Клиент помечен аннотацией @Client с ожидаемым URL сервиса")
+  @DisplayName("Интерфейс помечен клиентской аннотацией с ожидаемым адресом сервиса")
   @Test
   void clientIsAnnotatedWithServiceUrl() {
     Client client = DataBusClient.class.getAnnotation(Client.class);
@@ -35,7 +35,7 @@ class DataBusClientTest {
   }
 
   /** Убеждаемся, что метод send настроен на POST с ретраями и асинхронным исполнением. */
-  @DisplayName("Метод send содержит HTTP- и асинхронные аннотации с нужными параметрами")
+  @DisplayName("Метод отправки содержит сетевые и асинхронные аннотации с нужными параметрами")
   @Test
   void sendMethodContainsHttpAndAsyncAnnotations() throws NoSuchMethodException {
     Method send =
@@ -68,7 +68,7 @@ class DataBusClientTest {
   }
 
   /** Проверяем ожидаемые аннотации на параметрах метода send. */
-  @DisplayName("Метод send описывает все заголовки и параметры требуемыми аннотациями")
+  @DisplayName("Метод отправки описывает все заголовки и параметры требуемыми аннотациями")
   @Test
   void sendMethodHasAllHeadersAndParameters() throws NoSuchMethodException {
     Method send =
