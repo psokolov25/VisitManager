@@ -57,6 +57,17 @@ public class BusinessException extends RuntimeException {
   }
 
   /**
+   * Создать исключение на основе локализационного ключа.
+   *
+   * @param messageKey ключ сообщения
+   * @param eventService сервис событий
+   * @param status HTTP-статус
+   */
+  public BusinessException(String messageKey, EventService eventService, HttpStatus status) {
+    this(messageKey, messageKey, eventService, status);
+  }
+
+  /**
    * Создать исключение с сообщениями для клиента, лога и события.
    *
    * @param clientMessage сообщение для HTTP-ответа (английский)

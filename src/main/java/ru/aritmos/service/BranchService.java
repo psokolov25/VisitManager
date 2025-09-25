@@ -51,7 +51,7 @@ public class BranchService {
     Branch branch = branches.get(key);
     if (branch == null) {
       throw new BusinessException(
-          "Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+          "branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     log.info("Getting branchInfo {}", branch);
     return branch;
@@ -181,7 +181,7 @@ public class BranchService {
 
     } else {
       throw new BusinessException(
-          "Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+          "branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     log.info("Deleting branchInfo {}", key);
     branches.remove(key);
@@ -257,17 +257,16 @@ public class BranchService {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
       throw new BusinessException(
-          "Work profile not found", "Рабочий профиль не найден", eventService, HttpStatus.NOT_FOUND);
+          "work_profile_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException(
-          "Service point not found", "Точка обслуживания не найдена", eventService, HttpStatus.NOT_FOUND);
+          "service_point_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     User user = branch.getServicePoints().get(servicePointId).getUser();
     if (user == null) {
       throw new BusinessException(
-          "User not found in the service point",
-          "Пользователь не найден в точке обслуживания",
+          "user_not_found_in_service_point",
           eventService,
           HttpStatus.NOT_FOUND);
     }
@@ -301,11 +300,11 @@ public class BranchService {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
       throw new BusinessException(
-          "Work profile not found", "Рабочий профиль не найден", eventService, HttpStatus.NOT_FOUND);
+          "work_profile_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(servicePointId)) {
       throw new BusinessException(
-          "Service point not found", "Точка обслуживания не найдена", eventService, HttpStatus.NOT_FOUND);
+          "service_point_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     Optional<UserRepresentation> userInfo = Optional.empty();
 
@@ -664,7 +663,7 @@ public class BranchService {
     Branch branch = this.getBranch(branchId);
     if (!branch.getWorkProfiles().containsKey(workProfileId)) {
       throw new BusinessException(
-          "Work profile not found", "Рабочий профиль не найден", eventService, HttpStatus.NOT_FOUND);
+          "work_profile_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     List<Service> services = new ArrayList<>();
     branch
@@ -691,7 +690,7 @@ public class BranchService {
     Branch branch = this.getBranch(branchId);
     if (!branch.getQueues().containsKey(queueId)) {
       throw new BusinessException(
-          "Queue not found", "Очередь не найдена", eventService, HttpStatus.NOT_FOUND);
+          "queue_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     return new ArrayList<>(
         branch.getServices().values().stream()

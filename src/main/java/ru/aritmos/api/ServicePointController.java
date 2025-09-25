@@ -807,7 +807,7 @@ public class ServicePointController {
     return visitService.getVisits(branchId, queueId).stream()
         .filter(f -> f.getId().equals(visitId))
         .findFirst()
-        .orElseThrow(() -> new BusinessException("Visit not found", "Визит не найден", eventService, HttpStatus.NOT_FOUND));
+        .orElseThrow(() -> new BusinessException("visit_not_found", eventService, HttpStatus.NOT_FOUND));
   }
 
   /**
@@ -2416,10 +2416,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new BusinessException("Queue not found", "Очередь не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("queue_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransfer(
@@ -2467,10 +2467,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new BusinessException("Service point not found", "Точка обслуживания не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("service_point_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitBackToServicePointPool(
@@ -2519,10 +2519,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new BusinessException("Service point not found", "Точка обслуживания не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("service_point_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferToServicePointPool(
@@ -2563,10 +2563,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new BusinessException("Service point not found", "Точка обслуживания не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("service_point_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferToServicePointPool(
@@ -2653,10 +2653,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new BusinessException("Queue not found", "Очередь не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("queue_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
@@ -2709,10 +2709,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new BusinessException("Queue not found", "Очередь не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("queue_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
@@ -2765,10 +2765,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new BusinessException("Queue not found", "Очередь не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("queue_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     Visit visit = visitService.getVisit(branchId, visitId);
@@ -2820,10 +2820,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new BusinessException("Queue not found", "Очередь не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("queue_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransfer(
@@ -2874,10 +2874,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getQueues().containsKey(queueId)) {
-      throw new BusinessException("Queue not found", "Очередь не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("queue_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransfer(
@@ -2927,10 +2927,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new BusinessException("Service point not found", "Точка обслуживания не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("service_point_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
@@ -2980,10 +2980,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(poolServicePointId)) {
-      throw new BusinessException("Service point not found", "Точка обслуживания не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("service_point_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(
@@ -3036,10 +3036,10 @@ public class ServicePointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException("Branch not found", "Отделение не найдено", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (!branch.getServicePoints().containsKey(servicePointId)) {
-      throw new BusinessException("Service point not found", "Точка обслуживания не найдена", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("service_point_not_found", eventService, HttpStatus.NOT_FOUND);
     }
 
     return visitService.visitTransferFromQueueToServicePointPool(

@@ -32,17 +32,17 @@ class BusinessExceptionLocalizationTest {
         properties.getHttp().setLanguage("ru");
         properties.getHttp().setDefaultLanguage("en");
         properties.getHttp().setMessages(
-                Map.of("Visit not found", Map.of("ru", "Визит не найден", "en", "Visit not found")));
+                Map.of("visit_not_found", Map.of("ru", "Визит не найден", "en", "Visit not found")));
 
         properties.getLog().setLanguage("en");
         properties.getLog().setDefaultLanguage("ru");
         properties.getLog().setMessages(
-                Map.of("Визит не найден", Map.of("en", "Visit not found", "ru", "Визит не найден")));
+                Map.of("visit_not_found", Map.of("en", "Visit not found", "ru", "Визит не найден")));
 
         properties.getEvent().setLanguage("kk");
         properties.getEvent().setDefaultLanguage("ru");
         properties.getEvent().setMessages(
-                Map.of("Визит не найден", Map.of("kk", "Қатысу табылмады", "ru", "Визит не найден")));
+                Map.of("visit_not_found", Map.of("kk", "Қатысу табылмады", "ru", "Визит не найден")));
 
         BusinessException.configureLocalization(new BusinessExceptionLocalization(properties));
 
@@ -59,7 +59,7 @@ class BusinessExceptionLocalizationTest {
                     assertThrows(
                             HttpStatusException.class,
                             () -> new BusinessException(
-                                    "Visit not found", "Визит не найден", eventService, HttpStatus.NOT_FOUND));
+                                    "visit_not_found", eventService, HttpStatus.NOT_FOUND));
         } finally {
             logger.detachAppender(appender);
             appender.stop();
