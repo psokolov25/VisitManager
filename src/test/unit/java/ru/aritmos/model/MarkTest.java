@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class MarkTest {
 
-    @DisplayName("Builder Should Populate Fields")
+    @DisplayName("Билдер заполняет поля")
     @Test
     void builderShouldPopulateFields() {
         ZonedDateTime now = ZonedDateTime.now();
@@ -23,7 +23,7 @@ class MarkTest {
         assertSame(author, mark.getAuthor());
     }
 
-    @DisplayName("Setters Should Allow Updates")
+    @DisplayName("Сеттеры позволяют обновлять значения")
     @Test
     void settersShouldAllowUpdates() {
         Mark mark = new Mark();

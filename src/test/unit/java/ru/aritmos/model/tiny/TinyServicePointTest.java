@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class TinyServicePointTest {
 
-    @DisplayName("Constructor Should Populate Fields")
+    @DisplayName("Конструктор заполняет поля")
     @Test
     void constructorShouldPopulateFields() {
         TinyServicePoint servicePoint = new TinyServicePoint("sp1", "Desk 1", true);
@@ -17,7 +17,7 @@ class TinyServicePointTest {
         assertTrue(servicePoint.getIsAvailable());
     }
 
-    @DisplayName("Setters Should Update Availability")
+    @DisplayName("Сеттеры обновляют признак доступности")
     @Test
     void settersShouldUpdateAvailability() {
         TinyServicePoint servicePoint = new TinyServicePoint("sp2", "Desk 2", false);
