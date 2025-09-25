@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class RuleTest {
 
-    @DisplayName("Constants Have Default Values")
+    @DisplayName("константы правила имеют значения по умолчанию")
     @Test
     void constantsHaveDefaultValues() {
         assertNotNull(Rule.id, "идентификатор должен быть задан");
