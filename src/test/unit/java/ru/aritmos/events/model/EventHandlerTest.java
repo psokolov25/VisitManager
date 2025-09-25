@@ -1,6 +1,7 @@
 package ru.aritmos.events.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.micronaut.scheduling.TaskExecutors;
@@ -12,6 +13,7 @@ import ru.aritmos.exceptions.SystemException;
 
 class EventHandlerTest {
 
+    @DisplayName("Handle Method Should Be Annotated For Io Executor")
     @Test
     void handleMethodShouldBeAnnotatedForIoExecutor() throws NoSuchMethodException {
         Method handle = EventHandler.class.getMethod("Handle", Event.class);
@@ -21,6 +23,7 @@ class EventHandlerTest {
         assertEquals(TaskExecutors.IO, executeOn.value());
     }
 
+    @DisplayName("Handle Method Should Declare Expected Exceptions")
     @Test
     void handleMethodShouldDeclareExpectedExceptions() throws NoSuchMethodException {
         Method handle = EventHandler.class.getMethod("Handle", Event.class);

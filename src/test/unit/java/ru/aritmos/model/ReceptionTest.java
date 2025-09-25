@@ -1,12 +1,14 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class ReceptionTest {
 
+    @DisplayName("Builder Should Initialize Sessions List")
     @Test
     void builderShouldInitializeSessionsList() {
         Reception reception = Reception.builder().branchId("branch1").build();
@@ -16,6 +18,7 @@ class ReceptionTest {
         assertTrue(reception.getReceptionSessions().isEmpty());
     }
 
+    @DisplayName("Builder Allows Setting Printers And Sessions")
     @Test
     void builderAllowsSettingPrintersAndSessions() {
         Entity printer = Entity.builder().id("printer1").name("Main").build();

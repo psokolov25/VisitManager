@@ -1,6 +1,7 @@
 package ru.aritmos.events.clients;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.core.async.annotation.SingleResult;
 import io.micronaut.http.annotation.Body;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 class DataBusClientTest {
 
   /** Проверяет наличие аннотации клиента с ожидаемым значением URL. */
+  @DisplayName("Client Is Annotated With Service Url")
   @Test
   void clientIsAnnotatedWithServiceUrl() {
     Client client = DataBusClient.class.getAnnotation(Client.class);
@@ -33,6 +35,7 @@ class DataBusClientTest {
   }
 
   /** Убеждаемся, что метод send настроен на POST с ретраями и асинхронным исполнением. */
+  @DisplayName("Send Method Contains Http And Async Annotations")
   @Test
   void sendMethodContainsHttpAndAsyncAnnotations() throws NoSuchMethodException {
     Method send =
@@ -65,6 +68,7 @@ class DataBusClientTest {
   }
 
   /** Проверяем ожидаемые аннотации на параметрах метода send. */
+  @DisplayName("Send Method Has All Headers And Parameters")
   @Test
   void sendMethodHasAllHeadersAndParameters() throws NoSuchMethodException {
     Method send =

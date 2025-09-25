@@ -1,11 +1,13 @@
 package ru.aritmos.model.keycloak;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 
 class UserInfoTest {
 
+    @DisplayName("Builder And Setters Support All Fields")
     @Test
     void builderAndSettersSupportAllFields() {
         RealmAccess realmAccess = RealmAccess.builder()

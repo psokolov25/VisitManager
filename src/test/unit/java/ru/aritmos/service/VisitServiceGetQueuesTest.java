@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.List;
@@ -18,6 +19,7 @@ import ru.aritmos.model.visit.Visit;
 
 class VisitServiceGetQueuesTest {
 
+    @DisplayName("Returns Queues For Service Point")
     @Test
     void returnsQueuesForServicePoint() {
         Branch branch = new Branch("b1", "Branch");
@@ -55,6 +57,7 @@ class VisitServiceGetQueuesTest {
         assertEquals("v1", queues.get(0).getVisits().get(0).getId());
     }
 
+    @DisplayName("Throws When User Not Logged In")
     @Test
     void throwsWhenUserNotLoggedIn() {
         Branch branch = new Branch("b1", "Branch");

@@ -1,11 +1,13 @@
 package ru.aritmos.keycloack.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 
 class CredentialsTest {
 
+    @DisplayName("Setters And Getters Are Accessible")
     @Test
     void settersAndGettersAreAccessible() {
         Credentials credentials = new Credentials();

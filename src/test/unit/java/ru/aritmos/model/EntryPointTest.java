@@ -1,11 +1,13 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 
 class EntryPointTest {
 
+    @DisplayName("Should Inherit Branch Entity Fields")
     @Test
     void shouldInheritBranchEntityFields() {
         EntryPoint entryPoint = new EntryPoint();

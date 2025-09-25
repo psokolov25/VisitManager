@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import ru.aritmos.model.visit.VisitEvent;
 
 class VisitServiceAddEventTest {
 
+    @DisplayName("Adds Event When Sequence Is Valid")
     @Test
     void addsEventWhenSequenceIsValid() {
         Visit visit = Visit.builder()
@@ -30,6 +32,7 @@ class VisitServiceAddEventTest {
         assertEquals(VisitEvent.PLACED_IN_QUEUE, visit.getEvents().get(1).getVisitEvent());
     }
 
+    @DisplayName("First Event Must Be Created")
     @Test
     void firstEventMustBeCreated() {
         Visit visit = Visit.builder()
@@ -44,6 +47,7 @@ class VisitServiceAddEventTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("Throws When Event Cannot Follow Previous")
     @Test
     void throwsWhenEventCannotFollowPrevious() {
         Visit visit = Visit.builder()

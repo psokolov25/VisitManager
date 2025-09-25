@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -25,6 +26,7 @@ class VisitServiceMarkLookupByIdTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(VisitServiceMarkLookupByIdTest.class);
 
+    @DisplayName("Add Mark By Id Delegates To Existing Mark")
     @Test
     void addMarkByIdDelegatesToExistingMark() {
         LOG.info("Шаг 1: создаём отделение с преднастроенной заметкой");
@@ -54,6 +56,7 @@ class VisitServiceMarkLookupByIdTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("Add Mark By Id Throws When Mark Missing")
     @Test
     void addMarkByIdThrowsWhenMarkMissing() {
         LOG.info("Шаг 1: создаём отделение без требуемой заметки");
@@ -76,6 +79,7 @@ class VisitServiceMarkLookupByIdTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("Delete Mark By Id Delegates To Existing Mark")
     @Test
     void deleteMarkByIdDelegatesToExistingMark() {
         LOG.info("Шаг 1: создаём отделение с заметкой для удаления");
@@ -105,6 +109,7 @@ class VisitServiceMarkLookupByIdTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("Delete Mark By Id Throws When Mark Missing")
     @Test
     void deleteMarkByIdThrowsWhenMarkMissing() {
         LOG.info("Шаг 1: подготавливаем отделение без искомой заметки");

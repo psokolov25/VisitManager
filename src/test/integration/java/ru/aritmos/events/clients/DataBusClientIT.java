@@ -1,6 +1,7 @@
 package ru.aritmos.events.clients;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
@@ -33,6 +34,7 @@ class DataBusClientIT {
     @Inject
     DataBusStubRecorder stubRecorder;
 
+    @DisplayName("Real Service Responds")
     @Test
     void realServiceResponds() {
         Map<String, String> response =

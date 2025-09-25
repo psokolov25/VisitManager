@@ -2,8 +2,10 @@ package ru.aritmos.model;
 
 import org.junit.jupiter.api.Test;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 class OutcomeTest {
+    @DisplayName("Clone Creates Independent Copy")
     @Test
     void cloneCreatesIndependentCopy() {
         Outcome original = new Outcome("1", "name");

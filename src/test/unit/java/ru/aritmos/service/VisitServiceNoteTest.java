@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
@@ -19,6 +20,7 @@ import ru.aritmos.model.visit.VisitEvent;
 
 class VisitServiceNoteTest {
 
+    @DisplayName("Add Note Appends Note And Calls Update")
     @Test
     void addNoteAppendsNoteAndCallsUpdate() {
         Branch branch = new Branch("b1", "Branch");
@@ -51,6 +53,7 @@ class VisitServiceNoteTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
+    @DisplayName("Add Note Throws When No Visit")
     @Test
     void addNoteThrowsWhenNoVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -69,6 +72,7 @@ class VisitServiceNoteTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("Get Notes Returns Notes")
     @Test
     void getNotesReturnsNotes() {
         Branch branch = new Branch("b1", "Branch");
@@ -98,6 +102,7 @@ class VisitServiceNoteTest {
         assertEquals("note", notes.get(0).getValue());
     }
 
+    @DisplayName("Get Notes Throws When Visit Missing")
     @Test
     void getNotesThrowsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");

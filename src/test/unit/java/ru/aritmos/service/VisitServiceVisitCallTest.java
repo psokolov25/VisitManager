@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -45,6 +46,7 @@ class VisitServiceVisitCallTest {
         VisitEvent.START_SERVING.getParameters().clear();
     }
 
+    @DisplayName("Visit Call Moves Visit From Queue And Publishes Events")
     @Test
     void visitCallMovesVisitFromQueueAndPublishesEvents() {
         Branch branch = new Branch("b1", "Отделение");
@@ -106,6 +108,7 @@ class VisitServiceVisitCallTest {
         assertSame(VisitEvent.START_SERVING, startServingEvent);
     }
 
+    @DisplayName("Visit Call Fails When Service Point Busy")
     @Test
     void visitCallFailsWhenServicePointBusy() {
         Branch branch = new Branch("b1", "Отделение");
@@ -130,6 +133,7 @@ class VisitServiceVisitCallTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(service));
     }
 
+    @DisplayName("Visit Call Fails When Service Point Missing")
     @Test
     void visitCallFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -150,6 +154,7 @@ class VisitServiceVisitCallTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(service));
     }
 
+    @DisplayName("Visit Call Transfers Pool Metadata To Parameters")
     @Test
     void visitCallTransfersPoolMetadataToParameters() {
         Branch branch = new Branch("b1", "Отделение");
@@ -180,6 +185,7 @@ class VisitServiceVisitCallTest {
         assertNull(visit.getPoolUserId());
     }
 
+    @DisplayName("Visit Call By Id Delegates To Cherry Pick And Handles Missing")
     @Test
     void visitCallByIdDelegatesToCherryPickAndHandlesMissing() {
         Visit visit = Visit.builder().id("v1").branchId("b1").parameterMap(new HashMap<>()).build();

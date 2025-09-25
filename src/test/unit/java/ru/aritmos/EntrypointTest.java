@@ -1,6 +1,7 @@
 package ru.aritmos;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -27,6 +28,7 @@ class EntrypointTest {
         }
     }
 
+    @DisplayName("Groovy Script Selects Visit By Params")
     @Test
     void groovyScriptSelectsVisitByParams() throws Exception {
         Binding binding = new Binding();
@@ -65,6 +67,7 @@ class EntrypointTest {
         assertEquals("v1", visit.get().getId());
     }
 
+    @DisplayName("Groovy Script Returns Empty When No Match")
     @Test
     void groovyScriptReturnsEmptyWhenNoMatch() throws Exception {
         Binding binding = new Binding();

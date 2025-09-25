@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
@@ -23,6 +24,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceMarkModificationTest {
 
+    @DisplayName("Add Mark Appends To Visit Marks")
     @Test
     void addMarkAppendsToVisitMarks() {
         Branch branch = new Branch("b1", "Branch");
@@ -58,6 +60,7 @@ class VisitServiceMarkModificationTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
+    @DisplayName("Delete Mark Removes From Visit")
     @Test
     void deleteMarkRemovesFromVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -88,6 +91,7 @@ class VisitServiceMarkModificationTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
+    @DisplayName("Add Mark Throws When Current Service Missing")
     @Test
     void addMarkThrowsWhenCurrentServiceMissing() {
         Branch branch = new Branch("b1", "Branch");

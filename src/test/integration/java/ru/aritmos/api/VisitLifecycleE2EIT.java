@@ -14,6 +14,7 @@ import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.Service;
 import ru.aritmos.service.Configuration;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -31,6 +32,7 @@ class VisitLifecycleE2EIT {
     @Inject
     Configuration configuration;
 
+    @DisplayName("Creates And Cancels Visit")
     @Test
     void createsAndCancelsVisit() {
         Branch branch = new Branch("b1", "Branch");

@@ -1,6 +1,7 @@
 package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class HttpErrorHandlerTest {
 
+    @DisplayName("Тест")
     @Test
     void handleВозвращаетКодИТелоОшибки() {
         HttpErrorHandler handler = new HttpErrorHandler();

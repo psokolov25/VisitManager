@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -32,6 +33,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2FromReceptionLegacyTest {
 
+    @DisplayName("Creates Visit And Prints Ticket When Segmentation Returns Queue")
     @Test
     void createsVisitAndPrintsTicketWhenSegmentationReturnsQueue() throws Exception {
         VisitService service = new VisitService();
@@ -136,6 +138,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verifyNoMoreInteractions(printerService);
     }
 
+    @DisplayName("Does Not Print Ticket When Flag Disabled And Staff Missing")
     @Test
     void doesNotPrintTicketWhenFlagDisabledAndStaffMissing() throws Exception {
         VisitService service = new VisitService();
@@ -218,6 +221,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verify(printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("Throws Bad Request When Segmentation Returns Empty Queue")
     @Test
     void throwsBadRequestWhenSegmentationReturnsEmptyQueue() throws Exception {
         VisitService service = new VisitService();
@@ -273,6 +277,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verify(printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("Throws Not Found When Queue Missing In Branch Configuration")
     @Test
     void throwsNotFoundWhenQueueMissingInBranchConfiguration() throws Exception {
         VisitService service = new VisitService();

@@ -1,11 +1,13 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 
 class TokenTest {
 
+    @DisplayName("Builder And Setters Transfer Token Data")
     @Test
     void builderAndSettersTransferTokenData() {
         Token viaBuilder = Token.builder()

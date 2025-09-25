@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ class VisitServiceCallAndReturnScenariosTest {
         resetVisitEvents();
     }
 
+    @DisplayName("Visit Call For Confirm With Max Waiting Time Updates Visit And Event")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeUpdatesVisitAndEvent() {
         log.info("Готовим отделение, точку обслуживания и визит для вызова с подтверждением");
@@ -107,6 +109,7 @@ class VisitServiceCallAndReturnScenariosTest {
         assertEquals("callNext", event.getParameters().get("callMethod"));
     }
 
+    @DisplayName("Visit Call For Confirm With Max Life Time Calls Rule And Updates Visit")
     @Test
     void visitCallForConfirmWithMaxLifeTimeCallsRuleAndUpdatesVisit() {
         log.info("Настраиваем отделение и визит для вызова по максимальному времени жизни");
@@ -156,6 +159,7 @@ class VisitServiceCallAndReturnScenariosTest {
         assertEquals("callNext", event.getParameters().get("callMethod"));
     }
 
+    @DisplayName("Visit Call For Confirm With Max Life Time And Queues Propagates Ids")
     @Test
     void visitCallForConfirmWithMaxLifeTimeAndQueuesPropagatesIds() {
         log.info("Подготавливаем отделение с несколькими очередями для вызова визита");
@@ -207,6 +211,7 @@ class VisitServiceCallAndReturnScenariosTest {
         assertEquals("callNext", event.getParameters().get("callMethod"));
     }
 
+    @DisplayName("Stop Serving And Back To Queue Schedules Delayed Refresh")
     @Test
     void stopServingAndBackToQueueSchedulesDelayedRefresh() {
         log.info("Формируем отделение с очередью и визитом, находящимся на обслуживании");
@@ -282,6 +287,7 @@ class VisitServiceCallAndReturnScenariosTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("Visit Back Moves Visit To Queue And Resets Assignments")
     @Test
     void visitBackMovesVisitToQueueAndResetsAssignments() {
         log.info("Готовим отделение и визит для возврата в очередь без задержки");

@@ -1,6 +1,7 @@
 package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
@@ -26,6 +27,7 @@ class ConfigurationControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет, что причины перерыва возвращаются после обновления конфигурации. */
+    @DisplayName("Returns Break Reasons")
     @Test
     void returnsBreakReasons() {
         Branch branch = new Branch("b1", "Branch");

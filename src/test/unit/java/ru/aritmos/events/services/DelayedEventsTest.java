@@ -2,6 +2,7 @@ package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.scheduling.TaskScheduler;
 import java.time.Duration;
@@ -16,6 +17,7 @@ import ru.aritmos.events.model.Event;
 class DelayedEventsTest {
 
     /** Проверяет планирование события для одного адресата. */
+    @DisplayName("Schedules Event For Single Destination")
     @Test
     void schedulesEventForSingleDestination() {
         TaskScheduler scheduler = mock(TaskScheduler.class);
@@ -33,6 +35,7 @@ class DelayedEventsTest {
     }
 
     /** Проверяет планирование события для списка адресатов. */
+    @DisplayName("Schedules Event For Multiple Destinations")
     @Test
     void schedulesEventForMultipleDestinations() {
         TaskScheduler scheduler = mock(TaskScheduler.class);

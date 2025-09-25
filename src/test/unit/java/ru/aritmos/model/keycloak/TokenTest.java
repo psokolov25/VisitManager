@@ -1,11 +1,13 @@
 package ru.aritmos.model.keycloak;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 
 class TokenTest {
 
+    @DisplayName("Builder And Setters Populate Token Fields")
     @Test
     void builderAndSettersPopulateTokenFields() {
         Token viaBuilder = Token.builder()

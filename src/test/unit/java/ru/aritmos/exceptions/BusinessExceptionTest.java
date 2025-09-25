@@ -3,6 +3,7 @@ package ru.aritmos.exceptions;
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -14,6 +15,7 @@ import ru.aritmos.events.services.EventService;
 
 class BusinessExceptionTest {
 
+    @DisplayName("Publishes Event And Throws")
     @Test
     void publishesEventAndThrows() {
         EventService eventService = mock(EventService.class);
@@ -32,6 +34,7 @@ class BusinessExceptionTest {
         assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
     }
 
+    @DisplayName("Publishes Event With Log Message")
     @Test
     void publishesEventWithLogMessage() {
         EventService eventService = mock(EventService.class);
@@ -50,6 +53,7 @@ class BusinessExceptionTest {
         assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
     }
 
+    @DisplayName("Publishes Event With Mapper")
     @Test
     void publishesEventWithMapper() throws Exception {
         EventService eventService = mock(EventService.class);
@@ -70,6 +74,7 @@ class BusinessExceptionTest {
         verify(mapper, atLeastOnce()).writeValueAsString(any());
     }
 
+    @DisplayName("Publishes Event With Object Body")
     @Test
     void publishesEventWithObjectBody() {
         EventService eventService = mock(EventService.class);
@@ -88,6 +93,7 @@ class BusinessExceptionTest {
         assertEquals("BUSINESS_ERROR", captor.getValue().getEventType());
     }
 
+    @DisplayName("Publishes Event With Separate Event Message")
     @Test
     void publishesEventWithSeparateEventMessage() {
         EventService eventService = mock(EventService.class);

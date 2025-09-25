@@ -1,11 +1,13 @@
 package ru.aritmos.model.keycloak;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 
 class ModuleRoleTest {
 
+    @DisplayName("Method Chains Produce Correct Object")
     @Test
     void methodChainsProduceCorrectObject() {
         ModuleRole direct = new ModuleRole()

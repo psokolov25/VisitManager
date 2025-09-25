@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceAddServiceTest {
 
+    @DisplayName("Adds Service To Unserved Services")
     @Test
     void addsServiceToUnservedServices() {
         Branch branch = new Branch("b1", "Branch");
@@ -42,6 +44,7 @@ class VisitServiceAddServiceTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
+    @DisplayName("Throws When Service Missing")
     @Test
     void throwsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Branch");

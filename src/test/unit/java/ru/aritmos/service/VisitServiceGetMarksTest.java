@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
@@ -20,6 +21,7 @@ import ru.aritmos.model.visit.Visit;
  */
 class VisitServiceGetMarksTest {
 
+    @DisplayName("Returns Marks Of Visit")
     @Test
     void returnsMarksOfVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -48,6 +50,7 @@ class VisitServiceGetMarksTest {
         assertSame(mark, marks.get(0));
     }
 
+    @DisplayName("Throws When Visit Missing")
     @Test
     void throwsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");

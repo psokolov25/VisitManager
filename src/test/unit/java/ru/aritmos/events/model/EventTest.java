@@ -5,9 +5,11 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import ru.aritmos.test.LoggingAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class EventTest {
 
+    @DisplayName("Builder Sets Fields")
     @Test
     void builderSetsFields() {
         ZonedDateTime date = ZonedDateTime.of(2024, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC"));

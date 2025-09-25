@@ -1,6 +1,7 @@
 package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
@@ -26,6 +27,7 @@ class EntrypointControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет получение списка доступных услуг отделения. */
+    @DisplayName("Fetches Available Services")
     @Test
     void fetchesAvailableServices() {
         Branch branch = new Branch("b1", "Branch");

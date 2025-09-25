@@ -1,11 +1,13 @@
 package ru.aritmos.model.keycloak;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 
 class TinyUserInfoTest {
 
+    @DisplayName("Method Chains Populate Fields And String")
     @Test
     void methodChainsPopulateFieldsAndString() {
         TinyUserInfo expected = new TinyUserInfo()

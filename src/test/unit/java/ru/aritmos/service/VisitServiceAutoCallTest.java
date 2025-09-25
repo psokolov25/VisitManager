@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import ru.aritmos.model.ServicePoint;
 
 class VisitServiceAutoCallTest {
 
+    @DisplayName("Branch Auto Call Mode Disables Service Points")
     @Test
     void branchAutoCallModeDisablesServicePoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -36,6 +38,7 @@ class VisitServiceAutoCallTest {
         verify(branchService).add("b1", branch);
     }
 
+    @DisplayName("Service Point Auto Call Mode Enables When Branch Mode On")
     @Test
     void servicePointAutoCallModeEnablesWhenBranchModeOn() {
         Branch branch = new Branch("b1", "Branch");
@@ -63,6 +66,7 @@ class VisitServiceAutoCallTest {
         verify(branchService).add("b1", branch);
     }
 
+    @DisplayName("Service Point Auto Call Mode Fails When Branch Mode Off")
     @Test
     void servicePointAutoCallModeFailsWhenBranchModeOff() {
         Branch branch = new Branch("b1", "Branch");
@@ -84,6 +88,7 @@ class VisitServiceAutoCallTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("Service Point Auto Call Mode Throws When Service Point Missing")
     @Test
     void servicePointAutoCallModeThrowsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -103,6 +108,7 @@ class VisitServiceAutoCallTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("Service Point Auto Call Mode Returns Existing When Disabling With Branch Mode Off")
     @Test
     void servicePointAutoCallModeReturnsExistingWhenDisablingWithBranchModeOff() {
         Branch branch = new Branch("b1", "Branch");
@@ -128,6 +134,7 @@ class VisitServiceAutoCallTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("Cancel Auto Call Mode Disables Point And Emits Event")
     @Test
     void cancelAutoCallModeDisablesPointAndEmitsEvent() {
         Branch branch = new Branch("b1", "Branch");

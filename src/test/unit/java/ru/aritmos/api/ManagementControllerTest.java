@@ -2,6 +2,7 @@ package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -20,6 +21,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class ManagementControllerTest {
 
+    @DisplayName("Get Branch Returns Branch")
     @Test
     void getBranchReturnsBranch() {
         BranchService branchService = mock(BranchService.class);
@@ -31,6 +33,7 @@ class ManagementControllerTest {
         assertSame(branch, controller.getBranch("b1"));
     }
 
+    @DisplayName("Get Branch Throws Not Found")
     @Test
     void getBranchThrowsNotFound() {
         BranchService branchService = mock(BranchService.class);
@@ -42,6 +45,7 @@ class ManagementControllerTest {
         assertThrows(HttpStatusException.class, () -> controller.getBranch("b1"));
     }
 
+    @DisplayName("Get Branches Without User Returns All")
     @Test
     void getBranchesWithoutUserReturnsAll() {
         BranchService branchService = mock(BranchService.class);
@@ -54,6 +58,7 @@ class ManagementControllerTest {
         verify(branchService).getBranches();
     }
 
+    @DisplayName("Get Branches With Unknown User Falls Back To All")
     @Test
     void getBranchesWithUnknownUserFallsBackToAll() {
         BranchService branchService = mock(BranchService.class);
@@ -67,6 +72,7 @@ class ManagementControllerTest {
         assertSame(branches, controller.getBranches("u1"));
     }
 
+    @DisplayName("Тест")
     @Test
     void getBranchesForAdminВозвращаетВсеОтделения() {
         BranchService branchService = mock(BranchService.class);
@@ -91,6 +97,7 @@ class ManagementControllerTest {
         assertEquals(branches, result);
     }
 
+    @DisplayName("Тест")
     @Test
     void getBranchesФильтруетДоступныеОтделенияДляПользователя() {
         BranchService branchService = mock(BranchService.class);
@@ -128,6 +135,7 @@ class ManagementControllerTest {
         assertFalse(result.containsKey("b2"));
     }
 
+    @DisplayName("Get Tiny Branches Returns Mapped List")
     @Test
     void getTinyBranchesReturnsMappedList() {
         BranchService branchService = mock(BranchService.class);

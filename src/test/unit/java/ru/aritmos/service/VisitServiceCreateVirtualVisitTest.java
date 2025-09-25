@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
@@ -24,6 +25,7 @@ import ru.aritmos.model.visit.Visit;
 class VisitServiceCreateVirtualVisitTest {
 
     /** Проверяет, что метод выбрасывает конфликт при недавнем визите на точке обслуживания. */
+    @DisplayName("Throws Conflict When Service Point Recently Created Visit")
     @Test
     void throwsConflictWhenServicePointRecentlyCreatedVisit() throws SystemException {
         VisitService service = spy(new VisitService());
@@ -53,6 +55,7 @@ class VisitServiceCreateVirtualVisitTest {
     }
 
     /** Убеждаемся, что в createVirtualVisit2 передаются клоны услуг и исходные параметры. */
+    @DisplayName("Passes Cloned Services To Create Virtual Visit2")
     @Test
     void passesClonedServicesToCreateVirtualVisit2() throws SystemException {
         VisitService service = spy(new VisitService());
