@@ -36,7 +36,7 @@ class KeycloakKafkaIntegrationIT {
 
     @BeforeAll
     static void setUp() {
-        Assumptions.assumeTrue(isDockerAvailable(), "Docker is required for this test");
+        Assumptions.assumeTrue(isDockerAvailable(), "Для теста требуется доступный Docker");
 
         keycloak =
             new KeycloakContainer("quay.io/keycloak/keycloak:22.0.1")
@@ -58,7 +58,7 @@ class KeycloakKafkaIntegrationIT {
         }
     }
 
-    @DisplayName("Keycloak And Kafka Are Accessible")
+    @DisplayName("Keycloak и Kafka доступны из теста")
     @Test
     void keycloakAndKafkaAreAccessible() throws Exception {
         assertTrue(keycloak != null && keycloak.isRunning(), "Keycloak должен быть запущен");
@@ -96,7 +96,7 @@ class KeycloakKafkaIntegrationIT {
         try (Consumer<String, String> consumer = new KafkaConsumer<>(consumerProps)) {
             consumer.subscribe(Collections.singletonList(topic));
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(5));
-            assertFalse(records.isEmpty(), "Kafka должен вернуть записанное сообщение");
+            assertFalse(records.isEmpty(), "Kafka должна вернуть записанное сообщение");
             assertEquals("v", records.iterator().next().value());
         }
     }
