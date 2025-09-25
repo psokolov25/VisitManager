@@ -151,3 +151,4 @@
 - 2025-09-29 (итерация 2): локализованы описания тестов в `src/test/unit/java/ru/aritmos/exceptions/BusinessExceptionLocalizationPropertiesTest.java` и `src/test/unit/java/ru/aritmos/exceptions/BusinessExceptionLocalizationTest.java`.
 - 2025-09-29 (итерация 3): переведены и унифицированы описания тестов в `src/test/unit/java/ru/aritmos/service/VisitServiceVisitAutoCallTest.java`, `src/test/unit/java/ru/aritmos/service/VisitServiceAddServiceTest.java` и `src/test/unit/java/ru/aritmos/service/VisitServiceVisitCallTest.java`.
 - 2025-09-29 (итерация 4): локализованы описания тестов в `src/test/unit/java/ru/aritmos/service/VisitServiceAutoCallTest.java` и `src/test/unit/java/ru/aritmos/service/VisitServiceAutoCallModeTest.java`.
+
