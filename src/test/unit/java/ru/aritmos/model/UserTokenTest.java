@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class UserTokenTest {
 
-    @DisplayName("Builder And Setters Create User Token")
+    @DisplayName("Builder и сеттеры создают токен пользователя")
     @Test
     void builderAndSettersCreateUserToken() {
         UserInfo info = UserInfo.builder()

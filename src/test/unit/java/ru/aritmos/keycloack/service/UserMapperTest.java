@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 
 class UserMapperTest {
 
-    @DisplayName("Extracts Roles From Claims")
+    @DisplayName("Извлекает роли пользователя из клеймов")
     @Test
     void extractsRolesFromClaims() {
         UserMapper mapper = new UserMapper(new KeyCloackClient());
@@ -48,7 +48,7 @@ class UserMapperTest {
         assertTrue(auth.getRoles().containsAll(List.of("r1", "r2", "realm")));
     }
 
-    @DisplayName("Ignores Invalid Claims Structures")
+    @DisplayName("Игнорирует некорректные структуры клеймов")
     @Test
     void ignoresInvalidClaimsStructures() {
         UserMapper mapper = new UserMapper(new KeyCloackClient());

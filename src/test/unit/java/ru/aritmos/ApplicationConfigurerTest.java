@@ -40,7 +40,7 @@ class ApplicationConfigurerTest {
         }
     }
 
-    @DisplayName("Sets Local Defaults When Infra Absent")
+    @DisplayName("Назначает локальные профили по умолчанию при отсутствии инфраструктуры")
     @Test
     void setsLocalDefaultsWhenInfraAbsent() {
         Application.Configurer configurer = new Application.Configurer();
@@ -52,7 +52,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
-    @DisplayName("Enables Infra By Default When Remote Endpoints Available")
+    @DisplayName("Включает профиль infra по умолчанию при наличии удалённых сервисов")
     @Test
     void enablesInfraByDefaultWhenRemoteEndpointsAvailable() {
         System.setProperty("redis.uri", "redis://example");
@@ -66,7 +66,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
-    @DisplayName("Appends Infra When Explicit Environments Provided")
+    @DisplayName("Добавляет профиль infra к явно указанным окружениям")
     @Test
     void appendsInfraWhenExplicitEnvironmentsProvided() {
         System.setProperty("micronaut.environments", "dev");
@@ -81,7 +81,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
-    @DisplayName("Keeps Explicit Local Profile Even With Infra Signals")
+    @DisplayName("Сохраняет локальный профиль даже при наличии признаков инфраструктуры")
     @Test
     void keepsExplicitLocalProfileEvenWithInfraSignals() {
         System.setProperty("micronaut.environments", "local-no-docker");
