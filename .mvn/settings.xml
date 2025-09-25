@@ -2,13 +2,14 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
   <!--
-    Прокси отключён по умолчанию. Чтобы включить проксирование, запустите Maven
-    с параметром `-Dvisitmanager.proxyEnabled=true` (например, через `mvnw`).
+    Прокси включён по умолчанию за счёт значения по умолчанию в
+    `${visitmanager.proxyEnabled:-true}`. Чтобы отключить проксирование,
+    запустите Maven с параметром `-Dvisitmanager.proxyEnabled=false`.
   -->
   <proxies>
     <proxy>
       <id>visitmanager-http-proxy</id>
-      <active>${visitmanager.proxyEnabled}</active>
+      <active>${visitmanager.proxyEnabled:-true}</active>
       <protocol>http</protocol>
       <host>proxy</host>
       <port>8080</port>
@@ -16,11 +17,12 @@
     </proxy>
     <proxy>
       <id>visitmanager-https-proxy</id>
-      <active>${visitmanager.proxyEnabled}</active>
+      <active>${visitmanager.proxyEnabled:-true}</active>
       <protocol>https</protocol>
       <host>proxy</host>
       <port>8080</port>
       <nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>
     </proxy>
   </proxies>
+
 </settings>
