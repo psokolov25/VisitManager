@@ -11,11 +11,13 @@
 ## Сборка, тесты и запуск
 - Сборка с тестами: `mvn -s .mvn/settings.xml clean verify`.
 - Сборка без тестов: `mvn -s .mvn/settings.xml -DskipTests package`.
+- ⚠️ В среде Codex все команды Maven выполняйте с параметром `-Dvisitmanager.proxyEnabled=true`,
+  чтобы явно включить проксирование при сборке.
 - Запуск JAR: `java -jar target/visitmanager.jar`.
 - Запуск в dev (если подключен плагин): `mvn -s .mvn/settings.xml mn:run`.
 - Тесты: `mvn -s .mvn/settings.xml test`.
 
-- Сетевое окружение использует обязательный HTTP(S)-прокси `proxy:8080`; параметры уже прописаны в `.mvn/jvm.config` и `.mvn/settings.xml`. При работе вне текущей инфраструктуры обновляйте `proxy` и `port` в этих файлах или задавайте собственные значения через `JAVA_TOOL_OPTIONS`/`MAVEN_OPTS` перед запуском Maven. Значение `http.nonProxyHosts` указывайте только через `settings.xml` или переменные окружения (`MAVEN_OPTS`, `JAVA_TOOL_OPTIONS`), чтобы избежать ошибок интерпретации символа `|` в `mvnw.cmd` на Windows (сообщение вида «"127.0.0.1" не является внутренней или внешней командой...»).
+- Для доступа к зависимостям при необходимости используйте HTTP(S)-прокси `proxy:8080`. Прокси включается передачей параметра `-Dvisitmanager.proxyEnabled=true` (см. `.mvn/settings.xml`). Вне инфраструктуры, где прокси недоступен, выполняйте сборки без параметра либо указывайте свои значения через `JAVA_TOOL_OPTIONS`/`MAVEN_OPTS`. Значение `http.nonProxyHosts` задавайте только через `settings.xml` или переменные окружения (`MAVEN_OPTS`, `JAVA_TOOL_OPTIONS`), чтобы избежать ошибок интерпретации символа `|` в `mvnw.cmd` на Windows (сообщение вида «"127.0.0.1" не является внутренней или внешней командой...»).
 - Локально в Docker: `docker compose -f docker-compose.local.yml up -d --build`; остановка — `docker compose -f docker-compose.local.yml down`.
 
 ## Стиль кодирования и соглашения
