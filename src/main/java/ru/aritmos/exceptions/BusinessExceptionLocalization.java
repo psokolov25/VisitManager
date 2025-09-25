@@ -42,16 +42,32 @@ public class BusinessExceptionLocalization {
       @Nullable String logMessage,
       @Nullable String eventMessage) {
 
+    boolean fallbackToLogChannel = shouldFallbackToLogChannel();
     String localizedClient = localizeHttp(clientMessage);
-    Object localizedResponse = localizeResponseBody(responseBody, localizedClient);
+    localizedClient =
+        fallbackToLogChannel
+            ? fallbackToLogMessageIfNotTranslated(clientMessage, localizedClient, logMessage)
+            : localizedClient;
+    Object localizedResponse =
+        localizeResponseBody(responseBody, localizedClient, logMessage, fallbackToLogChannel);
     String localizedLog = localizeLog(logMessage);
     String localizedEvent = localizeEvent(eventMessage);
     return new LocalizedMessages(localizedResponse, localizedClient, localizedLog, localizedEvent);
   }
 
-  private Object localizeResponseBody(@Nullable Object responseBody, @Nullable String localizedClient) {
+  private Object localizeResponseBody(
+      @Nullable Object responseBody,
+      @Nullable String localizedClient,
+      @Nullable String logMessage,
+      boolean fallbackToLogChannel) {
     if (responseBody instanceof CharSequence sequence) {
-      return localizeHttp(sequence.toString());
+      String localized = localizeHttp(sequence.toString());
+      if (fallbackToLogChannel
+          && sequence.length() > 0
+          && Objects.equals(localized, sequence.toString())) {
+        return logMessage != null ? logMessage : localized;
+      }
+      return localized;
     }
     if (responseBody == null) {
       return localizedClient;
@@ -79,6 +95,34 @@ public class BusinessExceptionLocalization {
       LOG.warn("Не удалось локализовать сообщение события '{}', используется исходный текст", message);
     }
     return localized;
+  }
+
+  private String fallbackToLogMessageIfNotTranslated(
+      @Nullable String original,
+      @Nullable String localized,
+      @Nullable String logMessage) {
+    if (original == null || localized == null) {
+      return localized;
+    }
+    if (logMessage == null) {
+      return localized;
+    }
+    if (Objects.equals(original, localized)) {
+      return logMessage;
+    }
+    return localized;
+  }
+
+  private boolean shouldFallbackToLogChannel() {
+    return Objects.equals(effectiveLanguage(properties.getHttp()), effectiveLanguage(properties.getLog()));
+  }
+
+  private static String effectiveLanguage(BusinessExceptionLocalizationProperties.ChannelLocalization channel) {
+    if (channel == null) {
+      return null;
+    }
+    String language = channel.getLanguage();
+    return language != null ? language : channel.getDefaultLanguage();
   }
 
   /**
