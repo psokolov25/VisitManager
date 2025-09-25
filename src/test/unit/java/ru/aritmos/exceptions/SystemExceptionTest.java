@@ -14,7 +14,7 @@ import ru.aritmos.events.services.EventService;
 
 class SystemExceptionTest {
 
-    @DisplayName("Sends System Error Event On Creation")
+    @DisplayName("При создании отправляется событие системной ошибки")
     @Test
     void sendsSystemErrorEventOnCreation() {
         EventService eventService = Mockito.mock(EventService.class);

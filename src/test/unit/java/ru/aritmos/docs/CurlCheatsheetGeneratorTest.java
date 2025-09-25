@@ -25,7 +25,7 @@ class CurlCheatsheetGeneratorTest {
      * Убеждаемся, что экранирование спецсимволов HTML работает корректно для угловых скобок и
      * амперсанда.
      */
-    @DisplayName("Escape Html")
+    @DisplayName("Экранирование HTML-символов")
     @Test
     void escapeHtml() throws Exception {
         Method escape = CurlCheatsheetGenerator.class.getDeclaredMethod("escape", String.class);
@@ -38,7 +38,7 @@ class CurlCheatsheetGeneratorTest {
      * Проверяет, что секция контроллера с комментариями «Пример curl» добавляется в итоговый HTML
      * и содержит исходный пример запроса.
      */
-    @DisplayName("Append Controller Section Adds Example")
+    @DisplayName("Секция контроллера добавляет пример")
     @Test
     void appendControllerSectionAddsExample() throws Exception {
         Path file = Files.createTempFile("Controller", ".java");
@@ -69,7 +69,7 @@ class CurlCheatsheetGeneratorTest {
     /**
      * Убеждаемся, что главный метод создаёт HTML-файл со сведениями из контроллеров.
      */
-    @DisplayName("Main Generates Cheatsheet")
+    @DisplayName("Главный метод генерирует шпаргалку")
     @Test
     void mainGeneratesCheatsheet() throws Exception {
         Path projectRoot = Paths.get("").toAbsolutePath();
@@ -119,7 +119,7 @@ class CurlCheatsheetGeneratorTest {
      * Проверяет, что генератор извлекает метод и URI из аннотации даже при многострочном описании
      * с параметром {@code uri} на отдельной строке.
      */
-    @DisplayName("Append Controller Section Resolves Uri From Attribute Block")
+    @DisplayName("Секция контроллера извлекает URI из блока атрибутов")
     @Test
     void appendControllerSectionResolvesUriFromAttributeBlock() throws Exception {
         Path file = Files.createTempFile("ControllerMulti", ".java");
@@ -163,7 +163,7 @@ class CurlCheatsheetGeneratorTest {
      * Убеждаемся, что неполные примеры без закрывающего тега {@literal </code></pre>} пропускаются
      * и не попадают в HTML.
      */
-    @DisplayName("Append Controller Section Skips Incomplete Example")
+    @DisplayName("Секция контроллера пропускает неполный пример")
     @Test
     void appendControllerSectionSkipsIncompleteExample() throws Exception {
         Path file = Files.createTempFile("ControllerBroken", ".java");

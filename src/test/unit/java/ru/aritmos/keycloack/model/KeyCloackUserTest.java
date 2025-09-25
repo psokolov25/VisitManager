@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class KeyCloackUserTest {
 
-    @DisplayName("Fields Can Be Set And Read")
+    @DisplayName("Поля можно заполнить и прочитать")
     @Test
     void fieldsCanBeSetAndRead() {
         KeyCloackUser user = new KeyCloackUser();

@@ -18,7 +18,7 @@ class EventServiceTest {
     @Inject EventService eventService;
     @Inject LocalNoDockerDataBusClientStub dataBusClient;
 
-    @DisplayName("Get Date String Formats As Rfc1123")
+    @DisplayName("Форматирование строки даты в RFC1123")
     @Test
     void getDateStringFormatsAsRfc1123() {
         ZonedDateTime date = ZonedDateTime.of(2008, 4, 9, 23, 55, 38, 0, ZoneId.of("GMT"));
@@ -26,7 +26,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals("Wed, 09 Apr 2008 23:55:38 GMT", formatted);
     }
 
-    @DisplayName("Send Changed Event Builds Entity Changed Event")
+    @DisplayName("Метод sendChangedEvent формирует событие изменения сущности")
     @Test
     void sendChangedEventBuildsEntityChangedEvent() {
         dataBusClient.clearInvocations();
@@ -49,7 +49,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals(oldValue, changed.getOldValue());
     }
 
-    @DisplayName("Send Sets Sender And Calls Client")
+    @DisplayName("Метод send устанавливает отправителя и вызывает клиента")
     @Test
     void sendSetsSenderAndCallsClient() {
         dataBusClient.clearInvocations();
@@ -68,7 +68,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals("vm", event.getSenderService());
     }
 
-    @DisplayName("Send To Multiple Destinations Invokes Client For Each Service")
+    @DisplayName("Отправка нескольким адресатам вызывает клиента для каждого сервиса")
     @Test
     void sendToMultipleDestinationsInvokesClientForEachService() {
         dataBusClient.clearInvocations();
@@ -90,7 +90,7 @@ class EventServiceTest {
             });
     }
 
-    @DisplayName("Send Changed Event To Multiple Destinations Builds Event For Each Service")
+    @DisplayName("Событие изменения для нескольких адресатов формируется для каждого сервиса")
     @Test
     void sendChangedEventToMultipleDestinationsBuildsEventForEachService() {
         dataBusClient.clearInvocations();

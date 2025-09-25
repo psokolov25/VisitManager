@@ -28,7 +28,7 @@ class ServicePointControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет получение свободных точек обслуживания. */
-    @DisplayName("Fetches Free Service Points")
+    @DisplayName("Получение свободных точек обслуживания")
     @Test
     void fetchesFreeServicePoints() {
         Branch branch = new Branch("b1", "Branch");

@@ -15,7 +15,7 @@ class DataBusClientMockTest {
 
     @Inject DataBusClient dataBusClient;
 
-    @DisplayName("Data Bus Client Stubbed")
+    @DisplayName("Клиент Data Bus заменён заглушкой")
     @Test
     void dataBusClientStubbed() {
         Map<String, String> result =

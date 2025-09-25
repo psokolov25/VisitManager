@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 
 class EventTest {
 
-    @DisplayName("Builder Sets Fields")
+    @DisplayName("Билдер заполняет все поля")
     @Test
     void builderSetsFields() {
         ZonedDateTime date = ZonedDateTime.of(2024, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC"));

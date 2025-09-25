@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 
 class ChangedObjectTest {
 
-    @DisplayName("Builder Sets Fields")
+    @DisplayName("Билдер заполняет все поля")
     @Test
     void builderSetsFields() {
         ChangedObject obj =

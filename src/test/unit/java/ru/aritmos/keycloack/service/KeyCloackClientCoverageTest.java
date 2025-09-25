@@ -35,7 +35,7 @@ class KeyCloackClientCoverageTest {
 
     private static final Logger log = LoggerFactory.getLogger(KeyCloackClientCoverageTest.class);
 
-    @DisplayName("Get User Session By Login Returns Session With Max Start Time")
+    @DisplayName("Получение сессии по логину возвращает запись с максимальным временем начала")
     @Test
     void getUserSessionByLoginReturnsSessionWithMaxStartTime() {
         log.info("Готовим клиента Keycloak и пользователя для получения сессии");
@@ -85,7 +85,7 @@ class KeyCloackClientCoverageTest {
                 result.get().getUserToken().getUser().getName());
     }
 
-    @DisplayName("Get User Session By Login Returns Empty When User Data Invalid")
+    @DisplayName("Получение сессии по логину возвращает пустой результат при некорректных данных")
     @Test
     void getUserSessionByLoginReturnsEmptyWhenUserDataInvalid() {
         log.info("Готовим клиента Keycloak и пользователя с некорректными данными");
@@ -115,7 +115,7 @@ class KeyCloackClientCoverageTest {
         assertTrue(result.isEmpty(), "Результат должен быть пустым");
     }
 
-    @DisplayName("Is User Module Type By User Name Detects Composite Role Type")
+    @DisplayName("Проверка типа модуля по имени распознаёт составную роль")
     @Test
     void isUserModuleTypeByUserNameDetectsCompositeRoleType() {
         log.info("Готовим структуру ролей для проверки типа модуля пользователя");
@@ -159,7 +159,7 @@ class KeyCloackClientCoverageTest {
         assertTrue(result, "Ожидаем, что пользователь принадлежит типу admin");
     }
 
-    @DisplayName("Get User By Sid Returns User When Session Exists")
+    @DisplayName("Поиск пользователя по SID возвращает данные при наличии сессии")
     @Test
     void getUserBySidReturnsUserWhenSessionExists() {
         log.info("Готовим клиентов и сессии Keycloak для поиска пользователя по sid");
@@ -198,7 +198,7 @@ class KeyCloackClientCoverageTest {
         assertSame(user, result.get());
     }
 
-    @DisplayName("User Logout Sends Events And Updates Session Params")
+    @DisplayName("Выход пользователя отправляет события и обновляет параметры сессии")
     @Test
     void userLogoutSendsEventsAndUpdatesSessionParams() {
         log.info("Готовим KeyCloackClient для сценария выхода пользователя");
@@ -255,7 +255,7 @@ class KeyCloackClientCoverageTest {
         verify(userResource).logout();
     }
 
-    @DisplayName("Get All Branches By Region Name Returns Recursive Branches")
+    @DisplayName("Получение отделений по названию региона возвращает вложенные группы")
     @Test
     void getAllBranchesByRegionNameReturnsRecursiveBranches() {
         log.info("Готовим KeyCloackClient и структуру регионов для поиска отделений");
@@ -285,7 +285,7 @@ class KeyCloackClientCoverageTest {
         verify(client).getAllBranchesByRegionId("region-1", keycloak);
     }
 
-    @DisplayName("Get All Branches By Region Name Throws When Region Missing")
+    @DisplayName("Получение отделений по названию региона выбрасывает исключение при отсутствии региона")
     @Test
     void getAllBranchesByRegionNameThrowsWhenRegionMissing() {
         log.info("Готовим KeyCloackClient и список регионов без совпадений");

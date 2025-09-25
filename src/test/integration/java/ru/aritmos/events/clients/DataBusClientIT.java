@@ -34,7 +34,7 @@ class DataBusClientIT {
     @Inject
     DataBusStubRecorder stubRecorder;
 
-    @DisplayName("Real Service Responds")
+    @DisplayName("Реальный сервис отвечает")
     @Test
     void realServiceResponds() {
         Map<String, String> response =

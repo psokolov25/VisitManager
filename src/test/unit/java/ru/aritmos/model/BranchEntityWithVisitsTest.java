@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class BranchEntityWithVisitsTest {
 
-    @DisplayName("Constructor With Name Should Generate Id And Set Name")
+    @DisplayName("Конструктор только с именем генерирует идентификатор и устанавливает название")
     @Test
     void constructorWithNameShouldGenerateIdAndSetName() {
         BranchEntityWithVisits branch = new BranchEntityWithVisits("МФЦ");
@@ -19,7 +19,7 @@ class BranchEntityWithVisitsTest {
         assertTrue(branch.getVisits().isEmpty());
     }
 
-    @DisplayName("Constructor With Id And Name Should Use Provided Values")
+    @DisplayName("Конструктор с идентификатором и именем использует переданные значения")
     @Test
     void constructorWithIdAndNameShouldUseProvidedValues() {
         String id = UUID.randomUUID().toString();

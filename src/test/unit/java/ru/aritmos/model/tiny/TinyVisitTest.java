@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class TinyVisitTest {
 
-    @DisplayName("Calculates Waiting Time From Transfer Date")
+    @DisplayName("Ожидание вычисляется от даты перевода")
     @Test
     void calculatesWaitingTimeFromTransferDate() {
         ZonedDateTime now = ZonedDateTime.now();
@@ -25,7 +25,7 @@ class TinyVisitTest {
         assertTrue(Math.abs(actual - expected) <= 1, "waiting time should match");
     }
 
-    @DisplayName("Calculates Total Waiting Time From Create Date")
+    @DisplayName("Общее ожидание вычисляется от даты создания")
     @Test
     void calculatesTotalWaitingTimeFromCreateDate() {
         ZonedDateTime now = ZonedDateTime.now();

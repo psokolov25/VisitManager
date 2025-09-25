@@ -27,7 +27,7 @@ class ConfigurationControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет, что причины перерыва возвращаются после обновления конфигурации. */
-    @DisplayName("Returns Break Reasons")
+    @DisplayName("Возврат причин перерыва")
     @Test
     void returnsBreakReasons() {
         Branch branch = new Branch("b1", "Branch");
