@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class HttpErrorHandlerTest {
 
-    @DisplayName("Тест")
+    @DisplayName("Обработчик возвращает HTTP-статус и тело ошибки")
     @Test
     void handleВозвращаетКодИТелоОшибки() {
         HttpErrorHandler handler = new HttpErrorHandler();

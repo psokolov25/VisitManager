@@ -20,7 +20,7 @@ import ru.aritmos.service.VisitService;
 
 class ConfigurationControllerTest {
 
-    @DisplayName("Update Delegates To Configuration")
+    @DisplayName("Метод update делегирует создание конфигурации сервису Configuration")
     @Test
     void updateDelegatesToConfiguration() {
         ConfigurationController controller = new ConfigurationController();
@@ -36,7 +36,7 @@ class ConfigurationControllerTest {
         verify(config).createBranchConfiguration(branches);
     }
 
-    @DisplayName("Update Hardcode Uses Demo Config")
+    @DisplayName("Метод update без параметров использует демо-конфигурацию")
     @Test
     void updateHardcodeUsesDemoConfig() {
         ConfigurationController controller = new ConfigurationController();
@@ -62,7 +62,7 @@ class ConfigurationControllerTest {
         return controller;
     }
 
-    @DisplayName("Add Update Service Delegates To Branch Service")
+    @DisplayName("Метод addUpdateService делегирует обновление услуг BranchService")
     @Test
     void addUpdateServiceDelegatesToBranchService() {
         ConfigurationController controller = controller();
@@ -72,7 +72,7 @@ class ConfigurationControllerTest {
             .addUpdateService("b1", services, true, controller.visitService);
     }
 
-    @DisplayName("Get Break Reasons Uses Branch Service")
+    @DisplayName("Получение причин перерывов использует BranchService")
     @Test
     void getBreakReasonsUsesBranchService() {
         ConfigurationController controller = controller();
@@ -84,7 +84,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).getBranch("b1");
     }
 
-    @DisplayName("Delete Services Delegates")
+    @DisplayName("Метод deleteServices делегирует удаление услуг BranchService")
     @Test
     void deleteServicesDelegates() {
         ConfigurationController controller = controller();
@@ -94,7 +94,7 @@ class ConfigurationControllerTest {
             .deleteServices("b1", ids, false, controller.visitService);
     }
 
-    @DisplayName("Add Update Service Point Delegates")
+    @DisplayName("Метод addUpdateServicePoint делегирует обновление окон обслуживания BranchService")
     @Test
     void addUpdateServicePointDelegates() {
         ConfigurationController controller = controller();
@@ -104,7 +104,7 @@ class ConfigurationControllerTest {
             .addUpdateServicePoint("b1", points, true, false);
     }
 
-    @DisplayName("Add Update Service Groups Delegates")
+    @DisplayName("Метод addUpdateServiceGroups делегирует обновление групп услуг BranchService")
     @Test
     void addUpdateServiceGroupsDelegates() {
         ConfigurationController controller = controller();
@@ -113,7 +113,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateServiceGroups("b1", groups);
     }
 
-    @DisplayName("Add Update Segmentation Rules Delegates")
+    @DisplayName("Метод addUpdateSegmentationRules делегирует обновление правил сегментации BranchService")
     @Test
     void addUpdateSegmentationRulesDelegates() {
         ConfigurationController controller = controller();
@@ -122,7 +122,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateSegmentationRules("b1", rules);
     }
 
-    @DisplayName("Delete Service Points Delegates")
+    @DisplayName("Метод deleteServicePoints делегирует удаление окон BranchService")
     @Test
     void deleteServicePointsDelegates() {
         ConfigurationController controller = controller();
@@ -131,7 +131,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).deleteServicePoints("b1", ids);
     }
 
-    @DisplayName("Set Auto Call Mode On Delegates")
+    @DisplayName("Метод setAutoCallModeOfBranchOn включает автодозвон через VisitService")
     @Test
     void setAutoCallModeOnDelegates() {
         ConfigurationController controller = controller();
@@ -139,7 +139,7 @@ class ConfigurationControllerTest {
         verify(controller.visitService).setAutoCallModeOfBranch("b1", true);
     }
 
-    @DisplayName("Set Auto Call Mode Off Delegates")
+    @DisplayName("Метод setAutoCallModeOfBranchOff отключает автодозвон через VisitService")
     @Test
     void setAutoCallModeOffDelegates() {
         ConfigurationController controller = controller();
@@ -147,7 +147,7 @@ class ConfigurationControllerTest {
         verify(controller.visitService).setAutoCallModeOfBranch("b1", false);
     }
 
-    @DisplayName("Add Update Queues Delegates")
+    @DisplayName("Метод addUpdateQueues делегирует обновление очередей BranchService")
     @Test
     void addUpdateQueuesDelegates() {
         ConfigurationController controller = controller();
@@ -156,7 +156,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateQueues("b1", queues, true);
     }
 
-    @DisplayName("Delete Queues Delegates")
+    @DisplayName("Метод deleteQueues делегирует удаление очередей BranchService")
     @Test
     void deleteQueuesDelegates() {
         ConfigurationController controller = controller();
