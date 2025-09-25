@@ -186,7 +186,6 @@ public class BusinessExceptionLocalizationProperties {
 
     private static String normalizeLanguage(String language) {
       if (language == null) {
-
         return null;
       }
       String trimmed = language.trim();
@@ -194,15 +193,25 @@ public class BusinessExceptionLocalizationProperties {
         return null;
       }
       String unquoted = trimmed;
-      String candidate = stripWrappingQuotes(unquoted);
-      while (!candidate.equals(unquoted)) {
+      while (true) {
+        String candidate = stripWrappingQuotes(unquoted);
+        if (candidate.equals(unquoted)) {
+          break;
+        }
         unquoted = candidate.trim();
-        candidate = stripWrappingQuotes(unquoted);
+        if (unquoted.isEmpty()) {
+          return null;
+        }
       }
-      if (unquoted.isEmpty()) {
+      String resolved = resolvePlaceholderIfPresent(unquoted);
+      if (resolved == null) {
         return null;
       }
-      return unquoted.toLowerCase(Locale.ROOT);
+      String sanitized = resolved.trim();
+      if (sanitized.isEmpty()) {
+        return null;
+      }
+      return sanitized.toLowerCase(Locale.ROOT);
     }
 
     private static String stripWrappingQuotes(String value) {
@@ -215,6 +224,47 @@ public class BusinessExceptionLocalizationProperties {
         return value.substring(1, value.length() - 1);
       }
       return value;
+    }
+
+    private static String resolvePlaceholderIfPresent(String value) {
+      if (!value.startsWith("${") || !value.endsWith("}")) {
+        return value;
+      }
+      String content = value.substring(2, value.length() - 1).trim();
+      if (content.isEmpty()) {
+        return null;
+      }
+      int separatorIndex = findPlaceholderSeparator(content);
+      if (separatorIndex < 0) {
+        return null;
+      }
+      String defaultCandidate = content.substring(separatorIndex + 1).trim();
+      if (defaultCandidate.isEmpty()) {
+        return null;
+      }
+      String unwrappedDefault = stripWrappingQuotes(defaultCandidate).trim();
+      if (unwrappedDefault.isEmpty()) {
+        return null;
+      }
+      if (unwrappedDefault.startsWith("${") && unwrappedDefault.endsWith("}")) {
+        return resolvePlaceholderIfPresent(unwrappedDefault);
+      }
+      return unwrappedDefault;
+    }
+
+    private static int findPlaceholderSeparator(String content) {
+      int depth = 0;
+      for (int i = 0; i < content.length(); i++) {
+        char ch = content.charAt(i);
+        if (ch == '{') {
+          depth++;
+        } else if (ch == '}') {
+          depth = Math.max(0, depth - 1);
+        } else if (ch == ':' && depth == 0) {
+          return i;
+        }
+      }
+      return -1;
     }
 
     private String resolveFromResources(String messageKey, String languageCode) {

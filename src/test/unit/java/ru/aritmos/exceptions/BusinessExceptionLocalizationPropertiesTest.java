@@ -18,6 +18,26 @@ class BusinessExceptionLocalizationPropertiesTest {
     }
 
     @Test
+    void плейсхолдерСЗначениемПоУмолчаниюВозвращаетЕго() {
+        BusinessExceptionLocalizationProperties.ChannelLocalization localization =
+                new BusinessExceptionLocalizationProperties.ChannelLocalization();
+
+        localization.setLanguage("'${BUSINESS_EXCEPTION_HTTP_LANG:`ru`}'");
+
+        assertEquals("ru", localization.getLanguage());
+    }
+
+    @Test
+    void плейсхолдерБезЗначенияПоУмолчаниюОбнуляетЯзык() {
+        BusinessExceptionLocalizationProperties.ChannelLocalization localization =
+                new BusinessExceptionLocalizationProperties.ChannelLocalization();
+
+        localization.setLanguage("'${BUSINESS_EXCEPTION_HTTP_LANG}'");
+
+        assertNull(localization.getLanguage());
+    }
+
+    @Test
     void падениеКЛогуВключаетсяКогдаЯзыкиСовпадаютПослеНормализации() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
                 new BusinessExceptionLocalizationProperties.ChannelLocalization();
