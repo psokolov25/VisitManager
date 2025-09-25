@@ -11,10 +11,12 @@ import io.micronaut.security.oauth2.endpoint.token.response.OpenIdTokenResponse;
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import reactor.core.publisher.Mono;
 
 class UserMapperTest {
 
+    @DisplayName("проверяется сценарий «extracts roles from claims»")
     @Test
     void extractsRolesFromClaims() {
         UserMapper mapper = new UserMapper(new KeyCloackClient());
@@ -46,6 +48,7 @@ class UserMapperTest {
         assertTrue(auth.getRoles().containsAll(List.of("r1", "r2", "realm")));
     }
 
+    @DisplayName("проверяется сценарий «ignores invalid claims structures»")
     @Test
     void ignoresInvalidClaimsStructures() {
         UserMapper mapper = new UserMapper(new KeyCloackClient());
@@ -68,4 +71,3 @@ class UserMapperTest {
         assertTrue(auth.getRoles().isEmpty());
     }
 }
-

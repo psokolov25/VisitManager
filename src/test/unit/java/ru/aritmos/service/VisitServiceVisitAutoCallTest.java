@@ -6,6 +6,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
@@ -16,6 +17,7 @@ import ru.aritmos.service.rules.CallRule;
  */
 class VisitServiceVisitAutoCallTest {
 
+    @DisplayName("проверяется сценарий «auto call disables mode after successful call»")
     @Test
     void autoCallDisablesModeAfterSuccessfulCall() {
         Branch branch = new Branch("b1", "Branch");
@@ -49,6 +51,7 @@ class VisitServiceVisitAutoCallTest {
         verify(service, never()).visitCallForConfirmWithMaxWaitingTime(anyString(), anyString(), any(Visit.class));
     }
 
+    @DisplayName("проверяется сценарий «auto call uses confirm flow when required»")
     @Test
     void autoCallUsesConfirmFlowWhenRequired() {
         Branch branch = new Branch("b1", "Branch");
@@ -85,6 +88,7 @@ class VisitServiceVisitAutoCallTest {
         verify(service).visitCallForConfirmWithMaxWaitingTime(eq("b1"), eq("sp1"), same(visit));
     }
 
+    @DisplayName("проверяется сценарий «auto call returns original when mode disabled»")
     @Test
     void autoCallReturnsOriginalWhenModeDisabled() {
         Branch branch = new Branch("b1", "Branch");
@@ -109,6 +113,7 @@ class VisitServiceVisitAutoCallTest {
         verifyNoInteractions(waitingRule);
     }
 
+    @DisplayName("проверяется сценарий «auto call returns original when no service point found»")
     @Test
     void autoCallReturnsOriginalWhenNoServicePointFound() {
         Branch branch = new Branch("b1", "Branch");
@@ -136,6 +141,7 @@ class VisitServiceVisitAutoCallTest {
         verify(waitingRule).getAvailiableServicePoints(same(branch), same(visit));
     }
 
+    @DisplayName("проверяется сценарий «auto call keeps mode when call returns empty»")
     @Test
     void autoCallKeepsModeWhenCallReturnsEmpty() {
         Branch branch = new Branch("b1", "Branch");

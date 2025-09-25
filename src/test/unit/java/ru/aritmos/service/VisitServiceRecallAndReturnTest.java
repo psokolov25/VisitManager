@@ -14,6 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
@@ -54,6 +55,7 @@ class VisitServiceRecallAndReturnTest {
         resetVisitEvents();
     }
 
+    @DisplayName("проверяется сценарий «visit re call for confirm updates event with service point data»")
     @Test
     void visitReCallForConfirmUpdatesEventWithServicePointData() {
         log.info("Готовим отделение с точкой обслуживания и оператором для повторного вызова");
@@ -103,6 +105,7 @@ class VisitServiceRecallAndReturnTest {
         assertNotNull(event.dateTime);
     }
 
+    @DisplayName("проверяется сценарий «visit no show resets visit state and produces event»")
     @Test
     void visitNoShowResetsVisitStateAndProducesEvent() {
         log.info("Готовим визит и точку обслуживания для фиксации неявки клиента");
@@ -154,6 +157,7 @@ class VisitServiceRecallAndReturnTest {
         assertEquals(operator.getCurrentWorkProfileId(), event.getParameters().get("workProfileId"));
     }
 
+    @DisplayName("проверяется сценарий «back called visit returns visit to queue with last service data»")
     @Test
     void backCalledVisitReturnsVisitToQueueWithLastServiceData() {
         log.info("Настраиваем отделение с визитом для возврата вызванного клиента в очередь");
@@ -201,6 +205,7 @@ class VisitServiceRecallAndReturnTest {
         assertEquals(currentService.getName(), event.getParameters().get("serviceName"));
     }
 
+    @DisplayName("проверяется сценарий «visit put back delegates to service point pool when previous pool stored»")
     @Test
     void visitPutBackDelegatesToServicePointPoolWhenPreviousPoolStored() {
         log.info("Готовим визит в точке обслуживания с последним пулом точки");

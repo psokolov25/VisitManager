@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выбор очереди при совпадении правил сегментации. */
+    @DisplayName("проверяется сценарий «returns queue when rule matches»")
     @Test
     void returnsQueueWhenRuleMatches() throws SystemException {
         LOG.info("Шаг 1: создаём отделение с очередью и данными сегментации");
@@ -79,6 +81,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем обработку отсутствующего правила сегментации. */
+    @DisplayName("проверяется сценарий «throws when segmentation rule missing»")
     @Test
     void throwsWhenSegmentationRuleMissing() {
         LOG.info("Шаг 1: настраиваем мок сервиса отделений и визит");
@@ -93,6 +96,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем возврат привязанной очереди, если правило не определено. */
+    @DisplayName("проверяется сценарий «returns linked queue when no rules»")
     @Test
     void returnsLinkedQueueWhenNoRules() throws SystemException {
         LOG.info("Шаг 1: формируем отделение с единственной очередью");
@@ -110,6 +114,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выполнение groovy-правила. */
+    @DisplayName("проверяется сценарий «get queue by id executes groovy rule»")
     @Test
     void getQueueByIdExecutesGroovyRule() {
         LOG.info("Шаг 1: настраиваем groovy-скрипт для возврата очереди");
@@ -145,6 +150,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем пустой идентификатор groovy-правила. */
+    @DisplayName("проверяется сценарий «get queue by id returns empty when id null or empty»")
     @Test
     void getQueueByIdReturnsEmptyWhenIdNullOrEmpty() {
         LOG.info("Шаг 1: подготавливаем визит без идентификатора правила");
@@ -160,6 +166,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выброс ошибки при отсутствии входных параметров для groovy. */
+    @DisplayName("проверяется сценарий «get queue by id throws when input params missing»")
     @Test
     void getQueueByIdThrowsWhenInputParamsMissing() {
         LOG.info("Шаг 1: формируем groovy-правило без необходимых параметров");
@@ -187,6 +194,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем, что ошибки внутренних вызовов оборачиваются в {@link SystemException}. */
+    @DisplayName("проверяется сценарий «get queue wraps business exception into system exception»")
     @Test
     void getQueueWrapsBusinessExceptionIntoSystemException() {
         LOG.info("Шаг 1: готовим отделение с сервисной группой и отсутствующим правилом");
@@ -206,6 +214,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем возврат пустого результата, когда очередь не найдена. */
+    @DisplayName("проверяется сценарий «returns empty when linked queue missing»")
     @Test
     void returnsEmptyWhenLinkedQueueMissing() throws SystemException {
         LOG.info("Шаг 1: формируем сервисную группу без связанной очереди");

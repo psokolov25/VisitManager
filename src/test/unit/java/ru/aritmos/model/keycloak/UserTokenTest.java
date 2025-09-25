@@ -3,9 +3,11 @@ package ru.aritmos.model.keycloak;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class UserTokenTest {
 
+    @DisplayName("проверяется сценарий «builder and setters construct object»")
     @Test
     void builderAndSettersConstructObject() {
         UserInfo info = UserInfo.builder()

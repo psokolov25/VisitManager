@@ -3,9 +3,11 @@ package ru.aritmos.model;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class BranchEntityTest {
 
+    @DisplayName("проверяется сценарий «clone should copy basic fields»")
     @Test
     void cloneShouldCopyBasicFields() {
         BranchEntity entity = new BranchEntity("id", "name");

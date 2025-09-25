@@ -8,6 +8,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.aritmos.events.services.EventService;
@@ -25,6 +26,7 @@ class VisitServiceMarkLookupByIdTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(VisitServiceMarkLookupByIdTest.class);
 
+    @DisplayName("проверяется сценарий «add mark by id delegates to existing mark»")
     @Test
     void addMarkByIdDelegatesToExistingMark() {
         LOG.info("Шаг 1: создаём отделение с преднастроенной заметкой");
@@ -54,6 +56,7 @@ class VisitServiceMarkLookupByIdTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("проверяется сценарий «add mark by id throws when mark missing»")
     @Test
     void addMarkByIdThrowsWhenMarkMissing() {
         LOG.info("Шаг 1: создаём отделение без требуемой заметки");
@@ -76,6 +79,7 @@ class VisitServiceMarkLookupByIdTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("проверяется сценарий «delete mark by id delegates to existing mark»")
     @Test
     void deleteMarkByIdDelegatesToExistingMark() {
         LOG.info("Шаг 1: создаём отделение с заметкой для удаления");
@@ -105,6 +109,7 @@ class VisitServiceMarkLookupByIdTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("проверяется сценарий «delete mark by id throws when mark missing»")
     @Test
     void deleteMarkByIdThrowsWhenMarkMissing() {
         LOG.info("Шаг 1: подготавливаем отделение без искомой заметки");

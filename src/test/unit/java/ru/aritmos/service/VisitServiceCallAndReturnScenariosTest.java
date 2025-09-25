@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
@@ -52,6 +53,7 @@ class VisitServiceCallAndReturnScenariosTest {
         resetVisitEvents();
     }
 
+    @DisplayName("проверяется сценарий «visit call for confirm with max waiting time updates visit and event»")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeUpdatesVisitAndEvent() {
         log.info("Готовим отделение, точку обслуживания и визит для вызова с подтверждением");
@@ -107,6 +109,7 @@ class VisitServiceCallAndReturnScenariosTest {
         assertEquals("callNext", event.getParameters().get("callMethod"));
     }
 
+    @DisplayName("проверяется сценарий «visit call for confirm with max life time calls rule and updates visit»")
     @Test
     void visitCallForConfirmWithMaxLifeTimeCallsRuleAndUpdatesVisit() {
         log.info("Настраиваем отделение и визит для вызова по максимальному времени жизни");
@@ -156,6 +159,7 @@ class VisitServiceCallAndReturnScenariosTest {
         assertEquals("callNext", event.getParameters().get("callMethod"));
     }
 
+    @DisplayName("проверяется сценарий «visit call for confirm with max life time and queues propagates ids»")
     @Test
     void visitCallForConfirmWithMaxLifeTimeAndQueuesPropagatesIds() {
         log.info("Подготавливаем отделение с несколькими очередями для вызова визита");
@@ -207,6 +211,7 @@ class VisitServiceCallAndReturnScenariosTest {
         assertEquals("callNext", event.getParameters().get("callMethod"));
     }
 
+    @DisplayName("проверяется сценарий «stop serving and back to queue schedules delayed refresh»")
     @Test
     void stopServingAndBackToQueueSchedulesDelayedRefresh() {
         log.info("Формируем отделение с очередью и визитом, находящимся на обслуживании");
@@ -282,6 +287,7 @@ class VisitServiceCallAndReturnScenariosTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit back moves visit to queue and resets assignments»")
     @Test
     void visitBackMovesVisitToQueueAndResetsAssignments() {
         log.info("Готовим отделение и визит для возврата в очередь без задержки");

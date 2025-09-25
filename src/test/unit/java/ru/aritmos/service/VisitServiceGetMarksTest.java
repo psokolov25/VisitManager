@@ -7,6 +7,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
@@ -20,6 +21,7 @@ import ru.aritmos.model.visit.Visit;
  */
 class VisitServiceGetMarksTest {
 
+    @DisplayName("проверяется сценарий «returns marks of visit»")
     @Test
     void returnsMarksOfVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -48,6 +50,7 @@ class VisitServiceGetMarksTest {
         assertSame(mark, marks.get(0));
     }
 
+    @DisplayName("проверяется сценарий «throws when visit missing»")
     @Test
     void throwsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -66,4 +69,3 @@ class VisitServiceGetMarksTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 }
-

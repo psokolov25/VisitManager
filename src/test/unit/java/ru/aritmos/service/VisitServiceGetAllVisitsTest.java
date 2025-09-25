@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
@@ -18,6 +19,7 @@ import ru.aritmos.model.visit.Visit;
  */
 class VisitServiceGetAllVisitsTest {
 
+    @DisplayName("проверяется сценарий «get available visits filters only waiting and timed out»")
     @Test
     void getAvailableVisitsFiltersOnlyWaitingAndTimedOut() {
         VisitService service = new VisitService();
@@ -41,6 +43,7 @@ class VisitServiceGetAllVisitsTest {
         assertEquals(List.of(valid), result);
     }
 
+    @DisplayName("проверяется сценарий «get all visits returns branch visits»")
     @Test
     void getAllVisitsReturnsBranchVisits() {
         Branch branch = new Branch("b1", "Branch");
@@ -63,6 +66,7 @@ class VisitServiceGetAllVisitsTest {
         assertSame(visit, visits.get("v1"));
     }
 
+    @DisplayName("проверяется сценарий «get visits by statuses filters by status»")
     @Test
     void getVisitsByStatusesFiltersByStatus() {
         Branch branch = new Branch("b1", "Branch");
@@ -86,4 +90,3 @@ class VisitServiceGetAllVisitsTest {
         assertSame(waiting, visits.get("v1"));
     }
 }
-

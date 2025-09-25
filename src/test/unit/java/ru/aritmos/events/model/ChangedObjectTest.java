@@ -2,9 +2,11 @@ package ru.aritmos.events.model;
 
 import ru.aritmos.test.LoggingAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class ChangedObjectTest {
 
+    @DisplayName("проверяется сценарий «builder sets fields»")
     @Test
     void builderSetsFields() {
         ChangedObject obj =

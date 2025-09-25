@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.services.EventService;
@@ -32,6 +33,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2FromReceptionTest {
 
+    @DisplayName("проверяется сценарий «creates visit with segmentation rule and prints ticket»")
     @Test
     void createsVisitWithSegmentationRuleAndPrintsTicket() {
         VisitService service = new VisitService();
@@ -139,6 +141,7 @@ class VisitServiceCreateVisit2FromReceptionTest {
         verifyNoMoreInteractions(printerService);
     }
 
+    @DisplayName("проверяется сценарий «throws bad request when segmentation rule returns empty queue»")
     @Test
     void throwsBadRequestWhenSegmentationRuleReturnsEmptyQueue() {
         VisitService service = new VisitService();
@@ -198,6 +201,7 @@ class VisitServiceCreateVisit2FromReceptionTest {
         verify(service.printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("проверяется сценарий «throws not found when queue missing in branch configuration»")
     @Test
     void throwsNotFoundWhenQueueMissingInBranchConfiguration() {
         VisitService service = new VisitService();

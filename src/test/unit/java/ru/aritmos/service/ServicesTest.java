@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.*;
 
 class ServicesTest {
@@ -33,6 +34,7 @@ class ServicesTest {
         return branch;
     }
 
+    @DisplayName("проверяется сценарий «get all services marks availability»")
     @Test
     void getAllServicesMarksAvailability() {
         Branch branch = prepareBranch();
@@ -48,6 +50,7 @@ class ServicesTest {
         assertFalse(branch.getServices().get("s2").getIsAvailable());
     }
 
+    @DisplayName("проверяется сценарий «get all available services returns only available»")
     @Test
     void getAllAvailableServicesReturnsOnlyAvailable() {
         Branch branch = prepareBranch();
@@ -62,4 +65,3 @@ class ServicesTest {
         assertEquals("s1", result.get(0).getId());
     }
 }
-

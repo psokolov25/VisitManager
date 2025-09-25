@@ -5,9 +5,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class VisitTest {
 
+    @DisplayName("проверяется сценарий «get waiting time calculates difference»")
     @Test
     void getWaitingTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();
@@ -20,6 +22,7 @@ class VisitTest {
         assertEquals(10L, visit.getWaitingTime());
     }
 
+    @DisplayName("проверяется сценарий «get returning time uses return date time»")
     @Test
     void getReturningTimeUsesReturnDateTime() {
         ZonedDateTime returnTime = ZonedDateTime.now().minusSeconds(5);
@@ -29,12 +32,14 @@ class VisitTest {
         assertTrue(Math.abs(actual - expected) <= 1);
     }
 
+    @DisplayName("проверяется сценарий «get returning time returns zero when null»")
     @Test
     void getReturningTimeReturnsZeroWhenNull() {
         Visit visit = Visit.builder().build();
         assertEquals(0L, visit.getReturningTime());
     }
 
+    @DisplayName("проверяется сценарий «get transfering time uses transfer date time»")
     @Test
     void getTransferingTimeUsesTransferDateTime() {
         ZonedDateTime transferTime = ZonedDateTime.now().minusSeconds(7);
@@ -44,6 +49,7 @@ class VisitTest {
         assertTrue(Math.abs(actual - expected) <= 1);
     }
 
+    @DisplayName("проверяется сценарий «get visit life time calculates difference»")
     @Test
     void getVisitLifeTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();
@@ -55,6 +61,7 @@ class VisitTest {
         assertEquals(20L, visit.getVisitLifeTime());
     }
 
+    @DisplayName("проверяется сценарий «get serving time calculates difference»")
     @Test
     void getServingTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();

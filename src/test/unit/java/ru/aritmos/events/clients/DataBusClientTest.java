@@ -17,6 +17,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 /**
  * Рефлексивные проверки конфигурации {@link DataBusClient}.
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 class DataBusClientTest {
 
   /** Проверяет наличие аннотации клиента с ожидаемым значением URL. */
+  @DisplayName("проверяется сценарий «client is annotated with service url»")
   @Test
   void clientIsAnnotatedWithServiceUrl() {
     Client client = DataBusClient.class.getAnnotation(Client.class);
@@ -33,6 +35,7 @@ class DataBusClientTest {
   }
 
   /** Убеждаемся, что метод send настроен на POST с ретраями и асинхронным исполнением. */
+  @DisplayName("проверяется сценарий «send method contains http and async annotations»")
   @Test
   void sendMethodContainsHttpAndAsyncAnnotations() throws NoSuchMethodException {
     Method send =
@@ -65,6 +68,7 @@ class DataBusClientTest {
   }
 
   /** Проверяем ожидаемые аннотации на параметрах метода send. */
+  @DisplayName("проверяется сценарий «send method has all headers and parameters»")
   @Test
   void sendMethodHasAllHeadersAndParameters() throws NoSuchMethodException {
     Method send =

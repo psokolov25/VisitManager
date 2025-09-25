@@ -3,9 +3,11 @@ package ru.aritmos.model;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class BasedServiceTest {
 
+    @DisplayName("проверяется сценарий «clone should clone outcome independently»")
     @Test
     void cloneShouldCloneOutcomeIndependently() {
         Outcome outcome = new Outcome("1", "name");

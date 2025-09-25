@@ -28,6 +28,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
@@ -61,6 +62,7 @@ class VisitServiceVisitEndTest {
         VisitEvent.END.getParameters().clear();
     }
 
+    @DisplayName("проверяется сценарий «visit end returns visit to queue when next service available»")
     @Test
     void visitEndReturnsVisitToQueueWhenNextServiceAvailable() {
         Branch branch = new Branch("branch-1", "Отделение №1");
@@ -136,6 +138,7 @@ class VisitServiceVisitEndTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("проверяется сценарий «visit end completes visit when no unserved services left»")
     @Test
     void visitEndCompletesVisitWhenNoUnservedServicesLeft() {
         Branch branch = new Branch("branch-2", "Отделение №2");
@@ -205,6 +208,7 @@ class VisitServiceVisitEndTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("проверяется сценарий «visit end fails when service point missing»")
     @Test
     void visitEndFailsWhenServicePointMissing() {
         Branch branch = new Branch("branch-3", "Отделение №3");
@@ -229,6 +233,7 @@ class VisitServiceVisitEndTest {
                 .updateVisit(any(Visit.class), any(VisitEvent.class), any(VisitService.class), anyBoolean());
     }
 
+    @DisplayName("проверяется сценарий «visit end fails when service point has no visit»")
     @Test
     void visitEndFailsWhenServicePointHasNoVisit() {
         Branch branch = new Branch("branch-4", "Отделение №4");

@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.services.EventService;
@@ -51,6 +52,7 @@ class VisitServiceCreateVirtualVisit2Test {
         }
     }
 
+    @DisplayName("проверяется сценарий «create virtual visit2 creates visit and starts serving with service point staff»")
     @Test
     void createVirtualVisit2CreatesVisitAndStartsServingWithServicePointStaff() throws SystemException {
         Branch branch = new Branch("b1", "Отделение №1");
@@ -138,6 +140,7 @@ class VisitServiceCreateVirtualVisit2Test {
         assertEquals(staff.getName(), startServing.getParameters().get("staffName"));
     }
 
+    @DisplayName("проверяется сценарий «create virtual visit2 uses keycloak data when service point without user»")
     @Test
     void createVirtualVisit2UsesKeycloakDataWhenServicePointWithoutUser() throws SystemException {
         Branch branch = new Branch("b2", "Отделение №2");
@@ -215,6 +218,7 @@ class VisitServiceCreateVirtualVisit2Test {
         assertEquals(primary.getName(), startServing.getParameters().get("serviceName"));
     }
 
+    @DisplayName("проверяется сценарий «create virtual visit2 throws not found when queue missing in branch»")
     @Test
     void createVirtualVisit2ThrowsNotFoundWhenQueueMissingInBranch() throws SystemException {
         Branch branch = new Branch("b3", "Отделение №3");

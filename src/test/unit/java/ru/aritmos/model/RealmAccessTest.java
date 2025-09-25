@@ -5,10 +5,12 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.representations.idm.GroupRepresentation;
 
 class RealmAccessTest {
 
+    @DisplayName("проверяется сценарий «builder and setters construct full access»")
     @Test
     void builderAndSettersConstructFullAccess() {
         GroupRepresentation branch = new GroupRepresentation();

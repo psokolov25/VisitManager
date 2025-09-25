@@ -13,10 +13,12 @@ import io.micronaut.security.token.reader.TokenResolver;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
 
 class EndSessionEndpointResolverReplacementTest {
 
+    @DisplayName("проверяется сценарий «resolve returns okta endpoint»")
     @Test
     void resolveReturnsOktaEndpoint() {
         BeanContext beanContext = Mockito.mock(BeanContext.class);
@@ -34,4 +36,3 @@ class EndSessionEndpointResolverReplacementTest {
         assertTrue(endpoint.get() instanceof OktaEndSessionEndpoint, "должен быть OktaEndSessionEndpoint");
     }
 }
-

@@ -3,9 +3,11 @@ package ru.aritmos.model.keycloak;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class UserInfoTest {
 
+    @DisplayName("проверяется сценарий «builder and setters support all fields»")
     @Test
     void builderAndSettersSupportAllFields() {
         RealmAccess realmAccess = RealmAccess.builder()

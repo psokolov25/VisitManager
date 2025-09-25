@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Mark;
@@ -23,6 +24,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceMarkModificationTest {
 
+    @DisplayName("проверяется сценарий «add mark appends to visit marks»")
     @Test
     void addMarkAppendsToVisitMarks() {
         Branch branch = new Branch("b1", "Branch");
@@ -58,6 +60,7 @@ class VisitServiceMarkModificationTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
+    @DisplayName("проверяется сценарий «delete mark removes from visit»")
     @Test
     void deleteMarkRemovesFromVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -88,6 +91,7 @@ class VisitServiceMarkModificationTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
+    @DisplayName("проверяется сценарий «add mark throws when current service missing»")
     @Test
     void addMarkThrowsWhenCurrentServiceMissing() {
         Branch branch = new Branch("b1", "Branch");

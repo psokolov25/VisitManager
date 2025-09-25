@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class VisitParametersTest {
 
+    @DisplayName("проверяется сценарий «builder should create empty collections by default»")
     @Test
     void builderShouldCreateEmptyCollectionsByDefault() {
         VisitParameters parameters = VisitParameters.builder().build();
@@ -19,6 +21,7 @@ class VisitParametersTest {
         assertTrue(parameters.getParameters().isEmpty());
     }
 
+    @DisplayName("проверяется сценарий «builder should accept custom values»")
     @Test
     void builderShouldAcceptCustomValues() {
         ArrayList<String> serviceIds = new ArrayList<>(List.of("s1"));

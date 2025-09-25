@@ -4,9 +4,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class RealmAccessTest {
 
+    @DisplayName("проверяется сценарий «builder and setters form role list»")
     @Test
     void builderAndSettersFormRoleList() {
         RealmAccess viaBuilder = RealmAccess.builder()

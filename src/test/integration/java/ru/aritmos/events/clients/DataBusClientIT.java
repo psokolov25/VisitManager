@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import reactor.core.publisher.Mono;
 
 /**
@@ -33,6 +34,7 @@ class DataBusClientIT {
     @Inject
     DataBusStubRecorder stubRecorder;
 
+    @DisplayName("проверяется сценарий «real service responds»")
     @Test
     void realServiceResponds() {
         Map<String, String> response =

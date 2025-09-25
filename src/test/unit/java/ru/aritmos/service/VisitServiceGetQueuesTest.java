@@ -7,6 +7,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
@@ -18,6 +19,7 @@ import ru.aritmos.model.visit.Visit;
 
 class VisitServiceGetQueuesTest {
 
+    @DisplayName("проверяется сценарий «returns queues for service point»")
     @Test
     void returnsQueuesForServicePoint() {
         Branch branch = new Branch("b1", "Branch");
@@ -55,6 +57,7 @@ class VisitServiceGetQueuesTest {
         assertEquals("v1", queues.get(0).getVisits().get(0).getId());
     }
 
+    @DisplayName("проверяется сценарий «throws when user not logged in»")
     @Test
     void throwsWhenUserNotLoggedIn() {
         Branch branch = new Branch("b1", "Branch");
@@ -75,4 +78,3 @@ class VisitServiceGetQueuesTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 }
-

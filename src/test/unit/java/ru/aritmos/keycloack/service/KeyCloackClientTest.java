@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.GroupRepresentation;
@@ -16,6 +17,7 @@ import org.keycloak.representations.idm.UserRepresentation;
  */
 class KeyCloackClientTest {
 
+    @DisplayName("проверяется сценарий «get branch path by branch prefix returns path»")
     @Test
     void getBranchPathByBranchPrefixReturnsPath() {
         KeyCloackClient client = spy(new KeyCloackClient());
@@ -31,6 +33,7 @@ class KeyCloackClientTest {
         assertEquals("/r/b", path);
     }
 
+    @DisplayName("проверяется сценарий «get branch path by branch prefix returns null when not found»")
     @Test
     void getBranchPathByBranchPrefixReturnsNullWhenNotFound() {
         KeyCloackClient client = spy(new KeyCloackClient());
@@ -40,6 +43,7 @@ class KeyCloackClientTest {
         assertNull(client.getBranchPathByBranchPrefix("region", "PR"));
     }
 
+    @DisplayName("проверяется сценарий «get all branches by region id collects branches recursively»")
     @Test
     void getAllBranchesByRegionIdCollectsBranchesRecursively() {
         KeyCloackClient client = new KeyCloackClient();
@@ -73,6 +77,7 @@ class KeyCloackClientTest {
         assertTrue(result.contains(nestedBranch));
     }
 
+    @DisplayName("проверяется сценарий «get keycloak returns existing instance»")
     @Test
     void getKeycloakReturnsExistingInstance() {
         KeyCloackClient client = new KeyCloackClient();
@@ -84,6 +89,7 @@ class KeyCloackClientTest {
         assertSame(existing, result);
     }
 
+    @DisplayName("проверяется сценарий «get user info returns user when found»")
     @Test
     void getUserInfoReturnsUserWhenFound() {
         KeyCloackClient client = new KeyCloackClient();
@@ -104,6 +110,7 @@ class KeyCloackClientTest {
         assertSame(user, result.get());
     }
 
+    @DisplayName("проверяется сценарий «get user info returns empty when user missing»")
     @Test
     void getUserInfoReturnsEmptyWhenUserMissing() {
         KeyCloackClient client = new KeyCloackClient();

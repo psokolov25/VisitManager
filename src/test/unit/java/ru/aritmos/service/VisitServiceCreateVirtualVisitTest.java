@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.SystemException;
@@ -24,6 +25,7 @@ import ru.aritmos.model.visit.Visit;
 class VisitServiceCreateVirtualVisitTest {
 
     /** Проверяет, что метод выбрасывает конфликт при недавнем визите на точке обслуживания. */
+    @DisplayName("проверяется сценарий «throws conflict when service point recently created visit»")
     @Test
     void throwsConflictWhenServicePointRecentlyCreatedVisit() throws SystemException {
         VisitService service = spy(new VisitService());
@@ -53,6 +55,7 @@ class VisitServiceCreateVirtualVisitTest {
     }
 
     /** Убеждаемся, что в createVirtualVisit2 передаются клоны услуг и исходные параметры. */
+    @DisplayName("проверяется сценарий «passes cloned services to create virtual visit2»")
     @Test
     void passesClonedServicesToCreateVirtualVisit2() throws SystemException {
         VisitService service = spy(new VisitService());

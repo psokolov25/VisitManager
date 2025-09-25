@@ -3,9 +3,11 @@ package ru.aritmos.model.keycloak;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class TokenTest {
 
+    @DisplayName("проверяется сценарий «builder and setters populate token fields»")
     @Test
     void builderAndSettersPopulateTokenFields() {
         Token viaBuilder = Token.builder()

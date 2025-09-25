@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -41,6 +42,7 @@ class VisitServiceVisitConfirmTest {
         VisitEvent.START_SERVING.getParameters().clear();
     }
 
+    @DisplayName("проверяется сценарий «visit confirm moves visit to service point and publishes start serving event»")
     @Test
     void visitConfirmMovesVisitToServicePointAndPublishesStartServingEvent() {
         log.info("Готовим отделение и точку обслуживания для позитивного сценария подтверждения визита");
@@ -116,6 +118,7 @@ class VisitServiceVisitConfirmTest {
         assertEquals("wp-1", params.get("workProfileId"));
     }
 
+    @DisplayName("проверяется сценарий «visit confirm fails when service point already has visit»")
     @Test
     void visitConfirmFailsWhenServicePointAlreadyHasVisit() {
         log.info("Готовим отделение с занятой точкой обслуживания");
@@ -142,6 +145,7 @@ class VisitServiceVisitConfirmTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(serviceUnderTest));
     }
 
+    @DisplayName("проверяется сценарий «visit confirm fails when service point missing»")
     @Test
     void visitConfirmFailsWhenServicePointMissing() {
         log.info("Готовим отделение без нужной точки обслуживания");

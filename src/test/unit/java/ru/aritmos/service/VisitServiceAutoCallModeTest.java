@@ -8,6 +8,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
@@ -39,6 +40,7 @@ class VisitServiceAutoCallModeTest {
         visitService.setLifeTimeCallRule(mock(CallRule.class));
     }
 
+    @DisplayName("проверяется сценарий «start auto call mode of service point turns on mode when branch allows»")
     @Test
     void startAutoCallModeOfServicePointTurnsOnModeWhenBranchAllows() {
         Branch branch = new Branch("b1", "Branch");
@@ -62,6 +64,7 @@ class VisitServiceAutoCallModeTest {
         assertSame(servicePoint, event.getBody());
     }
 
+    @DisplayName("проверяется сценарий «start auto call mode of service point throws conflict when auto call disabled»")
     @Test
     void startAutoCallModeOfServicePointThrowsConflictWhenAutoCallDisabled() {
         Branch branch = new Branch("b1", "Branch");
@@ -79,6 +82,7 @@ class VisitServiceAutoCallModeTest {
         verify(branchService, never()).add(anyString(), any(Branch.class));
     }
 
+    @DisplayName("проверяется сценарий «start auto call mode of service point throws not found when service point missing»")
     @Test
     void startAutoCallModeOfServicePointThrowsNotFoundWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -94,4 +98,3 @@ class VisitServiceAutoCallModeTest {
         verify(branchService, never()).add(anyString(), any(Branch.class));
     }
 }
-

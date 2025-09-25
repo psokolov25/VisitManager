@@ -9,10 +9,12 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.visit.Visit;
 
 class PrinterClientTest {
 
+    @DisplayName("проверяется сценарий «interface is annotated as micronaut client»")
     @Test
     void interfaceIsAnnotatedAsMicronautClient() {
         Client annotation = PrinterClient.class.getAnnotation(Client.class);
@@ -20,6 +22,7 @@ class PrinterClientTest {
         assertEquals("${micronaut.application.printerServiceURL}", annotation.value());
     }
 
+    @DisplayName("проверяется сценарий «print method has retry annotations»")
     @Test
     void printMethodHasRetryAnnotations() throws NoSuchMethodException {
         Method method = PrinterClient.class.getMethod("print", String.class, Boolean.class, Visit.class);

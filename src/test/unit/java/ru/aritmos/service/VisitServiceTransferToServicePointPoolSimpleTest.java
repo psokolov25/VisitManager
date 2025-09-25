@@ -15,6 +15,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
@@ -39,6 +40,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool moves visit and schedules refresh»")
     @Test
     void visitTransferToServicePointPoolMovesVisitAndSchedulesRefresh() {
         Branch branch = new Branch("b1", "Отделение");
@@ -147,6 +149,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool omits queue parameter when history missing»")
     @Test
     void visitTransferToServicePointPoolOmitsQueueParameterWhenHistoryMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -207,6 +210,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
                 .delayedEventService(eq("frontend"), eq(false), any(Event.class), eq(15L), same(eventService));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool fails when service point missing»")
     @Test
     void visitTransferToServicePointPoolFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -229,6 +233,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool fails when visit missing»")
     @Test
     void visitTransferToServicePointPoolFailsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -254,6 +259,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool fails when pool point missing»")
     @Test
     void visitTransferToServicePointPoolFailsWhenPoolPointMissing() {
         Branch branch = new Branch("b1", "Отделение");

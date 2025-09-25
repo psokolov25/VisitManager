@@ -7,6 +7,7 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ class VisitServiceVisitPostPoneTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(VisitServiceVisitPostPoneTest.class);
 
+    @DisplayName("проверяется сценарий «visit post pone returns visit to user pool»")
     @Test
     void visitPostPoneReturnsVisitToUserPool() {
         LOG.info("Шаг 1: подготавливаем отделение с оператором и активным визитом");
@@ -61,6 +63,7 @@ class VisitServiceVisitPostPoneTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("проверяется сценарий «visit post pone throws when visit missing»")
     @Test
     void visitPostPoneThrowsWhenVisitMissing() {
         LOG.info("Шаг 1: формируем отделение с точкой обслуживания без назначенного визита");
@@ -92,6 +95,7 @@ class VisitServiceVisitPostPoneTest {
         assertEquals("BUSINESS_ERROR", eventCaptor.getValue().getEventType());
     }
 
+    @DisplayName("проверяется сценарий «visit post pone throws when user missing»")
     @Test
     void visitPostPoneThrowsWhenUserMissing() {
         LOG.info("Шаг 1: создаём отделение с визитом, но без назначенного оператора");

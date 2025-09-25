@@ -6,6 +6,7 @@ import io.micronaut.context.ApplicationContextBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class ApplicationConfigurerTest {
 
@@ -39,6 +40,7 @@ class ApplicationConfigurerTest {
         }
     }
 
+    @DisplayName("проверяется сценарий «sets local defaults when infra absent»")
     @Test
     void setsLocalDefaultsWhenInfraAbsent() {
         Application.Configurer configurer = new Application.Configurer();
@@ -50,6 +52,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
+    @DisplayName("проверяется сценарий «enables infra by default when remote endpoints available»")
     @Test
     void enablesInfraByDefaultWhenRemoteEndpointsAvailable() {
         System.setProperty("redis.uri", "redis://example");
@@ -63,6 +66,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
+    @DisplayName("проверяется сценарий «appends infra when explicit environments provided»")
     @Test
     void appendsInfraWhenExplicitEnvironmentsProvided() {
         System.setProperty("micronaut.environments", "dev");
@@ -77,6 +81,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
+    @DisplayName("проверяется сценарий «keeps explicit local profile even with infra signals»")
     @Test
     void keepsExplicitLocalProfileEvenWithInfraSignals() {
         System.setProperty("micronaut.environments", "local-no-docker");
@@ -92,4 +97,3 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 }
-

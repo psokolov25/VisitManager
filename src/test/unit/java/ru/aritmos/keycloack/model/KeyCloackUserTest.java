@@ -5,9 +5,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class KeyCloackUserTest {
 
+    @DisplayName("проверяется сценарий «fields can be set and read»")
     @Test
     void fieldsCanBeSetAndRead() {
         KeyCloackUser user = new KeyCloackUser();

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
@@ -52,6 +53,7 @@ class VisitServiceTransferFromQueueTest {
         resetVisitEvents();
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue to service point pool places visit at exact index»")
     @Test
     void visitTransferFromQueueToServicePointPoolPlacesVisitAtExactIndex() {
         log.info("Готовим отделение с оператором и пулом точки обслуживания");
@@ -124,6 +126,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals("A001", body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to queue from service point places visit to start when requested»")
     @Test
     void visitTransferToQueueFromServicePointPlacesVisitToStartWhenRequested() {
         log.info("Готовим отделение с очередью и оператором точки обслуживания");
@@ -200,6 +203,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to queue from external service propagates service info and sid»")
     @Test
     void visitTransferToQueueFromExternalServicePropagatesServiceInfoAndSid() {
         log.info("Готовим отделение с очередями и заполняем информацию Keycloak");
@@ -277,6 +281,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue to service point pool respects append flag»")
     @Test
     void visitTransferFromQueueToServicePointPoolRespectsAppendFlag() {
         log.info("Готовим отделение с точкой обслуживания и пулом");
@@ -345,6 +350,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals("RETURN_TIME_DELAY_FINISHED", body.get("reason"));
     }
 
+    @DisplayName("проверяется сценарий «visit back to service point pool stops serving and returns to pool»")
     @Test
     void visitBackToServicePointPoolStopsServingAndReturnsToPool() {
         log.info("Готовим отделение с точкой обслуживания, пулом и активным визитом");

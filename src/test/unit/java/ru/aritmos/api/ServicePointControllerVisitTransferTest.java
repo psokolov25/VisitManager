@@ -9,6 +9,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,7 @@ class ServicePointControllerVisitTransferTest {
         return branch;
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue by id inverts append flag»")
     @Test
     void visitTransferFromQueueByIdInvertsAppendFlag() {
         LOG.info("Шаг 1: настраиваем окружение для перевода визита по идентификатору");
@@ -112,6 +114,7 @@ class ServicePointControllerVisitTransferTest {
         verify(visitService).getVisit("branch-1", "visit-7");
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue by id fails when queue missing»")
     @Test
     void visitTransferFromQueueByIdFailsWhenQueueMissing() {
         LOG.info("Шаг 1: создаем отделение без целевой очереди");
@@ -136,6 +139,7 @@ class ServicePointControllerVisitTransferTest {
         verify(visitService, never()).getVisit(anyString(), anyString());
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue with body respects append inversion»")
     @Test
     void visitTransferFromQueueWithBodyRespectsAppendInversion() {
         LOG.info("Шаг 1: настраиваем отделение и подготовленный визит");
@@ -184,6 +188,7 @@ class ServicePointControllerVisitTransferTest {
         assertTrue(appendCaptor.getValue(), "Флаг должен быть развернут контроллером");
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue with index passes exact position»")
     @Test
     void visitTransferFromQueueWithIndexPassesExactPosition() {
         LOG.info("Шаг 1: подготавливаем отделение, визит и индекс");
@@ -232,6 +237,7 @@ class ServicePointControllerVisitTransferTest {
         assertEquals(5, indexCaptor.getValue());
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue external service propagates metadata»")
     @Test
     void visitTransferFromQueueExternalServicePropagatesMetadata() {
         LOG.info("Шаг 1: готовим отделение и данные внешней службы");
@@ -285,6 +291,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(response, actual);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue to service point pool external service validates service point»")
     @Test
     void visitTransferFromQueueToServicePointPoolExternalServiceValidatesServicePoint() {
         LOG.info("Шаг 1: готовим отделение и сервисную точку");
@@ -339,6 +346,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(response, actual);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue to service point pool external service fails without service point»")
     @Test
     void visitTransferFromQueueToServicePointPoolExternalServiceFailsWithoutServicePoint() {
         LOG.info("Шаг 1: создаем отделение без зарегистрированной точки обслуживания");
@@ -372,6 +380,7 @@ class ServicePointControllerVisitTransferTest {
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue by visit id delegates index and visit lookup»")
     @Test
     void visitTransferFromQueueByVisitIdDelegatesIndexAndVisitLookup() {
         LOG.info("Шаг 1: готовим отделение с очередью и визит в хранилище");
@@ -422,6 +431,7 @@ class ServicePointControllerVisitTransferTest {
         verify(visitService).getVisit("branch-idx", "visit-idx");
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue by visit id fails when queue missing»")
     @Test
     void visitTransferFromQueueByVisitIdFailsWhenQueueMissing() {
         LOG.info("Шаг 1: создаем отделение без требуемой очереди");
@@ -453,6 +463,7 @@ class ServicePointControllerVisitTransferTest {
         verify(visitService, never()).getVisit(anyString(), anyString());
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue by visit id fails when branch missing»")
     @Test
     void visitTransferFromQueueByVisitIdFailsWhenBranchMissing() {
         LOG.info("Шаг 1: настраиваем сервис отделений на выброс исключения");
@@ -483,6 +494,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from service point delegates append flag»")
     @Test
     void visitTransferFromServicePointDelegatesAppendFlag() {
         LOG.info("Шаг 1: подготавливаем отделение с очередью для перевода из сервиса");
@@ -513,6 +525,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(expected, actual);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from service point fails when queue missing»")
     @Test
     void visitTransferFromServicePointFailsWhenQueueMissing() {
         LOG.info("Шаг 1: создаем отделение без требуемой очереди для перевода");
@@ -537,6 +550,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from service point fails when branch unavailable»")
     @Test
     void visitTransferFromServicePointFailsWhenBranchUnavailable() {
         LOG.info("Шаг 1: подготавливаем сервис отделений к ошибке получения данных");
@@ -561,6 +575,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
+    @DisplayName("проверяется сценарий «visit back to service point pool delegates to service»")
     @Test
     void visitBackToServicePointPoolDelegatesToService() {
         LOG.info("Шаг 1: формируем отделение с пулом точки обслуживания");
@@ -590,6 +605,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(expected, actual);
     }
 
+    @DisplayName("проверяется сценарий «visit back to service point pool fails when pool missing»")
     @Test
     void visitBackToServicePointPoolFailsWhenPoolMissing() {
         LOG.info("Шаг 1: создаем отделение без пула точек обслуживания");
@@ -614,6 +630,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
+    @DisplayName("проверяется сценарий «visit back to service point pool fails when branch unavailable»")
     @Test
     void visitBackToServicePointPoolFailsWhenBranchUnavailable() {
         LOG.info("Шаг 1: конфигурируем сервис отделений на выброс исключения при получении отдела");
@@ -638,6 +655,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool delegates to service»")
     @Test
     void visitTransferToServicePointPoolDelegatesToService() {
         LOG.info("Шаг 1: подготавливаем отделение с доступным пулом обслуживания");
@@ -667,6 +685,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(expected, actual);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool fails when pool missing»")
     @Test
     void visitTransferToServicePointPoolFailsWhenPoolMissing() {
         LOG.info("Шаг 1: создаем отделение без зарегистрированных пулов");
@@ -696,6 +715,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool fails when branch unavailable»")
     @Test
     void visitTransferToServicePointPoolFailsWhenBranchUnavailable() {
         LOG.info("Шаг 1: конфигурируем сервис отделений на ошибку при поиске отделения");

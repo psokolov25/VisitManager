@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
@@ -36,6 +37,7 @@ class VisitServiceTransferToServicePointPoolTest {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool moves visit and publishes events»")
     @Test
     void visitTransferToServicePointPoolMovesVisitAndPublishesEvents() {
         Branch branch = new Branch("b1", "Branch");
@@ -145,6 +147,7 @@ class VisitServiceTransferToServicePointPoolTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool fails when service point missing»")
     @Test
     void visitTransferToServicePointPoolFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -165,6 +168,7 @@ class VisitServiceTransferToServicePointPoolTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool fails when visit missing»")
     @Test
     void visitTransferToServicePointPoolFailsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -188,6 +192,7 @@ class VisitServiceTransferToServicePointPoolTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to service point pool fails when pool point missing»")
     @Test
     void visitTransferToServicePointPoolFailsWhenPoolPointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -218,4 +223,3 @@ class VisitServiceTransferToServicePointPoolTest {
         verifyNoInteractions(service.delayedEvents);
     }
 }
-

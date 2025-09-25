@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Outcome;
@@ -19,6 +20,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceOutcomeTest {
 
+    @DisplayName("проверяется сценарий «add outcome service sets outcome»")
     @Test
     void addOutcomeServiceSetsOutcome() {
         Branch branch = new Branch("b1", "Branch");
@@ -48,6 +50,7 @@ class VisitServiceOutcomeTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
+    @DisplayName("проверяется сценарий «add outcome service throws when outcome missing»")
     @Test
     void addOutcomeServiceThrowsWhenOutcomeMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -73,6 +76,7 @@ class VisitServiceOutcomeTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("проверяется сценарий «delete outcome service clears outcome»")
     @Test
     void deleteOutcomeServiceClearsOutcome() {
         Branch branch = new Branch("b1", "Branch");
@@ -102,4 +106,3 @@ class VisitServiceOutcomeTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 }
-

@@ -4,9 +4,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class WorkProfileTest {
 
+    @DisplayName("проверяется сценарий «constructor with name should generate identifier»")
     @Test
     void constructorWithNameShouldGenerateIdentifier() {
         WorkProfile profile = new WorkProfile("Operator");
@@ -16,6 +18,7 @@ class WorkProfileTest {
         assertFalse(profile.getId().isEmpty());
     }
 
+    @DisplayName("проверяется сценарий «constructor with explicit id should keep values»")
     @Test
     void constructorWithExplicitIdShouldKeepValues() {
         WorkProfile profile = new WorkProfile("wp1", "Operator");
@@ -26,6 +29,7 @@ class WorkProfileTest {
         assertEquals("branch42", profile.getBranchId());
     }
 
+    @DisplayName("проверяется сценарий «queue ids should be mutable list»")
     @Test
     void queueIdsShouldBeMutableList() {
         WorkProfile profile = new WorkProfile("wp1", "Operator");

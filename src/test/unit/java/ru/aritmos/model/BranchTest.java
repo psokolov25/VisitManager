@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -27,6 +28,7 @@ import ru.aritmos.service.VisitService;
  */
 class BranchTest {
 
+    @DisplayName("проверяется сценарий «increment ticket counter returns new value»")
     @Test
     void incrementTicketCounterReturnsNewValue() {
         Branch branch = new Branch("b1", "Branch");
@@ -39,6 +41,7 @@ class BranchTest {
         assertEquals(1, queue.getTicketCounter());
     }
 
+    @DisplayName("проверяется сценарий «increment ticket counter returns minus one for foreign queue»")
     @Test
     void incrementTicketCounterReturnsMinusOneForForeignQueue() {
         Branch branch = new Branch("b1", "Branch");
@@ -49,6 +52,7 @@ class BranchTest {
         assertEquals(-1, result);
     }
 
+    @DisplayName("проверяется сценарий «get all visits collects from users service points and queues»")
     @Test
     void getAllVisitsCollectsFromUsersServicePointsAndQueues() {
         Branch branch = new Branch("b1", "Branch");
@@ -89,6 +93,7 @@ class BranchTest {
         assertTrue(all.containsKey("v4"));
     }
 
+    @DisplayName("проверяется сценарий «get all visits list collects from users service points and queues»")
     @Test
     void getAllVisitsListCollectsFromUsersServicePointsAndQueues() {
         Branch branch = new Branch("b1", "Branch");
@@ -129,6 +134,7 @@ class BranchTest {
         assertTrue(all.stream().anyMatch(v -> v.getId().equals("v4")));
     }
 
+    @DisplayName("проверяется сценарий «get visits by status filters visits»")
     @Test
     void getVisitsByStatusFiltersVisits() {
         Branch branch = new Branch("b1", "Branch");
@@ -145,6 +151,7 @@ class BranchTest {
         assertFalse(filtered.containsKey("v2"));
     }
 
+    @DisplayName("проверяется сценарий «get visits by status returns empty for missing statuses»")
     @Test
     void getVisitsByStatusReturnsEmptyForMissingStatuses() {
         Branch branch = new Branch("b1", "Branch");
@@ -158,6 +165,7 @@ class BranchTest {
         assertTrue(filtered.isEmpty());
     }
 
+    @DisplayName("проверяется сценарий «get visits by status collects from users service points and queues»")
     @Test
     void getVisitsByStatusCollectsFromUsersServicePointsAndQueues() {
         // Формируем отделение с визитами из разных источников
@@ -203,8 +211,8 @@ class BranchTest {
         assertFalse(filtered.containsKey("v5"));
     }
 
+    @DisplayName("проверяется сценарий «последовательное увеличение счётчика талонов при инкременте»")
     @Test
-
     void incrementTicketCounterIncrementsSequentially() {
         Branch branch = new Branch("b1", "Branch");
         Queue queue = new Queue("q1", "Queue", "Q", 1);
@@ -218,8 +226,8 @@ class BranchTest {
         assertEquals(2, queue.getTicketCounter());
     }
 
+    @DisplayName("проверяется сценарий «список всех визитов содержит дубликаты для общего экземпляра»")
     @Test
-
     void getAllVisitsListContainsDuplicatesForSameVisit() {
         // Один и тот же визит встречается у пользователя и как текущий визит точки обслуживания
         Branch branch = new Branch("b1", "Branch");
@@ -241,6 +249,7 @@ class BranchTest {
         assertSame(visitList.get(0), visitList.get(1), "Оба элемента списка указывают на один объект");
     }
 
+    @DisplayName("проверяется сценарий «get all visits returns empty when no entities»")
     @Test
     void getAllVisitsReturnsEmptyWhenNoEntities() {
         Branch branch = new Branch("b1", "Branch");
@@ -250,6 +259,7 @@ class BranchTest {
         assertTrue(visits.isEmpty());
     }
 
+    @DisplayName("проверяется сценарий «get all visits list returns empty when no entities»")
     @Test
     void getAllVisitsListReturnsEmptyWhenNoEntities() {
         Branch branch = new Branch("b1", "Branch");
@@ -260,6 +270,7 @@ class BranchTest {
     }
 
 
+    @DisplayName("проверяется сценарий «open service point assigns user and publishes events»")
     @Test
     void openServicePointAssignsUserAndPublishesEvents() throws IOException {
         // Готовим отделение с точкой обслуживания без пользователя
@@ -295,6 +306,7 @@ class BranchTest {
         assertSame(sp, captor.getValue().getBody());
     }
 
+    @DisplayName("проверяется сценарий «open service point throws if busy»")
     @Test
     void openServicePointThrowsIfBusy() {
         // Точка обслуживания уже занята другим пользователем
@@ -324,6 +336,7 @@ class BranchTest {
     }
 
 
+    @DisplayName("проверяется сценарий «open service point adds user without service point»")
     @Test
     void openServicePointAddsUserWithoutServicePoint() throws IOException {
         // Пользователь не указал точку обслуживания
@@ -344,6 +357,7 @@ class BranchTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("проверяется сценарий «open service point throws if service point not found»")
     @Test
     void openServicePointThrowsIfServicePointNotFound() {
         // Пользователь пытается открыть отсутствующую точку
@@ -365,6 +379,7 @@ class BranchTest {
         assertSame(user, branch.getUsers().get("u1"));
     }
 
+    @DisplayName("проверяется сценарий «close service point sends events and ends visit»")
     @Test
     void closeServicePointSendsEventsAndEndsVisit() {
         Branch branch = spy(new Branch("b1", "B1"));
@@ -407,6 +422,7 @@ class BranchTest {
         assertTrue(types.contains("SERVICE_POINT_CLOSED"));
     }
 
+    @DisplayName("проверяется сценарий «close service point throws when point missing»")
     @Test
     void closeServicePointThrowsWhenPointMissing() {
         // В отделении нет точки обслуживания с указанным идентификатором
@@ -434,6 +450,7 @@ class BranchTest {
         verifyNoInteractions(visitService);
     }
 
+    @DisplayName("проверяется сценарий «close service point throws when already closed»")
     @Test
     void closeServicePointThrowsWhenAlreadyClosed() {
         // Точка обслуживания существует, но на ней уже нет сотрудника
@@ -466,6 +483,7 @@ class BranchTest {
         verify(visitService, times(1)).getServicePointHashMap("b1");
     }
 
+    @DisplayName("проверяется сценарий «add update service refreshes visits when check enabled»")
     @Test
     void addUpdateServiceRefreshesVisitsWhenCheckEnabled() {
         // Обновляем услугу, которая используется в активном визите
@@ -516,6 +534,7 @@ class BranchTest {
                         eq("Update service"));
     }
 
+    @DisplayName("проверяется сценарий «add update service fails when check disabled and service in use»")
     @Test
     void addUpdateServiceFailsWhenCheckDisabledAndServiceInUse() {
         // При отключённой проверке визитов обновление должно быть запрещено
@@ -556,6 +575,7 @@ class BranchTest {
         assertSame(existing, branch.getServices().get("s1"));
     }
 
+    @DisplayName("проверяется сценарий «delete services cleans visit references»")
     @Test
     void deleteServicesCleansVisitReferences() {
         // Удаляем услугу и проверяем обновление всех связей визита
@@ -600,6 +620,7 @@ class BranchTest {
     }
 
 
+    @DisplayName("проверяется сценарий «update visit places entities and sends events»")
     @Test
     void updateVisitPlacesEntitiesAndSendsEvents() {
         // Готовим отделение с очередью и пулом визитов
@@ -675,6 +696,7 @@ class BranchTest {
                 .send(eq("frontend"), eq(false), argThat(event -> "VISIT_CALLED".equals(event.getEventType())));
     }
 
+    @DisplayName("проверяется сценарий «update visit replaces existing service point visit»")
     @Test
     void updateVisitReplacesExistingServicePointVisit() {
         // На точке обслуживания уже был другой визит и пользователь
@@ -716,6 +738,7 @@ class BranchTest {
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
     }
 
+    @DisplayName("проверяется сценарий «update visit fails when queue index out of range»")
     @Test
     void updateVisitFailsWhenQueueIndexOutOfRange() {
         // Индекс вставки выходит за пределы очереди

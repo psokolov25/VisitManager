@@ -10,6 +10,7 @@ import io.micronaut.runtime.server.EmbeddedServer;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
@@ -22,6 +23,7 @@ class CallRuleClientTest {
     /**
      * Клиент отправляет запрос и получает визит.
      */
+    @DisplayName("проверяется сценарий «call rule returns visit»")
     @Test
     void callRuleReturnsVisit() {
         Map<String, Object> config = Map.of(
@@ -50,4 +52,3 @@ class CallRuleClientTest {
         }
     }
 }
-

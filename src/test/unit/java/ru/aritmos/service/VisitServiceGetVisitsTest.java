@@ -8,6 +8,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -21,6 +22,7 @@ import ru.aritmos.model.visit.Visit;
 class VisitServiceGetVisitsTest {
 
     /** Проверяет фильтрацию визитов и сортировку по времени ожидания. */
+    @DisplayName("проверяется сценарий «filters and sorts visits»")
     @Test
     void filtersAndSortsVisits() {
         VisitService service = new VisitService();
@@ -56,6 +58,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Проверяет фильтрацию по ограничению времени перевода визита. */
+    @DisplayName("проверяется сценарий «filters visits by transfer delay»")
     @Test
     void filtersVisitsByTransferDelay() {
         VisitService service = new VisitService();
@@ -94,6 +97,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Ограничивает количество возвращаемых визитов. */
+    @DisplayName("проверяется сценарий «limits number of visits»")
     @Test
     void limitsNumberOfVisits() {
         VisitService service = new VisitService();
@@ -119,6 +123,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Бросает HTTP-исключение, если очередь не найдена. */
+    @DisplayName("проверяется сценарий «throws when queue missing»")
     @Test
     void throwsWhenQueueMissing() {
         VisitService service = new VisitService();

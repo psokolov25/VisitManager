@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.services.EventService;
@@ -32,6 +33,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2FromReceptionLegacyTest {
 
+    @DisplayName("проверяется сценарий «creates visit and prints ticket when segmentation returns queue»")
     @Test
     void createsVisitAndPrintsTicketWhenSegmentationReturnsQueue() throws Exception {
         VisitService service = new VisitService();
@@ -136,6 +138,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verifyNoMoreInteractions(printerService);
     }
 
+    @DisplayName("проверяется сценарий «does not print ticket when flag disabled and staff missing»")
     @Test
     void doesNotPrintTicketWhenFlagDisabledAndStaffMissing() throws Exception {
         VisitService service = new VisitService();
@@ -218,6 +221,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verify(printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("проверяется сценарий «throws bad request when segmentation returns empty queue»")
     @Test
     void throwsBadRequestWhenSegmentationReturnsEmptyQueue() throws Exception {
         VisitService service = new VisitService();
@@ -273,6 +277,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verify(printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("проверяется сценарий «throws not found when queue missing in branch configuration»")
     @Test
     void throwsNotFoundWhenQueueMissingInBranchConfiguration() throws Exception {
         VisitService service = new VisitService();

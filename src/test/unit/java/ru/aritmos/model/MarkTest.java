@@ -4,9 +4,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class MarkTest {
 
+    @DisplayName("проверяется сценарий «builder should populate fields»")
     @Test
     void builderShouldPopulateFields() {
         ZonedDateTime now = ZonedDateTime.now();
@@ -21,6 +23,7 @@ class MarkTest {
         assertSame(author, mark.getAuthor());
     }
 
+    @DisplayName("проверяется сценарий «setters should allow updates»")
     @Test
     void settersShouldAllowUpdates() {
         Mark mark = new Mark();

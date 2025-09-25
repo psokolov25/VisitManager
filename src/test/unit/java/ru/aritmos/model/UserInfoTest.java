@@ -3,9 +3,11 @@ package ru.aritmos.model;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class UserInfoTest {
 
+    @DisplayName("проверяется сценарий «builder and setters behave the same»")
     @Test
     void builderAndSettersBehaveTheSame() {
         RealmAccess access = RealmAccess.builder()

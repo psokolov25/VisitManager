@@ -3,12 +3,14 @@ package ru.aritmos.model;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 /**
  * Тесты для {@link Queue}.
  */
 class QueueTest {
 
+    @DisplayName("проверяется сценарий «constructor generates id and sets fields»")
     @Test
     void constructorGeneratesIdAndSetsFields() {
         Queue queue = new Queue("Main", "A", 60);
@@ -19,6 +21,7 @@ class QueueTest {
         assertEquals(0, queue.getTicketCounter());
     }
 
+    @DisplayName("проверяется сценарий «constructor with explicit id sets all fields»")
     @Test
     void constructorWithExplicitIdSetsAllFields() {
         Queue queue = new Queue("q1", "Secondary", "B", 30);

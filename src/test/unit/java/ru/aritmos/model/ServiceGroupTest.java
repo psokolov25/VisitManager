@@ -4,9 +4,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class ServiceGroupTest {
 
+    @DisplayName("проверяется сценарий «custom constructor should fill hierarchy fields»")
     @Test
     void customConstructorShouldFillHierarchyFields() {
         List<String> services = List.of("s1", "s2");
@@ -19,6 +21,7 @@ class ServiceGroupTest {
         assertEquals(services, group.getServiceIds());
     }
 
+    @DisplayName("проверяется сценарий «segmentation identifiers should be mutable»")
     @Test
     void segmentationIdentifiersShouldBeMutable() {
         ServiceGroup group = new ServiceGroup();

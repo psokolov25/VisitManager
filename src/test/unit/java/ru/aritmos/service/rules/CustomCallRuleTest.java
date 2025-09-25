@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
@@ -18,6 +19,7 @@ import ru.aritmos.service.rules.client.CallRuleClient;
 class CustomCallRuleTest {
 
     /** Проверяет, что вызов делегируется клиенту правил. */
+    @DisplayName("проверяется сценарий «delegates call to client»")
     @Test
     void delegatesCallToClient() {
         CallRuleClient client = mock(CallRuleClient.class);
@@ -35,6 +37,7 @@ class CustomCallRuleTest {
     }
 
     /** Метод с идентификаторами очередей пока не реализован. */
+    @DisplayName("проверяется сценарий «call with queue ids returns empty»")
     @Test
     void callWithQueueIdsReturnsEmpty() {
         CustomCallRule rule = new CustomCallRule();
@@ -43,6 +46,7 @@ class CustomCallRuleTest {
     }
 
     /** Метод получения доступных точек обслуживания возвращает пустой список. */
+    @DisplayName("проверяется сценарий «get availiable service points returns empty»")
     @Test
     void getAvailiableServicePointsReturnsEmpty() {
         CustomCallRule rule = new CustomCallRule();

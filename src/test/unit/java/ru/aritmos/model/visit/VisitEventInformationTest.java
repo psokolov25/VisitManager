@@ -5,9 +5,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class VisitEventInformationTest {
 
+    @DisplayName("проверяется сценарий «builder should create instance with all fields»")
     @Test
     void builderShouldCreateInstanceWithAllFields() {
         ZonedDateTime now = ZonedDateTime.now();

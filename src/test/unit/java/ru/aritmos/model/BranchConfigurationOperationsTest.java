@@ -13,6 +13,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -29,6 +30,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class BranchConfigurationOperationsTest {
 
+    @DisplayName("проверяется сценарий «update visit with custom action places entities and sends events»")
     @Test
     void updateVisitWithCustomActionPlacesEntitiesAndSendsEvents() {
         log.info("Формируем отделение с очередью, пулом точек и сотрудниками");
@@ -97,6 +99,7 @@ class BranchConfigurationOperationsTest {
         assertEquals(visit.getId(), ((Visit) events.get(0).getBody()).getId());
     }
 
+    @DisplayName("проверяется сценарий «update visit with custom action throws when point busy»")
     @Test
     void updateVisitWithCustomActionThrowsWhenPointBusy() {
         log.info("Готовим отделение с занятой точкой обслуживания");
@@ -128,6 +131,7 @@ class BranchConfigurationOperationsTest {
         assertEquals(HttpStatus.CONFLICT, exception.getStatus());
     }
 
+    @DisplayName("проверяется сценарий «add update service point restores state and publishes events»")
     @Test
     void addUpdateServicePointRestoresStateAndPublishesEvents() {
         log.info("Настраиваем отделение с существующей точкой и назначенным визитом");
@@ -161,6 +165,7 @@ class BranchConfigurationOperationsTest {
         verify(eventService).sendChangedEvent(eq("config"), eq(false), isNull(), eq(newcomer), anyMap(), eq("Add service point"));
     }
 
+    @DisplayName("проверяется сценарий «add update queues restores visits and notifies consumers»")
     @Test
     void addUpdateQueuesRestoresVisitsAndNotifiesConsumers() {
         log.info("Готовим отделение с очередями и точкой обслуживания");

@@ -6,10 +6,12 @@ import static org.mockito.Mockito.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.representations.idm.GroupRepresentation;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class UserTest {
+    @DisplayName("проверяется сценарий «constructor initializes fields with keycloak client»")
     @Test
     void constructorInitializesFieldsWithKeycloakClient() {
         KeyCloackClient client = mock(KeyCloackClient.class);
@@ -25,6 +27,7 @@ class UserTest {
         assertSame(client, user.getKeyCloackClient());
     }
 
+    @DisplayName("проверяется сценарий «break status and duration calculation»")
     @Test
     void breakStatusAndDurationCalculation() {
         User user = new User("2", "worker", null);
@@ -40,6 +43,7 @@ class UserTest {
         assertEquals(45L, user.getLastBreakDuration());
     }
 
+    @DisplayName("проверяется сценарий «constructor generates id when not provided»")
     @Test
     void constructorGeneratesIdWhenNotProvided() {
         KeyCloackClient client = mock(KeyCloackClient.class);
@@ -53,4 +57,3 @@ class UserTest {
         assertFalse(Boolean.TRUE.equals(user.getIsAdmin()));
     }
 }
-

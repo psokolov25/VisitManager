@@ -13,6 +13,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import ru.aritmos.events.model.Event;
@@ -25,6 +26,7 @@ class BusinessExceptionLocalizationTest {
         BusinessException.resetLocalization();
     }
 
+    @DisplayName("проверяется сценарий «applies localization from configuration»")
     @Test
     void appliesLocalizationFromConfiguration() {
         BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();
@@ -81,6 +83,7 @@ class BusinessExceptionLocalizationTest {
         assertEquals("Visit not found", appender.list.get(0).getFormattedMessage());
     }
 
+    @DisplayName("проверяется сценарий «replaces message field in map response body»")
     @Test
     void replacesMessageFieldInMapResponseBody() {
         BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();

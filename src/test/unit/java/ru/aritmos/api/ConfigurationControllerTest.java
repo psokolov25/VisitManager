@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.SegmentationRuleData;
@@ -19,6 +20,7 @@ import ru.aritmos.service.VisitService;
 
 class ConfigurationControllerTest {
 
+    @DisplayName("проверяется сценарий «update delegates to configuration»")
     @Test
     void updateDelegatesToConfiguration() {
         ConfigurationController controller = new ConfigurationController();
@@ -34,6 +36,7 @@ class ConfigurationControllerTest {
         verify(config).createBranchConfiguration(branches);
     }
 
+    @DisplayName("проверяется сценарий «update hardcode uses demo config»")
     @Test
     void updateHardcodeUsesDemoConfig() {
         ConfigurationController controller = new ConfigurationController();
@@ -59,6 +62,7 @@ class ConfigurationControllerTest {
         return controller;
     }
 
+    @DisplayName("проверяется сценарий «add update service delegates to branch service»")
     @Test
     void addUpdateServiceDelegatesToBranchService() {
         ConfigurationController controller = controller();
@@ -68,6 +72,7 @@ class ConfigurationControllerTest {
             .addUpdateService("b1", services, true, controller.visitService);
     }
 
+    @DisplayName("проверяется сценарий «get break reasons uses branch service»")
     @Test
     void getBreakReasonsUsesBranchService() {
         ConfigurationController controller = controller();
@@ -79,6 +84,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).getBranch("b1");
     }
 
+    @DisplayName("проверяется сценарий «delete services delegates»")
     @Test
     void deleteServicesDelegates() {
         ConfigurationController controller = controller();
@@ -88,6 +94,7 @@ class ConfigurationControllerTest {
             .deleteServices("b1", ids, false, controller.visitService);
     }
 
+    @DisplayName("проверяется сценарий «add update service point delegates»")
     @Test
     void addUpdateServicePointDelegates() {
         ConfigurationController controller = controller();
@@ -97,6 +104,7 @@ class ConfigurationControllerTest {
             .addUpdateServicePoint("b1", points, true, false);
     }
 
+    @DisplayName("проверяется сценарий «add update service groups delegates»")
     @Test
     void addUpdateServiceGroupsDelegates() {
         ConfigurationController controller = controller();
@@ -105,6 +113,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateServiceGroups("b1", groups);
     }
 
+    @DisplayName("проверяется сценарий «add update segmentation rules delegates»")
     @Test
     void addUpdateSegmentationRulesDelegates() {
         ConfigurationController controller = controller();
@@ -113,6 +122,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateSegmentationRules("b1", rules);
     }
 
+    @DisplayName("проверяется сценарий «delete service points delegates»")
     @Test
     void deleteServicePointsDelegates() {
         ConfigurationController controller = controller();
@@ -121,6 +131,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).deleteServicePoints("b1", ids);
     }
 
+    @DisplayName("проверяется сценарий «set auto call mode on delegates»")
     @Test
     void setAutoCallModeOnDelegates() {
         ConfigurationController controller = controller();
@@ -128,6 +139,7 @@ class ConfigurationControllerTest {
         verify(controller.visitService).setAutoCallModeOfBranch("b1", true);
     }
 
+    @DisplayName("проверяется сценарий «set auto call mode off delegates»")
     @Test
     void setAutoCallModeOffDelegates() {
         ConfigurationController controller = controller();
@@ -135,6 +147,7 @@ class ConfigurationControllerTest {
         verify(controller.visitService).setAutoCallModeOfBranch("b1", false);
     }
 
+    @DisplayName("проверяется сценарий «add update queues delegates»")
     @Test
     void addUpdateQueuesDelegates() {
         ConfigurationController controller = controller();
@@ -143,6 +156,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateQueues("b1", queues, true);
     }
 
+    @DisplayName("проверяется сценарий «delete queues delegates»")
     @Test
     void deleteQueuesDelegates() {
         ConfigurationController controller = controller();

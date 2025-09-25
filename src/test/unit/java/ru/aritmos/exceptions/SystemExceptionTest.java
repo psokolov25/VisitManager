@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import ru.aritmos.events.model.Event;
@@ -13,6 +14,7 @@ import ru.aritmos.events.services.EventService;
 
 class SystemExceptionTest {
 
+    @DisplayName("проверяется сценарий «sends system error event on creation»")
     @Test
     void sendsSystemErrorEventOnCreation() {
         EventService eventService = Mockito.mock(EventService.class);
@@ -30,4 +32,3 @@ class SystemExceptionTest {
         assertEquals("boom", error.getMessage());
     }
 }
-

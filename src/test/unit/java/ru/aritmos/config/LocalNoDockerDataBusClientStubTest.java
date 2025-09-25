@@ -4,10 +4,12 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import reactor.core.publisher.Mono;
 
 class LocalNoDockerDataBusClientStubTest {
 
+    @DisplayName("проверяется сценарий «send returns stubbed status and type»")
     @Test
     void sendReturnsStubbedStatusAndType() {
         LocalNoDockerDataBusClientStub client = new LocalNoDockerDataBusClientStub();
@@ -18,4 +20,3 @@ class LocalNoDockerDataBusClientStubTest {
         assertEquals("TYPE", result.get("type"));
     }
 }
-

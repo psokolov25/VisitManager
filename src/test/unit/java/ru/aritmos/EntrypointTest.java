@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.visit.Visit;
 
 class EntrypointTest {
@@ -27,6 +28,7 @@ class EntrypointTest {
         }
     }
 
+    @DisplayName("проверяется сценарий «groovy script selects visit by params»")
     @Test
     void groovyScriptSelectsVisitByParams() throws Exception {
         Binding binding = new Binding();
@@ -65,6 +67,7 @@ class EntrypointTest {
         assertEquals("v1", visit.get().getId());
     }
 
+    @DisplayName("проверяется сценарий «groovy script returns empty when no match»")
     @Test
     void groovyScriptReturnsEmptyWhenNoMatch() throws Exception {
         Binding binding = new Binding();

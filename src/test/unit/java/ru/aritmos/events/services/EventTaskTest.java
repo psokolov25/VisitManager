@@ -2,6 +2,7 @@ package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.model.Event;
 
 /**
@@ -10,6 +11,7 @@ import ru.aritmos.events.model.Event;
 class EventTaskTest {
 
     /** Проверяет делегирование сервису отправки событий. */
+    @DisplayName("проверяется сценарий «run sends event via service»")
     @Test
     void runSendsEventViaService() {
         EventService eventService = mock(EventService.class);

@@ -9,6 +9,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.Branch;
 import ru.aritmos.service.Configuration;
 
@@ -26,6 +27,7 @@ class ConfigurationControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет, что причины перерыва возвращаются после обновления конфигурации. */
+    @DisplayName("проверяется сценарий «returns break reasons»")
     @Test
     void returnsBreakReasons() {
         Branch branch = new Branch("b1", "Branch");

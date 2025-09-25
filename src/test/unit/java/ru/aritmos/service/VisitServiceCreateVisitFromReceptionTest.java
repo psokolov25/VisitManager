@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.SystemException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -26,6 +27,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisitFromReceptionTest {
 
+    @DisplayName("проверяется сценарий «create visit from reception delegates to create visit2 from reception»")
     @Test
     void createVisitFromReceptionDelegatesToCreateVisit2FromReception() throws SystemException {
         Branch branch = new Branch("b1", "Отделение");
@@ -59,6 +61,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertNotSame(second, service.lastServices.get(1));
     }
 
+    @DisplayName("проверяется сценарий «create visit from reception throws when service missing»")
     @Test
     void createVisitFromReceptionThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -82,6 +85,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("проверяется сценарий «create visit from reception throws when service list empty»")
     @Test
     void createVisitFromReceptionThrowsWhenServiceListEmpty() {
         Branch branch = new Branch("b1", "Отделение");
@@ -102,6 +106,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("проверяется сценарий «create visit from reception with segmentation rule delegates»")
     @Test
     void createVisitFromReceptionWithSegmentationRuleDelegates() {
         Branch branch = new Branch("b1", "Отделение");
@@ -128,6 +133,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertTrue(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("проверяется сценарий «create visit from reception with segmentation rule throws when service missing»")
     @Test
     void createVisitFromReceptionWithSegmentationRuleThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");

@@ -6,9 +6,11 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class TinyVisitTest {
 
+    @DisplayName("проверяется сценарий «calculates waiting time from transfer date»")
     @Test
     void calculatesWaitingTimeFromTransferDate() {
         ZonedDateTime now = ZonedDateTime.now();
@@ -23,6 +25,7 @@ class TinyVisitTest {
         assertTrue(Math.abs(actual - expected) <= 1, "waiting time should match");
     }
 
+    @DisplayName("проверяется сценарий «calculates total waiting time from create date»")
     @Test
     void calculatesTotalWaitingTimeFromCreateDate() {
         ZonedDateTime now = ZonedDateTime.now();
@@ -36,4 +39,3 @@ class TinyVisitTest {
         assertTrue(Math.abs(actual - expected) <= 1, "total waiting time should match");
     }
 }
-

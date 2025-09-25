@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -45,6 +46,7 @@ class VisitServiceVisitCallTest {
         VisitEvent.START_SERVING.getParameters().clear();
     }
 
+    @DisplayName("проверяется сценарий «visit call moves visit from queue and publishes events»")
     @Test
     void visitCallMovesVisitFromQueueAndPublishesEvents() {
         Branch branch = new Branch("b1", "Отделение");
@@ -106,6 +108,7 @@ class VisitServiceVisitCallTest {
         assertSame(VisitEvent.START_SERVING, startServingEvent);
     }
 
+    @DisplayName("проверяется сценарий «visit call fails when service point busy»")
     @Test
     void visitCallFailsWhenServicePointBusy() {
         Branch branch = new Branch("b1", "Отделение");
@@ -130,6 +133,7 @@ class VisitServiceVisitCallTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(service));
     }
 
+    @DisplayName("проверяется сценарий «visit call fails when service point missing»")
     @Test
     void visitCallFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -150,6 +154,7 @@ class VisitServiceVisitCallTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(service));
     }
 
+    @DisplayName("проверяется сценарий «visit call transfers pool metadata to parameters»")
     @Test
     void visitCallTransfersPoolMetadataToParameters() {
         Branch branch = new Branch("b1", "Отделение");
@@ -180,6 +185,7 @@ class VisitServiceVisitCallTest {
         assertNull(visit.getPoolUserId());
     }
 
+    @DisplayName("проверяется сценарий «visit call by id delegates to cherry pick and handles missing»")
     @Test
     void visitCallByIdDelegatesToCherryPickAndHandlesMissing() {
         Visit visit = Visit.builder().id("v1").branchId("b1").parameterMap(new HashMap<>()).build();

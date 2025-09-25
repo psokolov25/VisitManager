@@ -11,6 +11,7 @@ import static ru.aritmos.test.LoggingAssertions.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ class BranchUpdateVisitOverloadsTest {
 
     private static final Logger log = LoggerFactory.getLogger(BranchUpdateVisitOverloadsTest.class);
 
+    @DisplayName("проверяется сценарий «update visit with boolean places visit at start»")
     @Test
     void updateVisitWithBooleanPlacesVisitAtStart() {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
@@ -99,6 +101,7 @@ class BranchUpdateVisitOverloadsTest {
                 argThat(evt -> "VISIT_TRANSFER_TO_SERVICE_POINT_POOL".equals(evt.getEventType())));
     }
 
+    @DisplayName("проверяется сценарий «update visit with boolean places visit at end»")
     @Test
     void updateVisitWithBooleanPlacesVisitAtEnd() {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
@@ -160,6 +163,7 @@ class BranchUpdateVisitOverloadsTest {
         verify(eventService).send(eq("frontend"), eq(false), any(Event.class));
     }
 
+    @DisplayName("проверяется сценарий «update visit without boolean places visit at start by default»")
     @Test
     void updateVisitWithoutBooleanPlacesVisitAtStartByDefault() {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();

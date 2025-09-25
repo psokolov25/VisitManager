@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.lang.reflect.Method;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
 
@@ -20,6 +21,7 @@ import ru.aritmos.model.visit.Visit;
 class MaxWaitingTimeCallRuleTest {
 
     /** Проверяем корректный парсинг даты из строки. */
+    @DisplayName("проверяется сценарий «parse date from string»")
     @Test
     void parseDateFromString() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -33,6 +35,7 @@ class MaxWaitingTimeCallRuleTest {
     /**
      * Проверяем отбор доступных точек обслуживания по рабочему профилю.
      */
+    @DisplayName("проверяется сценарий «available service points filtered by work profile»")
     @Test
     void availableServicePointsFilteredByWorkProfile() {
         // создаем отделение
@@ -83,6 +86,7 @@ class MaxWaitingTimeCallRuleTest {
     /**
      * Проверяем, что при неверном рабочем профиле выбрасывается исключение.
      */
+    @DisplayName("проверяется сценарий «call throws when work profile is wrong»")
     @Test
     void callThrowsWhenWorkProfileIsWrong() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -102,6 +106,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем вызов визита по максимальному ожиданию из списка очередей. */
+    @DisplayName("проверяется сценарий «call with queue ids selects visit»")
     @Test
     void callWithQueueIdsSelectsVisit() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -139,6 +144,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что без пользователя выбрасывается исключение при вызове с очередями. */
+    @DisplayName("проверяется сценарий «call with queue ids without user throws»")
     @Test
     void callWithQueueIdsWithoutUserThrows() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -153,6 +159,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем работу компаратора перенесённых визитов. */
+    @DisplayName("проверяется сценарий «visit comparer handles transfer flags»")
     @Test
     void visitComparerHandlesTransferFlags() throws Exception {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -176,6 +183,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем выбор визита с максимальным временем ожидания без списка очередей. */
+    @DisplayName("проверяется сценарий «call selects visit with longest waiting time»")
     @Test
     void callSelectsVisitWithLongestWaitingTime() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -216,6 +224,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем очистку флагов переноса/возврата после выбора визита. */
+    @DisplayName("проверяется сценарий «call resets transfer flags on selected visit»")
     @Test
     void callResetsTransferFlagsOnSelectedVisit() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -256,6 +265,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что при отсутствии пользователя выбрасывается исключение. */
+    @DisplayName("проверяется сценарий «call throws when no user assigned»")
     @Test
     void callThrowsWhenNoUserAssigned() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -272,6 +282,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что компаратор учитывает порядок по датам переноса. */
+    @DisplayName("проверяется сценарий «visit comparer prefers earlier transfer dates»")
     @Test
     void visitComparerPrefersEarlierTransferDates() throws Exception {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -295,6 +306,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что визиты без статуса WAITING игнорируются. */
+    @DisplayName("проверяется сценарий «call ignores visits without waiting status»")
     @Test
     void callIgnoresVisitsWithoutWaitingStatus() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -325,6 +337,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что визиты с ненабранной задержкой возвращения пропускаются. */
+    @DisplayName("проверяется сценарий «call skips visits until return delay reached»")
     @Test
     void callSkipsVisitsUntilReturnDelayReached() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -368,6 +381,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем очистку временных полей при выборе визита через список очередей. */
+    @DisplayName("проверяется сценарий «call with queue ids resets temporary flags»")
     @Test
     void callWithQueueIdsResetsTemporaryFlags() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -407,6 +421,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что при выборе по списку очередей визиты с задержкой возвращения не подходят. */
+    @DisplayName("проверяется сценарий «call with queue ids returns empty when return delay not met»")
     @Test
     void callWithQueueIdsReturnsEmptyWhenReturnDelayNotMet() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -440,6 +455,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что без подходящих пользователей список точек обслуживания пуст. */
+    @DisplayName("проверяется сценарий «available service points return empty when no active users»")
     @Test
     void availableServicePointsReturnEmptyWhenNoActiveUsers() {
         Branch branch = new Branch("b1", "branch");
@@ -469,4 +485,3 @@ class MaxWaitingTimeCallRuleTest {
         assertTrue(result.isEmpty());
     }
 }
-

@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
 
@@ -28,6 +29,7 @@ class KafkaListenerTest {
         ((Map<?, ?>) service.get(null)).clear();
     }
 
+    @DisplayName("проверяется сценарий «add service event handler registers handler»")
     @Test
     void addServiceEventHandlerRegistersHandler() throws Exception {
         EventHandler handler = mock(EventHandler.class);
@@ -38,6 +40,7 @@ class KafkaListenerTest {
         ru.aritmos.test.LoggingAssertions.assertSame(handler, map.get("t"));
     }
 
+    @DisplayName("проверяется сценарий «add all event handler registers handler»")
     @Test
     void addAllEventHandlerRegistersHandler() throws Exception {
         EventHandler handler = mock(EventHandler.class);
@@ -48,6 +51,7 @@ class KafkaListenerTest {
         ru.aritmos.test.LoggingAssertions.assertSame(handler, map.get("t"));
     }
 
+    @DisplayName("проверяется сценарий «receive calls service handler»")
     @Test
     void receiveCallsServiceHandler() throws Exception {
         Event event = Event.builder().eventType("t").build();
@@ -58,6 +62,7 @@ class KafkaListenerTest {
         verify(handler).Handle(event);
     }
 
+    @DisplayName("проверяется сценарий «receive all calls all handler»")
     @Test
     void receiveAllCallsAllHandler() throws Exception {
         Event event = Event.builder().eventType("t").build();

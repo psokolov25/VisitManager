@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 
 import ru.aritmos.test.TestLoggingExtension;
 
@@ -24,6 +25,7 @@ class CurlCheatsheetGeneratorTest {
      * Убеждаемся, что экранирование спецсимволов HTML работает корректно для угловых скобок и
      * амперсанда.
      */
+    @DisplayName("проверяется сценарий «escape html»")
     @Test
     void escapeHtml() throws Exception {
         Method escape = CurlCheatsheetGenerator.class.getDeclaredMethod("escape", String.class);
@@ -36,6 +38,7 @@ class CurlCheatsheetGeneratorTest {
      * Проверяет, что секция контроллера с комментариями «Пример curl» добавляется в итоговый HTML
      * и содержит исходный пример запроса.
      */
+    @DisplayName("проверяется сценарий «append controller section adds example»")
     @Test
     void appendControllerSectionAddsExample() throws Exception {
         Path file = Files.createTempFile("Controller", ".java");
@@ -66,6 +69,7 @@ class CurlCheatsheetGeneratorTest {
     /**
      * Убеждаемся, что главный метод создаёт HTML-файл со сведениями из контроллеров.
      */
+    @DisplayName("проверяется сценарий «main generates cheatsheet»")
     @Test
     void mainGeneratesCheatsheet() throws Exception {
         Path projectRoot = Paths.get("").toAbsolutePath();
@@ -115,6 +119,7 @@ class CurlCheatsheetGeneratorTest {
      * Проверяет, что генератор извлекает метод и URI из аннотации даже при многострочном описании
      * с параметром {@code uri} на отдельной строке.
      */
+    @DisplayName("проверяется сценарий «append controller section resolves uri from attribute block»")
     @Test
     void appendControllerSectionResolvesUriFromAttributeBlock() throws Exception {
         Path file = Files.createTempFile("ControllerMulti", ".java");
@@ -158,6 +163,7 @@ class CurlCheatsheetGeneratorTest {
      * Убеждаемся, что неполные примеры без закрывающего тега {@literal </code></pre>} пропускаются
      * и не попадают в HTML.
      */
+    @DisplayName("проверяется сценарий «append controller section skips incomplete example»")
     @Test
     void appendControllerSectionSkipsIncompleteExample() throws Exception {
         Path file = Files.createTempFile("ControllerBroken", ".java");
@@ -193,4 +199,3 @@ class CurlCheatsheetGeneratorTest {
     }
 
 }
-

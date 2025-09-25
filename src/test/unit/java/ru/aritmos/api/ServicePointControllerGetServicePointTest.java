@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.aritmos.events.services.EventService;
@@ -39,6 +40,7 @@ class ServicePointControllerGetServicePointTest {
         return controller;
     }
 
+    @DisplayName("проверяется сценарий «returns service point with operator on break»")
     @Test
     void returnsServicePointWithOperatorOnBreak() {
         LOG.info("Шаг 1: подготавливаем карту точек обслуживания без оператора");
@@ -65,6 +67,7 @@ class ServicePointControllerGetServicePointTest {
         verify(visitService).getUsers("branch-1");
     }
 
+    @DisplayName("проверяется сценарий «returns empty when service point is missing»")
     @Test
     void returnsEmptyWhenServicePointIsMissing() {
         LOG.info("Шаг 1: подготавливаем пустую карту точек обслуживания");

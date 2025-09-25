@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.aritmos.events.services.EventService;
@@ -36,6 +37,7 @@ class VisitServiceDeleteVisitTest {
         resetVisitEvent();
     }
 
+    @DisplayName("проверяется сценарий «delete visit clears assignments and notifies branch»")
     @Test
     void deleteVisitClearsAssignmentsAndNotifiesBranch() {
         LOG.info("Шаг 1: создаём визит с привязкой к очереди и точке обслуживания");
@@ -68,6 +70,7 @@ class VisitServiceDeleteVisitTest {
         verifyNoInteractions(service.eventService);
     }
 
+    @DisplayName("проверяется сценарий «delete visit throws when return delay not elapsed»")
     @Test
     void deleteVisitThrowsWhenReturnDelayNotElapsed() {
         LOG.info("Шаг 1: готовим визит, недавно вернувшийся в очередь");
@@ -97,6 +100,7 @@ class VisitServiceDeleteVisitTest {
         assertEquals("sp-1", visit.getServicePointId());
     }
 
+    @DisplayName("проверяется сценарий «delete visit throws when transfer delay not elapsed»")
     @Test
     void deleteVisitThrowsWhenTransferDelayNotElapsed() {
         LOG.info("Шаг 1: формируем визит, недавно переведённый из очереди");

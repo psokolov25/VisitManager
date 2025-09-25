@@ -17,6 +17,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
@@ -63,6 +64,7 @@ class VisitServiceUncoveredOperationsTest {
         resetVisitEvents();
     }
 
+    @DisplayName("проверяется сценарий «visit transfer moves visit to queue with delay»")
     @Test
     void visitTransferMovesVisitToQueueWithDelay() {
         log.info("Готовим отделение с оператором и очередями для перевода");
@@ -145,6 +147,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue to user pool assigns user and schedules refresh»")
     @Test
     void visitTransferFromQueueToUserPoolAssignsUserAndSchedulesRefresh() {
         log.info("Формируем отделение и пользователя, принимающего визит в пуле");
@@ -214,6 +217,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit back to user pool stops serving and assigns target user»")
     @Test
     void visitBackToUserPoolStopsServingAndAssignsTargetUser() {
         log.info("Создаём отделение с активной точкой обслуживания и пулом сотрудника");
@@ -293,6 +297,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(activePoint.getId(), backEvent.getParameters().get("servicePointId"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer with visit entity places to start when requested»")
     @Test
     void visitTransferWithVisitEntityPlacesToStartWhenRequested() {
         log.info("Подготавливаем отделение с точкой обслуживания и двумя очередями");
@@ -370,6 +375,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue to service point pool propagates external info»")
     @Test
     void visitTransferFromQueueToServicePointPoolPropagatesExternalInfo() {
         log.info("Настраиваем отделение и пул точки обслуживания для внешнего переноса");
@@ -441,6 +447,7 @@ class VisitServiceUncoveredOperationsTest {
     }
 
 
+    @DisplayName("проверяется сценарий «visit transfer places visit at exact index»")
     @Test
     void visitTransferPlacesVisitAtExactIndex() {
         log.info("Подготавливаем отделение для позиционного переноса визита");
@@ -520,6 +527,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue to user pool includes external service info»")
     @Test
     void visitTransferFromQueueToUserPoolIncludesExternalServiceInfo() {
         log.info("Готовим отделение для внешнего переноса визита в пул пользователя");
@@ -594,6 +602,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer from queue to user pool positions visit by index»")
     @Test
     void visitTransferFromQueueToUserPoolPositionsVisitByIndex() {
         log.info("Формируем отделение для позиционного переноса в пул пользователя");
@@ -667,6 +676,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit call for confirm with max waiting time selects visit and logs event»")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeSelectsVisitAndLogsEvent() {
         log.info("Настраиваем отделение для вызова визита с подтверждением");
@@ -722,6 +732,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals("callNext", calledEvent.getParameters().get("callMethod"));
     }
 
+    @DisplayName("проверяется сценарий «visit call for confirm with max waiting time activates auto call when queue is empty»")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeActivatesAutoCallWhenQueueIsEmpty() {
         log.info("Проверяем включение автодовызова при отсутствии доступных визитов");
@@ -752,6 +763,7 @@ class VisitServiceUncoveredOperationsTest {
         verify(branchService).add(branch.getId(), branch);
     }
 
+    @DisplayName("проверяется сценарий «visit call for confirm with max waiting time with queues selects visit»")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeWithQueuesSelectsVisit() {
         log.info("Настраиваем отделение для вызова визита по списку очередей");
@@ -807,6 +819,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals("callNext", calledEvent.getParameters().get("callMethod"));
     }
 
+    @DisplayName("проверяется сценарий «visit call for confirm with max waiting time with queues enables auto call mode»")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeWithQueuesEnablesAutoCallMode() {
         log.info("Проверяем включение автодовызова при отсутствии визитов в указанных очередях");

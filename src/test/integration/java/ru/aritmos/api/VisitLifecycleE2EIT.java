@@ -9,6 +9,7 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Queue;
@@ -31,6 +32,7 @@ class VisitLifecycleE2EIT {
     @Inject
     Configuration configuration;
 
+    @DisplayName("проверяется сценарий «creates and cancels visit»")
     @Test
     void createsAndCancelsVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -59,4 +61,3 @@ class VisitLifecycleE2EIT {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
     }
 }
-

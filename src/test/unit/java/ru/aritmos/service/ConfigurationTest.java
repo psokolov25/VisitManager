@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -20,6 +21,7 @@ class ConfigurationTest {
     /**
      * Проверяет успешную публикацию конфигурации отделений.
      */
+    @DisplayName("проверяется сценарий «create branch configuration publishes events»")
     @Test
     void createBranchConfigurationPublishesEvents() {
         // создаём сервис и подставляем заглушки зависимостей
@@ -60,6 +62,7 @@ class ConfigurationTest {
     /**
      * Проверяет откат публикации при ошибке.
      */
+    @DisplayName("проверяется сценарий «create branch configuration rollbacks on error»")
     @Test
     void createBranchConfigurationRollbacksOnError() {
         // сервис с заглушками
@@ -100,6 +103,7 @@ class ConfigurationTest {
     /**
      * Создаёт демонстрационное отделение с заполненными данными.
      */
+    @DisplayName("проверяется сценарий «create demo branch builds sample»")
     @Test
     void createDemoBranchBuildsSample() {
         // конфигурация с заглушкой клиента Keycloak
@@ -125,4 +129,3 @@ class ConfigurationTest {
             .add(eq("e73601bd-2fbb-4303-9a58-16cbc4ad6ad3"), any());
     }
 }
-

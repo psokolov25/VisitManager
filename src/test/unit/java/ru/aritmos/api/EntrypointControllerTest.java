@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Service;
 import ru.aritmos.model.Branch;
@@ -19,6 +20,7 @@ import ru.aritmos.service.VisitService;
 
 class EntrypointControllerTest {
 
+    @DisplayName("проверяется сценарий «get all available services returns list»")
     @Test
     void getAllAvailableServicesReturnsList() {
         Services services = mock(Services.class);
@@ -43,6 +45,7 @@ class EntrypointControllerTest {
         return controller;
     }
 
+    @DisplayName("проверяется сценарий «create virtual visit delegates to service»")
     @Test
     void createVirtualVisitDelegatesToService() throws Exception {
         EntrypointController controller = controller();
@@ -57,6 +60,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVirtualVisit("b1", "sp1", ids, "sid"));
     }
 
+    @DisplayName("проверяется сценарий «create visit delegates to service when segmentation empty»")
     @Test
     void createVisitDelegatesToServiceWhenSegmentationEmpty() throws Exception {
         EntrypointController controller = controller();
@@ -71,6 +75,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", ids, false, null));
     }
 
+    @DisplayName("проверяется сценарий «create visit delegates to service when segmentation provided»")
     @Test
     void createVisitDelegatesToServiceWhenSegmentationProvided() throws Exception {
         EntrypointController controller = controller();
@@ -85,6 +90,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", ids, false, "seg"));
     }
 
+    @DisplayName("проверяется сценарий «create visit with parameters delegates»")
     @Test
     void createVisitWithParametersDelegates() throws Exception {
         EntrypointController controller = controller();
@@ -102,6 +108,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", params, true, null));
     }
 
+    @DisplayName("проверяется сценарий «create visit with parameters delegates with segmentation»")
     @Test
     void createVisitWithParametersDelegatesWithSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -119,6 +126,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", params, true, "seg"));
     }
 
+    @DisplayName("проверяется сценарий «create visit from reception delegates without segmentation»")
     @Test
     void createVisitFromReceptionDelegatesWithoutSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -139,6 +147,7 @@ class EntrypointControllerTest {
             .createVisitFromReception("b1", "p1", params, true, "sid");
     }
 
+    @DisplayName("проверяется сценарий «create visit from reception delegates with segmentation»")
     @Test
     void createVisitFromReceptionDelegatesWithSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -159,6 +168,7 @@ class EntrypointControllerTest {
             .createVisitFromReception("b1", "p1", params, false, "seg", "sid");
     }
 
+    @DisplayName("проверяется сценарий «set parameter map updates visit and delegates»")
     @Test
     void setParameterMapUpdatesVisitAndDelegates() {
         EntrypointController controller = controller();
@@ -174,6 +184,7 @@ class EntrypointControllerTest {
             .updateVisit(visit, "VISIT_SET_PARAMETER_MAP", controller.visitService);
     }
 
+    @DisplayName("проверяется сценарий «get all services delegates to services»")
     @Test
     void getAllServicesDelegatesToServices() {
         EntrypointController controller = controller();

@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Mark;
@@ -19,6 +20,7 @@ import ru.aritmos.model.visit.VisitEvent;
 
 class VisitServiceNoteTest {
 
+    @DisplayName("проверяется сценарий «add note appends note and calls update»")
     @Test
     void addNoteAppendsNoteAndCallsUpdate() {
         Branch branch = new Branch("b1", "Branch");
@@ -51,6 +53,7 @@ class VisitServiceNoteTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
+    @DisplayName("проверяется сценарий «add note throws when no visit»")
     @Test
     void addNoteThrowsWhenNoVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -69,6 +72,7 @@ class VisitServiceNoteTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("проверяется сценарий «get notes returns notes»")
     @Test
     void getNotesReturnsNotes() {
         Branch branch = new Branch("b1", "Branch");
@@ -98,6 +102,7 @@ class VisitServiceNoteTest {
         assertEquals("note", notes.get(0).getValue());
     }
 
+    @DisplayName("проверяется сценарий «get notes throws when visit missing»")
     @Test
     void getNotesThrowsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -114,4 +119,3 @@ class VisitServiceNoteTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 }
-

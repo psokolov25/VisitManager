@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.SystemException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
@@ -26,6 +27,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisitTest {
 
+    @DisplayName("проверяется сценарий «create visit delegates to create visit2 with cloned services»")
     @Test
     void createVisitDelegatesToCreateVisit2WithClonedServices() throws SystemException {
         Branch branch = new Branch("b1", "Отделение");
@@ -58,6 +60,7 @@ class VisitServiceCreateVisitTest {
         assertNotSame(second, service.lastServices.get(1));
     }
 
+    @DisplayName("проверяется сценарий «create visit throws when service missing»")
     @Test
     void createVisitThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -80,6 +83,7 @@ class VisitServiceCreateVisitTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("проверяется сценарий «create visit throws when service list empty»")
     @Test
     void createVisitThrowsWhenServiceListEmpty() {
         Branch branch = new Branch("b1", "Отделение");
@@ -99,6 +103,7 @@ class VisitServiceCreateVisitTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("проверяется сценарий «create visit with segmentation rule delegates to create visit2»")
     @Test
     void createVisitWithSegmentationRuleDelegatesToCreateVisit2() {
         Branch branch = new Branch("b1", "Отделение");
@@ -124,6 +129,7 @@ class VisitServiceCreateVisitTest {
         assertTrue(visitService.visitAutoCallInvoked);
     }
 
+    @DisplayName("проверяется сценарий «create visit with segmentation rule throws when service missing»")
     @Test
     void createVisitWithSegmentationRuleThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");

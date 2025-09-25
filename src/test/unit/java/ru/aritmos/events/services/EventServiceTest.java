@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.model.ChangedObject;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.config.LocalNoDockerDataBusClientStub;
@@ -17,6 +18,7 @@ class EventServiceTest {
     @Inject EventService eventService;
     @Inject LocalNoDockerDataBusClientStub dataBusClient;
 
+    @DisplayName("проверяется сценарий «get date string formats as rfc1123»")
     @Test
     void getDateStringFormatsAsRfc1123() {
         ZonedDateTime date = ZonedDateTime.of(2008, 4, 9, 23, 55, 38, 0, ZoneId.of("GMT"));
@@ -24,6 +26,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals("Wed, 09 Apr 2008 23:55:38 GMT", formatted);
     }
 
+    @DisplayName("проверяется сценарий «send changed event builds entity changed event»")
     @Test
     void sendChangedEventBuildsEntityChangedEvent() {
         dataBusClient.clearInvocations();
@@ -46,6 +49,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals(oldValue, changed.getOldValue());
     }
 
+    @DisplayName("проверяется сценарий «send sets sender and calls client»")
     @Test
     void sendSetsSenderAndCallsClient() {
         dataBusClient.clearInvocations();
@@ -64,6 +68,7 @@ class EventServiceTest {
         ru.aritmos.test.LoggingAssertions.assertEquals("vm", event.getSenderService());
     }
 
+    @DisplayName("проверяется сценарий «send to multiple destinations invokes client for each service»")
     @Test
     void sendToMultipleDestinationsInvokesClientForEachService() {
         dataBusClient.clearInvocations();
@@ -85,6 +90,7 @@ class EventServiceTest {
             });
     }
 
+    @DisplayName("проверяется сценарий «send changed event to multiple destinations builds event for each service»")
     @Test
     void sendChangedEventToMultipleDestinationsBuildsEventForEachService() {
         dataBusClient.clearInvocations();

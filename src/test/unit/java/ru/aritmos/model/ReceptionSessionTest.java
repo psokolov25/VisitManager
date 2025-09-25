@@ -4,9 +4,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class ReceptionSessionTest {
 
+    @DisplayName("проверяется сценарий «builder should populate all fields»")
     @Test
     void builderShouldPopulateAllFields() {
         User user = new User();

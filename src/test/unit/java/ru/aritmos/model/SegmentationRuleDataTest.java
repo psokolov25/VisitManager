@@ -4,9 +4,11 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class SegmentationRuleDataTest {
 
+    @DisplayName("проверяется сценарий «builder should populate all fields»")
     @Test
     void builderShouldPopulateAllFields() {
         HashMap<String, String> visitProperty = new HashMap<>();
@@ -30,6 +32,7 @@ class SegmentationRuleDataTest {
         assertEquals("queue11", data.getQueueId());
     }
 
+    @DisplayName("проверяется сценарий «visit property can be assigned later»")
     @Test
     void visitPropertyCanBeAssignedLater() {
         SegmentationRuleData data = SegmentationRuleData.builder().id("rule2").build();

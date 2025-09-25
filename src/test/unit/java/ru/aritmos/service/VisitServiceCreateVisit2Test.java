@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.exceptions.SystemException;
@@ -34,6 +35,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2Test {
 
+    @DisplayName("проверяется сценарий «creates visit and prints ticket when queue found»")
     @Test
     void createsVisitAndPrintsTicketWhenQueueFound() throws SystemException {
         VisitService service = new VisitService();
@@ -141,6 +143,7 @@ class VisitServiceCreateVisit2Test {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("проверяется сценарий «throws not found when services list empty»")
     @Test
     void throwsNotFoundWhenServicesListEmpty() throws SystemException {
         VisitService service = new VisitService();
@@ -177,6 +180,7 @@ class VisitServiceCreateVisit2Test {
         verify(printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("проверяется сценарий «throws not found when primary service missing in branch»")
     @Test
     void throwsNotFoundWhenPrimaryServiceMissingInBranch() throws SystemException {
         VisitService service = new VisitService();
@@ -214,6 +218,7 @@ class VisitServiceCreateVisit2Test {
         verify(printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("проверяется сценарий «throws not found when entry point missing»")
     @Test
     void throwsNotFoundWhenEntryPointMissing() throws SystemException {
         VisitService service = new VisitService();
@@ -259,6 +264,7 @@ class VisitServiceCreateVisit2Test {
         verify(printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("проверяется сценарий «throws bad request when segmentation rule returns empty queue»")
     @Test
     void throwsBadRequestWhenSegmentationRuleReturnsEmptyQueue() throws SystemException {
         VisitService service = new VisitService();
@@ -316,6 +322,7 @@ class VisitServiceCreateVisit2Test {
         verify(printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("проверяется сценарий «throws not found when queue missing in branch configuration»")
     @Test
     void throwsNotFoundWhenQueueMissingInBranchConfiguration() throws SystemException {
         VisitService service = new VisitService();

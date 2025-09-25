@@ -9,6 +9,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.service.Configuration;
@@ -27,6 +28,7 @@ class ServicePointControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет получение свободных точек обслуживания. */
+    @DisplayName("проверяется сценарий «fetches free service points»")
     @Test
     void fetchesFreeServicePoints() {
         Branch branch = new Branch("b1", "Branch");

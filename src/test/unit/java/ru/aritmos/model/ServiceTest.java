@@ -3,9 +3,11 @@ package ru.aritmos.model;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class ServiceTest {
 
+    @DisplayName("проверяется сценарий «clone should copy fields and maps independently»")
     @Test
     void cloneShouldCopyFieldsAndMapsIndependently() {
         Outcome outcome = new Outcome("1", "outcome");

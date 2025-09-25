@@ -5,12 +5,14 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.keycloack.model.Credentials;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class KeyCloakControllerTest {
 
+    @DisplayName("проверяется сценарий «auth delegates to client»")
     @Test
     void authDelegatesToClient() {
         KeyCloakController controller = new KeyCloakController();
@@ -25,6 +27,7 @@ class KeyCloakControllerTest {
         verify(client).Auth(credentials);
     }
 
+    @DisplayName("проверяется сценарий «delete session delegates to client»")
     @Test
     void deleteSessionDelegatesToClient() {
         KeyCloakController controller = new KeyCloakController();

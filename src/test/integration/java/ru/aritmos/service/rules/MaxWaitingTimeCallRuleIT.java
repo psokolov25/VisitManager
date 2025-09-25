@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.*;
 import ru.aritmos.model.visit.Visit;
 
@@ -20,6 +21,7 @@ class MaxWaitingTimeCallRuleIT {
     MaxWaitingTimeCallRule rule;
 
     /** Проверяет выбор визита с максимальным временем ожидания. */
+    @DisplayName("проверяется сценарий «selects visit with max waiting time»")
     @Test
     void selectsVisitWithMaxWaitingTime() {
         // отделение с рабочим профилем и очередью
@@ -60,6 +62,7 @@ class MaxWaitingTimeCallRuleIT {
     }
 
     /** Проверяет, что без пользователя выбрасывается исключение. */
+    @DisplayName("проверяется сценарий «call without user throws»")
     @Test
     void callWithoutUserThrows() {
         Branch branch = new Branch("b1", "branch");

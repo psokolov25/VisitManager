@@ -15,6 +15,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ class VisitServiceTransferToUserPoolTest {
         VisitEvent.TRANSFER_TO_USER_POOL.getParameters().clear();
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to user pool moves visit and publishes notifications»")
     @Test
     void visitTransferToUserPoolMovesVisitAndPublishesNotifications() {
         LOG.info("Шаг 1: формируем отделение, оператора и визит");
@@ -147,6 +149,7 @@ class VisitServiceTransferToUserPoolTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to user pool fails when service point missing»")
     @Test
     void visitTransferToUserPoolFailsWhenServicePointMissing() {
         LOG.info("Шаг 1: настраиваем отделение без нужной точки обслуживания");
@@ -173,6 +176,7 @@ class VisitServiceTransferToUserPoolTest {
         verifyNoInteractions(delayedEvents);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to user pool fails when visit missing»")
     @Test
     void visitTransferToUserPoolFailsWhenVisitMissing() {
         LOG.info("Шаг 1: создаём отделение с точкой без активного визита");
@@ -202,6 +206,7 @@ class VisitServiceTransferToUserPoolTest {
         verifyNoInteractions(delayedEvents);
     }
 
+    @DisplayName("проверяется сценарий «visit transfer to user pool fails when user not found»")
     @Test
     void visitTransferToUserPoolFailsWhenUserNotFound() {
         LOG.info("Шаг 1: готовим отделение с визитом, но без работающих операторов");

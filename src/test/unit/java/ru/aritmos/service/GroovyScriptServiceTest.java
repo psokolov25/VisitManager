@@ -1,6 +1,7 @@
 package ru.aritmos.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.GroovyScript;
 
 import static ru.aritmos.test.LoggingAssertions.*;
@@ -8,6 +9,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 /** Unit tests for {@link GroovyScriptService}. */
 class GroovyScriptServiceTest {
 
+    @DisplayName("проверяется сценарий «executes script and exposes variables»")
     @Test
     void executesScriptAndExposesVariables() {
         GroovyScriptService service = new GroovyScriptService();
@@ -25,6 +27,7 @@ class GroovyScriptServiceTest {
     /**
      * Бросает исключение при ошибке синтаксиса в сценарии.
      */
+    @DisplayName("проверяется сценарий «execute throws on compilation error»")
     @Test
     void executeThrowsOnCompilationError() {
         GroovyScriptService service = new GroovyScriptService();

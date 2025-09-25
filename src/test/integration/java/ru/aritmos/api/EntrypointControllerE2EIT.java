@@ -9,6 +9,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.*;
 import ru.aritmos.service.Configuration;
 
@@ -26,6 +27,7 @@ class EntrypointControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет получение списка доступных услуг отделения. */
+    @DisplayName("проверяется сценарий «fetches available services»")
     @Test
     void fetchesAvailableServices() {
         Branch branch = new Branch("b1", "Branch");

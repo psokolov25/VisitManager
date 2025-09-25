@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
@@ -29,6 +30,7 @@ class EventHandlerContextTest {
         Body(Branch branch) { this.b1 = branch; }
     }
 
+    @DisplayName("проверяется сценарий «branch public handler converts body to map»")
     @Test
     void branchPublicHandlerConvertsBodyToMap() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -50,6 +52,7 @@ class EventHandlerContextTest {
         assertEquals(branch, captor.getValue().get("b1"));
     }
 
+    @DisplayName("проверяется сценарий «simple handlers just log»")
     @Test
     void simpleHandlersJustLog() {
         Event event = Event.builder().eventType("TEST").build();
@@ -58,6 +61,7 @@ class EventHandlerContextTest {
         assertDoesNotThrow(() -> new EventHandlerContext.EntityChangedHandler().Handle(event));
     }
 
+    @DisplayName("проверяется сценарий «not force logout closes point and ends visit»")
     @Test
     void notForceLogoutClosesPointAndEndsVisit() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -93,6 +97,7 @@ class EventHandlerContextTest {
                 .closeServicePoint("b1", "sp1", visitService, false, false, "", false, "");
     }
 
+    @DisplayName("проверяется сценарий «force logout closes point»")
     @Test
     void forceLogoutClosesPoint() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -127,6 +132,7 @@ class EventHandlerContextTest {
      * Проверяет, что метод {@link EventHandlerContext#AddHandlers()} регистрирует все типы событий
      * и публикует демонстрационную конфигурацию отделений.
      */
+    @DisplayName("проверяется сценарий «add handlers registers all listeners and publishes demo configuration»")
     @Test
     void addHandlersRegistersAllListenersAndPublishesDemoConfiguration() throws Exception {
         Field allHandlersField = KafkaListener.class.getDeclaredField("allHandlers");

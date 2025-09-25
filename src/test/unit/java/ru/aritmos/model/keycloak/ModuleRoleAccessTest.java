@@ -1,11 +1,13 @@
 package ru.aritmos.model.keycloak;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 
 class ModuleRoleAccessTest {
 
+    @DisplayName("проверяется сценарий «builderисеттерыработаютодинаково»")
     @Test
     void builderИСеттерыРаботаютОдинаково() {
         ModuleRoleAccess viaBuilder = ModuleRoleAccess.builder()

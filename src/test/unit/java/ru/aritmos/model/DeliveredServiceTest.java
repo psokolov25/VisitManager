@@ -1,9 +1,11 @@
 package ru.aritmos.model;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 class DeliveredServiceTest {
+    @DisplayName("проверяется сценарий «clone creates independent copy»")
     @Test
     void cloneCreatesIndependentCopy() {
         Outcome outcome = new Outcome("o1", "outcome");

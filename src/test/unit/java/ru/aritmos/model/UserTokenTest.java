@@ -3,9 +3,11 @@ package ru.aritmos.model;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class UserTokenTest {
 
+    @DisplayName("проверяется сценарий «builder and setters create user token»")
     @Test
     void builderAndSettersCreateUserToken() {
         UserInfo info = UserInfo.builder()

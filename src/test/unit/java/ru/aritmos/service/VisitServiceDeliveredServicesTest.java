@@ -7,6 +7,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.ArrayList;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
@@ -22,6 +23,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceDeliveredServicesTest {
 
+    @DisplayName("проверяется сценарий «returns delivered services of current service»")
     @Test
     void returnsDeliveredServicesOfCurrentService() {
         VisitService service = new VisitService();
@@ -54,6 +56,7 @@ class VisitServiceDeliveredServicesTest {
         assertSame(delivered, result.get("ds1"));
     }
 
+    @DisplayName("проверяется сценарий «throws when current service missing»")
     @Test
     void throwsWhenCurrentServiceMissing() {
         VisitService service = new VisitService();
@@ -75,6 +78,7 @@ class VisitServiceDeliveredServicesTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("проверяется сценарий «add delivered service adds to current service»")
     @Test
     void addDeliveredServiceAddsToCurrentService() {
         Branch branch = new Branch("b1", "Branch");
@@ -106,6 +110,7 @@ class VisitServiceDeliveredServicesTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
+    @DisplayName("проверяется сценарий «delete delivered service removes from current service»")
     @Test
     void deleteDeliveredServiceRemovesFromCurrentService() {
         Branch branch = new Branch("b1", "Branch");
@@ -137,6 +142,7 @@ class VisitServiceDeliveredServicesTest {
     }
 
 
+    @DisplayName("проверяется сценарий «add outcome of delivered service sets outcome»")
     @Test
     void addOutcomeOfDeliveredServiceSetsOutcome() {
         Branch branch = new Branch("b1", "Branch");
@@ -168,6 +174,7 @@ class VisitServiceDeliveredServicesTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
+    @DisplayName("проверяется сценарий «add outcome of delivered service throws when missing delivered service»")
     @Test
     void addOutcomeOfDeliveredServiceThrowsWhenMissingDeliveredService() {
         Branch branch = new Branch("b1", "Branch");
@@ -194,6 +201,7 @@ class VisitServiceDeliveredServicesTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("проверяется сценарий «delete outcome delivered service clears outcome»")
     @Test
     void deleteOutcomeDeliveredServiceClearsOutcome() {
         Branch branch = new Branch("b1", "Branch");
@@ -226,4 +234,3 @@ class VisitServiceDeliveredServicesTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 }
-

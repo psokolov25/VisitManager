@@ -3,9 +3,11 @@ package ru.aritmos.model.tiny;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class TinyClassTest {
 
+    @DisplayName("проверяется сценарий «builder should populate fields»")
     @Test
     void builderShouldPopulateFields() {
         TinyClass tiny = TinyClass.builder().id("id1").name("Queue").build();
@@ -14,6 +16,7 @@ class TinyClassTest {
         assertEquals("Queue", tiny.getName());
     }
 
+    @DisplayName("проверяется сценарий «setters should allow changes»")
     @Test
     void settersShouldAllowChanges() {
         TinyClass tiny = new TinyClass();

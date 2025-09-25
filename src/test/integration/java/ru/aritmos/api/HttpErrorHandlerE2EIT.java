@@ -10,6 +10,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 /**
  * Проверка глобального обработчика HTTP-ошибок.
@@ -21,6 +22,7 @@ class HttpErrorHandlerE2EIT {
     @Client("/")
     HttpClient client;
 
+    @DisplayName("проверяется сценарий «returns unified error body»")
     @Test
     void returnsUnifiedErrorBody() {
         HttpClientResponseException ex = assertThrows(
@@ -31,4 +33,3 @@ class HttpErrorHandlerE2EIT {
         assertEquals("Branch not found", body.get("message"));
     }
 }
-

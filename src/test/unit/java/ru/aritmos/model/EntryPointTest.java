@@ -3,9 +3,11 @@ package ru.aritmos.model;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class EntryPointTest {
 
+    @DisplayName("проверяется сценарий «should inherit branch entity fields»")
     @Test
     void shouldInheritBranchEntityFields() {
         EntryPoint entryPoint = new EntryPoint();

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -57,6 +58,7 @@ class KeycloakKafkaIntegrationIT {
         }
     }
 
+    @DisplayName("проверяется сценарий «keycloak and kafka are accessible»")
     @Test
     void keycloakAndKafkaAreAccessible() throws Exception {
         assertTrue(keycloak != null && keycloak.isRunning(), "Keycloak должен быть запущен");
@@ -107,4 +109,3 @@ class KeycloakKafkaIntegrationIT {
         }
     }
 }
-

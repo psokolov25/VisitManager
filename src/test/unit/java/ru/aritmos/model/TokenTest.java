@@ -3,9 +3,11 @@ package ru.aritmos.model;
 import static ru.aritmos.test.LoggingAssertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class TokenTest {
 
+    @DisplayName("проверяется сценарий «builder and setters transfer token data»")
     @Test
     void builderAndSettersTransferTokenData() {
         Token viaBuilder = Token.builder()

@@ -7,9 +7,11 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class HttpErrorHandlerTest {
 
+    @DisplayName("проверяется сценарий «handleвозвращаеткодителоошибки»")
     @Test
     void handleВозвращаетКодИТелоОшибки() {
         HttpErrorHandler handler = new HttpErrorHandler();

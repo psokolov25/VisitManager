@@ -9,6 +9,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.tiny.TinyClass;
 import ru.aritmos.service.Configuration;
@@ -26,6 +27,7 @@ class ManagementControllerE2EIT {
     @Inject
     Configuration configuration;
 
+    @DisplayName("проверяется сценарий «returns branch by id»")
     @Test
     void returnsBranchById() {
         Branch branch = new Branch("b1", "Branch");
@@ -36,6 +38,7 @@ class ManagementControllerE2EIT {
         assertEquals("Branch", fetched.getName());
     }
 
+    @DisplayName("проверяется сценарий «returns tiny branches»")
     @Test
     void returnsTinyBranches() {
         Branch branch = new Branch("b2", "B2");

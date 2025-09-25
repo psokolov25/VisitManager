@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -14,6 +15,7 @@ import ru.aritmos.model.ServicePoint;
 
 class VisitServiceAutoCallTest {
 
+    @DisplayName("проверяется сценарий «branch auto call mode disables service points»")
     @Test
     void branchAutoCallModeDisablesServicePoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -36,6 +38,7 @@ class VisitServiceAutoCallTest {
         verify(branchService).add("b1", branch);
     }
 
+    @DisplayName("проверяется сценарий «service point auto call mode enables when branch mode on»")
     @Test
     void servicePointAutoCallModeEnablesWhenBranchModeOn() {
         Branch branch = new Branch("b1", "Branch");
@@ -63,6 +66,7 @@ class VisitServiceAutoCallTest {
         verify(branchService).add("b1", branch);
     }
 
+    @DisplayName("проверяется сценарий «service point auto call mode fails when branch mode off»")
     @Test
     void servicePointAutoCallModeFailsWhenBranchModeOff() {
         Branch branch = new Branch("b1", "Branch");
@@ -84,6 +88,7 @@ class VisitServiceAutoCallTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("проверяется сценарий «service point auto call mode throws when service point missing»")
     @Test
     void servicePointAutoCallModeThrowsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -103,6 +108,7 @@ class VisitServiceAutoCallTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("проверяется сценарий «service point auto call mode returns existing when disabling with branch mode off»")
     @Test
     void servicePointAutoCallModeReturnsExistingWhenDisablingWithBranchModeOff() {
         Branch branch = new Branch("b1", "Branch");
@@ -128,6 +134,7 @@ class VisitServiceAutoCallTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("проверяется сценарий «cancel auto call mode disables point and emits event»")
     @Test
     void cancelAutoCallModeDisablesPointAndEmitsEvent() {
         Branch branch = new Branch("b1", "Branch");
@@ -160,4 +167,3 @@ class VisitServiceAutoCallTest {
         assertSame(servicePoint, published.getBody());
     }
 }
-

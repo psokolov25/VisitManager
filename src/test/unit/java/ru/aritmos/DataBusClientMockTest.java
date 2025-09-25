@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import ru.aritmos.test.LoggingAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import reactor.core.publisher.Mono;
 import ru.aritmos.events.clients.DataBusClient;
 
@@ -14,6 +15,7 @@ class DataBusClientMockTest {
 
     @Inject DataBusClient dataBusClient;
 
+    @DisplayName("проверяется сценарий «data bus client stubbed»")
     @Test
     void dataBusClientStubbed() {
         Map<String, String> result =

@@ -13,6 +13,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
@@ -30,6 +31,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceMaxCallRulesTest {
 
+    @DisplayName("проверяется сценарий «visit call with maximal waiting time uses rule result»")
     @Test
     void visitCallWithMaximalWaitingTimeUsesRuleResult() {
         log.info("Готовим отделение и точку обслуживания с оператором для сценария максимального ожидания");
@@ -86,6 +88,7 @@ class VisitServiceMaxCallRulesTest {
         verify(service, times(2)).visitCall(eq(branch.getId()), eq(servicePoint.getId()), any(Visit.class), eq("callNext"));
     }
 
+    @DisplayName("проверяется сценарий «visit call with maximal waiting time enables autocall when rule returns empty»")
     @Test
     void visitCallWithMaximalWaitingTimeEnablesAutocallWhenRuleReturnsEmpty() {
         log.info("Настраиваем отделение в режиме авто-вызова для проверки перехода в автодовызов");
@@ -140,6 +143,7 @@ class VisitServiceMaxCallRulesTest {
         verify(branchService, times(2)).add(branch.getId(), branch);
     }
 
+    @DisplayName("проверяется сценарий «visit call with maximal waiting time fails when service point missing»")
     @Test
     void visitCallWithMaximalWaitingTimeFailsWhenServicePointMissing() {
         log.info("Проверяем сценарий, когда точка обслуживания отсутствует в конфигурации отделения");
@@ -164,6 +168,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.NOT_FOUND, second.getStatus());
     }
 
+    @DisplayName("проверяется сценарий «visit call with max life time fails when service point missing»")
     @Test
     void visitCallWithMaxLifeTimeFailsWhenServicePointMissing() {
         log.info("Конфигурация отделения не содержит точку обслуживания, ожидаем ошибку при вызове по времени жизни");
@@ -188,6 +193,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.NOT_FOUND, second.getStatus());
     }
 
+    @DisplayName("проверяется сценарий «visit call with maximal waiting time fails when user not logged»")
     @Test
     void visitCallWithMaximalWaitingTimeFailsWhenUserNotLogged() {
         log.info("Создаём точку обслуживания без оператора и проверяем реакцию метода");
@@ -214,6 +220,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.FORBIDDEN, second.getStatus());
     }
 
+    @DisplayName("проверяется сценарий «visit call with max life time fails when user not logged»")
     @Test
     void visitCallWithMaxLifeTimeFailsWhenUserNotLogged() {
         log.info("Имитация точки без оператора для правила по времени жизни");
@@ -240,6 +247,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.FORBIDDEN, second.getStatus());
     }
 
+    @DisplayName("проверяется сценарий «visit call with maximal waiting time returns empty when no auto call configured»")
     @Test
     void visitCallWithMaximalWaitingTimeReturnsEmptyWhenNoAutoCallConfigured() {
         log.info("Готовим отделение без режима автодовызова и ожидаем пустой результат");
@@ -275,6 +283,7 @@ class VisitServiceMaxCallRulesTest {
         verify(eventService, never()).send(anyString(), anyBoolean(), any(Event.class));
     }
 
+    @DisplayName("проверяется сценарий «visit call with max life time returns empty when no auto call configured»")
     @Test
     void visitCallWithMaxLifeTimeReturnsEmptyWhenNoAutoCallConfigured() {
         log.info("Отделение без автодовызова должно возвращать пустой результат при отсутствии кандидатов по времени жизни");
@@ -310,6 +319,7 @@ class VisitServiceMaxCallRulesTest {
         verify(eventService, never()).send(anyString(), anyBoolean(), any(Event.class));
     }
 
+    @DisplayName("проверяется сценарий «visit call with max life time uses rule result»")
     @Test
     void visitCallWithMaxLifeTimeUsesRuleResult() {
         log.info("Готовим отделение для сценария вызова по максимальному времени жизни визита");
@@ -366,6 +376,7 @@ class VisitServiceMaxCallRulesTest {
         verify(service, times(2)).visitCall(eq(branch.getId()), eq(servicePoint.getId()), any(Visit.class), eq("callNext"));
     }
 
+    @DisplayName("проверяется сценарий «visit call with max life time enables autocall when rule returns empty»")
     @Test
     void visitCallWithMaxLifeTimeEnablesAutocallWhenRuleReturnsEmpty() {
         log.info("Создаём отделение с авто-вызовом для проверки поведения правил по времени жизни");
@@ -421,6 +432,7 @@ class VisitServiceMaxCallRulesTest {
         verify(branchService, times(2)).add(branch.getId(), branch);
     }
 
+    @DisplayName("проверяется сценарий «visit call strategies do not trigger autocall for busy service point»")
     @Test
     void visitCallStrategiesDoNotTriggerAutocallForBusyServicePoint() {
         log.info("Готовим отделение с точкой, на которой уже обслуживается визит");

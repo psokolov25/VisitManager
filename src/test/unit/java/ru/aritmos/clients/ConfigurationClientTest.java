@@ -7,9 +7,11 @@ import io.micronaut.http.client.annotation.Client;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 class ConfigurationClientTest {
 
+    @DisplayName("проверяется сценарий «interface is annotated with client using expected url»")
     @Test
     void interfaceIsAnnotatedWithClientUsingExpectedUrl() {
         Client annotation = ConfigurationClient.class.getAnnotation(Client.class);
@@ -17,6 +19,7 @@ class ConfigurationClientTest {
         assertEquals("${micronaut.application.configurationURL}", annotation.value());
     }
 
+    @DisplayName("проверяется сценарий «get configuration method has get annotation»")
     @Test
     void getConfigurationMethodHasGetAnnotation() throws NoSuchMethodException {
         Method method = ConfigurationClient.class.getMethod("getConfiguration");
