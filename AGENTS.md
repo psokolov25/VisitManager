@@ -11,8 +11,6 @@
 ## Сборка, тесты и запуск
 - Сборка с тестами: `mvn -s .mvn/settings.xml clean verify`.
 - Сборка без тестов: `mvn -s .mvn/settings.xml -DskipTests package`.
-- ⚠️ В среде Codex все команды Maven выполняйте с параметром `-Dvisitmanager.proxyEnabled=true`,
-  чтобы явно включить проксирование при сборке.
 - Запуск JAR: `java -jar target/visitmanager.jar`.
 - Запуск в dev (если подключен плагин): `mvn -s .mvn/settings.xml mn:run`.
 - Тесты: `mvn -s .mvn/settings.xml test`.
