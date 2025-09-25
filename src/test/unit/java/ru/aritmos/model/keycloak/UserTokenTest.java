@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class UserTokenTest {
 
     @Test
-    void билдерИСеттерыФормируютОбъект() {
+    void builderAndSettersConstructObject() {
         UserInfo info = UserInfo.builder()
                 .sub("sub")
                 .name("Test User")

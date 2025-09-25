@@ -10,7 +10,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 class RealmAccessTest {
 
     @Test
-    void билдерИСеттерыФормируютПолныйДоступ() {
+    void builderAndSettersConstructFullAccess() {
         GroupRepresentation branch = new GroupRepresentation();
         branch.setName("branch-1");
         GroupRepresentation group = new GroupRepresentation();

@@ -10,7 +10,7 @@ class TransactionCompletionStatusTest {
 
     @Test
     @DisplayName("перечисление содержит полный список статусов транзакции")
-    void проверяемПолныйНаборСтатусов() {
+    void verifyFullSetOfStatuses() {
         TransactionCompletionStatus[] ожидаемыеСтатусы = {
             TransactionCompletionStatus.OK,
             TransactionCompletionStatus.NO_SHOW,
@@ -30,7 +30,7 @@ class TransactionCompletionStatusTest {
 
     @Test
     @DisplayName("можно получить статус по его строковому имени")
-    void получаемСтатусПоИмени() {
+    void retrievesStatusByName() {
         assertEquals(
             TransactionCompletionStatus.REMOVED_BY_EMP,
             TransactionCompletionStatus.valueOf("REMOVED_BY_EMP"));
@@ -38,7 +38,7 @@ class TransactionCompletionStatusTest {
 
     @Test
     @DisplayName("перечисление помечено аннотацией Serdeable")
-    void проверяемАннотациюSerdeable() {
+    void verifySerdeableAnnotation() {
         assertTrue(TransactionCompletionStatus.class.isAnnotationPresent(Serdeable.class));
     }
 }

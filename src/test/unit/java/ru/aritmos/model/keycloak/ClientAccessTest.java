@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class ClientAccessTest {
 
     @Test
-    void билдерИСеттерыДаютОдинаковыйРезультат() {
+    void builderAndSettersProduceSameResult() {
         ClientAccess viaBuilder = ClientAccess.builder()
                 .roles(Map.of("printer", List.of("print", "status")))
                 .build();

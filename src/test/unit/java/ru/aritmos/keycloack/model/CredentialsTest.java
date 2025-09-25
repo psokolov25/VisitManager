@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class CredentialsTest {
 
     @Test
-    void сеттерыИГеттерыДоступны() {
+    void settersAndGettersAreAccessible() {
         Credentials credentials = new Credentials();
         credentials.setUsername("user");
         credentials.setPassword("secret");
