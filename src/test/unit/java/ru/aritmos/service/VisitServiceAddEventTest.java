@@ -14,7 +14,7 @@ import ru.aritmos.model.visit.VisitEvent;
 
 class VisitServiceAddEventTest {
 
-    @DisplayName("Adds Event When Sequence Is Valid")
+    @DisplayName("Добавление события проходит при корректной последовательности")
     @Test
     void addsEventWhenSequenceIsValid() {
         Visit visit = Visit.builder()
@@ -32,7 +32,7 @@ class VisitServiceAddEventTest {
         assertEquals(VisitEvent.PLACED_IN_QUEUE, visit.getEvents().get(1).getVisitEvent());
     }
 
-    @DisplayName("First Event Must Be Created")
+    @DisplayName("Первое событие обязательно создаётся")
     @Test
     void firstEventMustBeCreated() {
         Visit visit = Visit.builder()
@@ -47,7 +47,7 @@ class VisitServiceAddEventTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("Throws When Event Cannot Follow Previous")
+    @DisplayName("Выбрасывается исключение, если событие не может следовать за предыдущим")
     @Test
     void throwsWhenEventCannotFollowPrevious() {
         Visit visit = Visit.builder()

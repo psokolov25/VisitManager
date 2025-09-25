@@ -23,7 +23,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceDeliveredServicesTest {
 
-    @DisplayName("Returns Delivered Services Of Current Service")
+    @DisplayName("getDeliveredServices возвращает фактические услуги текущей услуги визита")
     @Test
     void returnsDeliveredServicesOfCurrentService() {
         VisitService service = new VisitService();
@@ -56,7 +56,7 @@ class VisitServiceDeliveredServicesTest {
         assertSame(delivered, result.get("ds1"));
     }
 
-    @DisplayName("Throws When Current Service Missing")
+    @DisplayName("getDeliveredServices выбрасывает исключение при отсутствии текущей услуги")
     @Test
     void throwsWhenCurrentServiceMissing() {
         VisitService service = new VisitService();
@@ -78,7 +78,7 @@ class VisitServiceDeliveredServicesTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("Add Delivered Service Adds To Current Service")
+    @DisplayName("addDeliveredService добавляет фактическую услугу к текущей услуге")
     @Test
     void addDeliveredServiceAddsToCurrentService() {
         Branch branch = new Branch("b1", "Branch");
@@ -110,7 +110,7 @@ class VisitServiceDeliveredServicesTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
-    @DisplayName("Delete Delivered Service Removes From Current Service")
+    @DisplayName("deleteDeliveredService удаляет фактическую услугу из текущей услуги")
     @Test
     void deleteDeliveredServiceRemovesFromCurrentService() {
         Branch branch = new Branch("b1", "Branch");
@@ -142,7 +142,7 @@ class VisitServiceDeliveredServicesTest {
     }
 
 
-    @DisplayName("Add Outcome Of Delivered Service Sets Outcome")
+    @DisplayName("addOutcomeOfDeliveredService устанавливает исход фактической услуги")
     @Test
     void addOutcomeOfDeliveredServiceSetsOutcome() {
         Branch branch = new Branch("b1", "Branch");
@@ -174,7 +174,7 @@ class VisitServiceDeliveredServicesTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
-    @DisplayName("Add Outcome Of Delivered Service Throws When Missing Delivered Service")
+    @DisplayName("addOutcomeOfDeliveredService выбрасывает исключение при отсутствии фактической услуги")
     @Test
     void addOutcomeOfDeliveredServiceThrowsWhenMissingDeliveredService() {
         Branch branch = new Branch("b1", "Branch");
@@ -201,7 +201,7 @@ class VisitServiceDeliveredServicesTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("Delete Outcome Delivered Service Clears Outcome")
+    @DisplayName("deleteOutcomeDeliveredService очищает исход фактической услуги")
     @Test
     void deleteOutcomeDeliveredServiceClearsOutcome() {
         Branch branch = new Branch("b1", "Branch");
