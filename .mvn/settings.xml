@@ -8,7 +8,7 @@
   <proxies>
     <proxy>
       <id>visitmanager-http-proxy</id>
-      <active>${visitmanager.proxyEnabled}</active>
+      <active>true</active>
       <protocol>http</protocol>
       <host>proxy</host>
       <port>8080</port>
@@ -16,7 +16,7 @@
     </proxy>
     <proxy>
       <id>visitmanager-https-proxy</id>
-      <active>${visitmanager.proxyEnabled}</active>
+      <active>true</active>
       <protocol>https</protocol>
       <host>proxy</host>
       <port>8080</port>
