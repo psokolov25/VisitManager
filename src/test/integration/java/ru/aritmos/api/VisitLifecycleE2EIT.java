@@ -32,7 +32,7 @@ class VisitLifecycleE2EIT {
     @Inject
     Configuration configuration;
 
-    @DisplayName("Creates And Cancels Visit")
+    @DisplayName("Создание и отмена визита")
     @Test
     void createsAndCancelsVisit() {
         Branch branch = new Branch("b1", "Branch");

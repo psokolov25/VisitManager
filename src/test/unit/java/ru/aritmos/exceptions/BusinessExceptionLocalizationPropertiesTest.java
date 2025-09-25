@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class BusinessExceptionLocalizationPropertiesTest {
 
-    @DisplayName("Language Is Normalized By Removing Wrapping Quotes")
+    @DisplayName("Язык нормализуется удалением обрамляющих кавычек")
     @Test
     void languageIsNormalizedByRemovingWrappingQuotes() {
         BusinessExceptionLocalizationProperties.ChannelLocalization localization =
@@ -21,7 +21,7 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("en", localization.getDefaultLanguage());
     }
 
-    @DisplayName("Placeholder With Default Value Returns It")
+    @DisplayName("Плейсхолдер со значением по умолчанию возвращает его")
     @Test
     void placeholderWithDefaultValueReturnsIt() {
         BusinessExceptionLocalizationProperties.ChannelLocalization localization =
@@ -32,7 +32,7 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("ru", localization.getLanguage());
     }
 
-    @DisplayName("Placeholder Without Default Value Clears Language")
+    @DisplayName("Плейсхолдер без значения по умолчанию очищает язык")
     @Test
     void placeholderWithoutDefaultValueClearsLanguage() {
         BusinessExceptionLocalizationProperties.ChannelLocalization localization =
@@ -43,7 +43,7 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertNull(localization.getLanguage());
     }
 
-    @DisplayName("Log Fallback Enabled When Languages Match After Normalization")
+    @DisplayName("Резервный лог включается, когда языки совпадают после нормализации")
     @Test
     void logFallbackEnabledWhenLanguagesMatchAfterNormalization() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
@@ -73,7 +73,7 @@ class BusinessExceptionLocalizationPropertiesTest {
     }
 
 
-    @DisplayName("Resource Localization Provides Russian Translation")
+    @DisplayName("Ресурсная локализация возвращает перевод на русский")
     @Test
     void resourceLocalizationProvidesRussianTranslation() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
@@ -96,7 +96,7 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("Отделение не найдено", messages.responseBody());
     }
 
-    @DisplayName("Resource Localization Returns English Translation For Russian Key")
+    @DisplayName("Ресурсная локализация возвращает английский перевод для русского ключа")
     @Test
     void resourceLocalizationReturnsEnglishTranslationForRussianKey() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
@@ -119,7 +119,7 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("Delayed return has not yet been completed", messages.responseBody());
     }
 
-    @DisplayName("Configurer Reconfigures Localization After Update")
+    @DisplayName("Конфигуратор перенастраивает локализацию после обновления")
     @Test
     void configurerReconfiguresLocalizationAfterUpdate() {
         BusinessException.resetLocalization();

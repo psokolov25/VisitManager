@@ -13,7 +13,7 @@ import ru.aritmos.exceptions.SystemException;
 
 class EventHandlerTest {
 
-    @DisplayName("Handle Method Should Be Annotated For Io Executor")
+    @DisplayName("Метод handle должен быть аннотирован исполнителем IO")
     @Test
     void handleMethodShouldBeAnnotatedForIoExecutor() throws NoSuchMethodException {
         Method handle = EventHandler.class.getMethod("Handle", Event.class);
@@ -23,7 +23,7 @@ class EventHandlerTest {
         assertEquals(TaskExecutors.IO, executeOn.value());
     }
 
-    @DisplayName("Handle Method Should Declare Expected Exceptions")
+    @DisplayName("Метод handle должен декларировать ожидаемые исключения")
     @Test
     void handleMethodShouldDeclareExpectedExceptions() throws NoSuchMethodException {
         Method handle = EventHandler.class.getMethod("Handle", Event.class);

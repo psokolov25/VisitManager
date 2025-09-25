@@ -11,7 +11,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 class LocalNoDockerKeycloakStubTest {
 
-    @DisplayName("Returns Predictable User Data")
+    @DisplayName("Возвращаются предсказуемые данные пользователя")
     @Test
     void returnsPredictableUserData() {
         LocalNoDockerKeycloakStub stub = new LocalNoDockerKeycloakStub();
@@ -26,7 +26,7 @@ class LocalNoDockerKeycloakStubTest {
         assertEquals("tester@local", u.getEmail());
     }
 
-    @DisplayName("Other Methods Return Stubs")
+    @DisplayName("Остальные методы возвращают заглушки")
     @Test
     void otherMethodsReturnStubs() {
         LocalNoDockerKeycloakStub stub = new LocalNoDockerKeycloakStub();

@@ -26,7 +26,7 @@ class BusinessExceptionLocalizationTest {
         BusinessException.resetLocalization();
     }
 
-    @DisplayName("Applies Localization From Configuration")
+    @DisplayName("Локализация применяется из конфигурации")
     @Test
     void appliesLocalizationFromConfiguration() {
         BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();
@@ -83,7 +83,7 @@ class BusinessExceptionLocalizationTest {
         assertEquals("Visit not found", appender.list.get(0).getFormattedMessage());
     }
 
-    @DisplayName("Replaces Message Field In Map Response Body")
+    @DisplayName("Поле message в ответе заменяется локализованным значением")
     @Test
     void replacesMessageFieldInMapResponseBody() {
         BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();

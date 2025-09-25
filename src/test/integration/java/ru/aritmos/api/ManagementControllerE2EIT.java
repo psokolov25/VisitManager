@@ -27,7 +27,7 @@ class ManagementControllerE2EIT {
     @Inject
     Configuration configuration;
 
-    @DisplayName("Returns Branch By Id")
+    @DisplayName("Возврат отделения по идентификатору")
     @Test
     void returnsBranchById() {
         Branch branch = new Branch("b1", "Branch");
@@ -38,7 +38,7 @@ class ManagementControllerE2EIT {
         assertEquals("Branch", fetched.getName());
     }
 
-    @DisplayName("Returns Tiny Branches")
+    @DisplayName("Возврат укороченного списка отделений")
     @Test
     void returnsTinyBranches() {
         Branch branch = new Branch("b2", "B2");

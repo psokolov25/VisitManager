@@ -11,13 +11,13 @@ class CustomSecurityRuleTest {
 
     private final CustomSecurityRule rule = new CustomSecurityRule();
 
-    @DisplayName("Returns High Order")
+    @DisplayName("Правило возвращает высокий порядок")
     @Test
     void returnsHighOrder() {
         assertEquals(100000, rule.getOrder());
     }
 
-    @DisplayName("Check Always Allows Access")
+    @DisplayName("Проверка всегда разрешает доступ")
     @Test
     void checkAlwaysAllowsAccess() {
         SecurityRuleResult result = Mono.from(rule.check(null, null)).block();

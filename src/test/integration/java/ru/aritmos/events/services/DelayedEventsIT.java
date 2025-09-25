@@ -42,7 +42,7 @@ class DelayedEventsIT {
         return Mockito.mock(EventService.class);
     }
 
-    @DisplayName("Schedules Event With Context")
+    @DisplayName("Планирование события с использованием контекста")
     @Test
     void schedulesEventWithContext() {
         Event event = Event.builder().eventType("t").build();

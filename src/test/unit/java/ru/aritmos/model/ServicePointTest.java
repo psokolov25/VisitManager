@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class ServicePointTest {
 
-    @DisplayName("Constructor With Id And Name Should Set Fields And Defaults")
+    @DisplayName("Конструктор с идентификатором и именем задаёт поля и значения по умолчанию")
     @Test
     void constructorWithIdAndNameShouldSetFieldsAndDefaults() {
         String id = UUID.randomUUID().toString();
@@ -23,7 +23,7 @@ class ServicePointTest {
         assertTrue(servicePoint.getVisits().isEmpty());
     }
 
-    @DisplayName("Constructor With Name Should Generate Id And Set Defaults")
+    @DisplayName("Конструктор только с именем генерирует идентификатор и значения по умолчанию")
     @Test
     void constructorWithNameShouldGenerateIdAndSetDefaults() {
         ServicePoint servicePoint = new ServicePoint("Окно 2");

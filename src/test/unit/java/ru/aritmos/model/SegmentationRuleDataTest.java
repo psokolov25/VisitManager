@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class SegmentationRuleDataTest {
 
-    @DisplayName("Builder Should Populate All Fields")
+    @DisplayName("Билдер заполняет все поля")
     @Test
     void builderShouldPopulateAllFields() {
         HashMap<String, String> visitProperty = new HashMap<>();
@@ -32,7 +32,7 @@ class SegmentationRuleDataTest {
         assertEquals("queue11", data.getQueueId());
     }
 
-    @DisplayName("Visit Property Can Be Assigned Later")
+    @DisplayName("Свойство визита можно назначить позднее")
     @Test
     void visitPropertyCanBeAssignedLater() {
         SegmentationRuleData data = SegmentationRuleData.builder().id("rule2").build();

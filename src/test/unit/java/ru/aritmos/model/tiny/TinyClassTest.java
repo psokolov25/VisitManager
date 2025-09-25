@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class TinyClassTest {
 
-    @DisplayName("Builder Should Populate Fields")
+    @DisplayName("Билдер заполняет поля")
     @Test
     void builderShouldPopulateFields() {
         TinyClass tiny = TinyClass.builder().id("id1").name("Queue").build();
@@ -16,7 +16,7 @@ class TinyClassTest {
         assertEquals("Queue", tiny.getName());
     }
 
-    @DisplayName("Setters Should Allow Changes")
+    @DisplayName("Сеттеры позволяют изменять поля")
     @Test
     void settersShouldAllowChanges() {
         TinyClass tiny = new TinyClass();

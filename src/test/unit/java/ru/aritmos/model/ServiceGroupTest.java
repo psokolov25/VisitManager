@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class ServiceGroupTest {
 
-    @DisplayName("Custom Constructor Should Fill Hierarchy Fields")
+    @DisplayName("Пользовательский конструктор заполняет поля иерархии")
     @Test
     void customConstructorShouldFillHierarchyFields() {
         List<String> services = List.of("s1", "s2");
@@ -21,7 +21,7 @@ class ServiceGroupTest {
         assertEquals(services, group.getServiceIds());
     }
 
-    @DisplayName("Segmentation Identifiers Should Be Mutable")
+    @DisplayName("Идентификаторы сегментации можно изменять")
     @Test
     void segmentationIdentifiersShouldBeMutable() {
         ServiceGroup group = new ServiceGroup();
