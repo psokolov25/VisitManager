@@ -9,6 +9,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.filter.ServerFilterChain;
 import org.junit.jupiter.api.DisplayName;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ class SwaggerYamlCharsetFilterTest {
 
     @Test
     @DisplayName("Добавление кодировки UTF-8 к YAML-ответу без charset при обработке swagger-файла")
+
     void appendsCharsetForYamlWithoutEncoding() {
         LOG.info("Шаг 1: подготавливаем ответ с типом application/yaml без charset.");
         MutableHttpResponse<?> response = HttpResponse.ok();
@@ -69,6 +71,7 @@ class SwaggerYamlCharsetFilterTest {
 
     @Test
     @DisplayName("Пропуск нерелевантных ответов: не-YAML содержимое и не-YAML запросы остаются неизменными")
+
     void skipsNonYamlResponsesAndRequests() {
         LOG.info("Шаг 1: ответ с типом application/json для запроса не к YAML-спецификации.");
         MutableHttpResponse<?> jsonResponse = HttpResponse.ok();
