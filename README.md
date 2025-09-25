@@ -3,7 +3,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396)
 ![Micronaut](https://img.shields.io/badge/Micronaut-4.7.6-1C1C1C)
 ![Build](https://img.shields.io/badge/Build-Maven-blue)
-[![Tests](https://img.shields.io/badge/tests-557%20passing-brightgreen)](#-тестирование)
+[![Tests](https://img.shields.io/badge/tests-561%20passing-brightgreen)](#-тестирование)
 [![Docs](https://img.shields.io/badge/Docs-Use%20Cases-blue)](docs/use-cases.md)
 [![Coverage](https://img.shields.io/badge/Coverage-n%2Fa-lightgrey)](#-тестирование)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
@@ -930,10 +930,10 @@ class HttpExample {
 ## 🧪 Тестирование
 
 
-Команда ниже выполняет 557 модульных тестов; на текущей сборке отчёт JaCoCo не сформирован из-за отсутствия файла `jacoco.exec`, поэтому покрытие временно недоступно.【be1475†L89-L101】
+Команда ниже выполняет 561 модульный тест; на текущей сборке отчёт JaCoCo не сформирован из-за отсутствия файла `jacoco.exec`, поэтому покрытие временно недоступно.【cb59a0†L1-L20】
 
 ```bash
-JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn test
+JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn -s .mvn/settings.xml test
 ```
 
 Для запуска 11 интеграционных сценариев используйте профили Failsafe: `mvn -Pit-resources verify`
@@ -963,6 +963,7 @@ JAVA_TOOL_OPTIONS='-Djava.net.preferIPv4Stack=true' mvn test
 - ru.aritmos.config.LocalNoDockerDataBusClientStubTest — убеждается в работе заглушки DataBus для режима без Docker.
 - ru.aritmos.config.LocalNoDockerKeycloakStubTest — проверяет, что заглушка клиента Keycloak возвращает фиктивные данные.
 - ru.aritmos.DataBusClientMockTest — проверяет, что Micronaut Test Resources подменяет DataBusClient предсказуемым ответом.
+- ru.aritmos.config.SwaggerYamlCharsetFilterTest — проверяет фильтр Swagger YAML: добавление базового заголовка, дозаполнение кодировки и пропуск нерелевантных ответов с детальным логированием шагов.【F:src/test/unit/java/ru/aritmos/config/SwaggerYamlCharsetFilterTest.java†L28-L98】
 - ru.aritmos.docs.CurlCheatsheetGeneratorTest — генерирует подсказку по `curl`, проверяя создание документа из OpenAPI‑описания.
 
 #### Внешние клиенты
