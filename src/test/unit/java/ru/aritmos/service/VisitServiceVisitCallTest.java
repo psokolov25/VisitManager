@@ -46,7 +46,7 @@ class VisitServiceVisitCallTest {
         VisitEvent.START_SERVING.getParameters().clear();
     }
 
-    @DisplayName("Visit Call Moves Visit From Queue And Publishes Events")
+    @DisplayName("Вызов визита переносит клиента из очереди и публикует события")
     @Test
     void visitCallMovesVisitFromQueueAndPublishesEvents() {
         Branch branch = new Branch("b1", "Отделение");
@@ -108,7 +108,7 @@ class VisitServiceVisitCallTest {
         assertSame(VisitEvent.START_SERVING, startServingEvent);
     }
 
-    @DisplayName("Visit Call Fails When Service Point Busy")
+    @DisplayName("Вызов визита завершается ошибкой, если окно занято")
     @Test
     void visitCallFailsWhenServicePointBusy() {
         Branch branch = new Branch("b1", "Отделение");
@@ -133,7 +133,7 @@ class VisitServiceVisitCallTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(service));
     }
 
-    @DisplayName("Visit Call Fails When Service Point Missing")
+    @DisplayName("Вызов визита завершается ошибкой, если окно не найдено")
     @Test
     void visitCallFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -154,7 +154,7 @@ class VisitServiceVisitCallTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(service));
     }
 
-    @DisplayName("Visit Call Transfers Pool Metadata To Parameters")
+    @DisplayName("Вызов визита переносит данные пула в параметры визита")
     @Test
     void visitCallTransfersPoolMetadataToParameters() {
         Branch branch = new Branch("b1", "Отделение");
@@ -185,7 +185,7 @@ class VisitServiceVisitCallTest {
         assertNull(visit.getPoolUserId());
     }
 
-    @DisplayName("Visit Call By Id Delegates To Cherry Pick And Handles Missing")
+    @DisplayName("Вызов визита по идентификатору делегирует обработчику «cherry-pick» и корректно реагирует на отсутствие визита")
     @Test
     void visitCallByIdDelegatesToCherryPickAndHandlesMissing() {
         Visit visit = Visit.builder().id("v1").branchId("b1").parameterMap(new HashMap<>()).build();
