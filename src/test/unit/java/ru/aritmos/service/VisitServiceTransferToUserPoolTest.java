@@ -45,6 +45,7 @@ class VisitServiceTransferToUserPoolTest {
         VisitEvent.TRANSFER_TO_USER_POOL.getParameters().clear();
     }
 
+
     @DisplayName("Перевод визита в пользовательский пул публикует уведомления")
     @Test
     void visitTransferToUserPoolMovesVisitAndPublishesNotifications() {
@@ -149,6 +150,7 @@ class VisitServiceTransferToUserPoolTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+
     @DisplayName("Перевод в пользовательский пул завершает ошибкой при отсутствии точки обслуживания")
     @Test
     void visitTransferToUserPoolFailsWhenServicePointMissing() {
@@ -175,6 +177,7 @@ class VisitServiceTransferToUserPoolTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), eq(service));
         verifyNoInteractions(delayedEvents);
     }
+
 
     @DisplayName("Перевод в пользовательский пул завершает ошибкой при отсутствии визита")
     @Test
@@ -205,6 +208,7 @@ class VisitServiceTransferToUserPoolTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), eq(service));
         verifyNoInteractions(delayedEvents);
     }
+
 
     @DisplayName("Перевод в пользовательский пул завершает ошибкой при отсутствии пользователя")
     @Test
