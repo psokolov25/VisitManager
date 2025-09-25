@@ -145,3 +145,11 @@
 
 ## Отслеживание описаний тестов
 - 2025-09-28: выполнена ревизия каталога `src/test`. Все методы с `@Test` снабжены аннотациями `@DisplayName`. При добавлении новых тестов обязательно указывайте человеко-читаемое описание через `@DisplayName`, чтобы поддерживать единый формат отчётности.
+
+## Прогресс локализации @DisplayName
+- 2025-09-29 (итерация 1): описания тестов в `src/test/unit/java/ru/aritmos/exceptions/BusinessExceptionTest.java` и `src/test/unit/java/ru/aritmos/exceptions/SystemExceptionTest.java` переведены на русский язык и приведены к единому стилю.
+- 2025-09-29 (итерация 2): локализованы описания тестов в `src/test/unit/java/ru/aritmos/exceptions/BusinessExceptionLocalizationPropertiesTest.java` и `src/test/unit/java/ru/aritmos/exceptions/BusinessExceptionLocalizationTest.java`.
+- 2025-09-29 (итерация 3): переведены и унифицированы описания тестов в `src/test/unit/java/ru/aritmos/service/VisitServiceVisitAutoCallTest.java`, `src/test/unit/java/ru/aritmos/service/VisitServiceAddServiceTest.java` и `src/test/unit/java/ru/aritmos/service/VisitServiceVisitCallTest.java`.
+- 2025-09-29 (итерация 4): локализованы описания тестов в `src/test/unit/java/ru/aritmos/service/VisitServiceAutoCallTest.java` и `src/test/unit/java/ru/aritmos/service/VisitServiceAutoCallModeTest.java`.
+- 2025-09-29 (итерация 5): переведены и унифицированы описания тестов в `src/test/unit/java/ru/aritmos/service/VisitServiceVisitConfirmTest.java`, `src/test/unit/java/ru/aritmos/service/VisitServiceVisitEndTest.java` и `src/test/unit/java/ru/aritmos/service/VisitServiceVisitPostPoneTest.java`.
+- 2025-09-29 (итерация 6): локализованы описания `@DisplayName` в `src/test/unit/java/ru/aritmos/EntrypointTest.java`, `src/test/unit/java/ru/aritmos/ApplicationTest.java`, `src/test/unit/java/ru/aritmos/keycloack/customsecurity/CustomSecurityRuleTest.java`, `src/test/unit/java/ru/aritmos/keycloack/model/KeyCloackUserTest.java`, `src/test/unit/java/ru/aritmos/keycloack/model/CredentialsTest.java`, `src/test/unit/java/ru/aritmos/docs/CurlCheatsheetGeneratorTest.java`, `src/test/unit/java/ru/aritmos/events/services/KafkaListenerTest.java`, `src/test/unit/java/ru/aritmos/events/services/MultiserviceEventTaskTest.java` и `src/test/unit/java/ru/aritmos/events/clients/DataBusClientTest.java`.

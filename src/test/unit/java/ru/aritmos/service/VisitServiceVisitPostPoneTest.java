@@ -27,7 +27,7 @@ class VisitServiceVisitPostPoneTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(VisitServiceVisitPostPoneTest.class);
 
-    @DisplayName("Visit Post Pone Returns Visit To User Pool")
+    @DisplayName("Отложение визита возвращает клиента в пул оператора")
     @Test
     void visitPostPoneReturnsVisitToUserPool() {
         LOG.info("Шаг 1: подготавливаем отделение с оператором и активным визитом");
@@ -63,7 +63,7 @@ class VisitServiceVisitPostPoneTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("Visit Post Pone Throws When Visit Missing")
+    @DisplayName("Отложение визита завершается ошибкой 404 при отсутствии активного визита")
     @Test
     void visitPostPoneThrowsWhenVisitMissing() {
         LOG.info("Шаг 1: формируем отделение с точкой обслуживания без назначенного визита");
@@ -95,7 +95,7 @@ class VisitServiceVisitPostPoneTest {
         assertEquals("BUSINESS_ERROR", eventCaptor.getValue().getEventType());
     }
 
-    @DisplayName("Visit Post Pone Throws When User Missing")
+    @DisplayName("Отложение визита завершается ошибкой 404 при отсутствии оператора")
     @Test
     void visitPostPoneThrowsWhenUserMissing() {
         LOG.info("Шаг 1: создаём отделение с визитом, но без назначенного оператора");

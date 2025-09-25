@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class KeyCloackUserTest {
 
-    @DisplayName("Fields Can Be Set And Read")
+    @DisplayName("Модель пользователя Keycloak сохраняет и возвращает заданные поля")
     @Test
     void fieldsCanBeSetAndRead() {
         KeyCloackUser user = new KeyCloackUser();
