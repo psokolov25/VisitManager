@@ -1,12 +1,14 @@
 package ru.aritmos.model.keycloak;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class RealmAccessTest {
 
+    @DisplayName("Builder And Setters Form Role List")
     @Test
     void builderAndSettersFormRoleList() {
         RealmAccess viaBuilder = RealmAccess.builder()

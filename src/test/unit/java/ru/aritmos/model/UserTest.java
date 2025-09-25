@@ -2,6 +2,7 @@ package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class UserTest {
+    @DisplayName("Constructor Initializes Fields With Keycloak Client")
     @Test
     void constructorInitializesFieldsWithKeycloakClient() {
         KeyCloackClient client = mock(KeyCloackClient.class);
@@ -25,6 +27,7 @@ class UserTest {
         assertSame(client, user.getKeyCloackClient());
     }
 
+    @DisplayName("Break Status And Duration Calculation")
     @Test
     void breakStatusAndDurationCalculation() {
         User user = new User("2", "worker", null);
@@ -40,6 +43,7 @@ class UserTest {
         assertEquals(45L, user.getLastBreakDuration());
     }
 
+    @DisplayName("Constructor Generates Id When Not Provided")
     @Test
     void constructorGeneratesIdWhenNotProvided() {
         KeyCloackClient client = mock(KeyCloackClient.class);

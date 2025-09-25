@@ -2,12 +2,14 @@ package ru.aritmos;
 
 import static ru.aritmos.test.LoggingAssertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mockStatic;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.runtime.Micronaut;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 class ApplicationTest {
+    @DisplayName("Main")
     @Test
     void main() {
         try (MockedStatic<Micronaut> mic = mockStatic(Micronaut.class)) {
@@ -19,6 +21,7 @@ class ApplicationTest {
         }
     }
 
+    @DisplayName("Get Configuration")
     @Test
     void getConfiguration() {
         Application app = new Application();

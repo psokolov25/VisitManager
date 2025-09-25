@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
@@ -36,6 +37,7 @@ class VisitServiceTransferToServicePointPoolTest {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Moves Visit And Publishes Events")
     @Test
     void visitTransferToServicePointPoolMovesVisitAndPublishesEvents() {
         Branch branch = new Branch("b1", "Branch");
@@ -145,6 +147,7 @@ class VisitServiceTransferToServicePointPoolTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Fails When Service Point Missing")
     @Test
     void visitTransferToServicePointPoolFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -165,6 +168,7 @@ class VisitServiceTransferToServicePointPoolTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Fails When Visit Missing")
     @Test
     void visitTransferToServicePointPoolFailsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -188,6 +192,7 @@ class VisitServiceTransferToServicePointPoolTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Fails When Pool Point Missing")
     @Test
     void visitTransferToServicePointPoolFailsWhenPoolPointMissing() {
         Branch branch = new Branch("b1", "Branch");

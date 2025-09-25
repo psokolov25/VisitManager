@@ -1,11 +1,13 @@
 package ru.aritmos.service.rules;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 
 class RuleTest {
 
+    @DisplayName("Constants Have Default Values")
     @Test
     void constantsHaveDefaultValues() {
         assertNotNull(Rule.id, "идентификатор должен быть задан");

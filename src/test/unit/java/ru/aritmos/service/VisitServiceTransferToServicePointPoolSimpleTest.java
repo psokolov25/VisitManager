@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
@@ -39,6 +40,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Moves Visit And Schedules Refresh")
     @Test
     void visitTransferToServicePointPoolMovesVisitAndSchedulesRefresh() {
         Branch branch = new Branch("b1", "Отделение");
@@ -147,6 +149,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Omits Queue Parameter When History Missing")
     @Test
     void visitTransferToServicePointPoolOmitsQueueParameterWhenHistoryMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -207,6 +210,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
                 .delayedEventService(eq("frontend"), eq(false), any(Event.class), eq(15L), same(eventService));
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Fails When Service Point Missing")
     @Test
     void visitTransferToServicePointPoolFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -229,6 +233,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Fails When Visit Missing")
     @Test
     void visitTransferToServicePointPoolFailsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -254,6 +259,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
+    @DisplayName("Visit Transfer To Service Point Pool Fails When Pool Point Missing")
     @Test
     void visitTransferToServicePointPoolFailsWhenPoolPointMissing() {
         Branch branch = new Branch("b1", "Отделение");

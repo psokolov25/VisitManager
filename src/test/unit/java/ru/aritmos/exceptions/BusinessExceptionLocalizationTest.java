@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -25,6 +26,7 @@ class BusinessExceptionLocalizationTest {
         BusinessException.resetLocalization();
     }
 
+    @DisplayName("Applies Localization From Configuration")
     @Test
     void appliesLocalizationFromConfiguration() {
         BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();
@@ -81,6 +83,7 @@ class BusinessExceptionLocalizationTest {
         assertEquals("Visit not found", appender.list.get(0).getFormattedMessage());
     }
 
+    @DisplayName("Replaces Message Field In Map Response Body")
     @Test
     void replacesMessageFieldInMapResponseBody() {
         BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();

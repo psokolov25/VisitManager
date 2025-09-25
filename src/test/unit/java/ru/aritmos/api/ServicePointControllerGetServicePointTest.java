@@ -3,6 +3,7 @@ package ru.aritmos.api;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ class ServicePointControllerGetServicePointTest {
         return controller;
     }
 
+    @DisplayName("Returns Service Point With Operator On Break")
     @Test
     void returnsServicePointWithOperatorOnBreak() {
         LOG.info("Шаг 1: подготавливаем карту точек обслуживания без оператора");
@@ -65,6 +67,7 @@ class ServicePointControllerGetServicePointTest {
         verify(visitService).getUsers("branch-1");
     }
 
+    @DisplayName("Returns Empty When Service Point Is Missing")
     @Test
     void returnsEmptyWhenServicePointIsMissing() {
         LOG.info("Шаг 1: подготавливаем пустую карту точек обслуживания");

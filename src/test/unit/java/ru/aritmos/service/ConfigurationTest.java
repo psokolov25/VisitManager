@@ -3,6 +3,7 @@ package ru.aritmos.service;
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ class ConfigurationTest {
     /**
      * Проверяет успешную публикацию конфигурации отделений.
      */
+    @DisplayName("Create Branch Configuration Publishes Events")
     @Test
     void createBranchConfigurationPublishesEvents() {
         // создаём сервис и подставляем заглушки зависимостей
@@ -60,6 +62,7 @@ class ConfigurationTest {
     /**
      * Проверяет откат публикации при ошибке.
      */
+    @DisplayName("Create Branch Configuration Rollbacks On Error")
     @Test
     void createBranchConfigurationRollbacksOnError() {
         // сервис с заглушками
@@ -100,6 +103,7 @@ class ConfigurationTest {
     /**
      * Создаёт демонстрационное отделение с заполненными данными.
      */
+    @DisplayName("Create Demo Branch Builds Sample")
     @Test
     void createDemoBranchBuildsSample() {
         // конфигурация с заглушкой клиента Keycloak

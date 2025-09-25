@@ -1,6 +1,7 @@
 package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.TaskScheduler;
@@ -41,6 +42,7 @@ class DelayedEventsIT {
         return Mockito.mock(EventService.class);
     }
 
+    @DisplayName("Schedules Event With Context")
     @Test
     void schedulesEventWithContext() {
         Event event = Event.builder().eventType("t").build();

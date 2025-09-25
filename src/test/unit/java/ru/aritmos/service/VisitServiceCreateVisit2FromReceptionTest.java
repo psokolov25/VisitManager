@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -32,6 +33,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2FromReceptionTest {
 
+    @DisplayName("Creates Visit With Segmentation Rule And Prints Ticket")
     @Test
     void createsVisitWithSegmentationRuleAndPrintsTicket() {
         VisitService service = new VisitService();
@@ -139,6 +141,7 @@ class VisitServiceCreateVisit2FromReceptionTest {
         verifyNoMoreInteractions(printerService);
     }
 
+    @DisplayName("Throws Bad Request When Segmentation Rule Returns Empty Queue")
     @Test
     void throwsBadRequestWhenSegmentationRuleReturnsEmptyQueue() {
         VisitService service = new VisitService();
@@ -198,6 +201,7 @@ class VisitServiceCreateVisit2FromReceptionTest {
         verify(service.printerService, never()).print(anyString(), any());
     }
 
+    @DisplayName("Throws Not Found When Queue Missing In Branch Configuration")
     @Test
     void throwsNotFoundWhenQueueMissingInBranchConfiguration() {
         VisitService service = new VisitService();

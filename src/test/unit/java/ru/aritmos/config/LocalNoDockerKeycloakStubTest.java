@@ -1,6 +1,7 @@
 package ru.aritmos.config;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 class LocalNoDockerKeycloakStubTest {
 
+    @DisplayName("Returns Predictable User Data")
     @Test
     void returnsPredictableUserData() {
         LocalNoDockerKeycloakStub stub = new LocalNoDockerKeycloakStub();
@@ -24,6 +26,7 @@ class LocalNoDockerKeycloakStubTest {
         assertEquals("tester@local", u.getEmail());
     }
 
+    @DisplayName("Other Methods Return Stubs")
     @Test
     void otherMethodsReturnStubs() {
         LocalNoDockerKeycloakStub stub = new LocalNoDockerKeycloakStub();

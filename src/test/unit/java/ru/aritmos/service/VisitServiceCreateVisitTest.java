@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -26,6 +27,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisitTest {
 
+    @DisplayName("Create Visit Delegates To Create Visit2With Cloned Services")
     @Test
     void createVisitDelegatesToCreateVisit2WithClonedServices() throws SystemException {
         Branch branch = new Branch("b1", "Отделение");
@@ -58,6 +60,7 @@ class VisitServiceCreateVisitTest {
         assertNotSame(second, service.lastServices.get(1));
     }
 
+    @DisplayName("Create Visit Throws When Service Missing")
     @Test
     void createVisitThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -80,6 +83,7 @@ class VisitServiceCreateVisitTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("Create Visit Throws When Service List Empty")
     @Test
     void createVisitThrowsWhenServiceListEmpty() {
         Branch branch = new Branch("b1", "Отделение");
@@ -99,6 +103,7 @@ class VisitServiceCreateVisitTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("Create Visit With Segmentation Rule Delegates To Create Visit2")
     @Test
     void createVisitWithSegmentationRuleDelegatesToCreateVisit2() {
         Branch branch = new Branch("b1", "Отделение");
@@ -124,6 +129,7 @@ class VisitServiceCreateVisitTest {
         assertTrue(visitService.visitAutoCallInvoked);
     }
 
+    @DisplayName("Create Visit With Segmentation Rule Throws When Service Missing")
     @Test
     void createVisitWithSegmentationRuleThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");

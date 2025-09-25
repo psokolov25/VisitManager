@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -26,6 +27,7 @@ class VisitServiceVisitPostPoneTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(VisitServiceVisitPostPoneTest.class);
 
+    @DisplayName("Visit Post Pone Returns Visit To User Pool")
     @Test
     void visitPostPoneReturnsVisitToUserPool() {
         LOG.info("Шаг 1: подготавливаем отделение с оператором и активным визитом");
@@ -61,6 +63,7 @@ class VisitServiceVisitPostPoneTest {
         verifyNoInteractions(eventService);
     }
 
+    @DisplayName("Visit Post Pone Throws When Visit Missing")
     @Test
     void visitPostPoneThrowsWhenVisitMissing() {
         LOG.info("Шаг 1: формируем отделение с точкой обслуживания без назначенного визита");
@@ -92,6 +95,7 @@ class VisitServiceVisitPostPoneTest {
         assertEquals("BUSINESS_ERROR", eventCaptor.getValue().getEventType());
     }
 
+    @DisplayName("Visit Post Pone Throws When User Missing")
     @Test
     void visitPostPoneThrowsWhenUserMissing() {
         LOG.info("Шаг 1: создаём отделение с визитом, но без назначенного оператора");

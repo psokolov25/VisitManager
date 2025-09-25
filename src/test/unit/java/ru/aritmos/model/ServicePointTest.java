@@ -1,12 +1,14 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class ServicePointTest {
 
+    @DisplayName("Constructor With Id And Name Should Set Fields And Defaults")
     @Test
     void constructorWithIdAndNameShouldSetFieldsAndDefaults() {
         String id = UUID.randomUUID().toString();
@@ -21,6 +23,7 @@ class ServicePointTest {
         assertTrue(servicePoint.getVisits().isEmpty());
     }
 
+    @DisplayName("Constructor With Name Should Generate Id And Set Defaults")
     @Test
     void constructorWithNameShouldGenerateIdAndSetDefaults() {
         ServicePoint servicePoint = new ServicePoint("Окно 2");

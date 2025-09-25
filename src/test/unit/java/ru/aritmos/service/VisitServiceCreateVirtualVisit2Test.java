@@ -13,6 +13,7 @@ import static ru.aritmos.test.LoggingAssertions.assertNull;
 import static ru.aritmos.test.LoggingAssertions.assertSame;
 import static ru.aritmos.test.LoggingAssertions.assertThrows;
 import static ru.aritmos.test.LoggingAssertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -51,6 +52,7 @@ class VisitServiceCreateVirtualVisit2Test {
         }
     }
 
+    @DisplayName("Create Virtual Visit2Creates Visit And Starts Serving With Service Point Staff")
     @Test
     void createVirtualVisit2CreatesVisitAndStartsServingWithServicePointStaff() throws SystemException {
         Branch branch = new Branch("b1", "Отделение №1");
@@ -138,6 +140,7 @@ class VisitServiceCreateVirtualVisit2Test {
         assertEquals(staff.getName(), startServing.getParameters().get("staffName"));
     }
 
+    @DisplayName("Create Virtual Visit2Uses Keycloak Data When Service Point Without User")
     @Test
     void createVirtualVisit2UsesKeycloakDataWhenServicePointWithoutUser() throws SystemException {
         Branch branch = new Branch("b2", "Отделение №2");
@@ -215,6 +218,7 @@ class VisitServiceCreateVirtualVisit2Test {
         assertEquals(primary.getName(), startServing.getParameters().get("serviceName"));
     }
 
+    @DisplayName("Create Virtual Visit2Throws Not Found When Queue Missing In Branch")
     @Test
     void createVirtualVisit2ThrowsNotFoundWhenQueueMissingInBranch() throws SystemException {
         Branch branch = new Branch("b3", "Отделение №3");

@@ -3,6 +3,7 @@ package ru.aritmos.integration;
 import static ru.aritmos.test.LoggingAssertions.assertEquals;
 import static ru.aritmos.test.LoggingAssertions.assertFalse;
 import static ru.aritmos.test.LoggingAssertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import java.net.URI;
@@ -57,6 +58,7 @@ class KeycloakKafkaIntegrationIT {
         }
     }
 
+    @DisplayName("Keycloak And Kafka Are Accessible")
     @Test
     void keycloakAndKafkaAreAccessible() throws Exception {
         assertTrue(keycloak != null && keycloak.isRunning(), "Keycloak должен быть запущен");

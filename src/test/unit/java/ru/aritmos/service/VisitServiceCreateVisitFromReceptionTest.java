@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -26,6 +27,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisitFromReceptionTest {
 
+    @DisplayName("Create Visit From Reception Delegates To Create Visit2From Reception")
     @Test
     void createVisitFromReceptionDelegatesToCreateVisit2FromReception() throws SystemException {
         Branch branch = new Branch("b1", "Отделение");
@@ -59,6 +61,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertNotSame(second, service.lastServices.get(1));
     }
 
+    @DisplayName("Create Visit From Reception Throws When Service Missing")
     @Test
     void createVisitFromReceptionThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -82,6 +85,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("Create Visit From Reception Throws When Service List Empty")
     @Test
     void createVisitFromReceptionThrowsWhenServiceListEmpty() {
         Branch branch = new Branch("b1", "Отделение");
@@ -102,6 +106,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("Create Visit From Reception With Segmentation Rule Delegates")
     @Test
     void createVisitFromReceptionWithSegmentationRuleDelegates() {
         Branch branch = new Branch("b1", "Отделение");
@@ -128,6 +133,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertTrue(service.visitAutoCallInvoked);
     }
 
+    @DisplayName("Create Visit From Reception With Segmentation Rule Throws When Service Missing")
     @Test
     void createVisitFromReceptionWithSegmentationRuleThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");

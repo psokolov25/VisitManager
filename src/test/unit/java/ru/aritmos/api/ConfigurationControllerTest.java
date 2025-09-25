@@ -2,6 +2,7 @@ package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import ru.aritmos.service.VisitService;
 
 class ConfigurationControllerTest {
 
+    @DisplayName("Update Delegates To Configuration")
     @Test
     void updateDelegatesToConfiguration() {
         ConfigurationController controller = new ConfigurationController();
@@ -34,6 +36,7 @@ class ConfigurationControllerTest {
         verify(config).createBranchConfiguration(branches);
     }
 
+    @DisplayName("Update Hardcode Uses Demo Config")
     @Test
     void updateHardcodeUsesDemoConfig() {
         ConfigurationController controller = new ConfigurationController();
@@ -59,6 +62,7 @@ class ConfigurationControllerTest {
         return controller;
     }
 
+    @DisplayName("Add Update Service Delegates To Branch Service")
     @Test
     void addUpdateServiceDelegatesToBranchService() {
         ConfigurationController controller = controller();
@@ -68,6 +72,7 @@ class ConfigurationControllerTest {
             .addUpdateService("b1", services, true, controller.visitService);
     }
 
+    @DisplayName("Get Break Reasons Uses Branch Service")
     @Test
     void getBreakReasonsUsesBranchService() {
         ConfigurationController controller = controller();
@@ -79,6 +84,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).getBranch("b1");
     }
 
+    @DisplayName("Delete Services Delegates")
     @Test
     void deleteServicesDelegates() {
         ConfigurationController controller = controller();
@@ -88,6 +94,7 @@ class ConfigurationControllerTest {
             .deleteServices("b1", ids, false, controller.visitService);
     }
 
+    @DisplayName("Add Update Service Point Delegates")
     @Test
     void addUpdateServicePointDelegates() {
         ConfigurationController controller = controller();
@@ -97,6 +104,7 @@ class ConfigurationControllerTest {
             .addUpdateServicePoint("b1", points, true, false);
     }
 
+    @DisplayName("Add Update Service Groups Delegates")
     @Test
     void addUpdateServiceGroupsDelegates() {
         ConfigurationController controller = controller();
@@ -105,6 +113,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateServiceGroups("b1", groups);
     }
 
+    @DisplayName("Add Update Segmentation Rules Delegates")
     @Test
     void addUpdateSegmentationRulesDelegates() {
         ConfigurationController controller = controller();
@@ -113,6 +122,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateSegmentationRules("b1", rules);
     }
 
+    @DisplayName("Delete Service Points Delegates")
     @Test
     void deleteServicePointsDelegates() {
         ConfigurationController controller = controller();
@@ -121,6 +131,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).deleteServicePoints("b1", ids);
     }
 
+    @DisplayName("Set Auto Call Mode On Delegates")
     @Test
     void setAutoCallModeOnDelegates() {
         ConfigurationController controller = controller();
@@ -128,6 +139,7 @@ class ConfigurationControllerTest {
         verify(controller.visitService).setAutoCallModeOfBranch("b1", true);
     }
 
+    @DisplayName("Set Auto Call Mode Off Delegates")
     @Test
     void setAutoCallModeOffDelegates() {
         ConfigurationController controller = controller();
@@ -135,6 +147,7 @@ class ConfigurationControllerTest {
         verify(controller.visitService).setAutoCallModeOfBranch("b1", false);
     }
 
+    @DisplayName("Add Update Queues Delegates")
     @Test
     void addUpdateQueuesDelegates() {
         ConfigurationController controller = controller();
@@ -143,6 +156,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).addUpdateQueues("b1", queues, true);
     }
 
+    @DisplayName("Delete Queues Delegates")
     @Test
     void deleteQueuesDelegates() {
         ConfigurationController controller = controller();

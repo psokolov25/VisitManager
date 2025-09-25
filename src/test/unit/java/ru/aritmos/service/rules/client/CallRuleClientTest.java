@@ -1,6 +1,7 @@
 package ru.aritmos.service.rules.client;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.http.annotation.Body;
@@ -22,6 +23,7 @@ class CallRuleClientTest {
     /**
      * Клиент отправляет запрос и получает визит.
      */
+    @DisplayName("Call Rule Returns Visit")
     @Test
     void callRuleReturnsVisit() {
         Map<String, Object> config = Map.of(

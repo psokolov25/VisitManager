@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.http.HttpStatus;
@@ -37,6 +38,7 @@ class VisitServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(VisitServiceTest.class);
 
+    @DisplayName("Get Visit Returns Existing Visit")
     @Test
     void getVisitReturnsExistingVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -58,6 +60,7 @@ class VisitServiceTest {
         assertSame(visit, result);
     }
 
+    @DisplayName("Visit Call For Confirm With Max Life Time Updates Visit And Builds Event")
     @Test
     void visitCallForConfirmWithMaxLifeTimeUpdatesVisitAndBuildsEvent() {
         log.info("Подготавливаем отделение и точку обслуживания для сценария с успешным вызовом визита.");
@@ -105,6 +108,7 @@ class VisitServiceTest {
         assertEquals("callNext", params.get("callMethod"));
     }
 
+    @DisplayName("Visit Call For Confirm With Max Life Time Enables Autocall When No Visit Found")
     @Test
     void visitCallForConfirmWithMaxLifeTimeEnablesAutocallWhenNoVisitFound() {
         log.info("Подготавливаем отделение в режиме автозапуска для проверки обработки отсутствующего визита.");
@@ -135,6 +139,7 @@ class VisitServiceTest {
         verify(branchService).add(branch.getId(), branch);
     }
 
+    @DisplayName("Stop Serving And Back To Queue Returns Visit To Last Queue")
     @Test
     void stopServingAndBackToQueueReturnsVisitToLastQueue() {
         log.info("Формируем исходные данные для сценария возврата визита из обслуживания в очередь.");
@@ -238,6 +243,7 @@ class VisitServiceTest {
         backEvent.dateTime = null;
     }
 
+    @DisplayName("Stop Serving And Back To Queue Fails When Last Queue Missing")
     @Test
     void stopServingAndBackToQueueFailsWhenLastQueueMissing() {
         log.info("Настраиваем отделение, где визит не содержит информации о последней очереди.");
@@ -299,6 +305,7 @@ class VisitServiceTest {
         stopEventCaptor.getValue().dateTime = null;
     }
 
+    @DisplayName("Visit Transfer From Queue To Service Point Pool Adds External Service Metadata")
     @Test
     void visitTransferFromQueueToServicePointPoolAddsExternalServiceMetadata() {
         log.info("Очищаем параметры события перевода визита в пул точки обслуживания.");
@@ -394,6 +401,7 @@ class VisitServiceTest {
         delayedEvent.setParams(null);
     }
 
+    @DisplayName("Get Visit Throws When Missing")
     @Test
     void getVisitThrowsWhenMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -411,6 +419,7 @@ class VisitServiceTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
+    @DisplayName("Get String Service Point Hash Map Filters Busy Points")
     @Test
     void getStringServicePointHashMapFiltersBusyPoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -435,6 +444,7 @@ class VisitServiceTest {
         assertFalse(result.containsKey("sp2"));
     }
 
+    @DisplayName("Get Service Point Hash Map Returns All Points")
     @Test
     void getServicePointHashMapReturnsAllPoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -456,6 +466,7 @@ class VisitServiceTest {
         assertTrue(result.containsKey("sp2"));
     }
 
+    @DisplayName("Get Work Profiles Returns Tiny Classes")
     @Test
     void getWorkProfilesReturnsTinyClasses() {
         Branch branch = new Branch("b1", "Branch");
@@ -475,6 +486,7 @@ class VisitServiceTest {
         assertEquals(new TinyClass("wp1", "Profile"), profiles.get(0));
     }
 
+    @DisplayName("Get Users Returns Branch Users")
     @Test
     void getUsersReturnsBranchUsers() {
         Branch branch = new Branch("b1", "Branch");
@@ -494,6 +506,7 @@ class VisitServiceTest {
         assertEquals("u1", users.get(0).getId());
     }
 
+    @DisplayName("Get Printers Collects Unique Printers")
     @Test
     void getPrintersCollectsUniquePrinters() {
         Branch branch = new Branch("b1", "Branch");
@@ -522,6 +535,7 @@ class VisitServiceTest {
         assertTrue(printers.contains(new Entity("p2", "P2")));
     }
 
+    @DisplayName("Get Queus Returns Entity List")
     @Test
     void getQueusReturnsEntityList() {
         Branch branch = new Branch("b1", "Branch");
@@ -540,6 +554,7 @@ class VisitServiceTest {
         assertEquals(List.of(new Entity("q1", "Q1")), queues);
     }
 
+    @DisplayName("Get Full Queus Returns Queues")
     @Test
     void getFullQueusReturnsQueues() {
         Branch branch = new Branch("b1", "Branch");
@@ -559,6 +574,7 @@ class VisitServiceTest {
         assertEquals(List.of(queue), queues);
     }
 
+    @DisplayName("Get All Working Users Aggregates From Service Points")
     @Test
     void getAllWorkingUsersAggregatesFromServicePoints() {
         Branch branch = new Branch("b1", "Branch");

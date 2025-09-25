@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -44,6 +45,7 @@ class VisitServiceTransferToUserPoolTest {
         VisitEvent.TRANSFER_TO_USER_POOL.getParameters().clear();
     }
 
+    @DisplayName("Visit Transfer To User Pool Moves Visit And Publishes Notifications")
     @Test
     void visitTransferToUserPoolMovesVisitAndPublishesNotifications() {
         LOG.info("Шаг 1: формируем отделение, оператора и визит");
@@ -147,6 +149,7 @@ class VisitServiceTransferToUserPoolTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
+    @DisplayName("Visit Transfer To User Pool Fails When Service Point Missing")
     @Test
     void visitTransferToUserPoolFailsWhenServicePointMissing() {
         LOG.info("Шаг 1: настраиваем отделение без нужной точки обслуживания");
@@ -173,6 +176,7 @@ class VisitServiceTransferToUserPoolTest {
         verifyNoInteractions(delayedEvents);
     }
 
+    @DisplayName("Visit Transfer To User Pool Fails When Visit Missing")
     @Test
     void visitTransferToUserPoolFailsWhenVisitMissing() {
         LOG.info("Шаг 1: создаём отделение с точкой без активного визита");
@@ -202,6 +206,7 @@ class VisitServiceTransferToUserPoolTest {
         verifyNoInteractions(delayedEvents);
     }
 
+    @DisplayName("Visit Transfer To User Pool Fails When User Not Found")
     @Test
     void visitTransferToUserPoolFailsWhenUserNotFound() {
         LOG.info("Шаг 1: готовим отделение с визитом, но без работающих операторов");

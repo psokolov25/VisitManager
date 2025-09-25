@@ -1,6 +1,7 @@
 package ru.aritmos.model;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
  */
 class QueueTest {
 
+    @DisplayName("Constructor Generates Id And Sets Fields")
     @Test
     void constructorGeneratesIdAndSetsFields() {
         Queue queue = new Queue("Main", "A", 60);
@@ -19,6 +21,7 @@ class QueueTest {
         assertEquals(0, queue.getTicketCounter());
     }
 
+    @DisplayName("Constructor With Explicit Id Sets All Fields")
     @Test
     void constructorWithExplicitIdSetsAllFields() {
         Queue queue = new Queue("q1", "Secondary", "B", 30);

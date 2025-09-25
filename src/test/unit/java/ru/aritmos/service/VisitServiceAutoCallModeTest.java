@@ -2,6 +2,7 @@ package ru.aritmos.service;
 
 import static org.mockito.Mockito.*;
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -39,6 +40,7 @@ class VisitServiceAutoCallModeTest {
         visitService.setLifeTimeCallRule(mock(CallRule.class));
     }
 
+    @DisplayName("Start Auto Call Mode Of Service Point Turns On Mode When Branch Allows")
     @Test
     void startAutoCallModeOfServicePointTurnsOnModeWhenBranchAllows() {
         Branch branch = new Branch("b1", "Branch");
@@ -62,6 +64,7 @@ class VisitServiceAutoCallModeTest {
         assertSame(servicePoint, event.getBody());
     }
 
+    @DisplayName("Start Auto Call Mode Of Service Point Throws Conflict When Auto Call Disabled")
     @Test
     void startAutoCallModeOfServicePointThrowsConflictWhenAutoCallDisabled() {
         Branch branch = new Branch("b1", "Branch");
@@ -79,6 +82,7 @@ class VisitServiceAutoCallModeTest {
         verify(branchService, never()).add(anyString(), any(Branch.class));
     }
 
+    @DisplayName("Start Auto Call Mode Of Service Point Throws Not Found When Service Point Missing")
     @Test
     void startAutoCallModeOfServicePointThrowsNotFoundWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");

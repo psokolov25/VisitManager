@@ -1,6 +1,7 @@
 package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
@@ -21,6 +22,7 @@ class HttpErrorHandlerE2EIT {
     @Client("/")
     HttpClient client;
 
+    @DisplayName("Returns Unified Error Body")
     @Test
     void returnsUnifiedErrorBody() {
         HttpClientResponseException ex = assertThrows(

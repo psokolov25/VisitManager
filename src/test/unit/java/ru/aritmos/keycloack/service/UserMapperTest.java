@@ -1,6 +1,7 @@
 package ru.aritmos.keycloack.service;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import io.micronaut.security.authentication.Authentication;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 class UserMapperTest {
 
+    @DisplayName("Extracts Roles From Claims")
     @Test
     void extractsRolesFromClaims() {
         UserMapper mapper = new UserMapper(new KeyCloackClient());
@@ -46,6 +48,7 @@ class UserMapperTest {
         assertTrue(auth.getRoles().containsAll(List.of("r1", "r2", "realm")));
     }
 
+    @DisplayName("Ignores Invalid Claims Structures")
     @Test
     void ignoresInvalidClaimsStructures() {
         UserMapper mapper = new UserMapper(new KeyCloackClient());

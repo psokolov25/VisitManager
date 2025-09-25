@@ -2,6 +2,7 @@ package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import ru.aritmos.service.VisitService;
 
 class EntrypointControllerTest {
 
+    @DisplayName("Get All Available Services Returns List")
     @Test
     void getAllAvailableServicesReturnsList() {
         Services services = mock(Services.class);
@@ -43,6 +45,7 @@ class EntrypointControllerTest {
         return controller;
     }
 
+    @DisplayName("Create Virtual Visit Delegates To Service")
     @Test
     void createVirtualVisitDelegatesToService() throws Exception {
         EntrypointController controller = controller();
@@ -57,6 +60,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVirtualVisit("b1", "sp1", ids, "sid"));
     }
 
+    @DisplayName("Create Visit Delegates To Service When Segmentation Empty")
     @Test
     void createVisitDelegatesToServiceWhenSegmentationEmpty() throws Exception {
         EntrypointController controller = controller();
@@ -71,6 +75,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", ids, false, null));
     }
 
+    @DisplayName("Create Visit Delegates To Service When Segmentation Provided")
     @Test
     void createVisitDelegatesToServiceWhenSegmentationProvided() throws Exception {
         EntrypointController controller = controller();
@@ -85,6 +90,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", ids, false, "seg"));
     }
 
+    @DisplayName("Create Visit With Parameters Delegates")
     @Test
     void createVisitWithParametersDelegates() throws Exception {
         EntrypointController controller = controller();
@@ -102,6 +108,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", params, true, null));
     }
 
+    @DisplayName("Create Visit With Parameters Delegates With Segmentation")
     @Test
     void createVisitWithParametersDelegatesWithSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -119,6 +126,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", params, true, "seg"));
     }
 
+    @DisplayName("Create Visit From Reception Delegates Without Segmentation")
     @Test
     void createVisitFromReceptionDelegatesWithoutSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -139,6 +147,7 @@ class EntrypointControllerTest {
             .createVisitFromReception("b1", "p1", params, true, "sid");
     }
 
+    @DisplayName("Create Visit From Reception Delegates With Segmentation")
     @Test
     void createVisitFromReceptionDelegatesWithSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -159,6 +168,7 @@ class EntrypointControllerTest {
             .createVisitFromReception("b1", "p1", params, false, "seg", "sid");
     }
 
+    @DisplayName("Set Parameter Map Updates Visit And Delegates")
     @Test
     void setParameterMapUpdatesVisitAndDelegates() {
         EntrypointController controller = controller();
@@ -174,6 +184,7 @@ class EntrypointControllerTest {
             .updateVisit(visit, "VISIT_SET_PARAMETER_MAP", controller.visitService);
     }
 
+    @DisplayName("Get All Services Delegates To Services")
     @Test
     void getAllServicesDelegatesToServices() {
         EntrypointController controller = controller();

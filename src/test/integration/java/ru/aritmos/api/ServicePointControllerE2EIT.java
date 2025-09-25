@@ -1,6 +1,7 @@
 package ru.aritmos.api;
 
 import static ru.aritmos.test.LoggingAssertions.*;
+import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
@@ -27,6 +28,7 @@ class ServicePointControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет получение свободных точек обслуживания. */
+    @DisplayName("Fetches Free Service Points")
     @Test
     void fetchesFreeServicePoints() {
         Branch branch = new Branch("b1", "Branch");
