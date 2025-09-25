@@ -74,7 +74,7 @@ public class MaxLifeTimeCallRule implements CallRule {
 
     } else {
       throw new BusinessException(
-          "User is not logged into the service point", "Пользователь не авторизован в точке обслуживания", eventService, HttpStatus.FORBIDDEN);
+          "user_is_not_logged_into_service_point", eventService, HttpStatus.FORBIDDEN);
     }
     return Optional.empty();
   }
@@ -121,7 +121,7 @@ public class MaxLifeTimeCallRule implements CallRule {
 
     } else {
       throw new BusinessException(
-          "User is not logged into the service point", "Пользователь не авторизован в точке обслуживания", eventService, HttpStatus.FORBIDDEN);
+          "user_is_not_logged_into_service_point", eventService, HttpStatus.FORBIDDEN);
     }
     return Optional.empty();
   }
