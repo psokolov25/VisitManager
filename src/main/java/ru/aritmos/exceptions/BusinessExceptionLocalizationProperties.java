@@ -1,10 +1,15 @@
 package ru.aritmos.exceptions;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * Настройки локализации сообщений {@link BusinessException}.
@@ -45,9 +50,12 @@ public class BusinessExceptionLocalizationProperties {
    */
   public static final class ChannelLocalization {
 
+    private static final String DEFAULT_RESOURCE_BASE_NAME = "business-exception/messages";
+
     private String language;
     private String defaultLanguage;
     private Map<String, Map<String, String>> messages = new LinkedHashMap<>();
+    private List<String> resources = new ArrayList<>(List.of(DEFAULT_RESOURCE_BASE_NAME));
 
     public static ChannelLocalization httpDefaults() {
       ChannelLocalization localization = new ChannelLocalization();
@@ -114,6 +122,32 @@ public class BusinessExceptionLocalizationProperties {
       this.messages = normalized;
     }
 
+    public List<String> getResources() {
+      return resources;
+    }
+
+    public void setResources(List<String> resources) {
+      if (resources == null || resources.isEmpty()) {
+        this.resources = new ArrayList<>(List.of(DEFAULT_RESOURCE_BASE_NAME));
+        return;
+      }
+      List<String> normalized = new ArrayList<>();
+      for (String resource : resources) {
+        if (resource == null) {
+          continue;
+        }
+        String trimmed = resource.trim();
+        if (!trimmed.isEmpty()) {
+          normalized.add(trimmed);
+        }
+      }
+      if (normalized.isEmpty()) {
+        this.resources = new ArrayList<>(List.of(DEFAULT_RESOURCE_BASE_NAME));
+        return;
+      }
+      this.resources = normalized;
+    }
+
     /**
      * Найти перевод сообщения с учётом заданных языков.
      *
@@ -133,8 +167,16 @@ public class BusinessExceptionLocalizationProperties {
       if (translation != null) {
         return translation;
       }
+      translation = resolveFromResources(fallback, targetLanguage);
+      if (translation != null) {
+        return translation;
+      }
       if (defaultLanguage != null) {
         translation = translations.get(defaultLanguage);
+        if (translation != null) {
+          return translation;
+        }
+        translation = resolveFromResources(fallback, defaultLanguage);
         if (translation != null) {
           return translation;
         }
@@ -144,6 +186,7 @@ public class BusinessExceptionLocalizationProperties {
 
     private static String normalizeLanguage(String language) {
       if (language == null) {
+
         return null;
       }
       String trimmed = language.trim();
@@ -172,6 +215,52 @@ public class BusinessExceptionLocalizationProperties {
         return value.substring(1, value.length() - 1);
       }
       return value;
+    }
+
+    private String resolveFromResources(String messageKey, String languageCode) {
+      if (resources.isEmpty()) {
+        return null;
+      }
+      Locale locale = toLocale(languageCode);
+      if (locale == null) {
+        return null;
+      }
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      for (String baseName : resources) {
+        if (baseName == null || baseName.isBlank()) {
+          continue;
+        }
+        try {
+          ResourceBundle bundle =
+              ResourceBundle.getBundle(
+                  baseName,
+                  locale,
+                  classLoader,
+                  ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES));
+          if (bundle.containsKey(messageKey)) {
+            String translation = bundle.getString(messageKey);
+            if (translation != null) {
+              return translation;
+            }
+          }
+        } catch (MissingResourceException ignored) {
+          // ресурс не найден — пробуем следующий
+        }
+      }
+      return null;
+    }
+
+    private static Locale toLocale(String languageCode) {
+      if (languageCode == null) {
+        return null;
+      }
+      String normalized = languageCode.replace('_', '-');
+      if (normalized.isBlank()) {
+        return null;
+      }
+      Locale locale = Locale.forLanguageTag(normalized);
+      return Objects.equals(locale.toLanguageTag(), "") ? null : locale;
+
     }
   }
 }

@@ -44,4 +44,50 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("Услуга не найдена", messages.clientMessage());
         assertEquals("Услуга не найдена", messages.responseBody());
     }
+
+
+    @Test
+    void локализацияПоРесурсамПодставляетРусскийПеревод() {
+        BusinessExceptionLocalizationProperties.ChannelLocalization http =
+                new BusinessExceptionLocalizationProperties.ChannelLocalization();
+        http.setLanguage("ru");
+        http.setDefaultLanguage("ru");
+
+        BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();
+        properties.setHttp(http);
+
+        BusinessExceptionLocalization localization = new BusinessExceptionLocalization(properties);
+
+        BusinessExceptionLocalization.LocalizedMessages messages = localization.localize(
+                "Branch not found",
+                "Branch not found",
+                "Отделение не найдено",
+                "Отделение не найдено");
+
+        assertEquals("Отделение не найдено", messages.clientMessage());
+        assertEquals("Отделение не найдено", messages.responseBody());
+    }
+
+    @Test
+    void локализацияПоРесурсамВозвращаетАнглийскийПереводДляРусскогоКлюча() {
+        BusinessExceptionLocalizationProperties.ChannelLocalization http =
+                new BusinessExceptionLocalizationProperties.ChannelLocalization();
+        http.setLanguage("en");
+        http.setDefaultLanguage("en");
+
+        BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();
+        properties.setHttp(http);
+
+        BusinessExceptionLocalization localization = new BusinessExceptionLocalization(properties);
+
+        BusinessExceptionLocalization.LocalizedMessages messages = localization.localize(
+                "Задержка возвращения еще не завершена",
+                "Задержка возвращения еще не завершена",
+                "Delayed return has not yet been completed",
+                "Delayed return has not yet been completed");
+
+        assertEquals("Delayed return has not yet been completed", messages.clientMessage());
+        assertEquals("Delayed return has not yet been completed", messages.responseBody());
+    }
+
 }
