@@ -148,3 +148,5 @@
 
 ## Прогресс локализации @DisplayName
 - 2025-09-29 (итерация 1): описания тестов в `src/test/unit/java/ru/aritmos/exceptions/BusinessExceptionTest.java` и `src/test/unit/java/ru/aritmos/exceptions/SystemExceptionTest.java` переведены на русский язык и приведены к единому стилю.
+- 2025-09-29 (итерация 2): локализованы описания тестов в `src/test/unit/java/ru/aritmos/exceptions/BusinessExceptionLocalizationPropertiesTest.java` и `src/test/unit/java/ru/aritmos/exceptions/BusinessExceptionLocalizationTest.java`.
+
