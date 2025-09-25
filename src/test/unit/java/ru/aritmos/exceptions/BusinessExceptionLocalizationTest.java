@@ -80,4 +80,44 @@ class BusinessExceptionLocalizationTest {
         assertFalse(appender.list::isEmpty);
         assertEquals("Visit not found", appender.list.get(0).getFormattedMessage());
     }
+
+    @Test
+    void replacesMessageFieldInMapResponseBody() {
+        BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();
+        properties.getHttp().setLanguage("ru");
+        properties.getLog().setLanguage("ru");
+
+        BusinessException.configureLocalization(new BusinessExceptionLocalization(properties));
+
+        EventService eventService = mock(EventService.class);
+
+        Map<String, Object> responseBody =
+                Map.of(
+                        "message", "The service point is already busy",
+                        "ticket", "A-001",
+                        "servicePointId", "sp-1");
+
+        HttpStatusException thrown =
+                assertThrows(
+                        HttpStatusException.class,
+                        () ->
+                                new BusinessException(
+                                        responseBody,
+                                        "Точка обслуживания sp-1 уже занята",
+                                        eventService,
+                                        HttpStatus.CONFLICT));
+
+        assertEquals(HttpStatus.CONFLICT, thrown.getStatus());
+        assertEquals("Точка обслуживания sp-1 уже занята", thrown.getMessage());
+
+        assertTrue(thrown.getBody()::isPresent);
+        Object body = thrown.getBody().orElseThrow();
+        assertTrue(body instanceof Map);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> localized = (Map<String, Object>) body;
+        assertEquals("Точка обслуживания sp-1 уже занята", localized.get("message"));
+        assertEquals("A-001", localized.get("ticket"));
+        assertEquals("sp-1", localized.get("servicePointId"));
+    }
 }
