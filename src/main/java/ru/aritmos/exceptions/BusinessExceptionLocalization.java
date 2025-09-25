@@ -2,6 +2,8 @@ package ru.aritmos.exceptions;
 
 import io.micronaut.core.annotation.Nullable;
 import jakarta.inject.Singleton;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,10 +71,41 @@ public class BusinessExceptionLocalization {
       }
       return localized;
     }
+    if (responseBody instanceof Map<?, ?> map) {
+      return localizeMapResponseBody(map, localizedClient, logMessage, fallbackToLogChannel);
+    }
     if (responseBody == null) {
       return localizedClient;
     }
     return responseBody;
+  }
+
+  private Object localizeMapResponseBody(
+      Map<?, ?> responseBody,
+      @Nullable String localizedClient,
+      @Nullable String logMessage,
+      boolean fallbackToLogChannel) {
+    boolean requiresCopy = false;
+    Map<Object, Object> localized = new LinkedHashMap<>(responseBody.size());
+    for (Map.Entry<?, ?> entry : responseBody.entrySet()) {
+      Object key = entry.getKey();
+      Object value = entry.getValue();
+      if ("message".equals(key) && value instanceof CharSequence sequence) {
+        String original = sequence.toString();
+        String translated = localizedClient != null ? localizedClient : localizeHttp(original);
+        if (fallbackToLogChannel
+            && Objects.equals(translated, original)
+            && logMessage != null) {
+          translated = logMessage;
+        }
+        if (!Objects.equals(original, translated)) {
+          value = translated;
+          requiresCopy = true;
+        }
+      }
+      localized.put(key, value);
+    }
+    return requiresCopy ? localized : responseBody;
   }
 
   private String localizeHttp(@Nullable String message) {

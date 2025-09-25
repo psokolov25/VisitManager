@@ -97,7 +97,7 @@ public class SegmentationRule {
           currentBranch.getCustomSegmentationRules().get(segmentationRuleId).toBuilder().build();
     } else {
       throw new BusinessException(
-          "Segmentation rule not found", "Правило сегментации не найдено", eventService, HttpStatus.NOT_FOUND);
+          "segmentation_rule_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     Map<String, Object> inputParameters = groovyScript.getInputParameters();
     if (inputParameters.containsKey("visit") && inputParameters.containsKey("branch")) {
@@ -112,7 +112,7 @@ public class SegmentationRule {
       } else return Optional.empty();
     } else {
       throw new BusinessException(
-          "Input parameter visit or branch not found", "Входной параметр визита или отделения не найден", eventService, HttpStatus.NOT_FOUND);
+          "input_parameter_visit_or_branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
   }
 

@@ -18,6 +18,26 @@ class BusinessExceptionLocalizationPropertiesTest {
     }
 
     @Test
+    void плейсхолдерСЗначениемПоУмолчаниюВозвращаетЕго() {
+        BusinessExceptionLocalizationProperties.ChannelLocalization localization =
+                new BusinessExceptionLocalizationProperties.ChannelLocalization();
+
+        localization.setLanguage("'${BUSINESS_EXCEPTION_HTTP_LANG:`ru`}'");
+
+        assertEquals("ru", localization.getLanguage());
+    }
+
+    @Test
+    void плейсхолдерБезЗначенияПоУмолчаниюОбнуляетЯзык() {
+        BusinessExceptionLocalizationProperties.ChannelLocalization localization =
+                new BusinessExceptionLocalizationProperties.ChannelLocalization();
+
+        localization.setLanguage("'${BUSINESS_EXCEPTION_HTTP_LANG}'");
+
+        assertNull(localization.getLanguage());
+    }
+
+    @Test
     void падениеКЛогуВключаетсяКогдаЯзыкиСовпадаютПослеНормализации() {
         BusinessExceptionLocalizationProperties.ChannelLocalization http =
                 new BusinessExceptionLocalizationProperties.ChannelLocalization();
@@ -59,10 +79,10 @@ class BusinessExceptionLocalizationPropertiesTest {
         BusinessExceptionLocalization localization = new BusinessExceptionLocalization(properties);
 
         BusinessExceptionLocalization.LocalizedMessages messages = localization.localize(
-                "Branch not found",
-                "Branch not found",
-                "Отделение не найдено",
-                "Отделение не найдено");
+                "branch_not_found",
+                "branch_not_found",
+                "branch_not_found",
+                "branch_not_found");
 
         assertEquals("Отделение не найдено", messages.clientMessage());
         assertEquals("Отделение не найдено", messages.responseBody());
@@ -81,10 +101,10 @@ class BusinessExceptionLocalizationPropertiesTest {
         BusinessExceptionLocalization localization = new BusinessExceptionLocalization(properties);
 
         BusinessExceptionLocalization.LocalizedMessages messages = localization.localize(
-                "Задержка возвращения еще не завершена",
-                "Задержка возвращения еще не завершена",
-                "Delayed return has not yet been completed",
-                "Delayed return has not yet been completed");
+                "delayed_return_not_completed",
+                "delayed_return_not_completed",
+                "delayed_return_not_completed",
+                "delayed_return_not_completed");
 
         assertEquals("Delayed return has not yet been completed", messages.clientMessage());
         assertEquals("Delayed return has not yet been completed", messages.responseBody());
