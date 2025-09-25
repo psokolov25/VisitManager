@@ -19,7 +19,7 @@ import ru.aritmos.model.visit.VisitEvent;
  */
 class VisitServiceAddServiceTest {
 
-    @DisplayName("Adds Service To Unserved Services")
+    @DisplayName("Добавляет услугу в список необслуженных")
     @Test
     void addsServiceToUnservedServices() {
         Branch branch = new Branch("b1", "Branch");
@@ -44,7 +44,7 @@ class VisitServiceAddServiceTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(service));
     }
 
-    @DisplayName("Throws When Service Missing")
+    @DisplayName("Выбрасывает исключение, если услуга не найдена")
     @Test
     void throwsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Branch");

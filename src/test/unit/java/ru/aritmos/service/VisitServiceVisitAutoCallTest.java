@@ -17,7 +17,7 @@ import ru.aritmos.service.rules.CallRule;
  */
 class VisitServiceVisitAutoCallTest {
 
-    @DisplayName("Auto Call Disables Mode After Successful Call")
+    @DisplayName("Автовызов отключает режим после успешного дозвона")
     @Test
     void autoCallDisablesModeAfterSuccessfulCall() {
         Branch branch = new Branch("b1", "Branch");
@@ -51,7 +51,7 @@ class VisitServiceVisitAutoCallTest {
         verify(service, never()).visitCallForConfirmWithMaxWaitingTime(anyString(), anyString(), any(Visit.class));
     }
 
-    @DisplayName("Auto Call Uses Confirm Flow When Required")
+    @DisplayName("Автовызов использует сценарий подтверждения, когда это требуется")
     @Test
     void autoCallUsesConfirmFlowWhenRequired() {
         Branch branch = new Branch("b1", "Branch");
@@ -88,7 +88,7 @@ class VisitServiceVisitAutoCallTest {
         verify(service).visitCallForConfirmWithMaxWaitingTime(eq("b1"), eq("sp1"), same(visit));
     }
 
-    @DisplayName("Auto Call Returns Original When Mode Disabled")
+    @DisplayName("Автовызов возвращает исходный визит, когда режим отключён")
     @Test
     void autoCallReturnsOriginalWhenModeDisabled() {
         Branch branch = new Branch("b1", "Branch");
@@ -113,7 +113,7 @@ class VisitServiceVisitAutoCallTest {
         verifyNoInteractions(waitingRule);
     }
 
-    @DisplayName("Auto Call Returns Original When No Service Point Found")
+    @DisplayName("Автовызов возвращает исходный визит, когда окно не найдено")
     @Test
     void autoCallReturnsOriginalWhenNoServicePointFound() {
         Branch branch = new Branch("b1", "Branch");
@@ -141,7 +141,7 @@ class VisitServiceVisitAutoCallTest {
         verify(waitingRule).getAvailiableServicePoints(same(branch), same(visit));
     }
 
-    @DisplayName("Auto Call Keeps Mode When Call Returns Empty")
+    @DisplayName("Автовызов сохраняет режим, если вызов не возвращает визит")
     @Test
     void autoCallKeepsModeWhenCallReturnsEmpty() {
         Branch branch = new Branch("b1", "Branch");

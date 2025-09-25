@@ -27,7 +27,7 @@ class EntrypointControllerE2EIT {
     Configuration configuration;
 
     /** Проверяет получение списка доступных услуг отделения. */
-    @DisplayName("Fetches Available Services")
+    @DisplayName("Возвращает доступные услуги отделения")
     @Test
     void fetchesAvailableServices() {
         Branch branch = new Branch("b1", "Branch");

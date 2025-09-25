@@ -22,7 +22,7 @@ class HttpErrorHandlerE2EIT {
     @Client("/")
     HttpClient client;
 
-    @DisplayName("Returns Unified Error Body")
+    @DisplayName("Возвращает унифицированное тело ошибки")
     @Test
     void returnsUnifiedErrorBody() {
         HttpClientResponseException ex = assertThrows(

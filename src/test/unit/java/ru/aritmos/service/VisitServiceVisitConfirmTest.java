@@ -42,7 +42,7 @@ class VisitServiceVisitConfirmTest {
         VisitEvent.START_SERVING.getParameters().clear();
     }
 
-    @DisplayName("Visit Confirm Moves Visit To Service Point And Publishes Start Serving Event")
+    @DisplayName("Подтверждение визита переводит клиента к точке обслуживания и публикует событие START_SERVING")
     @Test
     void visitConfirmMovesVisitToServicePointAndPublishesStartServingEvent() {
         log.info("Готовим отделение и точку обслуживания для позитивного сценария подтверждения визита");
@@ -118,7 +118,7 @@ class VisitServiceVisitConfirmTest {
         assertEquals("wp-1", params.get("workProfileId"));
     }
 
-    @DisplayName("Visit Confirm Fails When Service Point Already Has Visit")
+    @DisplayName("Подтверждение визита отклоняется, когда точка обслуживания уже занята")
     @Test
     void visitConfirmFailsWhenServicePointAlreadyHasVisit() {
         log.info("Готовим отделение с занятой точкой обслуживания");
@@ -145,7 +145,7 @@ class VisitServiceVisitConfirmTest {
         verify(branchService, never()).updateVisit(any(Visit.class), any(VisitEvent.class), same(serviceUnderTest));
     }
 
-    @DisplayName("Visit Confirm Fails When Service Point Missing")
+    @DisplayName("Подтверждение визита завершается ошибкой 404, если точка обслуживания отсутствует")
     @Test
     void visitConfirmFailsWhenServicePointMissing() {
         log.info("Готовим отделение без нужной точки обслуживания");
