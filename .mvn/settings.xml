@@ -2,31 +2,26 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
   <!--
-    Управление прокси полностью передано во внешний конфиг через переменные
-    окружения Maven/Java:
-      * MAVEN_HTTP_PROXY_ENABLED / MAVEN_HTTPS_PROXY_ENABLED — активирует прокси.
-      * MAVEN_HTTP_PROXY_HOST / MAVEN_HTTPS_PROXY_HOST — адрес прокси-сервера.
-      * MAVEN_HTTP_PROXY_PORT / MAVEN_HTTPS_PROXY_PORT — порт прокси-сервера.
-      * MAVEN_HTTP_DIRECT_HOSTS / MAVEN_HTTPS_DIRECT_HOSTS — адреса (через «|»),
-        для которых проксирование зависимостей отключается.
-    Если переменные не заданы, прокси не используется.
+    В среде контейнера Maven должен использовать локальный прокси, доступный по имени
+    хоста «proxy». Активируем HTTP(S) прокси и явно прописываем адрес и порт,
+    чтобы сборка могла скачать зависимости без дополнительных переменных окружения.
   -->
   <proxies>
     <proxy>
-      <id>allowlisted-http</id>
-      <active>${env.MAVEN_HTTP_PROXY_ENABLED}</active>
+      <id>container-http</id>
+      <active>true</active>
       <protocol>http</protocol>
-      <host>${env.MAVEN_HTTP_PROXY_HOST}</host>
-      <port>${env.MAVEN_HTTP_PROXY_PORT}</port>
-      <nonProxyHosts>${env.MAVEN_HTTP_DIRECT_HOSTS}</nonProxyHosts>
+      <host>proxy</host>
+      <port>8080</port>
+      <nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>
     </proxy>
     <proxy>
-      <id>allowlisted-https</id>
-      <active>${env.MAVEN_HTTPS_PROXY_ENABLED}</active>
+      <id>container-https</id>
+      <active>true</active>
       <protocol>https</protocol>
-      <host>${env.MAVEN_HTTPS_PROXY_HOST}</host>
-      <port>${env.MAVEN_HTTPS_PROXY_PORT}</port>
-      <nonProxyHosts>${env.MAVEN_HTTPS_DIRECT_HOSTS}</nonProxyHosts>
+      <host>proxy</host>
+      <port>8080</port>
+      <nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>
     </proxy>
   </proxies>
 </settings>
