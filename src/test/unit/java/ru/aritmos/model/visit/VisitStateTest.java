@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 class VisitStateTest {
 
-    @Test
     @DisplayName("перечисление содержит последовательность состояний визита")
+    @Test
     void verifyListOfStates() {
         VisitState[] ожидаемыеСостояния = {
             VisitState.CREATED,
@@ -23,14 +23,14 @@ class VisitStateTest {
         assertArrayEquals(ожидаемыеСостояния, VisitState.values());
     }
 
-    @Test
     @DisplayName("можно получить состояние по его имени")
+    @Test
     void retrievesStateByName() {
         assertEquals(VisitState.WAITING_IN_QUEUE, VisitState.valueOf("WAITING_IN_QUEUE"));
     }
 
-    @Test
     @DisplayName("перечисление VisitState также аннотировано Serdeable")
+    @Test
     void verifySerdeableAnnotation() {
         assertTrue(VisitState.class.isAnnotationPresent(Serdeable.class));
     }
