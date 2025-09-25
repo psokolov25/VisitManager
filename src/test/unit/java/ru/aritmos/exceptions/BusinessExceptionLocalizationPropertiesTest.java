@@ -2,6 +2,8 @@ package ru.aritmos.exceptions;
 
 import static ru.aritmos.test.LoggingAssertions.*;
 
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 import org.junit.jupiter.api.Test;
 
 class BusinessExceptionLocalizationPropertiesTest {
@@ -110,4 +112,42 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("Delayed return has not yet been completed", messages.responseBody());
     }
 
+    @Test
+    void конфигураторПеренастраиваетЛокализациюПослеОбновления() {
+        BusinessException.resetLocalization();
+        try {
+            BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();
+            BusinessExceptionLocalizationConfigurer configurer =
+                    new BusinessExceptionLocalizationConfigurer(properties);
+
+            applyLanguage(properties, "en");
+            configurer.updateLocalization();
+
+            HttpStatusException english =
+                    assertThrows(
+                            HttpStatusException.class,
+                            () -> new BusinessException("branch_not_found", null, HttpStatus.BAD_REQUEST));
+            assertEquals("Branch not found", english.getMessage());
+
+            applyLanguage(properties, "ru");
+            configurer.updateLocalization();
+
+            HttpStatusException russian =
+                    assertThrows(
+                            HttpStatusException.class,
+                            () -> new BusinessException("branch_not_found", null, HttpStatus.BAD_REQUEST));
+            assertEquals("Отделение не найдено", russian.getMessage());
+        } finally {
+            BusinessException.resetLocalization();
+        }
+    }
+
+    private static void applyLanguage(BusinessExceptionLocalizationProperties properties, String language) {
+        properties.getHttp().setLanguage(language);
+        properties.getHttp().setDefaultLanguage(language);
+        properties.getLog().setLanguage(language);
+        properties.getLog().setDefaultLanguage(language);
+        properties.getEvent().setLanguage(language);
+        properties.getEvent().setDefaultLanguage(language);
+    }
 }
