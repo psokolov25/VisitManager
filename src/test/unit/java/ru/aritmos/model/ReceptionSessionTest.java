@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class ReceptionSessionTest {
 
-    @DisplayName("Builder Should Populate All Fields")
+    @DisplayName("Билдер заполняет все поля")
     @Test
     void builderShouldPopulateAllFields() {
         User user = new User();

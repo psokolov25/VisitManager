@@ -52,7 +52,7 @@ class VisitServiceCreateVirtualVisit2Test {
         }
     }
 
-    @DisplayName("Create Virtual Visit2Creates Visit And Starts Serving With Service Point Staff")
+    @DisplayName("Создание VirtualVisit2 формирует визит и запускает обслуживание с сотрудником точки")
     @Test
     void createVirtualVisit2CreatesVisitAndStartsServingWithServicePointStaff() throws SystemException {
         Branch branch = new Branch("b1", "Отделение №1");
@@ -140,7 +140,7 @@ class VisitServiceCreateVirtualVisit2Test {
         assertEquals(staff.getName(), startServing.getParameters().get("staffName"));
     }
 
-    @DisplayName("Create Virtual Visit2Uses Keycloak Data When Service Point Without User")
+    @DisplayName("Создание VirtualVisit2 использует данные Keycloak при отсутствии пользователя у точки")
     @Test
     void createVirtualVisit2UsesKeycloakDataWhenServicePointWithoutUser() throws SystemException {
         Branch branch = new Branch("b2", "Отделение №2");
@@ -218,7 +218,7 @@ class VisitServiceCreateVirtualVisit2Test {
         assertEquals(primary.getName(), startServing.getParameters().get("serviceName"));
     }
 
-    @DisplayName("Create Virtual Visit2Throws Not Found When Queue Missing In Branch")
+    @DisplayName("Создание VirtualVisit2 выбрасывает исключение «не найдено» при отсутствии очереди в отделении")
     @Test
     void createVirtualVisit2ThrowsNotFoundWhenQueueMissingInBranch() throws SystemException {
         Branch branch = new Branch("b3", "Отделение №3");

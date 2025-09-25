@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class ReceptionTest {
 
-    @DisplayName("Builder Should Initialize Sessions List")
+    @DisplayName("Билдер инициализирует список сессий")
     @Test
     void builderShouldInitializeSessionsList() {
         Reception reception = Reception.builder().branchId("branch1").build();
@@ -18,7 +18,7 @@ class ReceptionTest {
         assertTrue(reception.getReceptionSessions().isEmpty());
     }
 
-    @DisplayName("Builder Allows Setting Printers And Sessions")
+    @DisplayName("Билдер позволяет задать принтеры и сессии")
     @Test
     void builderAllowsSettingPrintersAndSessions() {
         Entity printer = Entity.builder().id("printer1").name("Main").build();

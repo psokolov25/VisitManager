@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class WorkProfileTest {
 
-    @DisplayName("Constructor With Name Should Generate Identifier")
+    @DisplayName("Конструктор с именем генерирует идентификатор")
     @Test
     void constructorWithNameShouldGenerateIdentifier() {
         WorkProfile profile = new WorkProfile("Operator");
@@ -18,7 +18,7 @@ class WorkProfileTest {
         assertFalse(profile.getId().isEmpty());
     }
 
-    @DisplayName("Constructor With Explicit Id Should Keep Values")
+    @DisplayName("Конструктор с явным идентификатором сохраняет значения без изменений")
     @Test
     void constructorWithExplicitIdShouldKeepValues() {
         WorkProfile profile = new WorkProfile("wp1", "Operator");
@@ -29,7 +29,7 @@ class WorkProfileTest {
         assertEquals("branch42", profile.getBranchId());
     }
 
-    @DisplayName("Queue Ids Should Be Mutable List")
+    @DisplayName("Список идентификаторов очередей остаётся изменяемым")
     @Test
     void queueIdsShouldBeMutableList() {
         WorkProfile profile = new WorkProfile("wp1", "Operator");

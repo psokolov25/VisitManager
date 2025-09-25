@@ -17,7 +17,7 @@ import org.keycloak.representations.idm.UserRepresentation;
  */
 class KeyCloackClientTest {
 
-    @DisplayName("Get Branch Path By Branch Prefix Returns Path")
+    @DisplayName("getBranchPathByBranchPrefix возвращает путь найденного отделения")
     @Test
     void getBranchPathByBranchPrefixReturnsPath() {
         KeyCloackClient client = spy(new KeyCloackClient());
@@ -33,7 +33,7 @@ class KeyCloackClientTest {
         assertEquals("/r/b", path);
     }
 
-    @DisplayName("Get Branch Path By Branch Prefix Returns Null When Not Found")
+    @DisplayName("getBranchPathByBranchPrefix возвращает null при отсутствии отделения")
     @Test
     void getBranchPathByBranchPrefixReturnsNullWhenNotFound() {
         KeyCloackClient client = spy(new KeyCloackClient());
@@ -43,7 +43,7 @@ class KeyCloackClientTest {
         assertNull(client.getBranchPathByBranchPrefix("region", "PR"));
     }
 
-    @DisplayName("Get All Branches By Region Id Collects Branches Recursively")
+    @DisplayName("getAllBranchesByRegionId собирает отделения рекурсивно")
     @Test
     void getAllBranchesByRegionIdCollectsBranchesRecursively() {
         KeyCloackClient client = new KeyCloackClient();
@@ -77,7 +77,7 @@ class KeyCloackClientTest {
         assertTrue(result.contains(nestedBranch));
     }
 
-    @DisplayName("Get Keycloak Returns Existing Instance")
+    @DisplayName("getKeycloak возвращает существующий экземпляр")
     @Test
     void getKeycloakReturnsExistingInstance() {
         KeyCloackClient client = new KeyCloackClient();
@@ -89,7 +89,7 @@ class KeyCloackClientTest {
         assertSame(existing, result);
     }
 
-    @DisplayName("Get User Info Returns User When Found")
+    @DisplayName("getUserInfo возвращает пользователя при наличии результата")
     @Test
     void getUserInfoReturnsUserWhenFound() {
         KeyCloackClient client = new KeyCloackClient();
@@ -110,7 +110,7 @@ class KeyCloackClientTest {
         assertSame(user, result.get());
     }
 
-    @DisplayName("Get User Info Returns Empty When User Missing")
+    @DisplayName("getUserInfo возвращает пустой Optional при отсутствии пользователя")
     @Test
     void getUserInfoReturnsEmptyWhenUserMissing() {
         KeyCloackClient client = new KeyCloackClient();
