@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +38,14 @@ import ru.aritmos.service.VisitService;
   @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class ConfigurationController {
+  private static final String TAG_BRANCH_CONFIGURATION = "Конфигурация · Отделения";
+  private static final String TAG_SERVICE_CONFIGURATION = "Конфигурация · Услуги";
+  private static final String TAG_BREAKS = "Справочники · Перерывы";
+  private static final String TAG_SERVICE_POINT_CONFIGURATION = "Конфигурация · Точки обслуживания";
+  private static final String TAG_SERVICE_GROUP_CONFIGURATION = "Конфигурация · Группы услуг";
+  private static final String TAG_SEGMENTATION_CONFIGURATION = "Конфигурация · Правила сегментации";
+  private static final String TAG_AUTOCALL_CONFIGURATION = "Конфигурация · Автовызов";
+  private static final String TAG_QUEUE_CONFIGURATION = "Конфигурация · Очереди";
   /** Сервис управления отделениями. */
   @Inject BranchService branchService;
 
@@ -54,12 +61,11 @@ public class ConfigurationController {
    * @param branchHashMap набор отделений, индексированных по идентификатору
    * @return актуализированная конфигурация отделений
    */
-  @Tag(name = "Конфигурация отделений")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "updateBranchConfiguration",
       summary = "Обновление конфигурации отделений",
       description = "Создает или обновляет конфигурацию отделений",
+      tags = {TAG_BRANCH_CONFIGURATION},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -84,12 +90,11 @@ public class ConfigurationController {
    *
    * @return конфигурация отделений из демо-данных
    */
-  @Tag(name = "Конфигурация отделений")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "publishDemoConfiguration",
       summary = "Обновление демо-конфигурации отделений",
       description = "Создает конфигурацию отделений на основе демо-данных",
+      tags = {TAG_BRANCH_CONFIGURATION},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -117,12 +122,11 @@ public class ConfigurationController {
    * @param serviceHashMap карта услуг по идентификатору
    * @param checkVisits учитывать ли существующие визиты при обновлении услуг
    */
-  @Tag(name = "Конфигурация отделений (в разработке!)")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "addOrUpdateServices",
       summary = "Добавление или обновление услуг",
       description = "Создает или изменяет услуги отделения",
+      tags = {TAG_SERVICE_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Услуги обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -142,13 +146,11 @@ public class ConfigurationController {
    * @param branchId идентификатор отделения
    * @return карта причин перерыва по идентификатору
    */
-  @Tag(name = "Конфигурация отделений")
-  @Tag(name = "Перерывы")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getBreakReasons",
       summary = "Получение списка причин перерыва",
       description = "Возвращает перечень причин перерыва для отделения",
+      tags = {TAG_BREAKS},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -176,12 +178,11 @@ public class ConfigurationController {
    * @param serviceIds список идентификаторов услуг
    * @param checkVisits учитывать ли существующие визиты при удалении услуг
    */
-  @Tag(name = "Конфигурация отделений (в разработке!)")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "deleteServices",
       summary = "Удаление услуг",
       description = "Удаляет услуги отделения",
+      tags = {TAG_SERVICE_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "204", description = "Услуги удалены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -205,11 +206,10 @@ public class ConfigurationController {
    * @param restoreUser восстановить ли назначенных сотрудников после обновления
    * @param restoreVisit восстановить ли активные визиты после обновления
    */
-  @Tag(name = "Конфигурация отделений (в разработке!)")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление или обновление точек обслуживания",
       description = "Создает или изменяет точки обслуживания отделения",
+      tags = {TAG_SERVICE_POINT_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Точки обслуживания обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -230,12 +230,10 @@ public class ConfigurationController {
    * @param branchId идентификатор отделения
    * @param serviceGroupHashMap карта групп услуг
    */
-  @Tag(name = "Конфигурация отделений")
-  @Tag(name = "Полный список")
-  @Tag(name = "Группы услуг")
   @Operation(
       summary = "Добавление или обновление групп услуг",
       description = "Создает или изменяет группы услуг отделения",
+      tags = {TAG_SERVICE_GROUP_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Группы услуг обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -256,12 +254,10 @@ public class ConfigurationController {
    * @param branchId идентификатор отделения
    * @param segmentationRuleDataHashMap карта правил сегментации
    */
-  @Tag(name = "Конфигурация отделений")
-  @Tag(name = "Полный список")
-  @Tag(name = "Правила сегментации")
   @Operation(
       summary = "Добавление или обновление правил сегментации",
       description = "Создает или изменяет правила сегментации отделения",
+      tags = {TAG_SEGMENTATION_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Правила сегментации обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -282,11 +278,10 @@ public class ConfigurationController {
    * @param branchId идентификатор отделения
    * @param servicePointIds список идентификаторов точек обслуживания
    */
-  @Tag(name = "Конфигурация отделений (в разработке!)")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Удаление точек обслуживания",
       description = "Удаляет точки обслуживания отделения",
+      tags = {TAG_SERVICE_POINT_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "204", description = "Точки обслуживания удалены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -307,12 +302,10 @@ public class ConfigurationController {
    * @param branchId идентификатор отделения
    * @return обновлённое состояние отделения
    */
-  @Tag(name = "Автоматический вызов")
-  @Tag(name = "Конфигурация отделений")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Включение автоматического вызова",
       description = "Активирует режим авто вызова для отделения",
+      tags = {TAG_AUTOCALL_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Режим включен"),
         @ApiResponse(responseCode = "207", description = "Режим уже включен"),
@@ -331,12 +324,10 @@ public class ConfigurationController {
    * @param branchId идентификатор отделения
    * @return обновлённое состояние отделения
    */
-  @Tag(name = "Автоматический вызов")
-  @Tag(name = "Конфигурация отделений")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Выключение автоматического вызова",
       description = "Деактивирует режим авто вызова для отделения",
+      tags = {TAG_AUTOCALL_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Режим выключен"),
         @ApiResponse(responseCode = "207", description = "Режим уже выключен"),
@@ -356,11 +347,10 @@ public class ConfigurationController {
    * @param queueHashMap карта очередей по идентификатору
    * @param restoreVisits восстановить ли активные визиты после обновления
    */
-  @Tag(name = "Конфигурация отделений (в разработке!)")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление или обновление очередей",
       description = "Создает или изменяет очереди отделения",
+      tags = {TAG_QUEUE_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Очереди обновлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -380,11 +370,10 @@ public class ConfigurationController {
    * @param branchId идентификатор отделения
    * @param queueIds список идентификаторов очередей
    */
-  @Tag(name = "Конфигурация отделений (в разработке!)")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Удаление очередей",
       description = "Удаляет очереди отделения",
+      tags = {TAG_QUEUE_CONFIGURATION},
       responses = {
         @ApiResponse(responseCode = "204", description = "Очереди удалены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),

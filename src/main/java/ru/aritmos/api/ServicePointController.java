@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.*;
@@ -55,6 +54,21 @@ import ru.aritmos.service.VisitService;
   @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class ServicePointController {
+  private static final String TAG_INFRA_SERVICE_POINTS = "Инфраструктура · Рабочие места";
+  private static final String TAG_INFRA_PRINTERS = "Инфраструктура · Принтеры";
+  private static final String TAG_INFRA_QUEUES = "Инфраструктура · Очереди";
+  private static final String TAG_STAFF_DIRECTORY = "Персонал · Справочник сотрудников";
+  private static final String TAG_STAFF_PROFILES = "Персонал · Рабочие профили";
+  private static final String TAG_STAFF_MANAGEMENT = "Персонал · Управление сменой";
+  private static final String TAG_VISIT_MONITORING = "Визиты · Мониторинг";
+  private static final String TAG_VISIT_CALL = "Визиты · Вызовы";
+  private static final String TAG_VISIT_CONFIRMATION = "Визиты · Подтверждение прихода";
+  private static final String TAG_VISIT_AUTOCALL = "Визиты · Автовызов";
+  private static final String TAG_VISIT_SERVICES = "Визиты · Управление услугами";
+  private static final String TAG_VISIT_MARKS = "Визиты · Метки и заметки";
+  private static final String TAG_VISIT_QUEUE = "Визиты · Управление очередями";
+  private static final String TAG_VISIT_COMPLETION = "Визиты · Завершение обслуживания";
+  private static final String TAG_VISIT_RETURN = "Визиты · Возврат к обслуживанию";
   /** Сервис для выборки услуг. */
   @Inject Services services;
 
@@ -86,6 +100,7 @@ public class ServicePointController {
       operationId = "getFreeServicePoints",
       summary = "Свободные точки обслуживания отделения",
       description = "Возвращает карту незанятых точек обслуживания для указанного отделения.",
+      tags = {TAG_INFRA_SERVICE_POINTS},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -99,9 +114,6 @@ public class ServicePointController {
             description = "Отделение не найдено или недоступно в кэше сервиса"),
         @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Полный список")
   @Get("/branches/{branchId}/servicePoints/getFree")
   @ExecuteOn(TaskExecutors.IO)
   public HashMap<String, ServicePoint> getFreeServicePoints(
@@ -116,13 +128,11 @@ public class ServicePointController {
    *     умолчанию из конфигурации приложения.
    * @return список принтеров отделения в виде упрощённых сущностей.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о принтерах")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getPrinters",
       summary = "Принтеры отделения",
       description = "Возвращает список принтеров отделения, доступных для печати талонов.",
+      tags = {TAG_INFRA_PRINTERS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список принтеров"),
         @ApiResponse(
@@ -143,13 +153,11 @@ public class ServicePointController {
    * @param branchId идентификатор отделения, для которого требуется получить перечень очередей.
    * @return список очередей с идентификаторами и названиями.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные об очередях")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getQueues",
       summary = "Очереди отделения",
       description = "Возвращает список очередей отделения с базовыми атрибутами.",
+      tags = {TAG_INFRA_QUEUES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список очередей"),
         @ApiResponse(
@@ -171,13 +179,11 @@ public class ServicePointController {
    *     очередях.
    * @return список очередей с расширенными данными, включая настройки приоритета.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные об очередях")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getFullQueues",
       summary = "Очереди отделения (полные данные)",
       description = "Возвращает подробную информацию об очередях отделения со служебными полями.",
+      tags = {TAG_INFRA_QUEUES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список очередей"),
         @ApiResponse(
@@ -198,13 +204,10 @@ public class ServicePointController {
    * @param branchId идентификатор отделения, откуда извлекаются точки обслуживания.
    * @return список точек обслуживания в облегчённом формате {@link TinyServicePoint}.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Полный список")
-  @Tag(name = "Данные о пулах")
   @Operation(
       operationId = "getServicePoints",
       summary = "Все точки обслуживания",
+      tags = {TAG_INFRA_SERVICE_POINTS},
       description =
           "Возвращает список точек обслуживания отделения с признаком занятости рабочего места.",
       responses = {
@@ -229,14 +232,11 @@ public class ServicePointController {
    * @param branchId идентификатор отделения, для которого формируется ответ.
    * @return список точек обслуживания с максимально подробными данными.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Полный список")
-  @Tag(name = "Данные о пулах")
   @Operation(
       operationId = "getDetailedServicePoints",
       summary = "Подробные точки обслуживания",
       description = "Возвращает подробную информацию о точках обслуживания, включая связанные пулы.",
+      tags = {TAG_INFRA_SERVICE_POINTS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список точек обслуживания"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -257,14 +257,12 @@ public class ServicePointController {
    * @return точка обслуживания, где сотрудник закреплён или временно числится после выхода на
    *     перерыв.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Полный список")
   @Get("/branches/{branchId}/servicePoints/user/{userName}")
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
       operationId = "getServicePointByUserName",
       summary = "Точка обслуживания по логину",
+      tags = {TAG_INFRA_SERVICE_POINTS},
       description =
           "Возвращает точку обслуживания, где работает указанный сотрудник, учитывая сотрудников на перерыве.",
       responses = {
@@ -307,15 +305,11 @@ public class ServicePointController {
    * @param branchId идентификатор отделения, для которого производится выборка.
    * @return список сотрудников с актуальными атрибутами.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Данные о сотрудниках")
-  @Tag(name = "Полный список")
-  @Tag(name = "Данные о пулах")
   @Operation(
       operationId = "getUsersOfBranch",
       summary = "Сотрудники отделения",
       description = "Возвращает список сотрудников отделения из справочника отделения.",
+      tags = {TAG_STAFF_DIRECTORY},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список сотрудников"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -334,15 +328,11 @@ public class ServicePointController {
    * @param branchId идентификатор отделения, по которому формируется ответ.
    * @return список сотрудников, отмеченных как работающие.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Данные о сотрудниках")
-  @Tag(name = "Полный список")
-  @Tag(name = "Данные о пулах")
   @Operation(
       operationId = "getAllWorkingUsersOfBranch",
       summary = "Работающие сотрудники отделения",
       description = "Возвращает список сотрудников, находящихся на рабочем месте в текущий момент.",
+      tags = {TAG_STAFF_DIRECTORY},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список сотрудников"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -361,15 +351,13 @@ public class ServicePointController {
    * @param userName логин пользователя.
    * @return точка обслуживания, где сотрудник числится активным.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Полный список")
   @Get("/servicePoints/user/{userName}")
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
       operationId = "getServicePointByUserNameGlobal",
       summary = "Поиск точки обслуживания по логину",
       description = "Возвращает точку обслуживания по логину сотрудника среди всех отделений.",
+      tags = {TAG_INFRA_SERVICE_POINTS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
         @ApiResponse(
@@ -394,13 +382,11 @@ public class ServicePointController {
    * @param userName логин пользователя.
    * @return пользователь, занимающий рабочее место, если таковой найден.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getUserByUserName",
       summary = "Сотрудник по логину",
       description = "Возвращает информацию о сотруднике по его логину в пределах отделения.",
+      tags = {TAG_STAFF_DIRECTORY},
       responses = {
         @ApiResponse(responseCode = "200", description = "Сотрудник найден"),
         @ApiResponse(
@@ -426,12 +412,10 @@ public class ServicePointController {
    * @param branchId идентификатор отделения.
    * @return список рабочих профилей в облегчённом формате {@link TinyClass}.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о рабочих профилях")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getWorkProfiles",
       summary = "Рабочие профили отделения",
+      tags = {TAG_STAFF_PROFILES},
       description =
           "Возвращает список рабочих профилей отделения, доступных для назначения на точки обслуживания.",
       responses = {
@@ -458,6 +442,7 @@ public class ServicePointController {
   @Operation(
       operationId = "changeUserWorkprofile",
       summary = "Смена рабочего профиля сотрудника",
+      tags = {TAG_STAFF_PROFILES},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -470,9 +455,6 @@ public class ServicePointController {
             description = "Сотрудник на точке обслуживания не найден"),
         @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Работа сотрудников")
-  @Tag(name = "Полный список")
   @Put("/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}")
   @ExecuteOn(TaskExecutors.IO)
   public User changeUserWorkprofile(
@@ -502,6 +484,7 @@ public class ServicePointController {
   @Operation(
       operationId = "openServicePoint",
       summary = "Открытие точки обслуживания",
+      tags = {TAG_STAFF_MANAGEMENT},
       responses = {
         @ApiResponse(responseCode = "200", description = "Открытие произошло успешно"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -541,9 +524,6 @@ public class ServicePointController {
                     schema = @Schema(implementation = HashMap.class))),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Работа сотрудников")
-  @Tag(name = "Полный список")
   @Post(
       "/branches/{branchId}/servicePoints/{servicePointId}/workProfiles/{workProfileId}/users/{userName}/open")
   @ExecuteOn(TaskExecutors.IO)
@@ -572,12 +552,10 @@ public class ServicePointController {
    * @param reason текстовая причина принудительного завершения обслуживания.
    */
   @SuppressWarnings("all")
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Работа сотрудников")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "closeServicePoint",
       summary = "Закрытие точки обслуживания",
+      tags = {TAG_STAFF_MANAGEMENT},
       description =
           "Завершает смену сотрудника на точке обслуживания. Повторный вызов для закрытой точки"
               + " приводит к ошибке конфликта.",
@@ -618,12 +596,10 @@ public class ServicePointController {
    * @param reason пояснение принудительного завершения.
    */
   @SuppressWarnings("all")
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Работа сотрудников")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "logoutUserFromServicePoint",
       summary = "Закрытие точки и выход сотрудника",
+      tags = {TAG_STAFF_MANAGEMENT},
       description =
           "Закрывает точку обслуживания, снимает сотрудника с рабочего места и завершает его сессию"
               + " в системе авторизации.",
@@ -660,12 +636,10 @@ public class ServicePointController {
    * @param limit максимальное количество возвращаемых визитов.
    * @return список визитов с укороченным набором полей {@link TinyVisit}.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о визитах")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getQueueVisitsLimited",
       summary = "Визиты очереди с ограничением",
+      tags = {TAG_VISIT_MONITORING},
       description =
           "Возвращает визиты указанной очереди, ограничивая результат значением параметра limit.",
       responses = {
@@ -712,13 +686,11 @@ public class ServicePointController {
    * @param queueId идентификатор очереди.
    * @return все визиты очереди с полным набором атрибутов.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о визитах")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getQueueVisits",
       summary = "Все визиты очереди",
       description = "Возвращает все визиты указанной очереди без ограничений по количеству.",
+      tags = {TAG_VISIT_MONITORING},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список визитов"),
         @ApiResponse(responseCode = "404", description = "Отделение или очередь не найдены"),
@@ -745,12 +717,10 @@ public class ServicePointController {
    * @param branchId идентификатор отделения.
    * @return карта визитов, где ключ — идентификатор визита.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о визитах")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getAllVisitsByBranch",
       summary = "Все визиты отделения",
+      tags = {TAG_VISIT_MONITORING},
       description =
           "Возвращает все визиты отделения, включая записи в очередях, пулах и активном обслуживании.",
       responses = {
@@ -776,13 +746,11 @@ public class ServicePointController {
    * @param visitId идентификатор визита.
    * @return визит с полным набором атрибутов.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о визитах")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getVisitById",
       summary = "Визит по идентификатору",
       description = "Возвращает визит по идентификатору с учётом контекста отделения.",
+      tags = {TAG_VISIT_MONITORING},
       responses = {
         @ApiResponse(responseCode = "200", description = "Данные визита"),
         @ApiResponse(responseCode = "404", description = "Отделение или визит не найдены"),
@@ -807,13 +775,11 @@ public class ServicePointController {
    * @param statuses список статусов, для которых требуется выборка.
    * @return карта визитов, удовлетворяющих условию.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о визитах")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getVisitsByStatuses",
       summary = "Визиты по статусам",
       description = "Возвращает визиты отделения, находящиеся в указанных статусах.",
+      tags = {TAG_VISIT_MONITORING},
       requestBody =
           @RequestBody(
               required = true,
@@ -857,13 +823,11 @@ public class ServicePointController {
    * @param visitId идентификатор визита.
    * @return визит из указанной очереди.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о визитах")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getVisitWithinQueue",
       summary = "Получение данных о визите",
       description = "Возвращает визит по идентификатору в рамках выбранной очереди отделения.",
+      tags = {TAG_VISIT_MONITORING},
       responses = {
         @ApiResponse(responseCode = "200", description = "Данные о визите"),
         @ApiResponse(responseCode = "404", description = "Отделение, очередь или визит не найдены"),
@@ -894,13 +858,11 @@ public class ServicePointController {
    * @param visitId идентификатор визита.
    * @return визит, переведённый в статус вызова.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов определенного визита (cherry-peak)")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitById",
       summary = "Вызов визита по идентификатору",
       description = "Переводит визит в статус CALLED и закрепляет его за точкой обслуживания.",
+      tags = {TAG_VISIT_CALL},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(
@@ -930,14 +892,11 @@ public class ServicePointController {
    * @param visit визит, подготовленный к вызову.
    * @return визит в режиме ожидания подтверждения.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов определенного визита (cherry-peak)")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitForConfirmation",
       summary = "Вызов визита с подтверждением",
       description = "Переводит визит в режим ожидания подтверждения клиента на выбранной точке.",
+      tags = {TAG_VISIT_CALL},
       requestBody =
           @RequestBody(
               required = true,
@@ -985,13 +944,11 @@ public class ServicePointController {
    * @param visitId идентификатор визита.
    * @return визит, ожидающий подтверждения.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов определенного визита (cherry-peak)")
-  @Tag(name = "Ожидание подтверждения прихода")
   @Operation(
       operationId = "callVisitByIdForConfirmation",
       summary = "Вызов визита по идентификатору с подтверждением",
       description = "Переводит визит по идентификатору в режим ожидания подтверждения клиента.",
+      tags = {TAG_VISIT_CALL},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
@@ -1025,13 +982,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания, на которую будет закреплён визит.
    * @return визит, переведённый в статус вызова.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов визита c наибольшим временем ожидания")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitWithMaxWaitingTime",
       summary = "Вызов визита с максимальным ожиданием",
+      tags = {TAG_VISIT_CALL},
       description =
           "Вызывает визит с наибольшим временем ожидания и закрепляет его за выбранной точкой обслуживания.",
       responses = {
@@ -1065,13 +1019,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания, где ожидается подтверждение клиента.
    * @return визит, ожидающий подтверждения посещения.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов визита c наибольшим временем ожидания")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitWithMaxWaitingTimeAndConfirmation",
       summary = "Вызов визита с подтверждением",
+      tags = {TAG_VISIT_CALL},
       description =
           "Вызывает визит с максимальным временем ожидания и переводит его в режим ожидания подтверждения клиента.",
       responses = {
@@ -1106,15 +1057,10 @@ public class ServicePointController {
    * @param queueIds идентификаторы очередей, участвующих в поиске визита.
    * @return визит, выбранный из указанного перечня очередей.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов визита c наибольшим временем ожидания")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Вызов из перечня очередей")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitFromQueuesWithMaxWaitingTime",
       summary = "Вызов из указанных очередей",
+      tags = {TAG_VISIT_CALL},
       description =
           "Вызывает визит с максимальным временем ожидания из переданных очередей и закрепляет его за точкой обслуживания.",
       requestBody =
@@ -1168,14 +1114,10 @@ public class ServicePointController {
    * @param queueIds идентификаторы очередей, из которых выбирается визит.
    * @return визит, ожидающий подтверждения из указанного набора очередей.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов из перечня очередей")
-  @Tag(name = "Вызов визита c наибольшим временем ожидания")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitFromQueuesWithMaxWaitingTimeAndConfirmation",
       summary = "Вызов из очередей с подтверждением",
+      tags = {TAG_VISIT_CALL},
       description =
           "Вызывает визит с максимальным временем ожидания из переданных очередей и переводит его в режим ожидания подтверждения клиента.",
       requestBody =
@@ -1228,13 +1170,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания, принимающей визит.
    * @return визит, выбранный по максимальному времени жизни.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов визита c максимальным временем жизни")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitWithMaxLifetime",
       summary = "Вызов визита с максимальным временем жизни",
+      tags = {TAG_VISIT_CALL},
       description =
           "Вызывает визит, дольше всего ожидающий обслуживания с учётом суммарного времени его жизненного цикла.",
       responses = {
@@ -1268,15 +1207,10 @@ public class ServicePointController {
    * @param queueIds идентификаторы очередей, среди которых выполняется поиск.
    * @return визит, обладающий максимальным временем жизни внутри указанных очередей.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Вызов визита c максимальным временем жизни")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Вызов из перечня очередей")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitFromQueuesWithMaxLifetime",
       summary = "Вызов из очередей с максимальным временем жизни",
+      tags = {TAG_VISIT_CALL},
       description =
           "Вызывает визит с максимальным временем жизни из указанных очередей и закрепляет его за выбранной точкой обслуживания.",
       requestBody =
@@ -1328,13 +1262,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания, где будет ожидаться клиент.
    * @return визит, переведённый в статус ожидания подтверждения.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов визита c максимальным временем жизни")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitWithMaxLifetimeAndConfirmation",
       summary = "Вызов визита с подтверждением по времени жизни",
+      tags = {TAG_VISIT_CALL},
       description =
           "Вызывает визит с максимальным временем жизни и переводит его в режим ожидания подтверждения клиента.",
       responses = {
@@ -1368,14 +1299,10 @@ public class ServicePointController {
    * @param queueIds идентификаторы очередей, среди которых производится поиск визита.
    * @return визит, ожидающий подтверждения.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов визита c максимальным временем жизни")
-  @Tag(name = "Вызов из перечня очередей")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "callVisitFromQueuesWithMaxLifetimeAndConfirmation",
       summary = "Вызов из очередей по времени жизни с подтверждением",
+      tags = {TAG_VISIT_CALL},
       description =
           "Вызывает визит с максимальным временем жизни из указанных очередей и переводит его в режим ожидания подтверждения клиента.",
       requestBody =
@@ -1429,13 +1356,10 @@ public class ServicePointController {
    * @param visit визит, подготовленный к отмене.
    * @return визит в статусе {@code NO_SHOW}.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Результат вызова")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "cancelVisitAsNoShow",
       summary = "Отмена вызова: клиент не пришёл",
+      tags = {TAG_VISIT_CONFIRMATION},
       description =
           "Переводит визит в статус NO_SHOW при отсутствии подтверждения присутствия клиента.",
       responses = {
@@ -1468,13 +1392,10 @@ public class ServicePointController {
    * @param visitId идентификатор визита, для которого оформляется статус {@code NO_SHOW}.
    * @return визит со статусом {@code NO_SHOW}.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Результат вызова")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "cancelVisitAsNoShowById",
       summary = "Отмена вызова по идентификатору",
+      tags = {TAG_VISIT_CONFIRMATION},
       description =
           "Переводит визит в статус NO_SHOW по его идентификатору и освобождает точку обслуживания.",
       responses = {
@@ -1508,13 +1429,10 @@ public class ServicePointController {
    * @param visit визит, который требуется вызвать повторно.
    * @return визит, ожидающий подтверждения после повторного вызова.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов определенного визита (cherry-peak)")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "recallVisitForConfirmation",
       summary = "Повторный вызов визита",
+      tags = {TAG_VISIT_CONFIRMATION},
       description =
           "Повторно вызывает визит и переводит его в режим ожидания подтверждения клиента.",
       requestBody =
@@ -1565,13 +1483,10 @@ public class ServicePointController {
    * @param visitId идентификатор визита, который требуется вызвать повторно.
    * @return визит в режиме ожидания подтверждения.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Вызов определенного визита (cherry-peak)")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "recallVisitForConfirmationById",
       summary = "Повторный вызов визита по идентификатору",
+      tags = {TAG_VISIT_CONFIRMATION},
       description =
           "Повторно вызывает визит по его идентификатору и переводит его в режим ожидания подтверждения клиента.",
       responses = {
@@ -1606,15 +1521,11 @@ public class ServicePointController {
    * @param visit визит, ожидающий подтверждения.
    * @return визит в статусе {@code CONFIRMED}.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Результат вызова")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "confirmVisitArrival",
       summary = "Подтверждение прихода",
       description = "Переводит визит в статус CONFIRMED и фиксирует начало обслуживания.",
+      tags = {TAG_VISIT_CONFIRMATION},
       requestBody =
           @RequestBody(
               required = true,
@@ -1663,14 +1574,10 @@ public class ServicePointController {
    * @param visitId идентификатор визита, который необходимо подтвердить.
    * @return визит в статусе {@code CONFIRMED}.
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Ожидание подтверждения прихода")
-  @Tag(name = "Результат вызова")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "confirmVisitArrivalById",
       summary = "Подтверждение прихода по идентификатору",
+      tags = {TAG_VISIT_CONFIRMATION},
       description =
           "Подтверждает приход визита по его идентификатору и переводит визит в статус CONFIRMED.",
       responses = {
@@ -1702,14 +1609,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @return точка обслуживания
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Настройка точки обслуживания")
-  @Tag(name = "Автоматический вызов")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Отмена автоматического вызова",
       description = "Отключает режим автоматического вызова в точке обслуживания",
+      tags = {TAG_VISIT_AUTOCALL},
       responses = {
         @ApiResponse(responseCode = "200", description = "Режим отключен"),
         @ApiResponse(responseCode = "207", description = "Режим уже отключён"),
@@ -1731,13 +1634,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @return точка обслуживания
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Автоматический вызов")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Запуск автоматического вызова",
       description = "Включает режим автоматического вызова в точке обслуживания",
+      tags = {TAG_VISIT_AUTOCALL},
       responses = {
         @ApiResponse(responseCode = "200", description = "Режим включен"),
         @ApiResponse(responseCode = "207", description = "Режим уже включён"),
@@ -1760,12 +1660,10 @@ public class ServicePointController {
    * @param serviceId идентификатор услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные об услугах")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Возможные фактические услуги",
       description = "Возвращает перечень доступных фактических услуг для указанной услуги",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список фактических услуг"),
         @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
@@ -1805,12 +1703,9 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные об услугах")
-  @Tag(name = "Фактические услуги")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Фактические услуги текущей услуги",
+      tags = {TAG_VISIT_SERVICES},
       description =
           "Возвращает список предоставленных фактических услуг текущего визита в точке обслуживания",
       responses = {
@@ -1838,12 +1733,10 @@ public class ServicePointController {
    * @param workProfileId идентификатор рабочего профиля
    * @return список услуг
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные об услугах")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Получение услуг рабочего профиля",
       description = "Возвращает список услуг, доступных для указанного рабочего профиля отделения",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список услуг"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1869,12 +1762,10 @@ public class ServicePointController {
    * @param queueId идентификатор очереди
    * @return список услуг
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные об услугах")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Получение услуг очереди",
       description = "Возвращает список услуг, связанных с указанной очередью отделения",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список услуг"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1899,13 +1790,10 @@ public class ServicePointController {
    * @param branchId идентификатор отделения *
    * @return список услуг
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные об услугах")
-  @Tag(name = "Фактические услуги")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Получение возможных фактических услуг",
       description = "Возвращает перечень фактических услуг, которые может оказать отделение",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список фактических услуг"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1929,12 +1817,10 @@ public class ServicePointController {
    * @param serviceId идентификатор услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные об итогах")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Возможные итоги услуги",
       description = "Возвращает список возможных итогов для указанной услуги",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список итогов"),
         @ApiResponse(responseCode = "404", description = "Услуга не найдена"),
@@ -1970,13 +1856,10 @@ public class ServicePointController {
    * @param deliveredServiceId идентификатор фактической услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Фактические услуги")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление фактической услуги",
       description = "Добавляет фактическую услугу к текущему визиту",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Фактическая услуга добавлена"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2010,13 +1893,10 @@ public class ServicePointController {
    * @param visitId идентификатор точки обслуживания *
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Марки")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Получение меток визита",
       description = "Возвращает список меток, установленных на визит",
+      tags = {TAG_VISIT_MARKS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список меток"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2040,13 +1920,10 @@ public class ServicePointController {
    * @param markId идентификатор метки
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Марки")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Удаление метки визита",
       description = "Удаляет выбранную метку из визита",
+      tags = {TAG_VISIT_MARKS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Метка удалена"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2072,13 +1949,10 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @return список меток
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Марки")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Список возможных меток",
       description = "Возвращает перечень меток, доступных в отделении",
+      tags = {TAG_VISIT_MARKS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список меток"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2101,13 +1975,10 @@ public class ServicePointController {
    * @param markId идентификатор метки
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Марки")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление метки визиту",
       description = "Присваивает визиту выбранную метку",
+      tags = {TAG_VISIT_MARKS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Метка добавлена"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2136,13 +2007,10 @@ public class ServicePointController {
    * @param noteText текст заметки
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Заметки")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление текстовой заметки",
       description = "Создает текстовую заметку для визита",
+      tags = {TAG_VISIT_MARKS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Заметка добавлена"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2169,13 +2037,10 @@ public class ServicePointController {
    * @param visitId идентификатор точки обслуживания *
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Заметки")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Получение заметок визита",
       description = "Возвращает текстовые заметки, добавленные к визиту",
+      tags = {TAG_VISIT_MARKS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список заметок"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2199,13 +2064,10 @@ public class ServicePointController {
    * @param outcomeId идентификатор итога оказания услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Итоги услуги")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление итога услуги",
       description = "Фиксирует итог оказания текущей услуги визиту",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог установлен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2237,13 +2099,10 @@ public class ServicePointController {
    * @param serviceId идентификатор услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление услуги визиту",
       description = "Добавляет новую услугу в список услуг визита",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Услуга добавлена"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2273,13 +2132,10 @@ public class ServicePointController {
    * @param serviceIds идентификатор услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление нескольких услуг визиту",
       description = "Добавляет набор услуг в визит",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Услуги добавлены"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2313,13 +2169,10 @@ public class ServicePointController {
    * @param outcomeId идентификатор итога оказания услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Итоги услуги")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Добавление итога фактической услуги",
       description = "Устанавливает итог для фактической услуги визита",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог установлен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2356,13 +2209,10 @@ public class ServicePointController {
    * @param deliveredServiceId идентификатор фактической услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Итоги услуги")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Удаление итога фактической услуги",
       description = "Удаляет установленный итог для фактической услуги визита",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог удален"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2395,13 +2245,10 @@ public class ServicePointController {
    * @param serviceId идентификатор итога оказания услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Итоги услуги")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Удаление итога услуги",
       description = "Удаляет итог оказания услуги у визита",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Итог удален"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2432,13 +2279,10 @@ public class ServicePointController {
    * @param deliveredServiceId идентификатор фактической услуги
    * @return вызванный визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Фактические услуги")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Удаление фактической услуги",
       description = "Удаляет фактическую услугу из визита",
+      tags = {TAG_VISIT_SERVICES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Фактическая услуга удалена"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2469,12 +2313,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @return доступные очереди
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Данные точки обслуживания",
       description = "Возвращает информацию о точке обслуживания, учитывая сотрудника на перерыве",
+      tags = {TAG_INFRA_SERVICE_POINTS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2514,12 +2356,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @return доступные очереди
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Данные о точках обслуживания")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Доступные очереди точки обслуживания",
       description = "Возвращает список очередей, доступных для точки обслуживания",
+      tags = {TAG_INFRA_QUEUES},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список очередей"),
         @ApiResponse(
@@ -2548,12 +2388,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @param visit визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Удаление визита из очереди",
       description = "Удаляет визит, находящийся в точке обслуживания",
+      tags = {TAG_VISIT_COMPLETION},
       responses = {
         @ApiResponse(responseCode = "204", description = "Визит удален"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
@@ -2580,12 +2418,10 @@ public class ServicePointController {
    * @param branchId идентификатор отделения
    * @param visitId идентификатор визита
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Удаление визита по идентификатору",
       description = "Удаляет визит по его идентификатору",
+      tags = {TAG_VISIT_COMPLETION},
       responses = {
         @ApiResponse(responseCode = "204", description = "Визит удален"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
@@ -2623,13 +2459,10 @@ public class ServicePointController {
    * @param transferTimeDelay задержка после перевода в секундах
    * @return визит после перевода
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в очередь",
       description = "Переводит визит из точки обслуживания в указанную очередь",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2673,15 +2506,10 @@ public class ServicePointController {
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит после перевода
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Возврат визита в пул",
       description = "Возвращает визит в пул указанной точки обслуживания",
+      tags = {TAG_VISIT_RETURN},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит возвращен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2725,15 +2553,10 @@ public class ServicePointController {
    *     после перевода)
    * @return визит после перевода
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в пул",
       description = "Переводит визит в пул указанной точки обслуживания",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2777,11 +2600,6 @@ public class ServicePointController {
    * @param transferTimeDelay задержка перевода в секундах
    * @return визит после перевода
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Полный список")
   //  @Put(
   //      uri =
   //
@@ -2819,15 +2637,10 @@ public class ServicePointController {
    * @param returnTimeDelay задержка визита в секундах
    * @return визит после перевода
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Полный список")
-  @Tag(name = "Завершение вызова")
   @Operation(
       summary = "Возврат визита в очередь",
       description = "Возвращает визит из точки обслуживания обратно в очередь",
+      tags = {TAG_VISIT_RETURN},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит возвращен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2858,13 +2671,10 @@ public class ServicePointController {
    * @param transferTimeDelay задержка визита после перевода в секундах (период запрета на вызов)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита по позиции",
       description = "Переводит визит из очереди в очередь на указанную позицию",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2914,13 +2724,10 @@ public class ServicePointController {
    *     после перевода)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в начало или конец очереди",
       description = "Переводит визит из очереди в очередь с размещением в начало или конец списка",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -2971,13 +2778,10 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита внешней службой",
       description = "Переводит визит в другую очередь с указанием внешней службы",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3026,13 +2830,10 @@ public class ServicePointController {
    *     после перевода)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в другую очередь",
       description = "Переводит переданный визит из одной очереди в другую",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3080,13 +2881,10 @@ public class ServicePointController {
    *     после перевода)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита на позицию очереди",
       description = "Переводит визит из очереди в очередь на указанную позицию",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3133,13 +2931,10 @@ public class ServicePointController {
    * @param transferTimeDelay задержка визита после перевода в секундах (период запрета на вызов)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в пул на позицию",
       description = "Переводит визит из очереди в пул точки обслуживания на указанную позицию",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3186,13 +2981,10 @@ public class ServicePointController {
    * @param transferTimeDelay задержка визита после перевода в секундах (период запрета на вызов)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в пул точки обслуживания",
       description = "Переводит визит из очереди в пул указанной точки обслуживания",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3241,12 +3033,9 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в пул внешней службой",
+      tags = {TAG_VISIT_QUEUE},
       description =
           "Переводит визит из очереди в пул точки обслуживания с указанием внешней службы",
       responses = {
@@ -3297,13 +3086,10 @@ public class ServicePointController {
    *     после перевода)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита по идентификатору в пул",
       description = "Переводит визит по идентификатору из очереди в пул точки обслуживания",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3343,12 +3129,9 @@ public class ServicePointController {
    *     после перевода)
    * @return итоговый визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита по идентификатору на позицию в пуле",
+      tags = {TAG_VISIT_QUEUE},
       description =
           "Переводит визит по идентификатору из очереди в пул точки обслуживания на указанную позицию",
       responses = {
@@ -3388,13 +3171,10 @@ public class ServicePointController {
    * @return визит после перевода
    */
   @SuppressWarnings("all")
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Полный список")
-  @Tag(name = "Завершение вызова")
   @Operation(
       summary = "Завершение обслуживания",
       description = "Завершает обслуживание визита в точке обслуживания",
+      tags = {TAG_VISIT_COMPLETION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Обслуживание завершено"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3427,13 +3207,10 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в пул сотрудника",
       description = "Переводит визит в пул сотрудника в начало или конец списка",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3466,13 +3243,10 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в пул сотрудника на позицию",
       description = "Переводит визит из очереди в пул сотрудника на указанную позицию",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3504,13 +3278,10 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита по идентификатору в пул сотрудника",
       description = "Переводит визит по идентификатору в пул сотрудника в начало или конец списка",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3544,13 +3315,10 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита внешней службой (Ресепшен, MI и т д)")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита внешней службой в пул сотрудника",
       description = "Переводит визит в пул сотрудника по данным внешней службы",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3584,13 +3352,10 @@ public class ServicePointController {
    * @param sid идентификатор сессии сотрудника (cookie sid)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита по идентификатору в пул сотрудника на позицию",
       description = "Переводит визит из очереди в пул сотрудника на указанную позицию",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3620,15 +3385,10 @@ public class ServicePointController {
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Возвращение визита в пул сотрудника",
       description = "Возвращает визит из точки обслуживания в пул сотрудника",
+      tags = {TAG_VISIT_RETURN},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит возвращен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3655,15 +3415,10 @@ public class ServicePointController {
    *     после перевода)
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Перевод визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Перевод визита в пул сотрудника",
       description = "Переводит визит из точки обслуживания в пул сотрудника",
+      tags = {TAG_VISIT_QUEUE},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит переведен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3688,15 +3443,10 @@ public class ServicePointController {
    * @param servicePointId идентификатор точки обслуживания
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Отложить визит",
       description = "Отложить текущий визит в точке обслуживания",
+      tags = {TAG_VISIT_RETURN},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит отложен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3718,15 +3468,10 @@ public class ServicePointController {
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Возвращение визита из точки обслуживания",
       description = "Возвращает обслуживаемый визит в очередь отделения",
+      tags = {TAG_VISIT_RETURN},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит возвращен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -3749,15 +3494,10 @@ public class ServicePointController {
    * @param returnTimeDelay задержка возвращения в секундах
    * @return визит
    */
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Обслуживание")
-  @Tag(name = "Изменение визита")
-  @Tag(name = "Завершение вызова")
-  @Tag(name = "Возвращение визита")
-  @Tag(name = "Полный список")
   @Operation(
       summary = "Возвращение вызванного визита",
       description = "Возвращает ранее вызванный визит в очередь",
+      tags = {TAG_VISIT_RETURN},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит возвращен"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
