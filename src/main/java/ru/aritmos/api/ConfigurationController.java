@@ -70,8 +70,7 @@ public class ConfigurationController {
                     schema =
                         @Schema(
                             type = "object",
-                            additionalProperties =
-                                @Schema(implementation = Branch.class)))),
+                            additionalPropertiesSchema = Branch.class))),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -101,8 +100,7 @@ public class ConfigurationController {
                     schema =
                         @Schema(
                             type = "object",
-                            additionalProperties =
-                                @Schema(implementation = Branch.class)))),
+                            additionalPropertiesSchema = Branch.class))),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -161,7 +159,7 @@ public class ConfigurationController {
                     schema =
                         @Schema(
                             type = "object",
-                            additionalProperties = @Schema(implementation = String.class)))),
+                            additionalPropertiesSchema = String.class))),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
