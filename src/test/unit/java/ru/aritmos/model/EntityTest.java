@@ -21,7 +21,7 @@ class EntityTest {
     }
 
     @Test
-    @DisplayName("Методы доступа и equals/hashCode работают корректно")
+    @DisplayName("Методы доступа и пара equals/hashCode работают корректно")
     void gettersSettersAndEqualityWorkCorrectly() {
         Entity первый = new Entity();
         первый.setId("id-1");
@@ -37,7 +37,7 @@ class EntityTest {
     }
 
     @Test
-    @DisplayName("Класс Entity аннотирован Serdeable")
+    @DisplayName("Класс Entity помечен аннотацией Serdeable")
     void verifySerdeableAnnotation() {
         assertTrue(Entity.class.isAnnotationPresent(Serdeable.class));
     }

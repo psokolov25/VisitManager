@@ -25,7 +25,7 @@ class CurlCheatsheetGeneratorTest {
      * Убеждаемся, что экранирование спецсимволов HTML работает корректно для угловых скобок и
      * амперсанда.
      */
-    @DisplayName("Экранирование HTML заменяет спецсимволы угловых скобок и амперсанда")
+    @DisplayName("Экранирование HTML заменяет символы угловых скобок и амперсанда")
     @Test
     void escapeHtml() throws Exception {
         Method escape = CurlCheatsheetGenerator.class.getDeclaredMethod("escape", String.class);
@@ -38,7 +38,7 @@ class CurlCheatsheetGeneratorTest {
      * Проверяет, что секция контроллера с комментариями «Пример curl» добавляется в итоговый HTML
      * и содержит исходный пример запроса.
      */
-    @DisplayName("Добавление секции контроллера переносит пример curl в HTML")
+    @DisplayName("Добавление секции контроллера переносит пример curl-запроса в HTML-вывод")
     @Test
     void appendControllerSectionAddsExample() throws Exception {
         Path file = Files.createTempFile("Controller", ".java");
@@ -69,7 +69,7 @@ class CurlCheatsheetGeneratorTest {
     /**
      * Убеждаемся, что главный метод создаёт HTML-файл со сведениями из контроллеров.
      */
-    @DisplayName("Главный метод генерирует HTML-шпаргалку по curl-запросам")
+    @DisplayName("Главный метод формирует HTML-шпаргалку с примерами curl-запросов")
     @Test
     void mainGeneratesCheatsheet() throws Exception {
         Path projectRoot = Paths.get("").toAbsolutePath();

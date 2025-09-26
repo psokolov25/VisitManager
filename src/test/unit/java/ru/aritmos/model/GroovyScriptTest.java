@@ -47,7 +47,7 @@ class GroovyScriptTest {
     }
 
     @Test
-    @DisplayName("Модель GroovyScript помечена Serdeable и использует JsonInclude.ALWAYS для карт")
+    @DisplayName("Модель GroovyScript помечена аннотацией Serdeable и использует JsonInclude.ALWAYS для карт")
     void verifiesAnnotations() throws NoSuchFieldException {
         assertTrue(GroovyScript.class.isAnnotationPresent(Serdeable.class));
 
