@@ -33,7 +33,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2FromReceptionLegacyTest {
 
-    @DisplayName("Creates Visit And Prints Ticket When Segmentation Returns Queue")
+    @DisplayName("createVisit2FromReception создаёт визит и печатает талон, когда сегментация возвращает очередь")
     @Test
     void createsVisitAndPrintsTicketWhenSegmentationReturnsQueue() throws Exception {
         VisitService service = new VisitService();
@@ -138,7 +138,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verifyNoMoreInteractions(printerService);
     }
 
-    @DisplayName("Does Not Print Ticket When Flag Disabled And Staff Missing")
+    @DisplayName("createVisit2FromReception не печатает талон при отключённом флаге и отсутствии сотрудника")
     @Test
     void doesNotPrintTicketWhenFlagDisabledAndStaffMissing() throws Exception {
         VisitService service = new VisitService();
@@ -221,7 +221,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verify(printerService, never()).print(anyString(), any());
     }
 
-    @DisplayName("Throws Bad Request When Segmentation Returns Empty Queue")
+    @DisplayName("createVisit2FromReception возвращает 400, если сегментация не подобрала очередь")
     @Test
     void throwsBadRequestWhenSegmentationReturnsEmptyQueue() throws Exception {
         VisitService service = new VisitService();
@@ -277,7 +277,7 @@ class VisitServiceCreateVisit2FromReceptionLegacyTest {
         verify(printerService, never()).print(anyString(), any());
     }
 
-    @DisplayName("Throws Not Found When Queue Missing In Branch Configuration")
+    @DisplayName("createVisit2FromReception возвращает 404 при отсутствии очереди в конфигурации отделения")
     @Test
     void throwsNotFoundWhenQueueMissingInBranchConfiguration() throws Exception {
         VisitService service = new VisitService();

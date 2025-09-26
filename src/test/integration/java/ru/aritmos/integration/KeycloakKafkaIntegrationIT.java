@@ -58,7 +58,7 @@ class KeycloakKafkaIntegrationIT {
         }
     }
 
-    @DisplayName("Keycloak And Kafka Are Accessible")
+    @DisplayName("Сервисы авторизации и очередей сообщений доступны из тестового окружения")
     @Test
     void keycloakAndKafkaAreAccessible() throws Exception {
         assertTrue(keycloak != null && keycloak.isRunning(), "Keycloak должен быть запущен");

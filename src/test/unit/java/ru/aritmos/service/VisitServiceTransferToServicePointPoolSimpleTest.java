@@ -40,7 +40,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Moves Visit And Schedules Refresh")
+    @DisplayName("Перенос визита в пул точки обслуживания перемещает визит и планирует обновление очередей")
     @Test
     void visitTransferToServicePointPoolMovesVisitAndSchedulesRefresh() {
         Branch branch = new Branch("b1", "Отделение");
@@ -149,7 +149,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Omits Queue Parameter When History Missing")
+    @DisplayName("Перенос визита в пул точки обслуживания опускает параметр очереди при отсутствии истории")
     @Test
     void visitTransferToServicePointPoolOmitsQueueParameterWhenHistoryMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -210,7 +210,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
                 .delayedEventService(eq("frontend"), eq(false), any(Event.class), eq(15L), same(eventService));
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Fails When Service Point Missing")
+    @DisplayName("Перенос визита в пул точки обслуживания завершается ошибкой при отсутствии точки обслуживания")
     @Test
     void visitTransferToServicePointPoolFailsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -233,7 +233,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Fails When Visit Missing")
+    @DisplayName("Перенос визита в пул точки обслуживания завершается ошибкой при отсутствии визита")
     @Test
     void visitTransferToServicePointPoolFailsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -259,7 +259,7 @@ class VisitServiceTransferToServicePointPoolSimpleTest {
         verifyNoInteractions(service.delayedEvents);
     }
 
-    @DisplayName("Visit Transfer To Service Point Pool Fails When Pool Point Missing")
+    @DisplayName("Перенос визита в пул точки обслуживания завершается ошибкой при отсутствии пула точки")
     @Test
     void visitTransferToServicePointPoolFailsWhenPoolPointMissing() {
         Branch branch = new Branch("b1", "Отделение");

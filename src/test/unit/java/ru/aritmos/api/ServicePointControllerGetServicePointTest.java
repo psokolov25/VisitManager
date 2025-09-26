@@ -40,7 +40,7 @@ class ServicePointControllerGetServicePointTest {
         return controller;
     }
 
-    @DisplayName("Returns Service Point With Operator On Break")
+    @DisplayName("Возвращает точку обслуживания с оператором на перерыве")
     @Test
     void returnsServicePointWithOperatorOnBreak() {
         LOG.info("Шаг 1: подготавливаем карту точек обслуживания без оператора");
@@ -67,7 +67,7 @@ class ServicePointControllerGetServicePointTest {
         verify(visitService).getUsers("branch-1");
     }
 
-    @DisplayName("Returns Empty When Service Point Is Missing")
+    @DisplayName("Возвращает пустой результат при отсутствии точки обслуживания")
     @Test
     void returnsEmptyWhenServicePointIsMissing() {
         LOG.info("Шаг 1: подготавливаем пустую карту точек обслуживания");

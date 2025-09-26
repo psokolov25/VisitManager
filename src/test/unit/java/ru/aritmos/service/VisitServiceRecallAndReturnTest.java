@@ -55,7 +55,7 @@ class VisitServiceRecallAndReturnTest {
         resetVisitEvents();
     }
 
-    @DisplayName("Visit Re Call For Confirm Updates Event With Service Point Data")
+    @DisplayName("Повторный вызов визита обновляет событие данными точки обслуживания")
     @Test
     void visitReCallForConfirmUpdatesEventWithServicePointData() {
         log.info("Готовим отделение с точкой обслуживания и оператором для повторного вызова");
@@ -105,7 +105,7 @@ class VisitServiceRecallAndReturnTest {
         assertNotNull(event.dateTime);
     }
 
-    @DisplayName("Visit No Show Resets Visit State And Produces Event")
+    @DisplayName("Неявка клиента сбрасывает состояние визита и формирует событие")
     @Test
     void visitNoShowResetsVisitStateAndProducesEvent() {
         log.info("Готовим визит и точку обслуживания для фиксации неявки клиента");
@@ -157,7 +157,7 @@ class VisitServiceRecallAndReturnTest {
         assertEquals(operator.getCurrentWorkProfileId(), event.getParameters().get("workProfileId"));
     }
 
-    @DisplayName("Back Called Visit Returns Visit To Queue With Last Service Data")
+    @DisplayName("Возврат вызванного визита отправляет его в очередь с данными последней услуги")
     @Test
     void backCalledVisitReturnsVisitToQueueWithLastServiceData() {
         log.info("Настраиваем отделение с визитом для возврата вызванного клиента в очередь");
@@ -205,7 +205,7 @@ class VisitServiceRecallAndReturnTest {
         assertEquals(currentService.getName(), event.getParameters().get("serviceName"));
     }
 
-    @DisplayName("Visit Put Back Delegates To Service Point Pool When Previous Pool Stored")
+    @DisplayName("Возврат визита делегируется в пул точки обслуживания при сохранённом предыдущем пуле")
     @Test
     void visitPutBackDelegatesToServicePointPoolWhenPreviousPoolStored() {
         log.info("Готовим визит в точке обслуживания с последним пулом точки");

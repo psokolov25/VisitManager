@@ -53,7 +53,7 @@ class VisitServiceTransferFromQueueTest {
         resetVisitEvents();
     }
 
-    @DisplayName("Visit Transfer From Queue To Service Point Pool Places Visit At Exact Index")
+    @DisplayName("Перенос визита из очереди в пул точки обслуживания размещает визит по заданному индексу")
     @Test
     void visitTransferFromQueueToServicePointPoolPlacesVisitAtExactIndex() {
         log.info("Готовим отделение с оператором и пулом точки обслуживания");
@@ -126,7 +126,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals("A001", body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer To Queue From Service Point Places Visit To Start When Requested")
+    @DisplayName("Перенос визита из точки обслуживания в очередь ставит визит в начало при соответствующем запросе")
     @Test
     void visitTransferToQueueFromServicePointPlacesVisitToStartWhenRequested() {
         log.info("Готовим отделение с очередью и оператором точки обслуживания");
@@ -203,7 +203,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer To Queue From External Service Propagates Service Info And Sid")
+    @DisplayName("Перенос визита во внешнюю очередь передаёт данные услуги и идентификатор SID")
     @Test
     void visitTransferToQueueFromExternalServicePropagatesServiceInfoAndSid() {
         log.info("Готовим отделение с очередями и заполняем информацию Keycloak");
@@ -281,7 +281,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer From Queue To Service Point Pool Respects Append Flag")
+    @DisplayName("Перенос визита из очереди в пул точки учитывает флаг добавления в конец списка")
     @Test
     void visitTransferFromQueueToServicePointPoolRespectsAppendFlag() {
         log.info("Готовим отделение с точкой обслуживания и пулом");
@@ -350,7 +350,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals("RETURN_TIME_DELAY_FINISHED", body.get("reason"));
     }
 
-    @DisplayName("Visit Back To Service Point Pool Stops Serving And Returns To Pool")
+    @DisplayName("Возврат визита в пул точки прекращает обслуживание и возвращает визит в пул")
     @Test
     void visitBackToServicePointPoolStopsServingAndReturnsToPool() {
         log.info("Готовим отделение с точкой обслуживания, пулом и активным визитом");

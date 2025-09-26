@@ -25,7 +25,7 @@ import ru.aritmos.model.visit.Visit;
 class VisitServiceCreateVirtualVisitTest {
 
     /** Проверяет, что метод выбрасывает конфликт при недавнем визите на точке обслуживания. */
-    @DisplayName("Throws Conflict When Service Point Recently Created Visit")
+    @DisplayName("Выбрасывает конфликт, если точка обслуживания недавно создала визит")
     @Test
     void throwsConflictWhenServicePointRecentlyCreatedVisit() throws SystemException {
         VisitService service = spy(new VisitService());
@@ -55,7 +55,7 @@ class VisitServiceCreateVirtualVisitTest {
     }
 
     /** Убеждаемся, что в createVirtualVisit2 передаются клоны услуг и исходные параметры. */
-    @DisplayName("Passes Cloned Services To Create Virtual Visit2")
+    @DisplayName("Передаёт клонированные услуги при создании VirtualVisit2")
     @Test
     void passesClonedServicesToCreateVirtualVisit2() throws SystemException {
         VisitService service = spy(new VisitService());
