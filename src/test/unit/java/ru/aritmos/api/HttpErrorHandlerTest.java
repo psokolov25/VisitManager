@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class HttpErrorHandlerTest {
 
-    @DisplayName("Тест")
+    @DisplayName("Обработчик сетевых ошибок возвращает код и сообщение исключения")
     @Test
     void handleВозвращаетКодИТелоОшибки() {
         HttpErrorHandler handler = new HttpErrorHandler();

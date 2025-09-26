@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class CredentialsTest {
 
-    @DisplayName("Модель учётных данных предоставляет доступ к сеттерам и геттерам")
+    @DisplayName("Модель учётных данных предоставляет доступ к методам записи и чтения")
     @Test
     void settersAndGettersAreAccessible() {
         Credentials credentials = new Credentials();

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class ClientAccessTest {
 
-    @DisplayName("Билдер и сеттеры формируют одинаковый результат")
+    @DisplayName("Построитель и методы настройки формируют одинаковый результат")
     @Test
     void builderAndSettersProduceSameResult() {
         ClientAccess viaBuilder = ClientAccess.builder()

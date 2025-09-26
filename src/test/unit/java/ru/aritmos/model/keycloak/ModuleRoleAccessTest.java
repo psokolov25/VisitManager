@@ -7,7 +7,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 class ModuleRoleAccessTest {
 
-    @DisplayName("Тест")
+    @DisplayName("Построитель и цепочка методов создают одинаковый объект доступа к роли")
     @Test
     void builderИСеттерыРаботаютОдинаково() {
         ModuleRoleAccess viaBuilder = ModuleRoleAccess.builder()

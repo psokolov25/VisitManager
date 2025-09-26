@@ -432,7 +432,7 @@ class VisitServiceMaxCallRulesTest {
         verify(branchService, times(2)).add(branch.getId(), branch);
     }
 
-    @DisplayName("стратегии вызова не включают автообзвон для занятой точки обслуживания")
+    @DisplayName("Стратегии вызова не включают автодовызов для занятой точки обслуживания")
     @Test
     void visitCallStrategiesDoNotTriggerAutocallForBusyServicePoint() {
         log.info("Готовим отделение с точкой, на которой уже обслуживается визит");
