@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class VisitEventInformationTest {
 
-    @DisplayName("Builder Should Create Instance With All Fields")
+    @DisplayName("Строитель формирует экземпляр со всеми полями")
     @Test
     void builderShouldCreateInstanceWithAllFields() {
         ZonedDateTime now = ZonedDateTime.now();
