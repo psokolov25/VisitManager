@@ -7,7 +7,6 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -17,14 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Точка входа приложения VisitManager (Micronaut).
  */
-@OpenAPIDefinition(
-    info = @Info(title = "VisitManagement", version = "alpha09.25"),
-    tags = {
-      @Tag(name = "Зона обслуживания"),
-      @Tag(name = "Зона ожидания"),
-      @Tag(name = "Информация об отделении"),
-      @Tag(name = "Конфигурация отделений")
-    })
+@OpenAPIDefinition(info = @Info(title = "VisitManagement", version = "alpha09.25"))
 public class Application {
 
   private static final Logger LOG = LoggerFactory.getLogger(Application.class);

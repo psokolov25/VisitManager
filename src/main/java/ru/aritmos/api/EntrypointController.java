@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
 import ru.aritmos.events.services.EventService;
@@ -41,6 +40,11 @@ import ru.aritmos.service.VisitService;
 })
 public class EntrypointController {
 
+  private static final String TAG_VISIT_REGISTRATION = "Визиты · Регистрация";
+  private static final String TAG_VISIT_PARAMETERS = "Визиты · Управление параметрами";
+  private static final String TAG_SERVICE_AVAILABILITY = "Справочники · Доступные услуги";
+  private static final String TAG_SERVICE_CATALOG = "Справочники · Услуги отделения";
+
   /** Сервис работы с услугами отделения. */
   @Inject Services services;
 
@@ -65,9 +69,6 @@ public class EntrypointController {
    * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка
    */
-  @Tag(name = "Зона ожидания")
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/servicePoint/{servicePointId}/virtualVisit",
       consumes = "application/json",
@@ -76,6 +77,7 @@ public class EntrypointController {
   @Operation(
       summary = "Создание виртуального визита",
       description = "Создаёт визит без печати талона для указанной точки обслуживания",
+      tags = {TAG_VISIT_REGISTRATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(
@@ -141,8 +143,6 @@ public class EntrypointController {
    * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка
    */
-  @Tag(name = "Зона ожидания")
-  @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/entryPoints/{entryPointId}/visit",
       consumes = "application/json",
@@ -151,6 +151,7 @@ public class EntrypointController {
   @Operation(
       summary = "Создание визита",
       description = "Создаёт визит в отделении и при необходимости печатает талон",
+      tags = {TAG_VISIT_REGISTRATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
@@ -221,8 +222,6 @@ public class EntrypointController {
    * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка
    */
-  @Tag(name = "Зона ожидания")
-  @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/entryPoints/{entryPointId}/visitWithParameters",
       consumes = "application/json",
@@ -231,6 +230,7 @@ public class EntrypointController {
   @Operation(
       summary = "Создание визита с параметрами",
       description = "Создаёт визит с дополнительными параметрами и перечнем услуг",
+      tags = {TAG_VISIT_REGISTRATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
@@ -302,8 +302,6 @@ public class EntrypointController {
    * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка обработки визита
    */
-  @Tag(name = "Зона ожидания")
-  @Tag(name = "Полный список")
   @Post(
       uri = "/branches/{branchId}/printer/{printerId}/visitWithParameters",
       consumes = "application/json",
@@ -312,6 +310,7 @@ public class EntrypointController {
   @Operation(
       summary = "Создание визита из приёмной",
       description = "Создаёт визит с дополнительными параметрами из зоны ресепшен",
+      tags = {TAG_VISIT_REGISTRATION},
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
@@ -378,8 +377,6 @@ public class EntrypointController {
    * @param parameterMap карта дополнительных параметров визита
    * @return визит с обновлёнными параметрами
    */
-  @Tag(name = "Зона ожидания")
-  @Tag(name = "Полный список")
   @Put(
       uri = "/branches/{branchId}/visits/{visitId}",
       consumes = "application/json",
@@ -388,6 +385,7 @@ public class EntrypointController {
   @Operation(
       summary = "Обновление параметров визита",
       description = "Назначает или обновляет дополнительные параметры визита",
+      tags = {TAG_VISIT_PARAMETERS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Параметры обновлены"),
         @ApiResponse(
@@ -415,13 +413,12 @@ public class EntrypointController {
    * @param branchId идентификатор отделения
    * @return список доступных услуг
    */
-  @Tag(name = "Зона ожидания")
-  @Tag(name = "Полный список")
   @Get(uri = "/branches/{branchId}/services", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
       summary = "Доступные услуги",
       description = "Возвращает список услуг, доступных для обслуживания в отделении",
+      tags = {TAG_SERVICE_AVAILABILITY},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список доступных услуг"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -438,14 +435,12 @@ public class EntrypointController {
    * @param branchId идентификатор отделения
    * @return список всех услуг
    */
-  @Tag(name = "Зона ожидания")
-  @Tag(name = "Зона обслуживания")
-  @Tag(name = "Полный список")
   @Get(uri = "/branches/{branchId}/services/all", produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
       summary = "Все услуги отделения",
       description = "Возвращает полный список услуг отделения",
+      tags = {TAG_SERVICE_CATALOG},
       responses = {
         @ApiResponse(responseCode = "200", description = "Список услуг отделения"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
