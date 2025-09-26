@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class VisitTest {
 
-    @DisplayName("Метод getWaitingTime рассчитывает продолжительность ожидания")
+    @DisplayName("Расчёт времени ожидания возвращает продолжительность в миллисекундах")
     @Test
     void getWaitingTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();
@@ -22,7 +22,7 @@ class VisitTest {
         assertEquals(10L, visit.getWaitingTime());
     }
 
-    @DisplayName("Метод getReturningTime использует время возврата")
+    @DisplayName("Расчёт времени возврата учитывает сохранённое значение")
     @Test
     void getReturningTimeUsesReturnDateTime() {
         ZonedDateTime returnTime = ZonedDateTime.now().minusSeconds(5);
@@ -32,14 +32,14 @@ class VisitTest {
         assertTrue(Math.abs(actual - expected) <= 1);
     }
 
-    @DisplayName("Метод getReturningTime возвращает ноль при отсутствии времени возврата")
+    @DisplayName("При отсутствии отметки возврата расчёт времени возвращает ноль")
     @Test
     void getReturningTimeReturnsZeroWhenNull() {
         Visit visit = Visit.builder().build();
         assertEquals(0L, visit.getReturningTime());
     }
 
-    @DisplayName("Метод getTransferingTime использует время перевода")
+    @DisplayName("Расчёт времени перевода использует сохранённую отметку")
     @Test
     void getTransferingTimeUsesTransferDateTime() {
         ZonedDateTime transferTime = ZonedDateTime.now().minusSeconds(7);
@@ -49,7 +49,7 @@ class VisitTest {
         assertTrue(Math.abs(actual - expected) <= 1);
     }
 
-    @DisplayName("Метод getVisitLifeTime рассчитывает длительность визита")
+    @DisplayName("Расчёт длительности визита использует время создания и завершения")
     @Test
     void getVisitLifeTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();
@@ -61,7 +61,7 @@ class VisitTest {
         assertEquals(20L, visit.getVisitLifeTime());
     }
 
-    @DisplayName("Метод getServingTime рассчитывает время обслуживания")
+    @DisplayName("Расчёт времени обслуживания учитывает время начала и окончания")
     @Test
     void getServingTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();
