@@ -27,7 +27,7 @@ class SwaggerYamlCharsetFilterTest {
     private static final Logger LOG = LoggerFactory.getLogger(SwaggerYamlCharsetFilterTest.class);
 
     @Test
-    @DisplayName("Добавление базового заголовка Content-Type для YAML без заголовка и логирование всех шагов")
+    @DisplayName("Фильтр добавляет заголовок Content-Type к YAML-ответу без типа и фиксирует шаги обработки")
     void addsDefaultYamlContentTypeWhenHeaderMissing() {
         LOG.info("Шаг 1: создаём ответ без заголовка Content-Type для YAML-спецификации.");
         MutableHttpResponse<?> response = HttpResponse.ok();
@@ -41,7 +41,7 @@ class SwaggerYamlCharsetFilterTest {
     }
 
     @Test
-    @DisplayName("Добавление кодировки UTF-8 к YAML-ответу без charset при обработке swagger-файла")
+    @DisplayName("Фильтр дописывает charset UTF-8 к YAML-спецификации Swagger при отсутствии кодировки")
 
     void appendsCharsetForYamlWithoutEncoding() {
         LOG.info("Шаг 1: подготавливаем ответ с типом application/yaml без charset.");
@@ -56,7 +56,7 @@ class SwaggerYamlCharsetFilterTest {
     }
 
     @Test
-    @DisplayName("Сохранение исходной кодировки YAML-ответа при повторном прохождении фильтра")
+    @DisplayName("Фильтр сохраняет исходную кодировку YAML-ответа при повторном прохождении")
     void keepsExistingCharsetIntact() {
         LOG.info("Шаг 1: настраиваем ответ с уже указанной кодировкой.");
         MutableHttpResponse<?> response = HttpResponse.ok();
@@ -70,7 +70,7 @@ class SwaggerYamlCharsetFilterTest {
     }
 
     @Test
-    @DisplayName("Пропуск нерелевантных ответов: не-YAML содержимое и не-YAML запросы остаются неизменными")
+    @DisplayName("Фильтр пропускает нерелевантные ответы: не-YAML содержимое и запросы не изменяются")
 
     void skipsNonYamlResponsesAndRequests() {
         LOG.info("Шаг 1: ответ с типом application/json для запроса не к YAML-спецификации.");

@@ -140,7 +140,7 @@ class VisitServiceCreateVirtualVisit2Test {
         assertEquals(staff.getName(), startServing.getParameters().get("staffName"));
     }
 
-    @DisplayName("Создание виртуального визита использует данные Keycloak при отсутствии пользователя у точки")
+    @DisplayName("Создание виртуального визита подставляет данные из Keycloak при отсутствии оператора у точки")
     @Test
     void createVirtualVisit2UsesKeycloakDataWhenServicePointWithoutUser() throws SystemException {
         Branch branch = new Branch("b2", "Отделение №2");

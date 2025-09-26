@@ -30,7 +30,7 @@ class VisitStateTest {
     }
 
     @Test
-    @DisplayName("Перечисление состояний визита аннотировано Serdeable")
+    @DisplayName("Перечисление состояний визита помечено аннотацией Serdeable")
     void verifySerdeableAnnotation() {
         assertTrue(VisitState.class.isAnnotationPresent(Serdeable.class));
     }

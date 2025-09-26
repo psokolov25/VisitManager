@@ -159,7 +159,7 @@ class KeyCloackClientCoverageTest {
         assertTrue(result, "Ожидаем, что пользователь принадлежит типу admin");
     }
 
-    @DisplayName("Получение пользователя по SID возвращает данные при активной сессии")
+    @DisplayName("Получение пользователя по идентификатору SID возвращает данные при активной сессии")
     @Test
     void getUserBySidReturnsUserWhenSessionExists() {
         log.info("Готовим клиентов и сессии Keycloak для поиска пользователя по sid");

@@ -21,7 +21,7 @@ class CallRuleTest {
         assertTrue(Rule.class.isAssignableFrom(CallRule.class));
     }
 
-    @DisplayName("Метод вызова без фильтра очередей возвращает Optional с визитом")
+    @DisplayName("Метод вызова без фильтра очередей возвращает визит в опциональной обёртке Optional<Visit>")
     @Test
     void callMethodWithoutQueueFilterShouldReturnOptionalVisit() throws NoSuchMethodException {
         Method method = CallRule.class.getMethod("call", Branch.class, ServicePoint.class);
@@ -32,7 +32,7 @@ class CallRuleTest {
         assertEquals(Visit.class, elementType);
     }
 
-    @DisplayName("Метод вызова с фильтром очередей возвращает Optional с визитом")
+    @DisplayName("Метод вызова с фильтром очередей возвращает визит в опциональной обёртке Optional<Visit>")
     @Test
     void callMethodWithQueueFilterShouldReturnOptionalVisit() throws NoSuchMethodException {
         Method method = CallRule.class.getMethod("call", Branch.class, ServicePoint.class, List.class);
