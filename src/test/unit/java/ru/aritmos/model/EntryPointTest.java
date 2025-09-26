@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class EntryPointTest {
 
-    @DisplayName("Наследует поля BranchEntity")
+    @DisplayName("Наследует поля базовой сущности отделения")
     @Test
     void shouldInheritBranchEntityFields() {
         EntryPoint entryPoint = new EntryPoint();

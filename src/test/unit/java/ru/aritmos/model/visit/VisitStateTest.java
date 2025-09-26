@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class VisitStateTest {
 
     @Test
-    @DisplayName("перечисление содержит последовательность состояний визита")
+    @DisplayName("Перечисление содержит последовательность состояний визита")
     void verifyListOfStates() {
         VisitState[] ожидаемыеСостояния = {
             VisitState.CREATED,
@@ -24,13 +24,13 @@ class VisitStateTest {
     }
 
     @Test
-    @DisplayName("можно получить состояние по его имени")
+    @DisplayName("Состояние можно получить по его имени")
     void retrievesStateByName() {
         assertEquals(VisitState.WAITING_IN_QUEUE, VisitState.valueOf("WAITING_IN_QUEUE"));
     }
 
     @Test
-    @DisplayName("перечисление VisitState также аннотировано Serdeable")
+    @DisplayName("Перечисление состояний визита аннотировано Serdeable")
     void verifySerdeableAnnotation() {
         assertTrue(VisitState.class.isAnnotationPresent(Serdeable.class));
     }

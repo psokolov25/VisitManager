@@ -12,7 +12,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class KeyCloakControllerTest {
 
-    @DisplayName("Авторизация передается клиенту Keycloak")
+    @DisplayName("Авторизация передаётся клиенту Keycloak")
     @Test
     void authDelegatesToClient() {
         KeyCloakController controller = new KeyCloakController();
@@ -27,7 +27,7 @@ class KeyCloakControllerTest {
         verify(client).Auth(credentials);
     }
 
-    @DisplayName("Удаление сессии передается клиенту Keycloak")
+    @DisplayName("Удаление сессии передаётся клиенту Keycloak")
     @Test
     void deleteSessionDelegatesToClient() {
         KeyCloakController controller = new KeyCloakController();
