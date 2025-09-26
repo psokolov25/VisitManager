@@ -108,7 +108,7 @@ class VisitServiceTest {
         assertEquals("callNext", params.get("callMethod"));
     }
 
-    @DisplayName("Вызов визита для подтверждения по максимальному времени жизни включает автообзвон при отсутствии кандидатов")
+    @DisplayName("Вызов визита по максимальному времени жизни включает автоматический вызов при отсутствии кандидатов")
     @Test
     void visitCallForConfirmWithMaxLifeTimeEnablesAutocallWhenNoVisitFound() {
         log.info("Подготавливаем отделение в режиме автозапуска для проверки обработки отсутствующего визита.");

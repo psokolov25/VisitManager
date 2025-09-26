@@ -445,7 +445,7 @@ class ServicePointControllerTest {
         verify(controller.visitService).getVisit("b1", "v1");
     }
 
-    @DisplayName("Отключение автообзвона точки выполняется сервисом визитов")
+    @DisplayName("Отключение автоматического вызова точки выполняется сервисом визитов")
     @Test
     void cancelAutoCallDelegates() {
         ServicePointController controller = controller();
@@ -456,7 +456,7 @@ class ServicePointControllerTest {
         assertEquals(expected, controller.cancelAutoCallModeOfServicePoint("b1", "sp1"));
     }
 
-    @DisplayName("Включение автообзвона охватывает отделение и конкретную точку")
+    @DisplayName("Включение автоматического вызова охватывает отделение и конкретную точку")
     @Test
     void startAutoCallEnablesBranchAndPoint() {
         ServicePointController controller = controller();
