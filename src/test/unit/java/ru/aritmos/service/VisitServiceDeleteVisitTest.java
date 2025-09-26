@@ -37,7 +37,7 @@ class VisitServiceDeleteVisitTest {
         resetVisitEvent();
     }
 
-    @DisplayName("deleteVisit очищает привязки визита и уведомляет отделение")
+    @DisplayName("Удаление визита очищает привязки и уведомляет отделение")
     @Test
     void deleteVisitClearsAssignmentsAndNotifiesBranch() {
         LOG.info("Шаг 1: создаём визит с привязкой к очереди и точке обслуживания");
@@ -70,7 +70,7 @@ class VisitServiceDeleteVisitTest {
         verifyNoInteractions(service.eventService);
     }
 
-    @DisplayName("deleteVisit выбрасывает исключение, если задержка возврата не истекла")
+    @DisplayName("Удаление визита запрещено до истечения задержки возврата")
     @Test
     void deleteVisitThrowsWhenReturnDelayNotElapsed() {
         LOG.info("Шаг 1: готовим визит, недавно вернувшийся в очередь");
@@ -100,7 +100,7 @@ class VisitServiceDeleteVisitTest {
         assertEquals("sp-1", visit.getServicePointId());
     }
 
-    @DisplayName("deleteVisit выбрасывает исключение, если задержка перевода не истекла")
+    @DisplayName("Удаление визита запрещено до истечения задержки перевода")
     @Test
     void deleteVisitThrowsWhenTransferDelayNotElapsed() {
         LOG.info("Шаг 1: формируем визит, недавно переведённый из очереди");

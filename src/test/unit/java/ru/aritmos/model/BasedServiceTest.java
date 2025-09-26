@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class BasedServiceTest {
 
-    @DisplayName("Метод clone создаёт независимую копию исхода")
+    @DisplayName("Клонирование базового сервиса создаёт независимую копию")
     @Test
     void cloneShouldCloneOutcomeIndependently() {
         Outcome outcome = new Outcome("1", "name");
