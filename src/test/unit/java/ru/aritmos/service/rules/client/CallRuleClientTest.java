@@ -23,7 +23,7 @@ class CallRuleClientTest {
     /**
      * Клиент отправляет запрос и получает визит.
      */
-    @DisplayName("Call Rule Returns Visit")
+    @DisplayName("Клиент правила вызова возвращает визит")
     @Test
     void callRuleReturnsVisit() {
         Map<String, Object> config = Map.of(

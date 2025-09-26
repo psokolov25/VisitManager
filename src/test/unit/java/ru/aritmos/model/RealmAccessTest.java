@@ -10,7 +10,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 
 class RealmAccessTest {
 
-    @DisplayName("Builder And Setters Construct Full Access")
+    @DisplayName("Строитель и сеттеры формируют полный доступ")
     @Test
     void builderAndSettersConstructFullAccess() {
         GroupRepresentation branch = new GroupRepresentation();

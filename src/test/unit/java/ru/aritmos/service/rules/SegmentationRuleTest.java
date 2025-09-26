@@ -47,7 +47,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выбор очереди при совпадении правил сегментации. */
-    @DisplayName("Returns Queue When Rule Matches")
+    @DisplayName("Правило возвращает очередь при совпадении условий")
     @Test
     void returnsQueueWhenRuleMatches() throws SystemException {
         LOG.info("Шаг 1: создаём отделение с очередью и данными сегментации");
@@ -81,7 +81,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем обработку отсутствующего правила сегментации. */
-    @DisplayName("Throws When Segmentation Rule Missing")
+    @DisplayName("При отсутствии правила сегментации выбрасывается исключение")
     @Test
     void throwsWhenSegmentationRuleMissing() {
         LOG.info("Шаг 1: настраиваем мок сервиса отделений и визит");
@@ -96,7 +96,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем возврат привязанной очереди, если правило не определено. */
-    @DisplayName("Returns Linked Queue When No Rules")
+    @DisplayName("При отсутствии правил используется связанная очередь")
     @Test
     void returnsLinkedQueueWhenNoRules() throws SystemException {
         LOG.info("Шаг 1: формируем отделение с единственной очередью");
@@ -114,7 +114,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выполнение groovy-правила. */
-    @DisplayName("Get Queue By Id Executes Groovy Rule")
+    @DisplayName("Метод getQueueById выполняет groovy-правило")
     @Test
     void getQueueByIdExecutesGroovyRule() {
         LOG.info("Шаг 1: настраиваем groovy-скрипт для возврата очереди");
@@ -150,7 +150,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем пустой идентификатор groovy-правила. */
-    @DisplayName("Get Queue By Id Returns Empty When Id Null Or Empty")
+    @DisplayName("Метод getQueueById возвращает пустой результат без идентификатора")
     @Test
     void getQueueByIdReturnsEmptyWhenIdNullOrEmpty() {
         LOG.info("Шаг 1: подготавливаем визит без идентификатора правила");
@@ -166,7 +166,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выброс ошибки при отсутствии входных параметров для groovy. */
-    @DisplayName("Get Queue By Id Throws When Input Params Missing")
+    @DisplayName("Метод getQueueById выбрасывает исключение при отсутствии параметров")
     @Test
     void getQueueByIdThrowsWhenInputParamsMissing() {
         LOG.info("Шаг 1: формируем groovy-правило без необходимых параметров");
@@ -194,7 +194,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем, что ошибки внутренних вызовов оборачиваются в {@link SystemException}. */
-    @DisplayName("Get Queue Wraps Business Exception Into System Exception")
+    @DisplayName("Метод getQueue оборачивает бизнес-исключение в системное")
     @Test
     void getQueueWrapsBusinessExceptionIntoSystemException() {
         LOG.info("Шаг 1: готовим отделение с сервисной группой и отсутствующим правилом");
@@ -214,7 +214,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем возврат пустого результата, когда очередь не найдена. */
-    @DisplayName("Returns Empty When Linked Queue Missing")
+    @DisplayName("Метод возвращает пустой результат при отсутствии связанной очереди")
     @Test
     void returnsEmptyWhenLinkedQueueMissing() throws SystemException {
         LOG.info("Шаг 1: формируем сервисную группу без связанной очереди");
