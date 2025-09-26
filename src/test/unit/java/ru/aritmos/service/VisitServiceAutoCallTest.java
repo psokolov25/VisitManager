@@ -15,7 +15,7 @@ import ru.aritmos.model.ServicePoint;
 
 class VisitServiceAutoCallTest {
 
-    @DisplayName("Отключение автодозвона филиала снимает режим с окон обслуживания")
+    @DisplayName("Отключение режима автоматического вызова на филиале отключает окна обслуживания")
     @Test
     void branchAutoCallModeDisablesServicePoints() {
         Branch branch = new Branch("b1", "Branch");
@@ -38,7 +38,7 @@ class VisitServiceAutoCallTest {
         verify(branchService).add("b1", branch);
     }
 
-    @DisplayName("Включение автодозвона окна проходит успешно при активном автодозвоне филиала")
+    @DisplayName("Включение автоматического вызова для окна проходит успешно при активном режиме филиала")
     @Test
     void servicePointAutoCallModeEnablesWhenBranchModeOn() {
         Branch branch = new Branch("b1", "Branch");
@@ -66,7 +66,7 @@ class VisitServiceAutoCallTest {
         verify(branchService).add("b1", branch);
     }
 
-    @DisplayName("Включение автодозвона окна при выключенном филиале завершается ошибкой")
+    @DisplayName("Включение автоматического вызова для окна при выключенном режиме филиала завершается ошибкой")
     @Test
     void servicePointAutoCallModeFailsWhenBranchModeOff() {
         Branch branch = new Branch("b1", "Branch");
@@ -88,7 +88,7 @@ class VisitServiceAutoCallTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("Включение автодозвона окна при отсутствии окна обслуживания приводит к ошибке")
+    @DisplayName("Попытка включить автоматический вызов для отсутствующего окна обслуживания приводит к ошибке")
     @Test
     void servicePointAutoCallModeThrowsWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
@@ -108,7 +108,7 @@ class VisitServiceAutoCallTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("Отключение автодозвона окна при выключенном филиале возвращает текущее окно")
+    @DisplayName("Отключение автоматического вызова для окна при выключенном режиме филиала возвращает текущее окно")
     @Test
     void servicePointAutoCallModeReturnsExistingWhenDisablingWithBranchModeOff() {
         Branch branch = new Branch("b1", "Branch");
@@ -134,7 +134,7 @@ class VisitServiceAutoCallTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("Отмена автодозвона окна отключает режим и публикует событие")
+    @DisplayName("Отмена автоматического вызова для окна отключает режим и публикует событие")
     @Test
     void cancelAutoCallModeDisablesPointAndEmitsEvent() {
         Branch branch = new Branch("b1", "Branch");
