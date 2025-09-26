@@ -19,7 +19,7 @@ import ru.aritmos.service.rules.client.CallRuleClient;
 class CustomCallRuleTest {
 
     /** Проверяет, что вызов делегируется клиенту правил. */
-    @DisplayName("call делегирует выбор визита клиенту правил")
+    @DisplayName("Метод вызова делегирует выбор визита клиенту правил")
     @Test
     void delegatesCallToClient() {
         CallRuleClient client = mock(CallRuleClient.class);
@@ -37,7 +37,7 @@ class CustomCallRuleTest {
     }
 
     /** Метод с идентификаторами очередей пока не реализован. */
-    @DisplayName("call с идентификаторами очередей возвращает пустой результат")
+    @DisplayName("Метод вызова с идентификаторами очередей возвращает пустой результат")
     @Test
     void callWithQueueIdsReturnsEmpty() {
         CustomCallRule rule = new CustomCallRule();
@@ -46,7 +46,7 @@ class CustomCallRuleTest {
     }
 
     /** Метод получения доступных точек обслуживания возвращает пустой список. */
-    @DisplayName("getAvailiableServicePoints возвращает пустой список точек")
+    @DisplayName("Получение доступных точек обслуживания возвращает пустой список")
     @Test
     void getAvailiableServicePointsReturnsEmpty() {
         CustomCallRule rule = new CustomCallRule();

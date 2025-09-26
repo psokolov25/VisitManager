@@ -30,7 +30,7 @@ class VisitStateTest {
     }
 
     @Test
-    @DisplayName("перечисление VisitState также аннотировано Serdeable")
+    @DisplayName("перечисление состояний визита также помечено аннотацией сериализации")
     void verifySerdeableAnnotation() {
         assertTrue(VisitState.class.isAnnotationPresent(Serdeable.class));
     }
