@@ -67,7 +67,7 @@ class ServicePointControllerGetServicePointTest {
         verify(visitService).getUsers("branch-1");
     }
 
-    @DisplayName("Возвращает пустой Optional при отсутствии точки обслуживания")
+    @DisplayName("Возвращает пустой результат при отсутствии точки обслуживания")
     @Test
     void returnsEmptyWhenServicePointIsMissing() {
         LOG.info("Шаг 1: подготавливаем пустую карту точек обслуживания");

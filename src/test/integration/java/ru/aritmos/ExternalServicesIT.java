@@ -15,7 +15,7 @@ class ExternalServicesIT {
     @Inject DataBusClient dataBusClient;
     @Inject KeyCloackClient keyCloackClient;
 
-    @DisplayName("Клиент Data Bus доступен в интеграционном контексте")
+    @DisplayName("Клиент шины данных доступен в интеграционном контексте")
     @Test
     void dataBusClientAvailable() {
         assertNotNull(dataBusClient);
