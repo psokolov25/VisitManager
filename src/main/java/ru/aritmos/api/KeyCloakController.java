@@ -5,7 +5,9 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.serde.annotation.SerdeImport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -66,6 +68,7 @@ public class KeyCloakController {
    * @return ответ авторизации с набором токенов
    */
   @Operation(
+      operationId = "authorizeInKeycloak",
       summary = "Авторизация пользователя в Keycloak",
       description = "Возвращает токены авторизации при корректных учётных данных",
       responses = {
@@ -82,7 +85,22 @@ public class KeyCloakController {
   @Tag(name = "Полный список")
   @Tag(name = "Взаимодействие с Keycloak")
   @Post(uri = "/keycloak", consumes = "application/json", produces = "application/json")
-  Optional<AuthorizationResponse> Auth(@Body Credentials credentials) {
+  Optional<AuthorizationResponse> Auth(
+      @Body
+          @RequestBody(
+              description = "Учетные данные пользователя для авторизации",
+              required = true,
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      schema = @Schema(implementation = Credentials.class),
+                      examples =
+                          @ExampleObject(
+                              name = "staffCredentials",
+                              summary = "Пример логина сотрудника",
+                              value =
+                                  "{\n  \"username\": \"operator\",\n  \"password\": \"p@ssw0rd\"\n}")))
+          Credentials credentials) {
     return keyCloackClient.Auth(credentials);
   }
 
@@ -94,6 +112,7 @@ public class KeyCloakController {
    * @param reason причина завершения
    */
   @Operation(
+      operationId = "logoutUserSession",
       summary = "Завершение пользовательской сессии",
       description = "Удаляет активную сессию пользователя в Keycloak",
       responses = {
