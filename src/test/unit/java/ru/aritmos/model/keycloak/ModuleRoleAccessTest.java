@@ -9,7 +9,7 @@ class ModuleRoleAccessTest {
 
     @DisplayName("Тест")
     @Test
-    void builderИСеттерыРаботаютОдинаково() {
+    void builderAndSettersWorkTheSame() {
         ModuleRoleAccess viaBuilder = ModuleRoleAccess.builder()
                 .name("module")
                 .role("operator")
