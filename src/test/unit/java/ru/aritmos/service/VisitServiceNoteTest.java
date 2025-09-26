@@ -20,7 +20,7 @@ import ru.aritmos.model.visit.VisitEvent;
 
 class VisitServiceNoteTest {
 
-    @DisplayName("addNote добавляет запись и инициирует обновление визита")
+    @DisplayName("Метод `addNote` добавляет запись и инициирует обновление визита")
     @Test
     void addNoteAppendsNoteAndCallsUpdate() {
         Branch branch = new Branch("b1", "Branch");
@@ -53,7 +53,7 @@ class VisitServiceNoteTest {
         verify(branchService).updateVisit(eq(visit), any(VisitEvent.class), eq(serviceBean));
     }
 
-    @DisplayName("addNote выбрасывает исключение при отсутствии визита")
+    @DisplayName("Метод `addNote` выбрасывает исключение при отсутствии визита")
     @Test
     void addNoteThrowsWhenNoVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -72,7 +72,7 @@ class VisitServiceNoteTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("getNotes возвращает заметки визита")
+    @DisplayName("Метод `getNotes` возвращает заметки визита")
     @Test
     void getNotesReturnsNotes() {
         Branch branch = new Branch("b1", "Branch");
@@ -102,7 +102,7 @@ class VisitServiceNoteTest {
         assertEquals("note", notes.get(0).getValue());
     }
 
-    @DisplayName("getNotes выбрасывает исключение при отсутствии визита")
+    @DisplayName("Метод `getNotes` выбрасывает исключение при отсутствии визита")
     @Test
     void getNotesThrowsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");

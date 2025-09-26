@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
  */
 class QueueTest {
 
-    @DisplayName("Constructor Generates Id And Sets Fields")
+    @DisplayName("Конструктор без идентификатора создаёт уникальный идентификатор и заполняет поля")
     @Test
     void constructorGeneratesIdAndSetsFields() {
         Queue queue = new Queue("Main", "A", 60);
@@ -21,7 +21,7 @@ class QueueTest {
         assertEquals(0, queue.getTicketCounter());
     }
 
-    @DisplayName("Constructor With Explicit Id Sets All Fields")
+    @DisplayName("Конструктор с явным идентификатором заполняет все поля")
     @Test
     void constructorWithExplicitIdSetsAllFields() {
         Queue queue = new Queue("q1", "Secondary", "B", 30);

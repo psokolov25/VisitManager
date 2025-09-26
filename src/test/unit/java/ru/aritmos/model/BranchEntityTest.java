@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class BranchEntityTest {
 
-    @DisplayName("Метод clone копирует базовые поля")
+    @DisplayName("Метод `clone` копирует базовые поля")
     @Test
     void cloneShouldCopyBasicFields() {
         BranchEntity entity = new BranchEntity("id", "name");

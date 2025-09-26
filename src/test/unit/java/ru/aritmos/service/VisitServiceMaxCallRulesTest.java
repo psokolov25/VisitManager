@@ -31,7 +31,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceMaxCallRulesTest {
 
-    @DisplayName("visitCallWithMaximalWaitingTime использует результат правила")
+    @DisplayName("Метод `visitCallWithMaximalWaitingTime` использует результат правила")
     @Test
     void visitCallWithMaximalWaitingTimeUsesRuleResult() {
         log.info("Готовим отделение и точку обслуживания с оператором для сценария максимального ожидания");
@@ -88,7 +88,7 @@ class VisitServiceMaxCallRulesTest {
         verify(service, times(2)).visitCall(eq(branch.getId()), eq(servicePoint.getId()), any(Visit.class), eq("callNext"));
     }
 
-    @DisplayName("visitCallWithMaximalWaitingTime включает автообзвон при пустом ответе правила")
+    @DisplayName("Метод `visitCallWithMaximalWaitingTime` включает автообзвон при пустом ответе правила")
     @Test
     void visitCallWithMaximalWaitingTimeEnablesAutocallWhenRuleReturnsEmpty() {
         log.info("Настраиваем отделение в режиме авто-вызова для проверки перехода в автодовызов");
@@ -143,7 +143,7 @@ class VisitServiceMaxCallRulesTest {
         verify(branchService, times(2)).add(branch.getId(), branch);
     }
 
-    @DisplayName("visitCallWithMaximalWaitingTime возвращает 404 при отсутствии точки обслуживания")
+    @DisplayName("Метод `visitCallWithMaximalWaitingTime` возвращает код 404 при отсутствии точки обслуживания")
     @Test
     void visitCallWithMaximalWaitingTimeFailsWhenServicePointMissing() {
         log.info("Проверяем сценарий, когда точка обслуживания отсутствует в конфигурации отделения");
@@ -168,7 +168,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.NOT_FOUND, second.getStatus());
     }
 
-    @DisplayName("visitCallWithMaxLifeTime возвращает 404 при отсутствии точки обслуживания")
+    @DisplayName("Метод `visitCallWithMaxLifeTime` возвращает код 404 при отсутствии точки обслуживания")
     @Test
     void visitCallWithMaxLifeTimeFailsWhenServicePointMissing() {
         log.info("Конфигурация отделения не содержит точку обслуживания, ожидаем ошибку при вызове по времени жизни");
@@ -193,7 +193,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.NOT_FOUND, second.getStatus());
     }
 
-    @DisplayName("visitCallWithMaximalWaitingTime возвращает 403 при незалогиненном операторе")
+    @DisplayName("Метод `visitCallWithMaximalWaitingTime` возвращает код 403 при незалогиненном операторе")
     @Test
     void visitCallWithMaximalWaitingTimeFailsWhenUserNotLogged() {
         log.info("Создаём точку обслуживания без оператора и проверяем реакцию метода");
@@ -220,7 +220,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.FORBIDDEN, second.getStatus());
     }
 
-    @DisplayName("visitCallWithMaxLifeTime возвращает 403 при незалогиненном операторе")
+    @DisplayName("Метод `visitCallWithMaxLifeTime` возвращает код 403 при незалогиненном операторе")
     @Test
     void visitCallWithMaxLifeTimeFailsWhenUserNotLogged() {
         log.info("Имитация точки без оператора для правила по времени жизни");
@@ -247,7 +247,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.FORBIDDEN, second.getStatus());
     }
 
-    @DisplayName("visitCallWithMaximalWaitingTime возвращает пусто без автообзвона")
+    @DisplayName("Метод `visitCallWithMaximalWaitingTime` возвращает пустой результат без автодовызова")
     @Test
     void visitCallWithMaximalWaitingTimeReturnsEmptyWhenNoAutoCallConfigured() {
         log.info("Готовим отделение без режима автодовызова и ожидаем пустой результат");
@@ -283,7 +283,7 @@ class VisitServiceMaxCallRulesTest {
         verify(eventService, never()).send(anyString(), anyBoolean(), any(Event.class));
     }
 
-    @DisplayName("visitCallWithMaxLifeTime возвращает пусто без автообзвона")
+    @DisplayName("Метод `visitCallWithMaxLifeTime` возвращает пустой результат без автодовызова")
     @Test
     void visitCallWithMaxLifeTimeReturnsEmptyWhenNoAutoCallConfigured() {
         log.info("Отделение без автодовызова должно возвращать пустой результат при отсутствии кандидатов по времени жизни");
@@ -319,7 +319,7 @@ class VisitServiceMaxCallRulesTest {
         verify(eventService, never()).send(anyString(), anyBoolean(), any(Event.class));
     }
 
-    @DisplayName("visitCallWithMaxLifeTime использует результат правила")
+    @DisplayName("Метод `visitCallWithMaxLifeTime` использует результат правила")
     @Test
     void visitCallWithMaxLifeTimeUsesRuleResult() {
         log.info("Готовим отделение для сценария вызова по максимальному времени жизни визита");
@@ -376,7 +376,7 @@ class VisitServiceMaxCallRulesTest {
         verify(service, times(2)).visitCall(eq(branch.getId()), eq(servicePoint.getId()), any(Visit.class), eq("callNext"));
     }
 
-    @DisplayName("visitCallWithMaxLifeTime включает автообзвон при пустом ответе правила")
+    @DisplayName("Метод `visitCallWithMaxLifeTime` включает автообзвон при пустом ответе правила")
     @Test
     void visitCallWithMaxLifeTimeEnablesAutocallWhenRuleReturnsEmpty() {
         log.info("Создаём отделение с авто-вызовом для проверки поведения правил по времени жизни");

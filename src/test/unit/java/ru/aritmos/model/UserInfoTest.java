@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class UserInfoTest {
 
-    @DisplayName("Builder And Setters Behave The Same")
+    @DisplayName("Построитель и сеттеры формируют одинаковый результат")
     @Test
     void builderAndSettersBehaveTheSame() {
         RealmAccess access = RealmAccess.builder()

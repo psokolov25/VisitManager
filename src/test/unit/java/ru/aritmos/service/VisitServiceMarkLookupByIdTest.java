@@ -26,7 +26,7 @@ class VisitServiceMarkLookupByIdTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(VisitServiceMarkLookupByIdTest.class);
 
-    @DisplayName("addMark по идентификатору делегирует существующей отметке")
+    @DisplayName("Метод `addMark` по идентификатору делегирует существующей отметке")
     @Test
     void addMarkByIdDelegatesToExistingMark() {
         LOG.info("Шаг 1: создаём отделение с преднастроенной заметкой");
@@ -56,7 +56,7 @@ class VisitServiceMarkLookupByIdTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("addMark по идентификатору выбрасывает исключение при отсутствии отметки")
+    @DisplayName("Метод `addMark` по идентификатору выбрасывает исключение при отсутствии отметки")
     @Test
     void addMarkByIdThrowsWhenMarkMissing() {
         LOG.info("Шаг 1: создаём отделение без требуемой заметки");
@@ -79,7 +79,7 @@ class VisitServiceMarkLookupByIdTest {
         verify(eventService).send(eq("*"), eq(false), any());
     }
 
-    @DisplayName("deleteMark по идентификатору делегирует существующей отметке")
+    @DisplayName("Метод `deleteMark` по идентификатору делегирует существующей отметке")
     @Test
     void deleteMarkByIdDelegatesToExistingMark() {
         LOG.info("Шаг 1: создаём отделение с заметкой для удаления");
@@ -109,7 +109,7 @@ class VisitServiceMarkLookupByIdTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("deleteMark по идентификатору выбрасывает исключение при отсутствии отметки")
+    @DisplayName("Метод `deleteMark` по идентификатору выбрасывает исключение при отсутствии отметки")
     @Test
     void deleteMarkByIdThrowsWhenMarkMissing() {
         LOG.info("Шаг 1: подготавливаем отделение без искомой заметки");

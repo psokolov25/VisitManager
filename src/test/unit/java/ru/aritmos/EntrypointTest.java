@@ -28,7 +28,7 @@ class EntrypointTest {
         }
     }
 
-    @DisplayName("Скрипт Groovy выбирает визит по заданным параметрам")
+    @DisplayName("Groovy-скрипт выбирает визит по заданным параметрам")
     @Test
     void groovyScriptSelectsVisitByParams() throws Exception {
         Binding binding = new Binding();
@@ -67,7 +67,7 @@ class EntrypointTest {
         assertEquals("v1", visit.get().getId());
     }
 
-    @DisplayName("Скрипт Groovy возвращает пустой результат при отсутствии совпадений")
+    @DisplayName("Groovy-скрипт возвращает пустой результат при отсутствии совпадений")
     @Test
     void groovyScriptReturnsEmptyWhenNoMatch() throws Exception {
         Binding binding = new Binding();

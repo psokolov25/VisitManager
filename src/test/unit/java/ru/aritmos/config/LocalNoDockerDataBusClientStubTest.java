@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 class LocalNoDockerDataBusClientStubTest {
 
-    @DisplayName("Метод send возвращает заглушенные статус и тип")
+    @DisplayName("Метод `send` возвращает заглушённые статус и тип")
     @Test
     void sendReturnsStubbedStatusAndType() {
         LocalNoDockerDataBusClientStub client = new LocalNoDockerDataBusClientStub();

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class TokenTest {
 
-    @DisplayName("Builder And Setters Transfer Token Data")
+    @DisplayName("Строитель и сеттеры переносят данные токена")
     @Test
     void builderAndSettersTransferTokenData() {
         Token viaBuilder = Token.builder()

@@ -52,7 +52,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
-    @DisplayName("Включает профиль infra по умолчанию при наличии удалённых сервисов")
+    @DisplayName("Включает профиль `infra` по умолчанию при наличии удалённых сервисов")
     @Test
     void enablesInfraByDefaultWhenRemoteEndpointsAvailable() {
         System.setProperty("redis.uri", "redis://example");
@@ -66,7 +66,7 @@ class ApplicationConfigurerTest {
         verifyNoMoreInteractions(builder);
     }
 
-    @DisplayName("Добавляет профиль infra к явно указанным окружениям")
+    @DisplayName("Добавляет профиль `infra` к явно указанным окружениям")
     @Test
     void appendsInfraWhenExplicitEnvironmentsProvided() {
         System.setProperty("micronaut.environments", "dev");

@@ -27,7 +27,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisitFromReceptionTest {
 
-    @DisplayName("createVisitFromReception делегирует вызов createVisit2FromReception")
+    @DisplayName("Создание визита на терминале переиспользует расширенный сценарий приёмной")
     @Test
     void createVisitFromReceptionDelegatesToCreateVisit2FromReception() throws SystemException {
         Branch branch = new Branch("b1", "Отделение");
@@ -61,7 +61,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertNotSame(second, service.lastServices.get(1));
     }
 
-    @DisplayName("createVisitFromReception выбрасывает исключение при отсутствии услуги")
+    @DisplayName("Создание визита на терминале завершается ошибкой при отсутствии услуги")
     @Test
     void createVisitFromReceptionThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -85,7 +85,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
-    @DisplayName("createVisitFromReception выбрасывает исключение при пустом списке услуг")
+    @DisplayName("Создание визита на терминале завершается ошибкой при пустом списке услуг")
     @Test
     void createVisitFromReceptionThrowsWhenServiceListEmpty() {
         Branch branch = new Branch("b1", "Отделение");
@@ -106,7 +106,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
-    @DisplayName("createVisitFromReception с правилом сегментации делегирует вызов")
+    @DisplayName("Создание визита на терминале с правилом сегментации переиспользует расширенный сценарий")
     @Test
     void createVisitFromReceptionWithSegmentationRuleDelegates() {
         Branch branch = new Branch("b1", "Отделение");
@@ -133,7 +133,7 @@ class VisitServiceCreateVisitFromReceptionTest {
         assertTrue(service.visitAutoCallInvoked);
     }
 
-    @DisplayName("createVisitFromReception с правилом сегментации выбрасывает исключение при отсутствии услуги")
+    @DisplayName("Создание визита на терминале с правилом сегментации завершается ошибкой при отсутствии услуги")
     @Test
     void createVisitFromReceptionWithSegmentationRuleThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");

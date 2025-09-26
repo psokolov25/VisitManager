@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class UserTokenTest {
 
-    @DisplayName("Builder And Setters Construct Object")
+    @DisplayName("Построитель и сеттеры формируют объект токена")
     @Test
     void builderAndSettersConstructObject() {
         UserInfo info = UserInfo.builder()

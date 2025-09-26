@@ -22,7 +22,7 @@ import ru.aritmos.model.visit.Visit;
 class VisitServiceGetVisitsTest {
 
     /** Проверяет фильтрацию визитов и сортировку по времени ожидания. */
-    @DisplayName("getVisits фильтрует и сортирует визиты")
+    @DisplayName("Метод `getVisits` фильтрует и сортирует визиты")
     @Test
     void filtersAndSortsVisits() {
         VisitService service = new VisitService();
@@ -58,7 +58,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Проверяет фильтрацию по ограничению времени перевода визита. */
-    @DisplayName("getVisits учитывает ограничение по времени перевода")
+    @DisplayName("Метод `getVisits` учитывает ограничение по времени перевода")
     @Test
     void filtersVisitsByTransferDelay() {
         VisitService service = new VisitService();
@@ -97,7 +97,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Ограничивает количество возвращаемых визитов. */
-    @DisplayName("getVisits ограничивает количество возвращаемых визитов")
+    @DisplayName("Метод `getVisits` ограничивает количество возвращаемых визитов")
     @Test
     void limitsNumberOfVisits() {
         VisitService service = new VisitService();
@@ -123,7 +123,7 @@ class VisitServiceGetVisitsTest {
     }
 
     /** Бросает HTTP-исключение, если очередь не найдена. */
-    @DisplayName("getVisits выбрасывает исключение при отсутствии очереди")
+    @DisplayName("Метод `getVisits` выбрасывает исключение при отсутствии очереди")
     @Test
     void throwsWhenQueueMissing() {
         VisitService service = new VisitService();

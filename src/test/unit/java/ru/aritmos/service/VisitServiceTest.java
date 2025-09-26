@@ -466,7 +466,7 @@ class VisitServiceTest {
         assertTrue(result.containsKey("sp2"));
     }
 
-    @DisplayName("Получение рабочих профилей возвращает Tiny-модели")
+    @DisplayName("Получение рабочих профилей возвращает компактные модели Tiny")
     @Test
     void getWorkProfilesReturnsTinyClasses() {
         Branch branch = new Branch("b1", "Branch");

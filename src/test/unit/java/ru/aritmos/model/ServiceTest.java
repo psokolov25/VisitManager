@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class ServiceTest {
 
-    @DisplayName("Clone Should Copy Fields And Maps Independently")
+    @DisplayName("Метод `clone` копирует поля и карты независимо")
     @Test
     void cloneShouldCopyFieldsAndMapsIndependently() {
         Outcome outcome = new Outcome("1", "outcome");

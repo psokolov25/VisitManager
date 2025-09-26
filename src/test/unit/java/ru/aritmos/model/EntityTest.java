@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class EntityTest {
 
     @Test
-    @DisplayName("билдер создает сущность с указанными значениями")
+    @DisplayName("Построитель создаёт сущность с указанными значениями")
     void builderCreatesEntity() {
         Entity entity = Entity.builder()
                 .id("123")

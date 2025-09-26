@@ -5,7 +5,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import org.junit.jupiter.api.DisplayName;
 
 class OutcomeTest {
-    @DisplayName("Clone Creates Independent Copy")
+    @DisplayName("Метод `clone` возвращает независимую копию исхода")
     @Test
     void cloneCreatesIndependentCopy() {
         Outcome original = new Outcome("1", "name");

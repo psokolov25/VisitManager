@@ -30,7 +30,7 @@ class EventHandlerContextTest {
         Body(Branch branch) { this.b1 = branch; }
     }
 
-    @DisplayName("Обработчик BRANCH_PUBLIC преобразует тело события в карту")
+    @DisplayName("Обработчик BRANCH_PUBLIC преобразует тело события в словарь")
     @Test
     void branchPublicHandlerConvertsBodyToMap() throws Exception {
         VisitService visitService = mock(VisitService.class);

@@ -62,7 +62,7 @@ class ServicePointControllerVisitTransferTest {
         return branch;
     }
 
-    @DisplayName("visitTransferFromQueue по идентификатору инвертирует флаг вставки")
+    @DisplayName("Перенос визита по идентификатору из очереди инвертирует флаг вставки")
     @Test
     void visitTransferFromQueueByIdInvertsAppendFlag() {
         LOG.info("Шаг 1: настраиваем окружение для перевода визита по идентификатору");
@@ -114,7 +114,7 @@ class ServicePointControllerVisitTransferTest {
         verify(visitService).getVisit("branch-1", "visit-7");
     }
 
-    @DisplayName("visitTransferFromQueue по идентификатору возвращает 404 при отсутствии очереди")
+    @DisplayName("Перенос визита по идентификатору из очереди возвращает 404 при отсутствии очереди")
     @Test
     void visitTransferFromQueueByIdFailsWhenQueueMissing() {
         LOG.info("Шаг 1: создаем отделение без целевой очереди");
@@ -139,7 +139,7 @@ class ServicePointControllerVisitTransferTest {
         verify(visitService, never()).getVisit(anyString(), anyString());
     }
 
-    @DisplayName("visitTransferFromQueue с телом запроса инвертирует флаг вставки")
+    @DisplayName("Перенос визита по телу запроса из очереди инвертирует флаг вставки")
     @Test
     void visitTransferFromQueueWithBodyRespectsAppendInversion() {
         LOG.info("Шаг 1: настраиваем отделение и подготовленный визит");
@@ -188,7 +188,7 @@ class ServicePointControllerVisitTransferTest {
         assertTrue(appendCaptor.getValue(), "Флаг должен быть развернут контроллером");
     }
 
-    @DisplayName("visitTransferFromQueue с индексом передает позицию без искажений")
+    @DisplayName("Перенос визита из очереди по индексу передает позицию без искажений")
     @Test
     void visitTransferFromQueueWithIndexPassesExactPosition() {
         LOG.info("Шаг 1: подготавливаем отделение, визит и индекс");
@@ -237,7 +237,7 @@ class ServicePointControllerVisitTransferTest {
         assertEquals(5, indexCaptor.getValue());
     }
 
-    @DisplayName("visitTransferFromQueue для внешнего сервиса передает метаданные без изменений")
+    @DisplayName("Перенос визита из очереди во внешнюю службу передает метаданные без изменений")
     @Test
     void visitTransferFromQueueExternalServicePropagatesMetadata() {
         LOG.info("Шаг 1: готовим отделение и данные внешней службы");
@@ -291,7 +291,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(response, actual);
     }
 
-    @DisplayName("visitTransferFromQueueToServicePointPool через внешнюю службу проверяет точку обслуживания")
+    @DisplayName("Перенос визита в сервисный пул через внешнюю службу проверяет наличие точки обслуживания")
     @Test
     void visitTransferFromQueueToServicePointPoolExternalServiceValidatesServicePoint() {
         LOG.info("Шаг 1: готовим отделение и сервисную точку");
@@ -346,7 +346,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(response, actual);
     }
 
-    @DisplayName("visitTransferFromQueueToServicePointPool через внешнюю службу возвращает 404 без точки")
+    @DisplayName("Перенос визита в сервисный пул через внешнюю службу возвращает 404 без точки обслуживания")
     @Test
     void visitTransferFromQueueToServicePointPoolExternalServiceFailsWithoutServicePoint() {
         LOG.info("Шаг 1: создаем отделение без зарегистрированной точки обслуживания");
@@ -380,7 +380,7 @@ class ServicePointControllerVisitTransferTest {
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
     }
 
-    @DisplayName("visitTransferFromQueue по идентификатору визита делегирует поиск визита и индекса")
+    @DisplayName("Перенос визита из очереди по идентификатору делегирует поиск визита и индекса")
     @Test
     void visitTransferFromQueueByVisitIdDelegatesIndexAndVisitLookup() {
         LOG.info("Шаг 1: готовим отделение с очередью и визит в хранилище");
@@ -431,7 +431,7 @@ class ServicePointControllerVisitTransferTest {
         verify(visitService).getVisit("branch-idx", "visit-idx");
     }
 
-    @DisplayName("visitTransferFromQueue по идентификатору визита возвращает 404 при отсутствии очереди")
+    @DisplayName("Перенос визита из очереди по идентификатору возвращает 404 при отсутствии очереди")
     @Test
     void visitTransferFromQueueByVisitIdFailsWhenQueueMissing() {
         LOG.info("Шаг 1: создаем отделение без требуемой очереди");
@@ -463,7 +463,7 @@ class ServicePointControllerVisitTransferTest {
         verify(visitService, never()).getVisit(anyString(), anyString());
     }
 
-    @DisplayName("visitTransferFromQueue по визиту возвращает 404 при отсутствии отделения")
+    @DisplayName("Перенос визита из очереди по объекту визита возвращает 404 при отсутствии отделения")
     @Test
     void visitTransferFromQueueByVisitIdFailsWhenBranchMissing() {
         LOG.info("Шаг 1: настраиваем сервис отделений на выброс исключения");
@@ -494,7 +494,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
-    @DisplayName("visitTransfer из точки обслуживания делегирует флаг вставки сервису")
+    @DisplayName("Перенос визита из точки обслуживания делегирует обработку флага вставки сервису")
     @Test
     void visitTransferFromServicePointDelegatesAppendFlag() {
         LOG.info("Шаг 1: подготавливаем отделение с очередью для перевода из сервиса");
@@ -525,7 +525,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(expected, actual);
     }
 
-    @DisplayName("visitTransfer из точки обслуживания возвращает 404 при отсутствии очереди")
+    @DisplayName("Перенос визита из точки обслуживания возвращает 404 при отсутствии очереди")
     @Test
     void visitTransferFromServicePointFailsWhenQueueMissing() {
         LOG.info("Шаг 1: создаем отделение без требуемой очереди для перевода");
@@ -550,7 +550,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
-    @DisplayName("visitTransfer из точки обслуживания возвращает 404 при отсутствии отделения")
+    @DisplayName("Перенос визита из точки обслуживания возвращает 404 при отсутствии отделения")
     @Test
     void visitTransferFromServicePointFailsWhenBranchUnavailable() {
         LOG.info("Шаг 1: подготавливаем сервис отделений к ошибке получения данных");
@@ -575,7 +575,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
-    @DisplayName("visitBackToServicePointPool делегирует возврат визита в сервисный пул")
+    @DisplayName("Возврат визита в сервисный пул делегирует операцию прикладному сервису")
     @Test
     void visitBackToServicePointPoolDelegatesToService() {
         LOG.info("Шаг 1: формируем отделение с пулом точки обслуживания");
@@ -605,7 +605,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(expected, actual);
     }
 
-    @DisplayName("visitBackToServicePointPool возвращает 404 при отсутствии пула")
+    @DisplayName("Возврат визита в сервисный пул возвращает 404 при отсутствии пула")
     @Test
     void visitBackToServicePointPoolFailsWhenPoolMissing() {
         LOG.info("Шаг 1: создаем отделение без пула точек обслуживания");
@@ -630,7 +630,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
-    @DisplayName("visitBackToServicePointPool возвращает 404 при отсутствии отделения")
+    @DisplayName("Возврат визита в сервисный пул возвращает 404 при отсутствии отделения")
     @Test
     void visitBackToServicePointPoolFailsWhenBranchUnavailable() {
         LOG.info("Шаг 1: конфигурируем сервис отделений на выброс исключения при получении отдела");
@@ -655,7 +655,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
-    @DisplayName("visitTransferToServicePointPool делегирует перевод визита в пул")
+    @DisplayName("Перевод визита в сервисный пул делегирует операцию прикладному сервису")
     @Test
     void visitTransferToServicePointPoolDelegatesToService() {
         LOG.info("Шаг 1: подготавливаем отделение с доступным пулом обслуживания");
@@ -685,7 +685,7 @@ class ServicePointControllerVisitTransferTest {
         assertSame(expected, actual);
     }
 
-    @DisplayName("visitTransferToServicePointPool возвращает 404 при отсутствии пуловой точки")
+    @DisplayName("Перевод визита в сервисный пул возвращает 404 при отсутствии целевой точки")
     @Test
     void visitTransferToServicePointPoolFailsWhenPoolMissing() {
         LOG.info("Шаг 1: создаем отделение без зарегистрированных пулов");
@@ -715,7 +715,7 @@ class ServicePointControllerVisitTransferTest {
         verifyNoInteractions(visitService);
     }
 
-    @DisplayName("visitTransferToServicePointPool возвращает 404 при отсутствии отделения")
+    @DisplayName("Перевод визита в сервисный пул возвращает 404 при отсутствии отделения")
     @Test
     void visitTransferToServicePointPoolFailsWhenBranchUnavailable() {
         LOG.info("Шаг 1: конфигурируем сервис отделений на ошибку при поиске отделения");
