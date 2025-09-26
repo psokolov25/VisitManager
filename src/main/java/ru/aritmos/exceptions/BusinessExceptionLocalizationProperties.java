@@ -19,9 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Настройки локализации сообщений {@link BusinessException}.
- */
+/** Настройки локализации сообщений {@link BusinessException}. */
 @ConfigurationProperties("business-exception.localization")
 public class BusinessExceptionLocalizationProperties {
 
@@ -45,30 +43,6 @@ public class BusinessExceptionLocalizationProperties {
     channel.setMessages(configured.getMessages());
     channel.setResources(configured.getResources());
     return channel;
-  }
-
-  public ChannelLocalization getHttp() {
-    return http;
-  }
-
-  public void setHttp(ChannelLocalization http) {
-    this.http = http != null ? http : ChannelLocalization.httpDefaults();
-  }
-
-  public ChannelLocalization getLog() {
-    return log;
-  }
-
-  public void setLog(ChannelLocalization log) {
-    this.log = log != null ? log : ChannelLocalization.logDefaults();
-  }
-
-  public ChannelLocalization getEvent() {
-    return event;
-  }
-
-  public void setEvent(ChannelLocalization event) {
-    this.event = event != null ? event : ChannelLocalization.eventDefaults();
   }
 
   private static Map<String, ChannelLocalization> loadConfiguredDefaults() {
@@ -195,9 +169,31 @@ public class BusinessExceptionLocalizationProperties {
     return count;
   }
 
-  /**
-   * Настройки отдельного канала сообщений.
-   */
+  public ChannelLocalization getHttp() {
+    return http;
+  }
+
+  public void setHttp(ChannelLocalization http) {
+    this.http = http != null ? http : ChannelLocalization.httpDefaults();
+  }
+
+  public ChannelLocalization getLog() {
+    return log;
+  }
+
+  public void setLog(ChannelLocalization log) {
+    this.log = log != null ? log : ChannelLocalization.logDefaults();
+  }
+
+  public ChannelLocalization getEvent() {
+    return event;
+  }
+
+  public void setEvent(ChannelLocalization event) {
+    this.event = event != null ? event : ChannelLocalization.eventDefaults();
+  }
+
+  /** Настройки отдельного канала сообщений. */
   public static final class ChannelLocalization {
 
     private static final String DEFAULT_RESOURCE_BASE_NAME = "business-exception/messages";
@@ -226,6 +222,101 @@ public class BusinessExceptionLocalizationProperties {
       localization.setLanguage("ru");
       localization.setDefaultLanguage("ru");
       return localization;
+    }
+
+    private static String normalizeLanguage(String language) {
+      if (language == null) {
+        return null;
+      }
+      String trimmed = language.trim();
+      if (trimmed.isEmpty()) {
+        return null;
+      }
+      String unquoted = trimmed;
+      while (true) {
+        String candidate = stripWrappingQuotes(unquoted);
+        if (candidate.equals(unquoted)) {
+          break;
+        }
+        unquoted = candidate.trim();
+        if (unquoted.isEmpty()) {
+          return null;
+        }
+      }
+      String resolved = resolvePlaceholderIfPresent(unquoted);
+      if (resolved == null) {
+        return null;
+      }
+      String sanitized = resolved.trim();
+      if (sanitized.isEmpty()) {
+        return null;
+      }
+      return sanitized.toLowerCase(Locale.ROOT);
+    }
+
+    private static String stripWrappingQuotes(String value) {
+      if (value.length() < 2) {
+        return value;
+      }
+      char first = value.charAt(0);
+      char last = value.charAt(value.length() - 1);
+      if (first == last && (first == '"' || first == '\'' || first == '`')) {
+        return value.substring(1, value.length() - 1);
+      }
+      return value;
+    }
+
+    private static String resolvePlaceholderIfPresent(String value) {
+      if (!value.startsWith("${") || !value.endsWith("}")) {
+        return value;
+      }
+      String content = value.substring(2, value.length() - 1).trim();
+      if (content.isEmpty()) {
+        return null;
+      }
+      int separatorIndex = findPlaceholderSeparator(content);
+      if (separatorIndex < 0) {
+        return null;
+      }
+      String defaultCandidate = content.substring(separatorIndex + 1).trim();
+      if (defaultCandidate.isEmpty()) {
+        return null;
+      }
+      String unwrappedDefault = stripWrappingQuotes(defaultCandidate).trim();
+      if (unwrappedDefault.isEmpty()) {
+        return null;
+      }
+      if (unwrappedDefault.startsWith("${") && unwrappedDefault.endsWith("}")) {
+        return resolvePlaceholderIfPresent(unwrappedDefault);
+      }
+      return unwrappedDefault;
+    }
+
+    private static int findPlaceholderSeparator(String content) {
+      int depth = 0;
+      for (int i = 0; i < content.length(); i++) {
+        char ch = content.charAt(i);
+        if (ch == '{') {
+          depth++;
+        } else if (ch == '}') {
+          depth = Math.max(0, depth - 1);
+        } else if (ch == ':' && depth == 0) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    private static Locale toLocale(String languageCode) {
+      if (languageCode == null) {
+        return null;
+      }
+      String normalized = languageCode.replace('_', '-');
+      if (normalized.isBlank()) {
+        return null;
+      }
+      Locale locale = Locale.forLanguageTag(normalized);
+      return Objects.equals(locale.toLanguageTag(), "") ? null : locale;
     }
 
     public String getLanguage() {
@@ -334,89 +425,6 @@ public class BusinessExceptionLocalizationProperties {
       return fallback;
     }
 
-    private static String normalizeLanguage(String language) {
-      if (language == null) {
-        return null;
-      }
-      String trimmed = language.trim();
-      if (trimmed.isEmpty()) {
-        return null;
-      }
-      String unquoted = trimmed;
-      while (true) {
-        String candidate = stripWrappingQuotes(unquoted);
-        if (candidate.equals(unquoted)) {
-          break;
-        }
-        unquoted = candidate.trim();
-        if (unquoted.isEmpty()) {
-          return null;
-        }
-      }
-      String resolved = resolvePlaceholderIfPresent(unquoted);
-      if (resolved == null) {
-        return null;
-      }
-      String sanitized = resolved.trim();
-      if (sanitized.isEmpty()) {
-        return null;
-      }
-      return sanitized.toLowerCase(Locale.ROOT);
-    }
-
-    private static String stripWrappingQuotes(String value) {
-      if (value.length() < 2) {
-        return value;
-      }
-      char first = value.charAt(0);
-      char last = value.charAt(value.length() - 1);
-      if (first == last && (first == '"' || first == '\'' || first == '`')) {
-        return value.substring(1, value.length() - 1);
-      }
-      return value;
-    }
-
-    private static String resolvePlaceholderIfPresent(String value) {
-      if (!value.startsWith("${") || !value.endsWith("}")) {
-        return value;
-      }
-      String content = value.substring(2, value.length() - 1).trim();
-      if (content.isEmpty()) {
-        return null;
-      }
-      int separatorIndex = findPlaceholderSeparator(content);
-      if (separatorIndex < 0) {
-        return null;
-      }
-      String defaultCandidate = content.substring(separatorIndex + 1).trim();
-      if (defaultCandidate.isEmpty()) {
-        return null;
-      }
-      String unwrappedDefault = stripWrappingQuotes(defaultCandidate).trim();
-      if (unwrappedDefault.isEmpty()) {
-        return null;
-      }
-      if (unwrappedDefault.startsWith("${") && unwrappedDefault.endsWith("}")) {
-        return resolvePlaceholderIfPresent(unwrappedDefault);
-      }
-      return unwrappedDefault;
-    }
-
-    private static int findPlaceholderSeparator(String content) {
-      int depth = 0;
-      for (int i = 0; i < content.length(); i++) {
-        char ch = content.charAt(i);
-        if (ch == '{') {
-          depth++;
-        } else if (ch == '}') {
-          depth = Math.max(0, depth - 1);
-        } else if (ch == ':' && depth == 0) {
-          return i;
-        }
-      }
-      return -1;
-    }
-
     private String resolveFromResources(String messageKey, String languageCode) {
       if (resources.isEmpty()) {
         return null;
@@ -436,7 +444,8 @@ public class BusinessExceptionLocalizationProperties {
                   baseName,
                   locale,
                   classLoader,
-                  ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES));
+                  ResourceBundle.Control.getNoFallbackControl(
+                      ResourceBundle.Control.FORMAT_PROPERTIES));
           if (bundle.containsKey(messageKey)) {
             String translation = bundle.getString(messageKey);
             if (translation != null) {
@@ -448,19 +457,6 @@ public class BusinessExceptionLocalizationProperties {
         }
       }
       return null;
-    }
-
-    private static Locale toLocale(String languageCode) {
-      if (languageCode == null) {
-        return null;
-      }
-      String normalized = languageCode.replace('_', '-');
-      if (normalized.isBlank()) {
-        return null;
-      }
-      Locale locale = Locale.forLanguageTag(normalized);
-      return Objects.equals(locale.toLanguageTag(), "") ? null : locale;
-
     }
   }
 }

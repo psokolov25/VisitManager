@@ -31,13 +31,13 @@ import ru.aritmos.service.VisitService;
  */
 @Controller("/entrypoint")
 @ApiResponses({
-    @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
-    @ApiResponse(responseCode = "401", description = "Не авторизован"),
-    @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
-    @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
-    @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
-    @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
-    @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+  @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+  @ApiResponse(responseCode = "401", description = "Не авторизован"),
+  @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
+  @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+  @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
+  @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
+  @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class EntrypointController {
 
@@ -58,8 +58,8 @@ public class EntrypointController {
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param serviceIds список идентификаторов услуг (например,
-   *     {@code ["c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]})
+   * @param serviceIds список идентификаторов услуг (например, {@code
+   *     ["c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]})
    * @param sid идентификатор сессии сотрудника (cookie {@code sid})
    * @return созданный визит
    * @throws BusinessException бизнес-ошибка
@@ -78,7 +78,9 @@ public class EntrypointController {
       description = "Создаёт визит без печати талона для указанной точки обслуживания",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
-        @ApiResponse(responseCode = "409", description = "Визит с такими параметрами уже существует"),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Визит с такими параметрами уже существует"),
         @ApiResponse(
             responseCode = "404",
             description = "Отделение, услуга или очередь для указанного набора услуг не найдены"),
@@ -116,7 +118,10 @@ public class EntrypointController {
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(serviceIds)) {
       VisitParameters visitParameters =
-          VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+          VisitParameters.builder()
+              .serviceIds(new ArrayList<>(serviceIds))
+              .parameters(new HashMap<>())
+              .build();
       return visitService.createVirtualVisit(branchId, servicePointId, visitParameters, sid);
     }
 
@@ -128,8 +133,8 @@ public class EntrypointController {
    *
    * @param branchId идентификатор отделения
    * @param entryPointId идентификатор точки создания визита
-   * @param serviceIds список идентификаторов услуг (например,
-   *     {@code ["c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]})
+   * @param serviceIds список идентификаторов услуг (например, {@code
+   *     ["c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]})
    * @param printTicket необходимость печати талона
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
    * @return созданный визит
@@ -188,14 +193,16 @@ public class EntrypointController {
         .containsAll(serviceIds)) {
 
       VisitParameters visitParameters =
-          VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
+          VisitParameters.builder()
+              .serviceIds(new ArrayList<>(serviceIds))
+              .parameters(new HashMap<>())
+              .build();
       if (segmentationRuleId == null || segmentationRuleId.isEmpty()) {
         return visitService.createVisit(branchId, entryPointId, visitParameters, printTicket);
       } else {
         return visitService.createVisit(
             branchId, entryPointId, visitParameters, printTicket, segmentationRuleId);
       }
-
     }
     throw new BusinessException("services_not_found", eventService, HttpStatus.NOT_FOUND);
   }
@@ -205,8 +212,8 @@ public class EntrypointController {
    *
    * @param branchId идентификатор отделения
    * @param entryPointId идентификатор точки создания визита
-   * @param parameters параметры визита и список услуг (например,
-   *     {@code {"serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"],
+   * @param parameters параметры визита и список услуг (например, {@code
+   *     {"serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"],
    *     "parameters":{"sex":"male","age":"33"}}})
    * @param printTicket необходимость печати талона
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
@@ -276,7 +283,6 @@ public class EntrypointController {
         return visitService.createVisit(
             branchId, entryPointId, parameters, printTicket, segmentationRuleId);
       }
-
     }
     throw new BusinessException("services_not_found", eventService, HttpStatus.NOT_FOUND);
   }
@@ -286,8 +292,8 @@ public class EntrypointController {
    *
    * @param branchId идентификатор отделения
    * @param printerId идентификатор принтера
-   * @param parameters параметры визита и список услуг (например,
-   *     {@code {"serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"],
+   * @param parameters параметры визита и список услуг (например, {@code
+   *     {"serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"],
    *     "parameters":{"description":"Визит на получение кредита","age":"48"}}})
    * @param printTicket необходимость печати талона
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
@@ -311,7 +317,8 @@ public class EntrypointController {
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(
             responseCode = "404",
-            description = "Отделение, услуга, очередь или данные для правила сегментации не найдены"),
+            description =
+                "Отделение, услуга, очередь или данные для правила сегментации не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisitFromReception(
@@ -359,7 +366,6 @@ public class EntrypointController {
         return visitService.createVisitFromReception(
             branchId, printerId, parameters, printTicket, segmentationRuleId, staffId);
       }
-
     }
     throw new BusinessException("services_not_found", eventService, HttpStatus.NOT_FOUND);
   }

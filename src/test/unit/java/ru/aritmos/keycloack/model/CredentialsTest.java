@@ -7,15 +7,15 @@ import org.junit.jupiter.api.Test;
 
 class CredentialsTest {
 
-    @DisplayName("Модель учётных данных предоставляет доступ к сеттерам и геттерам")
-    @Test
-    void settersAndGettersAreAccessible() {
-        Credentials credentials = new Credentials();
-        credentials.setUsername("user");
-        credentials.setPassword("secret");
+  @DisplayName("Модель учётных данных предоставляет доступ к сеттерам и геттерам")
+  @Test
+  void settersAndGettersAreAccessible() {
+    Credentials credentials = new Credentials();
+    credentials.setUsername("user");
+    credentials.setPassword("secret");
 
-        assertEquals("user", credentials.getUsername());
-        assertEquals("secret", credentials.getPassword());
-        assertTrue(credentials.toString().contains("user"));
-    }
+    assertEquals("user", credentials.getUsername());
+    assertEquals("secret", credentials.getPassword());
+    assertTrue(credentials.toString().contains("user"));
+  }
 }

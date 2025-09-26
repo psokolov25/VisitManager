@@ -11,10 +11,13 @@ import lombok.Data;
 public class ChangedObject {
   /** Предыдущее значение сущности. */
   Object oldValue;
+
   /** Новое значение сущности. */
   Object newValue;
+
   /** Полное имя класса изменённой сущности. */
   String className;
+
   /** Действие (создание, обновление, удаление). */
   String action;
 }

@@ -14,16 +14,16 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.model.EventHandler;
 import ru.aritmos.exceptions.SystemException;
 
-/**
- * Подписчик Kafka для обработки событий шины данных.
- */
+/** Подписчик Kafka для обработки событий шины данных. */
 @Slf4j
 @io.micronaut.configuration.kafka.annotation.KafkaListener(offsetReset = OffsetReset.LATEST)
 public class KafkaListener {
   /** Обработчики общих событий (topic `events`). */
   private static final HashMap<String, EventHandler> allHandlers = new HashMap<>();
+
   /** Обработчики событий для сервиса (topic `event_${micronaut.application.name}`). */
   private static final HashMap<String, EventHandler> serviceHandlers = new HashMap<>();
+
   /** Сериализатор/десериализатор JSON. */
   @Inject ObjectMapper objectMapper;
 

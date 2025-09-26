@@ -1,7 +1,6 @@
 package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.TaskScheduler;
@@ -11,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.time.Duration;
 import java.util.concurrent.ScheduledFuture;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;

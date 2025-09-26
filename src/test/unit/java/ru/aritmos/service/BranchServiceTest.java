@@ -1,8 +1,7 @@
 package ru.aritmos.service;
 
-import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
@@ -10,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.representations.idm.GroupRepresentation;
@@ -21,9 +21,9 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.DeliveredService;
 import ru.aritmos.model.Queue;
+import ru.aritmos.model.SegmentationRuleData;
 import ru.aritmos.model.Service;
 import ru.aritmos.model.ServiceGroup;
-import ru.aritmos.model.SegmentationRuleData;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;

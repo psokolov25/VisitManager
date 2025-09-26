@@ -1,7 +1,6 @@
 package ru.aritmos.events.clients;
 
 import static ru.aritmos.test.LoggingAssertions.*;
-import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.core.async.annotation.SingleResult;
 import io.micronaut.http.annotation.Body;
@@ -17,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**

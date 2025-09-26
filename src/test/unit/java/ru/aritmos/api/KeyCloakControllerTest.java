@@ -1,10 +1,10 @@
 package ru.aritmos.api;
 
-import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.keycloack.model.Credentials;

@@ -279,8 +279,7 @@ public class Branch extends BranchEntity {
               errorBody,
               String.format(
                   "Точка обслуживания %s уже занята пользователем %s",
-                  servicePoint.getName(),
-                  servicePoint.getUser().getName()),
+                  servicePoint.getName(), servicePoint.getUser().getName()),
               eventService,
               HttpStatus.CONFLICT,
               objectMapper);
@@ -290,8 +289,7 @@ public class Branch extends BranchEntity {
             String.format("ServicePoint %s not found in %s", user.servicePointId, this.getName()),
             String.format(
                 "Точка обслуживания %s не найдена в отделении %s",
-                user.servicePointId,
-                this.getName()),
+                user.servicePointId, this.getName()),
             eventService,
             HttpStatus.CONFLICT);
       }
@@ -438,9 +436,7 @@ public class Branch extends BranchEntity {
       throw new BusinessException(
           String.format("ServicePoint %s not found in %s", servicePointId, this.getName()),
           String.format(
-              "Точка обслуживания %s не найдена в отделении %s",
-              servicePointId,
-              this.getName()),
+              "Точка обслуживания %s не найдена в отделении %s", servicePointId, this.getName()),
           eventService,
           HttpStatus.NOT_FOUND);
     }
@@ -486,8 +482,7 @@ public class Branch extends BranchEntity {
                       value.getId(), value.getVisit().getId()),
                   String.format(
                       "В точке обслуживания %s уже закреплён визит %s",
-                      value.getId(),
-                      value.getVisit().getId()),
+                      value.getId(), value.getVisit().getId()),
                   eventService,
                   HttpStatus.CONFLICT);
             }
@@ -585,11 +580,11 @@ public class Branch extends BranchEntity {
         } catch (IndexOutOfBoundsException e) {
           throw new BusinessException(
               String.format(
-                  "Visit position %s is out of range for list size %s", index, v.getVisits().size()),
+                  "Visit position %s is out of range for list size %s",
+                  index, v.getVisits().size()),
               String.format(
                   "Позиция визита %s выходит за пределы размера списка %s",
-                  index,
-                  v.getVisits().size()),
+                  index, v.getVisits().size()),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -615,8 +610,7 @@ public class Branch extends BranchEntity {
                   value.getId(), value.getVisit().getId()),
               String.format(
                   "В точке обслуживания %s уже закреплён визит %s",
-                  value.getId(),
-                  value.getVisit().getId()),
+                  value.getId(), value.getVisit().getId()),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -637,8 +631,7 @@ public class Branch extends BranchEntity {
                   index, value.getVisits().size()),
               String.format(
                   "Позиция визита %s выходит за пределы размера списка %s",
-                  index,
-                  value.getVisits().size()),
+                  index, value.getVisits().size()),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -662,8 +655,7 @@ public class Branch extends BranchEntity {
                     index, value.getUser().getVisits().size()),
                 String.format(
                     "Позиция визита %s выходит за пределы размера списка %s",
-                    index,
-                    value.getUser().getVisits().size()),
+                    index, value.getUser().getVisits().size()),
                 eventService,
                 HttpStatus.CONFLICT);
           }
@@ -767,7 +759,8 @@ public class Branch extends BranchEntity {
                             || v2.getCurrentService().getId().equals(k)) {
                           throw new BusinessException(
                               "Updated service " + k + " is currently in use",
-                              String.format("Обновляемая услуга %s используется в текущих визитах", k),
+                              String.format(
+                                  "Обновляемая услуга %s используется в текущих визитах", k),
                               eventService,
                               HttpStatus.CONFLICT);
                         }
@@ -845,7 +838,8 @@ public class Branch extends BranchEntity {
                             || v2.getCurrentService().getId().equals(id)) {
                           throw new BusinessException(
                               "Delete service " + id + " is currently in use",
-                              String.format("Удаляемая услуга %s используется в текущих визитах", id),
+                              String.format(
+                                  "Удаляемая услуга %s используется в текущих визитах", id),
                               eventService,
                               HttpStatus.CONFLICT);
                         }

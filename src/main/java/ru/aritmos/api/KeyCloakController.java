@@ -27,13 +27,13 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 @SerdeImport(AuthorizationResponse.class)
 @SuppressWarnings("unused")
 @ApiResponses({
-    @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
-    @ApiResponse(responseCode = "401", description = "Не авторизован"),
-    @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
-    @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
-    @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
-    @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
-    @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+  @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+  @ApiResponse(responseCode = "401", description = "Не авторизован"),
+  @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
+  @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+  @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
+  @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
+  @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class KeyCloakController {
   /** Технический логин Keycloak. */

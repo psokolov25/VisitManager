@@ -15,17 +15,17 @@ import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;
 import ru.aritmos.service.GroovyScriptService;
 
-/**
- * Правила сегментации для выбора очереди на основании параметров визита.
- */
+/** Правила сегментации для выбора очереди на основании параметров визита. */
 @Introspected(classes = GroovyScript.class)
 @Singleton
 @SuppressWarnings("unchecked")
 public class SegmentationRule {
   /** Сервис отделений. */
   @Inject BranchService branchService;
+
   /** Сервис событий. */
   @Inject EventService eventService;
+
   /** Текущий исполняемый скрипт сегментации. */
   GroovyScript groovyScript;
 

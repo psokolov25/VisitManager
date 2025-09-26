@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface Rule {
   /** Идентификатор правила. */
   String id = UUID.randomUUID().toString();
+
   /** Отображаемое имя правила. */
   String name = "";
 }

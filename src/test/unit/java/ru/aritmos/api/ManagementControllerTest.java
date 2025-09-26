@@ -1,8 +1,7 @@
 package ru.aritmos.api;
 
-import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -11,13 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.junit.jupiter.api.Test;
+import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.tiny.TinyClass;
 import ru.aritmos.service.BranchService;
-import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class ManagementControllerTest {
 

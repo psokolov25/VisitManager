@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Пользователь и связанные с ним токены.
- */
+/** Пользователь и связанные с ним токены. */
 @Serdeable
 @Data
 @Builder
@@ -19,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class UserToken {
   /** Информация о пользователе. */
   UserInfo user;
+
   /** Сведения о выданных токенах. */
   Token tokenInfo;
 }

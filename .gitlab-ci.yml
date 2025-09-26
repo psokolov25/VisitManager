@@ -8,7 +8,7 @@ include:
   - project: 'aritmosplatform/devops-admin/gitlab-ci-template'
     ref: main
     file: '.deploy-client-template.yml'
-  
+
   - project: 'aritmosplatform/devops-admin/gitlab-ci-template'
     ref: main
     file: '.deploy-all-in-one-template.yml'

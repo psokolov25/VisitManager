@@ -8,30 +8,30 @@ import org.junit.jupiter.api.Test;
 
 class VisitStateTest {
 
-    @Test
-    @DisplayName("Перечисление содержит последовательность состояний визита")
-    void verifyListOfStates() {
-        VisitState[] ожидаемыеСостояния = {
-            VisitState.CREATED,
-            VisitState.WAITING_IN_QUEUE,
-            VisitState.CALLED,
-            VisitState.SERVING,
-            VisitState.WAITING_IN_USER_POOL,
-            VisitState.WAITING_IN_SERVICE_POOL,
-            VisitState.END
-        };
-        assertArrayEquals(ожидаемыеСостояния, VisitState.values());
-    }
+  @Test
+  @DisplayName("Перечисление содержит последовательность состояний визита")
+  void verifyListOfStates() {
+    VisitState[] ожидаемыеСостояния = {
+      VisitState.CREATED,
+      VisitState.WAITING_IN_QUEUE,
+      VisitState.CALLED,
+      VisitState.SERVING,
+      VisitState.WAITING_IN_USER_POOL,
+      VisitState.WAITING_IN_SERVICE_POOL,
+      VisitState.END
+    };
+    assertArrayEquals(ожидаемыеСостояния, VisitState.values());
+  }
 
-    @Test
-    @DisplayName("Состояние можно получить по его имени")
-    void retrievesStateByName() {
-        assertEquals(VisitState.WAITING_IN_QUEUE, VisitState.valueOf("WAITING_IN_QUEUE"));
-    }
+  @Test
+  @DisplayName("Состояние можно получить по его имени")
+  void retrievesStateByName() {
+    assertEquals(VisitState.WAITING_IN_QUEUE, VisitState.valueOf("WAITING_IN_QUEUE"));
+  }
 
-    @Test
-    @DisplayName("Перечисление состояний визита аннотировано Serdeable")
-    void verifySerdeableAnnotation() {
-        assertTrue(VisitState.class.isAnnotationPresent(Serdeable.class));
-    }
+  @Test
+  @DisplayName("Перечисление состояний визита аннотировано Serdeable")
+  void verifySerdeableAnnotation() {
+    assertTrue(VisitState.class.isAnnotationPresent(Serdeable.class));
+  }
 }

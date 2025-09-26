@@ -12,18 +12,19 @@ import ru.aritmos.events.services.EventService;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.*;
 
-/**
- * Сервис формирования и публикации конфигурации отделений.
- */
+/** Сервис формирования и публикации конфигурации отделений. */
 @Slf4j
 @Context
 public class Configuration {
   /** Сервис управления отделениями. */
   @Inject BranchService branchService;
+
   /** Клиент Keycloak. */
   @Inject KeyCloackClient keyCloackClient;
+
   /** Сервис визитов. */
   @Inject VisitService visitService;
+
   /** Сервис отправки событий. */
   @Inject EventService eventService;
 

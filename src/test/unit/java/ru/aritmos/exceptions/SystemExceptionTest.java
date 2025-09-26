@@ -1,11 +1,11 @@
 package ru.aritmos.exceptions;
 
-import static ru.aritmos.test.LoggingAssertions.assertEquals;
-import static ru.aritmos.test.LoggingAssertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.assertEquals;
+import static ru.aritmos.test.LoggingAssertions.assertTrue;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;

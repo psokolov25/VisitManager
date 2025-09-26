@@ -1,9 +1,7 @@
 package ru.aritmos.service;
 
-import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
-
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
@@ -11,11 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -23,8 +21,6 @@ import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
-
-import ru.aritmos.exceptions.BusinessException;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.Queue;
@@ -33,8 +29,6 @@ import ru.aritmos.model.User;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.model.visit.VisitEvent;
 import ru.aritmos.model.visit.VisitEventInformation;
-import ru.aritmos.service.BranchService;
-import ru.aritmos.service.PrinterService;
 import ru.aritmos.service.rules.CallRule;
 import ru.aritmos.service.rules.SegmentationRule;
 import ru.aritmos.test.TestLoggingExtension;

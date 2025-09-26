@@ -1,13 +1,13 @@
 package ru.aritmos.exceptions;
 
-import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.serde.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;

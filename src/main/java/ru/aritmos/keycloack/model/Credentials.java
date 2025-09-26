@@ -10,6 +10,7 @@ import lombok.Data;
 public class Credentials {
   /** Логин пользователя. */
   String username;
+
   /** Пароль пользователя. */
   String password;
 }

@@ -15,12 +15,16 @@ import lombok.Data;
 public class Event {
   /** Имя сервиса-отправителя события. */
   String senderService;
+
   /** Дата и время события. */
   ZonedDateTime eventDate;
+
   /** Тип события. */
   String eventType;
+
   /** Дополнительные параметры события. */
   Map<String, String> params;
+
   /** Тело события (произвольный объект). */
   Object body;
 }

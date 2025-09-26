@@ -5,9 +5,7 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import ru.aritmos.exceptions.SystemException;
 
-/**
- * Обработчик событий шины данных.
- */
+/** Обработчик событий шины данных. */
 public interface EventHandler {
   /**
    * Обработка события.

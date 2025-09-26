@@ -41,10 +41,13 @@ public class TinyUserInfo {
 
   /** Имя JSON‑свойства: полное имя. */
   public static final String JSON_PROPERTY_NAME = "name";
+
   /** Имя JSON‑свойства: описание. */
   public static final String JSON_PROPERTY_DESCRIPTION = "description";
+
   /** Имя JSON‑свойства: почта. */
   public static final String JSON_PROPERTY_EMAIL = "email";
+
   /** Имя JSON‑свойства: логин. */
   public static final String JSON_PROPERTY_LOGIN = "login";
 

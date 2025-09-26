@@ -11,8 +11,8 @@ import org.keycloak.representations.idm.UserRepresentation;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
 /**
- * Стаб-клиент Keycloak для окружения local-no-docker.
- * Отключает реальные сетевые вызовы, возвращая предсказуемые данные.
+ * Стаб-клиент Keycloak для окружения local-no-docker. Отключает реальные сетевые вызовы, возвращая
+ * предсказуемые данные.
  */
 @Singleton
 @Requires(env = "local-no-docker")
@@ -71,4 +71,3 @@ public class LocalNoDockerKeycloakStub extends KeyCloackClient {
     return "/" + regionName + "/" + prefix;
   }
 }
-

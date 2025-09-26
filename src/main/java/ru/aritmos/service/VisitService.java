@@ -350,7 +350,8 @@ public class VisitService {
   public void addEvent(Visit visit, VisitEvent event, EventService eventService) {
     if (visit.getVisitEvents().isEmpty()) {
       if (!event.equals(VisitEvent.CREATED))
-        throw new BusinessException("visit_must_be_created_first", eventService, HttpStatus.CONFLICT);
+        throw new BusinessException(
+            "visit_must_be_created_first", eventService, HttpStatus.CONFLICT);
       else {
         visit
             .getEvents()
@@ -1275,7 +1276,8 @@ public class VisitService {
               String.format(
                   "Current service cannot add delivered service with id %s", deliveredServiceId),
               String.format(
-                  "Текущая услуга не позволяет добавить фактическую услугу с идентификатором %s", deliveredServiceId),
+                  "Текущая услуга не позволяет добавить фактическую услугу с идентификатором %s",
+                  deliveredServiceId),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -1375,7 +1377,8 @@ public class VisitService {
               String.format(
                   "Current service cannot delete delivered service with id %s", deliveredServiceId),
               String.format(
-                  "Текущая услуга не позволяет удалить фактическую услугу с идентификатором %s", deliveredServiceId),
+                  "Текущая услуга не позволяет удалить фактическую услугу с идентификатором %s",
+                  deliveredServiceId),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -1448,7 +1451,8 @@ public class VisitService {
         if (currentBranch.getServices().keySet().stream().noneMatch(f -> f.contains(serviceId))) {
           throw new BusinessException(
               String.format("Current visit cannot add service with id %s", serviceId),
-              String.format("Текущий визит не может добавить услугу с идентификатором %s", serviceId),
+              String.format(
+                  "Текущий визит не может добавить услугу с идентификатором %s", serviceId),
               eventService,
               HttpStatus.CONFLICT);
         }
@@ -1632,11 +1636,11 @@ public class VisitService {
     if (currentBranch.getMarks().containsKey(markId)) {
       return deleteMark(branchId, servicePointId, currentBranch.getMarks().get(markId));
     } else {
-        throw new BusinessException(
-            String.format("Mark %s not found", markId),
-            String.format("Метка %s не найдена", markId),
-            eventService,
-            HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          String.format("Mark %s not found", markId),
+          String.format("Метка %s не найдена", markId),
+          eventService,
+          HttpStatus.NOT_FOUND);
     }
   }
 
@@ -1653,11 +1657,11 @@ public class VisitService {
       Visit visit = currentBranch.getAllVisits().get(visitId);
       return visit.getVisitMarks();
     } else {
-        throw new BusinessException(
-            String.format("Visit %s not found", visitId),
-            String.format("Визит %s не найден", visitId),
-            eventService,
-            HttpStatus.NOT_FOUND);
+      throw new BusinessException(
+          String.format("Visit %s not found", visitId),
+          String.format("Визит %s не найден", visitId),
+          eventService,
+          HttpStatus.NOT_FOUND);
     }
   }
 
@@ -1703,7 +1707,8 @@ public class VisitService {
             .noneMatch(f -> f.equals(outcomeId)))
           throw new BusinessException(
               String.format("Current service cannot add outcome with id %s", outcomeId),
-              String.format("Текущая услуга не позволяет добавить итог с идентификатором %s", outcomeId),
+              String.format(
+                  "Текущая услуга не позволяет добавить итог с идентификатором %s", outcomeId),
               eventService,
               HttpStatus.CONFLICT);
         else {
@@ -1781,8 +1786,7 @@ public class VisitService {
                   deliveredServiceId, visit.getCurrentService().getId()),
               String.format(
                   "Фактическая услуга %s не связана с текущей услугой %s",
-                  deliveredServiceId,
-                  visit.getCurrentService().getId()),
+                  deliveredServiceId, visit.getCurrentService().getId()),
               eventService,
               HttpStatus.NOT_FOUND);
         }
@@ -1800,8 +1804,7 @@ public class VisitService {
                   deliveredServiceId, outcomeId),
               String.format(
                   "Текущая услуга с фактической услугой %s не может добавить итог %s",
-                  deliveredServiceId,
-                  outcomeId),
+                  deliveredServiceId, outcomeId),
               eventService,
               HttpStatus.NOT_FOUND);
         } else {
@@ -1910,8 +1913,7 @@ public class VisitService {
                   deliveredServiceId, visit.getCurrentService().getId()),
               String.format(
                   "Фактическая услуга %s не связана с текущей услугой %s",
-                  deliveredServiceId,
-                  visit.getCurrentService().getId()),
+                  deliveredServiceId, visit.getCurrentService().getId()),
               eventService,
               HttpStatus.NOT_FOUND);
         }
@@ -2074,8 +2076,7 @@ public class VisitService {
       visit = branchService.getBranch(branchId).getAllVisits().get(visit.getId());
       return visit;
     } else {
-      throw new BusinessException(
-          "visit_not_found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("visit_not_found", eventService, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -2140,7 +2141,8 @@ public class VisitService {
               visit.getParameterMap().get("LastQueueId"),
               returnTimeDelay);
         } else {
-          throw new BusinessException("visit_cannot_be_transferred", eventService, HttpStatus.CONFLICT);
+          throw new BusinessException(
+              "visit_cannot_be_transferred", eventService, HttpStatus.CONFLICT);
         }
       } else {
         throw new BusinessException(
@@ -2449,8 +2451,10 @@ public class VisitService {
           return stopServingAndBackToQueue(branchId, servicePointId, returnTimeDelay);
         } else {
           throw new BusinessException(
-              String.format("Visit in service point %s cannot be returned to the queue", servicePointId),
-              String.format("Визит в точке обслуживания %s нельзя вернуть в очередь", servicePointId),
+              String.format(
+                  "Visit in service point %s cannot be returned to the queue", servicePointId),
+              String.format(
+                  "Визит в точке обслуживания %s нельзя вернуть в очередь", servicePointId),
               eventService,
               HttpStatus.NOT_FOUND);
         }
@@ -3012,7 +3016,8 @@ public class VisitService {
     Branch currentBranch = branchService.getBranch(branchId);
     String oldQueueID = visit.getQueueId();
     //    if (visit.getQueueId().isBlank()) {
-    //      throw new BusinessException("visit_is_not_in_queue", "visit_is_not_in_queue", eventService);
+    //      throw new BusinessException("visit_is_not_in_queue", "visit_is_not_in_queue",
+    // eventService);
     //    }
 
     ServicePoint poolServicePoint;
@@ -3851,17 +3856,13 @@ public class VisitService {
         && visit.getReturnTimeDelay() != null
         && visit.getReturnTimeDelay() > visit.getReturningTime()) {
       throw new BusinessException(
-          "delayed_return_not_completed",
-          eventService,
-          HttpStatus.CONFLICT);
+          "delayed_return_not_completed", eventService, HttpStatus.CONFLICT);
     }
     if (visit.getTransferDateTime() != null
         && visit.getTransferTimeDelay() != null
         && visit.getTransferTimeDelay() > visit.getTransferingTime()) {
       throw new BusinessException(
-          "delayed_transfer_not_completed",
-          eventService,
-          HttpStatus.CONFLICT);
+          "delayed_transfer_not_completed", eventService, HttpStatus.CONFLICT);
     }
   }
 
@@ -4081,7 +4082,8 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("automatic_call_mode_is_enabled", eventService, HttpStatus.valueOf(207));
+      throw new BusinessException(
+          "automatic_call_mode_is_enabled", eventService, HttpStatus.valueOf(207));
     }
     return Optional.empty();
   }
@@ -4146,7 +4148,8 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("automatic_call_mode_is_enabled", eventService, HttpStatus.valueOf(207));
+      throw new BusinessException(
+          "automatic_call_mode_is_enabled", eventService, HttpStatus.valueOf(207));
     }
     return Optional.empty();
   }
@@ -4210,7 +4213,8 @@ public class VisitService {
       servicePoint.setAutoCallMode(true);
       currentBranch.getServicePoints().put(servicePoint.getId(), servicePoint);
       branchService.add(currentBranch.getId(), currentBranch);
-      throw new BusinessException("automatic_call_mode_is_enabled", eventService, HttpStatus.valueOf(207));
+      throw new BusinessException(
+          "automatic_call_mode_is_enabled", eventService, HttpStatus.valueOf(207));
     }
     return Optional.empty();
   }
@@ -4430,7 +4434,8 @@ public class VisitService {
               .body(servicePoint)
               .build();
       eventService.send("frontend", false, autocallEvent);
-      throw new BusinessException("automatic_call_mode_is_enabled", eventService, HttpStatus.valueOf(207));
+      throw new BusinessException(
+          "automatic_call_mode_is_enabled", eventService, HttpStatus.valueOf(207));
     }
   }
 
@@ -4629,16 +4634,12 @@ public class VisitService {
 
     if (visit.getReturningTime() > 0 && visit.getReturningTime() < visit.getReturnTimeDelay()) {
       throw new BusinessException(
-          "cannot_delete_visit_just_returned",
-          eventService,
-          HttpStatus.CONFLICT);
+          "cannot_delete_visit_just_returned", eventService, HttpStatus.CONFLICT);
     }
     if (visit.getTransferingTime() > 0
         && visit.getTransferingTime() < visit.getTransferTimeDelay()) {
       throw new BusinessException(
-          "cannot_delete_visit_just_transferred",
-          eventService,
-          HttpStatus.CONFLICT);
+          "cannot_delete_visit_just_transferred", eventService, HttpStatus.CONFLICT);
     }
     visit.setServicePointId(null);
     visit.setQueueId(null);

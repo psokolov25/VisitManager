@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class Reception {
   /** Идентификатор отделения. */
   String branchId;
+
   /** Перечень идентификаторов принтера. */
   List<Entity> printers;
 

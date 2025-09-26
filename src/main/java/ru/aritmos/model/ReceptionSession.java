@@ -13,8 +13,10 @@ import lombok.Data;
 public class ReceptionSession {
   /** Пользователь. */
   User user;
+
   /** Время начала. */
   ZonedDateTime startTime;
+
   /** Время окончания. */
   ZonedDateTime endTime;
 }

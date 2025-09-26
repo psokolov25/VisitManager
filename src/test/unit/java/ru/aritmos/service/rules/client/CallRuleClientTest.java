@@ -1,7 +1,6 @@
 package ru.aritmos.service.rules.client;
 
 import static ru.aritmos.test.LoggingAssertions.*;
-import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.http.annotation.Body;
@@ -10,6 +9,7 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.runtime.server.EmbeddedServer;
 import java.util.Map;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;

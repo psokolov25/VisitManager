@@ -14,7 +14,9 @@
     <licenses>
         <license>
             <name>Простая (неисключительная) лицензия с оплатой по модели «Named User»</name>
-            <url>https://digital.gov.ru/uploaded/files/metodicheskie-rekomendatsii-po-vyboru-modelej-litsenzirovania-otechestvennogo-po.pdf</url>
+            <url>
+                https://digital.gov.ru/uploaded/files/metodicheskie-rekomendatsii-po-vyboru-modelej-litsenzirovania-otechestvennogo-po.pdf
+            </url>
             <distribution>repo</distribution>
             <comments>Лицензионное вознаграждение рассчитывается исходя из количества пользователей системы.</comments>
         </license>
@@ -363,7 +365,7 @@
     <build>
         <finalName>visitmanager</finalName>
         <pluginManagement>
-            <plugins />
+            <plugins/>
         </pluginManagement>
         <plugins>
             <plugin>
@@ -391,15 +393,21 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.3</version>
                 <configuration>
-                    <argLine>${argLine} -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
+                    <argLine>${argLine}
+                        -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+                        -XX:+EnableDynamicAgentLoading -Xshare:off
+                    </argLine>
                     <excludes>
                         <exclude>**/*IT.java</exclude>
                     </excludes>
                     <systemPropertyVariables>
                         <micronaut.environments>${tests.micronaut.environments}</micronaut.environments>
-                        <micronaut.test.resources.enabled>${micronaut.test.resources.enabled}</micronaut.test.resources.enabled>
-                        <junit.platform.listeners.uid.tracking.enabled>true</junit.platform.listeners.uid.tracking.enabled>
-                        <junit.platform.listeners.uid.tracking.output.dir>${project.build.directory}/test-ids</junit.platform.listeners.uid.tracking.output.dir>
+                        <micronaut.test.resources.enabled>${micronaut.test.resources.enabled}
+                        </micronaut.test.resources.enabled>
+                        <junit.platform.listeners.uid.tracking.enabled>true
+                        </junit.platform.listeners.uid.tracking.enabled>
+                        <junit.platform.listeners.uid.tracking.output.dir>${project.build.directory}/test-ids
+                        </junit.platform.listeners.uid.tracking.output.dir>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -515,7 +523,7 @@
                     <!-- <useIncrementalCompilation>false</useIncrementalCompilation> -->
 
 
-                <annotationProcessorPaths combine.self="override">
+                    <annotationProcessorPaths combine.self="override">
                         <path>
                             <groupId>io.micronaut.security</groupId>
                             <artifactId>micronaut-security-annotations</artifactId>
@@ -600,10 +608,12 @@
                                 </filter>
                             </filters>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/NOTICE.txt</resource>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/NOTICE.md</resource>
                                 </transformer>
                             </transformers>

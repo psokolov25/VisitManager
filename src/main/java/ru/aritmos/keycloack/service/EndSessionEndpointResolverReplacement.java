@@ -23,7 +23,6 @@ public class EndSessionEndpointResolverReplacement extends EndSessionEndpointRes
   /** Контекст бинов Micronaut. */
   private final BeanContext beanContext;
 
-
   /** Резолвер токена в запросе. */
   @SuppressWarnings("rawtypes")
   private final TokenResolver tokenResolver;

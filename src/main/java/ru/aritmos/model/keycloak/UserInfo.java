@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Информация о пользователе из Keycloak.
- */
+/** Информация о пользователе из Keycloak. */
 @Data
 @Serdeable
 @Builder
@@ -19,12 +17,16 @@ import lombok.NoArgsConstructor;
 public class UserInfo {
   /** Уникальный идентификатор пользователя (sub). */
   String sub;
+
   /** Роли пользователя в реалме. */
   RealmAccess realm_access;
+
   /** Полное имя пользователя. */
   String name;
+
   /** Электронная почта пользователя. */
   String email;
+
   /** Дополнительное описание пользователя. */
   String description;
 }

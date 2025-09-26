@@ -8,7 +8,6 @@ import io.micronaut.http.server.exceptions.ExceptionHandler;
 import io.micronaut.http.server.exceptions.HttpStatusHandler;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.inject.Singleton;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

@@ -17,16 +17,22 @@ import lombok.NoArgsConstructor;
 public class Token {
   /** Токен доступа. */
   String access_token;
+
   /** Время жизни access‑token в секундах. */
   Long expires_at;
+
   /** Время жизни refresh‑token в секундах. */
   Long refresh_expires_in;
+
   /** Refresh‑token. */
   String refresh_token;
+
   /** Идентификатор сессии для синхронизации. */
   String session_state;
+
   /** Признак активности токена. */
   Boolean enabled;
+
   /** ID‑token. */
   String id_token;
 }

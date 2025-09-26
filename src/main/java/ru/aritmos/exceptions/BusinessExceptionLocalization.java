@@ -8,9 +8,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Сервис локализации сообщений {@link BusinessException} на основе настроек.
- */
+/** Сервис локализации сообщений {@link BusinessException} на основе настроек. */
 @Singleton
 public class BusinessExceptionLocalization {
 
@@ -22,11 +20,18 @@ public class BusinessExceptionLocalization {
     this.properties = Objects.requireNonNull(properties, "Настройки локализации не заданы");
   }
 
-  /**
-   * Создать локализацию с настройками по умолчанию.
-   */
+  /** Создать локализацию с настройками по умолчанию. */
   public static BusinessExceptionLocalization defaultLocalization() {
     return new BusinessExceptionLocalization(new BusinessExceptionLocalizationProperties());
+  }
+
+  private static String effectiveLanguage(
+      BusinessExceptionLocalizationProperties.ChannelLocalization channel) {
+    if (channel == null) {
+      return null;
+    }
+    String language = channel.getLanguage();
+    return language != null ? language : channel.getDefaultLanguage();
   }
 
   /**
@@ -93,9 +98,7 @@ public class BusinessExceptionLocalization {
       if ("message".equals(key) && value instanceof CharSequence sequence) {
         String original = sequence.toString();
         String translated = localizedClient != null ? localizedClient : localizeHttp(original);
-        if (fallbackToLogChannel
-            && Objects.equals(translated, original)
-            && logMessage != null) {
+        if (fallbackToLogChannel && Objects.equals(translated, original) && logMessage != null) {
           translated = logMessage;
         }
         if (!Objects.equals(original, translated)) {
@@ -125,15 +128,14 @@ public class BusinessExceptionLocalization {
     BusinessExceptionLocalizationProperties.ChannelLocalization channel = properties.getEvent();
     String localized = channel.resolve(message);
     if (localized == null && message != null) {
-      LOG.warn("Не удалось локализовать сообщение события '{}', используется исходный текст", message);
+      LOG.warn(
+          "Не удалось локализовать сообщение события '{}', используется исходный текст", message);
     }
     return localized;
   }
 
   private String fallbackToLogMessageIfNotTranslated(
-      @Nullable String original,
-      @Nullable String localized,
-      @Nullable String logMessage) {
+      @Nullable String original, @Nullable String localized, @Nullable String logMessage) {
     if (original == null || localized == null) {
       return localized;
     }
@@ -147,20 +149,11 @@ public class BusinessExceptionLocalization {
   }
 
   private boolean shouldFallbackToLogChannel() {
-    return Objects.equals(effectiveLanguage(properties.getHttp()), effectiveLanguage(properties.getLog()));
+    return Objects.equals(
+        effectiveLanguage(properties.getHttp()), effectiveLanguage(properties.getLog()));
   }
 
-  private static String effectiveLanguage(BusinessExceptionLocalizationProperties.ChannelLocalization channel) {
-    if (channel == null) {
-      return null;
-    }
-    String language = channel.getLanguage();
-    return language != null ? language : channel.getDefaultLanguage();
-  }
-
-  /**
-   * Результат локализации сообщений.
-   */
+  /** Результат локализации сообщений. */
   public static final class LocalizedMessages {
     private final Object responseBody;
     private final String clientMessage;

@@ -1,9 +1,10 @@
 package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.events.model.Event;
-import org.junit.jupiter.api.DisplayName;
 
 /**
  * Юнит-тест для {@link EventTask}.

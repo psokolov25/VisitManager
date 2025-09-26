@@ -1,8 +1,9 @@
 package ru.aritmos.model;
 
-import org.junit.jupiter.api.Test;
 import static ru.aritmos.test.LoggingAssertions.*;
+
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class DeliveredServiceTest {
     @DisplayName("Клонирование услуги возвращает независимую копию")

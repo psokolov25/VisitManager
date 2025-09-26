@@ -1,7 +1,6 @@
 package ru.aritmos;
 
 import static ru.aritmos.test.LoggingAssertions.*;
-import org.junit.jupiter.api.DisplayName;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.visit.Visit;
 

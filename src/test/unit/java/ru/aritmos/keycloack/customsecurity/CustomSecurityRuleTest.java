@@ -1,9 +1,9 @@
 package ru.aritmos.keycloack.customsecurity;
 
 import static ru.aritmos.test.LoggingAssertions.assertEquals;
-import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.security.rules.SecurityRuleResult;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 

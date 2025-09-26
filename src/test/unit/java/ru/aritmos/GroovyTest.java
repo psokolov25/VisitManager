@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
-import ru.aritmos.test.LoggingAssertions;
 import ru.aritmos.model.visit.Visit;
+import ru.aritmos.test.LoggingAssertions;
 
 @Slf4j
 // @MicronautTest

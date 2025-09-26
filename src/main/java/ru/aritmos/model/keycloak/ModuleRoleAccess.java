@@ -40,8 +40,10 @@ public class ModuleRoleAccess {
 
   /** Имя JSON‑свойства: имя модуля. */
   public static final String JSON_PROPERTY_NAME = "name";
+
   /** Имя JSON‑свойства: требуемая роль. */
   public static final String JSON_PROPERTY_ROLE = "role";
+
   /** Имя JSON‑свойства: доступ разрешён/запрещён. */
   public static final String JSON_PROPERTY_ACCESS = "access";
 

@@ -11,18 +11,13 @@ import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.rules.client.CallRuleClient;
 
-/**
- * Пользовательское правило вызова визита.
- * Делегирует логику вызова внешнему клиенту правил.
- */
-
+/** Пользовательское правило вызова визита. Делегирует логику вызова внешнему клиенту правил. */
 @Singleton
 @Named("SimpleCallRule")
 @Requires(property = "micronaut.application.rules.callVisit", value = "custom")
 public class CustomCallRule implements CallRule {
   /** Клиент вызова пользовательских правил. */
   @Inject CallRuleClient callRuleClient;
-
 
   /**
    * Вызов визита по настроенному правилу.
@@ -36,7 +31,6 @@ public class CustomCallRule implements CallRule {
     return callRuleClient.callRule(branch, servicePoint);
   }
 
-
   /**
    * Вызов визита по набору очередей.
    *
@@ -49,7 +43,6 @@ public class CustomCallRule implements CallRule {
   public Optional<Visit> call(Branch branch, ServicePoint servicePoint, List<String> queueIds) {
     return Optional.empty();
   }
-
 
   /**
    * Получение доступных точек обслуживания для визита.

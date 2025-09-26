@@ -1,17 +1,18 @@
 package ru.aritmos.service;
 
-import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.*;
 
-import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,20 +20,19 @@ import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.DelayedEvents;
 import ru.aritmos.events.services.EventService;
 import ru.aritmos.model.Branch;
-import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Entity;
+import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Queue;
+import ru.aritmos.model.Reception;
 import ru.aritmos.model.Service;
-import ru.aritmos.model.visit.Visit;
-import ru.aritmos.model.visit.VisitEvent;
-import ru.aritmos.model.visit.VisitEventInformation;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.User;
 import ru.aritmos.model.WorkProfile;
-import ru.aritmos.model.Reception;
 import ru.aritmos.model.tiny.TinyClass;
+import ru.aritmos.model.visit.Visit;
+import ru.aritmos.model.visit.VisitEvent;
+import ru.aritmos.model.visit.VisitEventInformation;
 import ru.aritmos.service.rules.CallRule;
-import org.keycloak.representations.idm.UserRepresentation;
 
 class VisitServiceTest {
 

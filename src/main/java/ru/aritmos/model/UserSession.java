@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Информация о сессии пользователя.
- */
+/** Информация о сессии пользователя. */
 @Data
 @Serdeable
 @Builder
@@ -33,6 +31,5 @@ public class UserSession {
   String sid;
 
   /** Дополнительные параметры сессии. */
-  @Builder.Default
-  HashMap<String, String> params = new HashMap<>();
+  @Builder.Default HashMap<String, String> params = new HashMap<>();
 }

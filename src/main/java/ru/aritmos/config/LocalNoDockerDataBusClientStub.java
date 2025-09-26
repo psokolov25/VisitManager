@@ -10,9 +10,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import ru.aritmos.events.clients.DataBusClient;
 
-/**
- * Стаб HTTP‑клиента шины данных для профиля local-no-docker.
- */
+/** Стаб HTTP‑клиента шины данных для профиля local-no-docker. */
 @Singleton
 @Requires(env = "local-no-docker")
 public class LocalNoDockerDataBusClientStub implements DataBusClient {
@@ -57,9 +55,7 @@ public class LocalNoDockerDataBusClientStub implements DataBusClient {
     invocations.clear();
   }
 
-  /**
-   * Запись одного вызова {@link #send(String, Boolean, String, String, String, Object)}.
-   */
+  /** Запись одного вызова {@link #send(String, Boolean, String, String, String, Object)}. */
   public record InvocationRecord(
       String destinationServices,
       Boolean sendToOtherBus,

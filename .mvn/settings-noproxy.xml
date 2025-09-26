@@ -1,23 +1,23 @@
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/SETTINGS/1.0.0"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <!-- Настройки Maven без прокси для локальных окружений -->
-  <proxies>
-    <proxy>
-      <id>container-http</id>
-      <active>false</active>
-      <protocol>http</protocol>
-      <host>proxy</host>
-      <port>8080</port>
-      <nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>
-    </proxy>
-    <proxy>
-      <id>container-https</id>
-      <active>false</active>
-      <protocol>https</protocol>
-      <host>proxy</host>
-      <port>8080</port>
-      <nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>
-    </proxy>
-  </proxies>
+    <!-- Настройки Maven без прокси для локальных окружений -->
+    <proxies>
+        <proxy>
+            <id>container-http</id>
+            <active>false</active>
+            <protocol>http</protocol>
+            <host>proxy</host>
+            <port>8080</port>
+            <nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>
+        </proxy>
+        <proxy>
+            <id>container-https</id>
+            <active>false</active>
+            <protocol>https</protocol>
+            <host>proxy</host>
+            <port>8080</port>
+            <nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>
+        </proxy>
+    </proxies>
 </settings>

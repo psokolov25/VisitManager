@@ -3,9 +3,9 @@ package ru.aritmos.events.model;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
-import ru.aritmos.test.LoggingAssertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import ru.aritmos.test.LoggingAssertions;
 
 class EventTest {
 

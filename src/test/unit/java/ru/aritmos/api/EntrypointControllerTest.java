@@ -1,17 +1,17 @@
 package ru.aritmos.api;
 
-import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.events.services.EventService;
-import ru.aritmos.model.Service;
 import ru.aritmos.model.Branch;
+import ru.aritmos.model.Service;
 import ru.aritmos.model.VisitParameters;
 import ru.aritmos.model.visit.Visit;
 import ru.aritmos.service.BranchService;

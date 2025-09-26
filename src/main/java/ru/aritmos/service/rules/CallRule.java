@@ -6,9 +6,7 @@ import ru.aritmos.model.Branch;
 import ru.aritmos.model.ServicePoint;
 import ru.aritmos.model.visit.Visit;
 
-/**
- * Правило вызова клиента на обслуживание.
- */
+/** Правило вызова клиента на обслуживание. */
 public interface CallRule extends Rule {
   /**
    * Вызвать следующего клиента на указанном окне.

@@ -6,17 +6,18 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 
-/**
- * Асинхронная задача отправки события нескольким адресатам.
- */
+/** Асинхронная задача отправки события нескольким адресатам. */
 @Slf4j
 public class MultiserviceEventTask implements Runnable {
   /** Получатели события. */
   private final List<String> destinationServices;
+
   /** Отправлять ли событие в соседнюю шину. */
   private final Boolean sendToOtherBus;
+
   /** Событие. */
   private final Event event;
+
   /** Сервис отправки событий. */
   private final EventService eventService;
 
@@ -39,9 +40,7 @@ public class MultiserviceEventTask implements Runnable {
     this.eventService = eventService;
   }
 
-  /**
-   * Выполняет рассылку события нескольким адресатам в отдельном потоке.
-   */
+  /** Выполняет рассылку события нескольким адресатам в отдельном потоке. */
   @Override
   @ExecuteOn(value = TaskExecutors.IO)
   public void run() {

@@ -10,9 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import ru.aritmos.events.model.Event;
 
-/**
- * Планировщик отложенной отправки событий в шину.
- */
+/** Планировщик отложенной отправки событий в шину. */
 @Singleton
 public class DelayedEvents {
   /** Планировщик задач. */

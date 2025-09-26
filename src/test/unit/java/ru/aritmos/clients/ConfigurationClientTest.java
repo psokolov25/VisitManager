@@ -1,12 +1,12 @@
 package ru.aritmos.clients;
 
 import static ru.aritmos.test.LoggingAssertions.*;
-import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.client.annotation.Client;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ConfigurationClientTest {

@@ -9,18 +9,17 @@ import org.junit.jupiter.api.Test;
 
 class ClientAccessTest {
 
-    @DisplayName("Строитель и сеттеры дают одинаковый результат")
-    @Test
-    void builderAndSettersProduceSameResult() {
-        ClientAccess viaBuilder = ClientAccess.builder()
-                .roles(Map.of("printer", List.of("print", "status")))
-                .build();
+  @DisplayName("Строитель и сеттеры дают одинаковый результат")
+  @Test
+  void builderAndSettersProduceSameResult() {
+    ClientAccess viaBuilder =
+        ClientAccess.builder().roles(Map.of("printer", List.of("print", "status"))).build();
 
-        ClientAccess viaSetters = new ClientAccess();
-        viaSetters.setRoles(Map.of("printer", List.of("print", "status")));
+    ClientAccess viaSetters = new ClientAccess();
+    viaSetters.setRoles(Map.of("printer", List.of("print", "status")));
 
-        assertEquals(viaBuilder, viaSetters);
-        assertEquals(viaBuilder.hashCode(), viaSetters.hashCode());
-        assertTrue(viaBuilder.toString().contains("printer"));
-    }
+    assertEquals(viaBuilder, viaSetters);
+    assertEquals(viaBuilder.hashCode(), viaSetters.hashCode());
+    assertTrue(viaBuilder.toString().contains("printer"));
+  }
 }

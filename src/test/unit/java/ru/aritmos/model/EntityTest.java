@@ -8,37 +8,34 @@ import org.junit.jupiter.api.Test;
 
 class EntityTest {
 
-    @Test
-    @DisplayName("Билдер создаёт сущность с указанными значениями")
-    void builderCreatesEntity() {
-        Entity entity = Entity.builder()
-                .id("123")
-                .name("касса")
-                .build();
+  @Test
+  @DisplayName("Билдер создаёт сущность с указанными значениями")
+  void builderCreatesEntity() {
+    Entity entity = Entity.builder().id("123").name("касса").build();
 
-        assertEquals("123", entity.getId());
-        assertEquals("касса", entity.getName());
-    }
+    assertEquals("123", entity.getId());
+    assertEquals("касса", entity.getName());
+  }
 
-    @Test
-    @DisplayName("Геттеры, сеттеры и переопределения equals и hashCode работают корректно")
-    void gettersSettersAndEqualityWorkCorrectly() {
-        Entity первый = new Entity();
-        первый.setId("id-1");
-        первый.setName("отделение");
+  @Test
+  @DisplayName("Геттеры, сеттеры и переопределения equals и hashCode работают корректно")
+  void gettersSettersAndEqualityWorkCorrectly() {
+    Entity первый = new Entity();
+    первый.setId("id-1");
+    первый.setName("отделение");
 
-        Entity второй = new Entity("id-1", "отделение");
+    Entity второй = new Entity("id-1", "отделение");
 
-        assertEquals(первый, второй);
-        assertEquals(первый.hashCode(), второй.hashCode());
+    assertEquals(первый, второй);
+    assertEquals(первый.hashCode(), второй.hashCode());
 
-        второй.setName("другой офис");
-        assertNotEquals(первый, второй);
-    }
+    второй.setName("другой офис");
+    assertNotEquals(первый, второй);
+  }
 
-    @Test
-    @DisplayName("Класс Entity аннотирован Serdeable")
-    void verifySerdeableAnnotation() {
-        assertTrue(Entity.class.isAnnotationPresent(Serdeable.class));
-    }
+  @Test
+  @DisplayName("Класс Entity аннотирован Serdeable")
+  void verifySerdeableAnnotation() {
+    assertTrue(Entity.class.isAnnotationPresent(Serdeable.class));
+  }
 }

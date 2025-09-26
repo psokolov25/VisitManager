@@ -1,10 +1,10 @@
 package ru.aritmos;
 
-import static ru.aritmos.test.LoggingAssertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mockStatic;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.assertDoesNotThrow;
 
 import io.micronaut.runtime.Micronaut;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 

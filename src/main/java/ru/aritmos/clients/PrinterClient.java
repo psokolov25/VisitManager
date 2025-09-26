@@ -11,9 +11,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import org.reactivestreams.Publisher;
 import ru.aritmos.model.visit.Visit;
 
-/**
- * HTTP‑клиент печати талонов.
- */
+/** HTTP‑клиент печати талонов. */
 @Client(value = "${micronaut.application.printerServiceURL}")
 public interface PrinterClient {
   /**

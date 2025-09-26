@@ -34,6 +34,7 @@ public class ModuleRole {
 
   /** Имя JSON‑свойства: имя модуля. */
   public static final String JSON_PROPERTY_NAME = "name";
+
   /** Имя JSON‑свойства: требуемая роль. */
   public static final String JSON_PROPERTY_ROLE = "role";
 

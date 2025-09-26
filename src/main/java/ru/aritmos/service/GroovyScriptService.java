@@ -5,9 +5,7 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import ru.aritmos.model.GroovyScript;
 
-/**
- * Сервис выполнения сценариев Groovy для пользовательских правил.
- */
+/** Сервис выполнения сценариев Groovy для пользовательских правил. */
 public class GroovyScriptService {
   /**
    * Выполнить скрипт Groovy с передачей входных параметров и сбором результатов.

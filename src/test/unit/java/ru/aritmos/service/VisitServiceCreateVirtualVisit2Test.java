@@ -13,7 +13,6 @@ import static ru.aritmos.test.LoggingAssertions.assertNull;
 import static ru.aritmos.test.LoggingAssertions.assertSame;
 import static ru.aritmos.test.LoggingAssertions.assertThrows;
 import static ru.aritmos.test.LoggingAssertions.assertTrue;
-import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.representations.idm.UserRepresentation;

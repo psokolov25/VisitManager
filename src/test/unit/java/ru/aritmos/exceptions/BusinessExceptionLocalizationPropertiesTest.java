@@ -1,13 +1,22 @@
 package ru.aritmos.exceptions;
 
 import static ru.aritmos.test.LoggingAssertions.*;
-import org.junit.jupiter.api.DisplayName;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class BusinessExceptionLocalizationPropertiesTest {
+
+    private static void applyLanguage(BusinessExceptionLocalizationProperties properties, String language) {
+        properties.getHttp().setLanguage(language);
+        properties.getHttp().setDefaultLanguage(language);
+        properties.getLog().setLanguage(language);
+        properties.getLog().setDefaultLanguage(language);
+        properties.getEvent().setLanguage(language);
+        properties.getEvent().setDefaultLanguage(language);
+    }
 
     @DisplayName("Нормализует язык, убирая внешние кавычки")
     @Test
@@ -71,7 +80,6 @@ class BusinessExceptionLocalizationPropertiesTest {
         assertEquals("Услуга не найдена", messages.clientMessage());
         assertEquals("Услуга не найдена", messages.responseBody());
     }
-
 
     @DisplayName("Возвращает русский перевод из ресурсной локализации")
     @Test
@@ -148,14 +156,5 @@ class BusinessExceptionLocalizationPropertiesTest {
         } finally {
             BusinessException.resetLocalization();
         }
-    }
-
-    private static void applyLanguage(BusinessExceptionLocalizationProperties properties, String language) {
-        properties.getHttp().setLanguage(language);
-        properties.getHttp().setDefaultLanguage(language);
-        properties.getLog().setLanguage(language);
-        properties.getLog().setDefaultLanguage(language);
-        properties.getEvent().setLanguage(language);
-        properties.getEvent().setDefaultLanguage(language);
     }
 }

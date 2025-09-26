@@ -6,16 +6,15 @@ import io.micronaut.runtime.event.annotation.EventListener;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 
-/**
- * Подключение настроек локализации к {@link BusinessException}.
- */
+/** Подключение настроек локализации к {@link BusinessException}. */
 @Context
 @Singleton
 public class BusinessExceptionLocalizationConfigurer {
 
   private final BusinessExceptionLocalizationProperties properties;
 
-  public BusinessExceptionLocalizationConfigurer(BusinessExceptionLocalizationProperties properties) {
+  public BusinessExceptionLocalizationConfigurer(
+      BusinessExceptionLocalizationProperties properties) {
     this.properties = properties;
   }
 

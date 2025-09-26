@@ -19,7 +19,8 @@ import ru.aritmos.events.model.Event;
 /**
  * Сервис отправки событий в шину данных.
  *
- * <p>Пример использования:</p>
+ * <p>Пример использования:
+ *
  * <pre>{@code
  * Event event = Event.builder()
  *     .eventType("PING")
@@ -28,12 +29,14 @@ import ru.aritmos.events.model.Event;
  * eventService.send("frontend", false, event);
  * }</pre>
  *
- * <p>Диаграмма последовательности отправки события:</p>
+ * <p>Диаграмма последовательности отправки события:
+ *
  * <pre>
  * client -> EventService -> DataBusClient -> DataBus
  * </pre>
  *
- * @see <a href="../../../../../../../docs/diagrams/event-service-sequence.svg">Диаграмма последовательности</a>
+ * @see <a href="../../../../../../../docs/diagrams/event-service-sequence.svg">Диаграмма
+ *     последовательности</a>
  */
 @Slf4j
 @Singleton

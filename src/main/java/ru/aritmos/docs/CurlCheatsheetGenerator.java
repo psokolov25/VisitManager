@@ -12,8 +12,12 @@ import java.util.List;
 
 /**
  * Генератор HTML-шпаргалки по curl-примерам, извлечённым из JavaDoc контроллеров ru.aritmos.api.
- * <p>
- * Использует маркеры "Пример curl", <pre><code> и </code></pre> в комментариях.
+ *
+ * <p>Использует маркеры "Пример curl",
+ *
+ * <pre><code> и </code></pre>
+ *
+ * в комментариях.
  */
 public final class CurlCheatsheetGenerator {
 
@@ -36,10 +40,12 @@ public final class CurlCheatsheetGenerator {
         .append("<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\"/>\n")
         .append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>\n")
         .append("<title>VisitManager — Шпаргалка по curl</title>\n")
-        .append("<style>:root{--bg:#0f1218;--fg:#e6edf3;--sec:#1f6feb;--mut:#9aa6b2}body{margin:0;font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--fg)}header{padding:20px 24px;background:#0b0f14;position:sticky;top:0;border-bottom:1px solid #222}header h1{margin:0;font-size:18px}main{padding:20px 24px 60px;max-width:1200px}section{margin:28px 0}h2{margin:16px 0;border-left:3px solid var(--sec);padding-left:10px}h3{font-size:15px;color:var(--sec);margin:18px 0 8px}article{background:#0b0f14;border:1px solid #1e232b;border-radius:6px;padding:12px 12px;margin:12px 0}pre{background:#0c1117;border:1px solid #1f242c;padding:10px;border-radius:6px;overflow:auto}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,\"Liberation Mono\",monospace;font-size:13px}.file{color:var(--mut);font-size:12px;margin:4px 0 12px}.legend{color:var(--mut);font-size:13px;margin-top:6px}a{color:var(--sec);text-decoration:none}</style>\n")
+        .append(
+            "<style>:root{--bg:#0f1218;--fg:#e6edf3;--sec:#1f6feb;--mut:#9aa6b2}body{margin:0;font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--fg)}header{padding:20px 24px;background:#0b0f14;position:sticky;top:0;border-bottom:1px solid #222}header h1{margin:0;font-size:18px}main{padding:20px 24px 60px;max-width:1200px}section{margin:28px 0}h2{margin:16px 0;border-left:3px solid var(--sec);padding-left:10px}h3{font-size:15px;color:var(--sec);margin:18px 0 8px}article{background:#0b0f14;border:1px solid #1e232b;border-radius:6px;padding:12px 12px;margin:12px 0}pre{background:#0c1117;border:1px solid #1f242c;padding:10px;border-radius:6px;overflow:auto}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,\"Liberation Mono\",monospace;font-size:13px}.file{color:var(--mut);font-size:12px;margin:4px 0 12px}.legend{color:var(--mut);font-size:13px;margin-top:6px}a{color:var(--sec);text-decoration:none}</style>\n")
         .append("<meta name=\"robots\" content=\"noindex\"/>\n</head>\n<body>\n<header>\n")
         .append("<h1>VisitManager — Шпаргалка по curl (из JavaDoc)</h1>\n")
-        .append("<div class=\"legend\">Генерация на основе комментариев «Пример curl» в контроллерах ru.aritmos.api</div>\n")
+        .append(
+            "<div class=\"legend\">Генерация на основе комментариев «Пример curl» в контроллерах ru.aritmos.api</div>\n")
         .append("</header>\n<main>\n");
 
     if (Files.exists(controllersDir)) {
@@ -57,7 +63,8 @@ public final class CurlCheatsheetGenerator {
               });
     }
 
-    html.append("<section><h2>Сводные материалы</h2><article><div class=\"legend\">См. также:</div><ul>")
+    html.append(
+            "<section><h2>Сводные материалы</h2><article><div class=\"legend\">См. также:</div><ul>")
         .append("<li><a href=\"../REST-Examples.md\">REST-Examples.md</a></li>")
         .append(
             "<li><a href=\"../postman/VisitManager.postman_collection.json\">Postman collection</a> и <a href=\"../postman/VisitManager.env.postman_environment.json\">environment</a></li>")
@@ -67,15 +74,16 @@ public final class CurlCheatsheetGenerator {
 
     try (BufferedWriter bw =
         new BufferedWriter(
-            new OutputStreamWriter(new FileOutputStream(outFile.toFile()), StandardCharsets.UTF_8))) {
+            new OutputStreamWriter(
+                new FileOutputStream(outFile.toFile()), StandardCharsets.UTF_8))) {
       bw.write(html.toString());
     }
     System.out.println("Cheatsheet generated at " + outFile.toAbsolutePath());
   }
 
   /**
-   * Добавить секцию контроллера с извлечёнными примерами curl.
-   * Источник — комментарии JavaDoc в файле контроллера.
+   * Добавить секцию контроллера с извлечёнными примерами curl. Источник — комментарии JavaDoc в
+   * файле контроллера.
    *
    * @param html буфер HTML
    * @param file путь к файлу контроллера
@@ -113,7 +121,10 @@ public final class CurlCheatsheetGenerator {
       String uri = "";
       for (int a = fin + 1; a < Math.min(lines.size(), fin + 40); a++) {
         String la = lines.get(a);
-        if (la.contains("@Get(") || la.contains("@Post(") || la.contains("@Put(") || la.contains("@Delete(")) {
+        if (la.contains("@Get(")
+            || la.contains("@Post(")
+            || la.contains("@Put(")
+            || la.contains("@Delete(")) {
           if (la.contains("@Get(")) http = "GET";
           else if (la.contains("@Post(")) http = "POST";
           else if (la.contains("@Put(")) http = "PUT";

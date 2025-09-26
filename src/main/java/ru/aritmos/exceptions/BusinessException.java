@@ -12,34 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 import ru.aritmos.events.services.EventService;
 
-/**
- * Исключение уровня бизнес‑логики с публикацией события об ошибке.
- */
+/** Исключение уровня бизнес‑логики с публикацией события об ошибке. */
 @Slf4j
 @SuppressWarnings("unused")
 public class BusinessException extends RuntimeException {
 
-  /** Сервис отправки событий. */
-  final EventService eventService;
-
   private static final BusinessExceptionLocalization DEFAULT_LOCALIZATION =
       BusinessExceptionLocalization.defaultLocalization();
-
   private static volatile BusinessExceptionLocalization localization = DEFAULT_LOCALIZATION;
-
-  /**
-   * Настроить локализацию сообщений. Используется конфигуратором и тестами.
-   *
-   * @param newLocalization локализация
-   */
-  public static void configureLocalization(BusinessExceptionLocalization newLocalization) {
-    localization = newLocalization != null ? newLocalization : DEFAULT_LOCALIZATION;
-  }
-
-  /** Сбросить локализацию к настройкам по умолчанию. */
-  static void resetLocalization() {
-    localization = DEFAULT_LOCALIZATION;
-  }
+  /** Сервис отправки событий. */
+  final EventService eventService;
 
   /**
    * Создать исключение с сообщениями для клиента и лога.
@@ -150,6 +132,20 @@ public class BusinessException extends RuntimeException {
         status);
   }
 
+  /**
+   * Настроить локализацию сообщений. Используется конфигуратором и тестами.
+   *
+   * @param newLocalization локализация
+   */
+  public static void configureLocalization(BusinessExceptionLocalization newLocalization) {
+    localization = newLocalization != null ? newLocalization : DEFAULT_LOCALIZATION;
+  }
+
+  /** Сбросить локализацию к настройкам по умолчанию. */
+  static void resetLocalization() {
+    localization = DEFAULT_LOCALIZATION;
+  }
+
   private HttpStatusException toHttpStatusException(
       Object responseBody,
       String clientMessage,
@@ -158,7 +154,8 @@ public class BusinessException extends RuntimeException {
       HttpStatus status) {
     EventService currentEventService = this.eventService;
     String effectiveLogMessage =
-        Objects.requireNonNullElse(logMessage, Objects.requireNonNullElse(clientMessage, eventMessage));
+        Objects.requireNonNullElse(
+            logMessage, Objects.requireNonNullElse(clientMessage, eventMessage));
     String effectiveEventMessage = Objects.requireNonNullElse(eventMessage, effectiveLogMessage);
     Object responseBodyToSend =
         responseBody != null
@@ -167,7 +164,8 @@ public class BusinessException extends RuntimeException {
     String messageForClient = Objects.requireNonNullElse(clientMessage, effectiveEventMessage);
 
     BusinessExceptionLocalization.LocalizedMessages localizedMessages =
-        localization.localize(responseBodyToSend, messageForClient, effectiveLogMessage, effectiveEventMessage);
+        localization.localize(
+            responseBodyToSend, messageForClient, effectiveLogMessage, effectiveEventMessage);
 
     Object localizedBody = localizedMessages.responseBody();
     String localizedClient = localizedMessages.clientMessage();

@@ -5,17 +5,18 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import lombok.extern.slf4j.Slf4j;
 import ru.aritmos.events.model.Event;
 
-/**
- * Асинхронная задача отправки события в шину.
- */
+/** Асинхронная задача отправки события в шину. */
 @Slf4j
 public class EventTask implements Runnable {
   /** Получатель события. */
   private final String destinationService;
+
   /** Отправлять ли событие в соседнюю шину. */
   private final Boolean sendToOtherBus;
+
   /** Событие. */
   private final Event event;
+
   /** Сервис отправки событий. */
   private final EventService eventService;
 
@@ -35,10 +36,7 @@ public class EventTask implements Runnable {
     this.eventService = eventService;
   }
 
-  /**
-   * Запускает отправку события в отдельном потоке.
-   * Логирует результат отправки.
-   */
+  /** Запускает отправку события в отдельном потоке. Логирует результат отправки. */
   @Override
   @ExecuteOn(value = TaskExecutors.IO)
   public void run() {

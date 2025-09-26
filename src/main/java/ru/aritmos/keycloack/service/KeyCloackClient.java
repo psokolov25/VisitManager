@@ -28,9 +28,7 @@ import ru.aritmos.model.UserInfo;
 import ru.aritmos.model.UserSession;
 import ru.aritmos.model.UserToken;
 
-/**
- * Клиент для взаимодействия с Keycloak: пользователи, группы, сессии.
- */
+/** Клиент для взаимодействия с Keycloak: пользователи, группы, сессии. */
 @Slf4j
 @Singleton
 @Requires(notEnv = "local-no-docker")

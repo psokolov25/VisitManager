@@ -194,8 +194,10 @@ public enum VisitEvent {
 
   /** Дополнительные параметры события. */
   @Getter final Map<String, String> parameters = new HashMap<>();
+
   /** Время наступления события. */
   @JsonFormat public ZonedDateTime dateTime;
+
   /** Состояние визита, соответствующее данному событию. */
   VisitState visitState;
 

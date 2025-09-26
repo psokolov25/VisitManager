@@ -1,9 +1,9 @@
 package ru.aritmos.model.keycloak;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
-
 import static ru.aritmos.test.LoggingAssertions.*;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class TinyUserInfoTest {
 

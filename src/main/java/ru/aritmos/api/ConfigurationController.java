@@ -25,23 +25,24 @@ import ru.aritmos.service.VisitService;
  * при подготовке демонстрационных данных.
  */
 @lombok.extern.slf4j.Slf4j
-
 @Controller("/configuration")
 @Slf4j
 @ApiResponses({
-    @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
-    @ApiResponse(responseCode = "401", description = "Не авторизован"),
-    @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
-    @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
-    @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
-    @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
-    @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+  @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+  @ApiResponse(responseCode = "401", description = "Не авторизован"),
+  @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
+  @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+  @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
+  @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
+  @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class ConfigurationController {
   /** Сервис управления отделениями. */
   @Inject BranchService branchService;
+
   /** Сервис визитов. */
   @Inject VisitService visitService;
+
   /** Сервис формирования конфигурации. */
   @Inject Configuration configuration;
 
@@ -51,7 +52,6 @@ public class ConfigurationController {
    * @param branchHashMap набор отделений, индексированных по идентификатору
    * @return актуализированная конфигурация отделений
    */
-
   @Tag(name = "Конфигурация отделений")
   @Tag(name = "Полный список")
   @Operation(

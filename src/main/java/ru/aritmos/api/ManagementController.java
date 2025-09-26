@@ -28,13 +28,13 @@ import ru.aritmos.service.BranchService;
  */
 @Controller("/managementinformation")
 @ApiResponses({
-    @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
-    @ApiResponse(responseCode = "401", description = "Не авторизован"),
-    @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
-    @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
-    @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
-    @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
-    @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+  @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+  @ApiResponse(responseCode = "401", description = "Не авторизован"),
+  @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
+  @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
+  @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
+  @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
+  @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class ManagementController {
 
@@ -83,7 +83,8 @@ public class ManagementController {
   @Tag(name = "Полный список")
   @Operation(
       summary = "Получение списка отделений",
-      description = "Возвращает карту доступных отделений. При передаче имени пользователя список ограничивается его филиалами",
+      description =
+          "Возвращает карту доступных отделений. При передаче имени пользователя список ограничивается его филиалами",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список отделений"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),

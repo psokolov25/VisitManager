@@ -6,11 +6,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.aritmos.config.LocalNoDockerDataBusClientStub;
 import ru.aritmos.events.model.ChangedObject;
 import ru.aritmos.events.model.Event;
-import ru.aritmos.config.LocalNoDockerDataBusClientStub;
-import org.junit.jupiter.api.DisplayName;
 
 @MicronautTest
 class EventServiceTest {

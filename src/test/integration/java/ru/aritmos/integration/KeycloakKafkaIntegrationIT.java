@@ -3,7 +3,6 @@ package ru.aritmos.integration;
 import static ru.aritmos.test.LoggingAssertions.assertEquals;
 import static ru.aritmos.test.LoggingAssertions.assertFalse;
 import static ru.aritmos.test.LoggingAssertions.assertTrue;
-import org.junit.jupiter.api.DisplayName;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import java.net.URI;
@@ -21,6 +20,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.KafkaContainer;
@@ -55,6 +55,14 @@ class KeycloakKafkaIntegrationIT {
         }
         if (kafka != null) {
             kafka.stop();
+        }
+    }
+
+    private static boolean isDockerAvailable() {
+        try {
+            return DockerClientFactory.instance().isDockerAvailable();
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 
@@ -98,14 +106,6 @@ class KeycloakKafkaIntegrationIT {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(5));
             assertFalse(records.isEmpty(), "Kafka должен вернуть записанное сообщение");
             assertEquals("v", records.iterator().next().value());
-        }
-    }
-
-    private static boolean isDockerAvailable() {
-        try {
-            return DockerClientFactory.instance().isDockerAvailable();
-        } catch (Throwable ignored) {
-            return false;
         }
     }
 }

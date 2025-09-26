@@ -1,9 +1,9 @@
 package ru.aritmos.events.services;
 
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.events.model.Event;
 

@@ -15,9 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Map;
 import org.reactivestreams.Publisher;
 
-/**
- * HTTP‑клиент для отправки событий на DataBus.
- */
+/** HTTP‑клиент для отправки событий на DataBus. */
 @Requires(notEnv = "local-no-docker")
 @Client(value = "${micronaut.application.dataBusUrl}")
 public interface DataBusClient {

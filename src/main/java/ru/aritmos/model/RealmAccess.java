@@ -9,9 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.keycloak.representations.idm.GroupRepresentation;
 
-/**
- * Доступы пользователя: роли, группы и модули.
- */
+/** Доступы пользователя: роли, группы и модули. */
 @Data
 @Serdeable
 @Builder

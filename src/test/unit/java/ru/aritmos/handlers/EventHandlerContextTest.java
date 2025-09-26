@@ -1,13 +1,13 @@
 package ru.aritmos.handlers;
 
-import static ru.aritmos.test.LoggingAssertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.DisplayName;
+import static ru.aritmos.test.LoggingAssertions.*;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import ru.aritmos.events.model.Event;
@@ -24,11 +24,6 @@ import ru.aritmos.service.Configuration;
 import ru.aritmos.service.VisitService;
 
 class EventHandlerContextTest {
-
-    static class Body {
-        Branch b1;
-        Body(Branch branch) { this.b1 = branch; }
-    }
 
     @DisplayName("Обработчик с кодом BRANCH_PUBLIC преобразует тело события в карту параметров")
     @Test
@@ -202,5 +197,10 @@ class EventHandlerContextTest {
             serviceHandlers.clear();
             serviceHandlers.putAll(originalServiceHandlers);
         }
+    }
+
+    static class Body {
+        Branch b1;
+        Body(Branch branch) { this.b1 = branch; }
     }
 }

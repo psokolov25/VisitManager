@@ -1,5 +1,7 @@
 package ru.aritmos.api;
 
+import static ru.aritmos.test.LoggingAssertions.*;
+
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -8,18 +10,15 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.aritmos.model.Branch;
 import ru.aritmos.model.EntryPoint;
 import ru.aritmos.model.Queue;
 import ru.aritmos.model.Service;
 import ru.aritmos.service.Configuration;
-import org.junit.jupiter.api.DisplayName;
-
-import java.util.ArrayList;
-import java.util.Map;
-
-import static ru.aritmos.test.LoggingAssertions.*;
 
 /** End-to-end test for creating and cancelling a visit. */
 @MicronautTest(environments = "integration")
