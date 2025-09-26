@@ -22,7 +22,7 @@ class CallRuleTest {
     }
 
 
-    @DisplayName("Метод вызова без фильтра очередей возвращает визит в опциональной обёртке Optional<Visit>")
+    @DisplayName("Метод вызова без фильтра очередей возвращает визит, обёрнутый в Optional")
     @Test
     void callMethodWithoutQueueFilterShouldReturnOptionalVisit() throws NoSuchMethodException {
         Method method = CallRule.class.getMethod("call", Branch.class, ServicePoint.class);
@@ -34,7 +34,7 @@ class CallRuleTest {
     }
 
 
-    @DisplayName("Метод вызова с фильтром очередей возвращает визит в опциональной обёртке Optional<Visit>")
+    @DisplayName("Метод вызова с фильтром очередей возвращает визит, обёрнутый в Optional")
     @Test
     void callMethodWithQueueFilterShouldReturnOptionalVisit() throws NoSuchMethodException {
         Method method = CallRule.class.getMethod("call", Branch.class, ServicePoint.class, List.class);

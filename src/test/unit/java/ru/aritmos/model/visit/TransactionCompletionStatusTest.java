@@ -37,7 +37,7 @@ class TransactionCompletionStatusTest {
     }
 
     @Test
-    @DisplayName("Перечисление помечено аннотацией Serdeable")
+    @DisplayName("Перечисление аннотировано Serdeable")
     void verifySerdeableAnnotation() {
         assertTrue(TransactionCompletionStatus.class.isAnnotationPresent(Serdeable.class));
     }

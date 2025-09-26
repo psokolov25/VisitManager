@@ -203,7 +203,7 @@ class VisitServiceTransferFromQueueTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Перенос визита во внешнюю очередь сохраняет данные услуги и идентификатор SID")
+    @DisplayName("Перенос визита во внешнюю очередь сохраняет данные услуги и SID клиента")
     @Test
     void visitTransferToQueueFromExternalServicePropagatesServiceInfoAndSid() {
         log.info("Готовим отделение с очередями и заполняем информацию Keycloak");

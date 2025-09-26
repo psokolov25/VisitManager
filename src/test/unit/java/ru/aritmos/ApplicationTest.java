@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 class ApplicationTest {
-    @DisplayName("Точка входа передаёт аргументы запуску Micronaut")
+    @DisplayName("Точка входа передаёт аргументы фреймворку Micronaut при запуске")
     @Test
     void main() {
         try (MockedStatic<Micronaut> mic = mockStatic(Micronaut.class)) {

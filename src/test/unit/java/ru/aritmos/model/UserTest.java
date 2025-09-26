@@ -11,7 +11,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class UserTest {
-    @DisplayName("Конструктор заполняет поля при переданном клиенте Keycloak")
+    @DisplayName("Конструктор корректно заполняет поля при передаче клиента Keycloak")
     @Test
     void constructorInitializesFieldsWithKeycloakClient() {
         KeyCloackClient client = mock(KeyCloackClient.class);

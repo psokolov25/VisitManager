@@ -22,7 +22,7 @@ class ExternalServicesIT {
     }
 
 
-    @DisplayName("Клиент Keycloak доступен в интеграционном контексте")
+    @DisplayName("Клиент Keycloak доступен в интеграционном окружении теста")
     @Test
     void keycloakClientAvailable() {
         assertNotNull(keyCloackClient);

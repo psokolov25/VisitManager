@@ -42,7 +42,7 @@ class VisitServiceVisitConfirmTest {
         VisitEvent.START_SERVING.getParameters().clear();
     }
 
-    @DisplayName("Подтверждение визита переводит клиента к точке обслуживания и публикует событие со статусом START_SERVING")
+    @DisplayName("Подтверждение визита переводит клиента к точке обслуживания и публикует событие START_SERVING о начале обслуживания")
     @Test
     void visitConfirmMovesVisitToServicePointAndPublishesStartServingEvent() {
         log.info("Готовим отделение и точку обслуживания для позитивного сценария подтверждения визита");
