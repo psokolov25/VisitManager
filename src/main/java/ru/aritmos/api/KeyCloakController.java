@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +37,8 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
   @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class KeyCloakController {
+  private static final String TAG_KEYCLOAK_AUTH = "Keycloak · Авторизация";
+  private static final String TAG_KEYCLOAK_SESSIONS = "Keycloak · Управление сессиями";
   /** Технический логин Keycloak. */
   @Property(name = "micronaut.security.oauth2.clients.keycloak.techlogin")
   String techlogin;
@@ -71,6 +72,7 @@ public class KeyCloakController {
       operationId = "authorizeInKeycloak",
       summary = "Авторизация пользователя в Keycloak",
       description = "Возвращает токены авторизации при корректных учётных данных",
+      tags = {TAG_KEYCLOAK_AUTH},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -82,8 +84,6 @@ public class KeyCloakController {
         @ApiResponse(responseCode = "401", description = "Неверные учётные данные"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера Keycloak")
       })
-  @Tag(name = "Полный список")
-  @Tag(name = "Взаимодействие с Keycloak")
   @Post(uri = "/keycloak", consumes = "application/json", produces = "application/json")
   Optional<AuthorizationResponse> Auth(
       @Body
@@ -115,13 +115,12 @@ public class KeyCloakController {
       operationId = "logoutUserSession",
       summary = "Завершение пользовательской сессии",
       description = "Удаляет активную сессию пользователя в Keycloak",
+      tags = {TAG_KEYCLOAK_SESSIONS},
       responses = {
         @ApiResponse(responseCode = "200", description = "Сессия успешно завершена"),
         @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера Keycloak")
       })
-  @Tag(name = "Полный список")
-  @Tag(name = "Взаимодействие с Keycloak")
   @Post(
       uri = "/keycloak/users/{login}",
       consumes = "application/json",

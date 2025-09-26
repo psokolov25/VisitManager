@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,6 +37,8 @@ import ru.aritmos.service.BranchService;
   @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class ManagementController {
+  private static final String TAG_BRANCH_MONITORING = "Мониторинг · Отделения";
+  private static final String TAG_BRANCH_DIRECTORY = "Справочники · Отделения";
 
   /** Сервис управления отделениями. */
   @Inject BranchService branchService;
@@ -55,6 +56,7 @@ public class ManagementController {
       operationId = "getBranch",
       summary = "Получение состояния отделения",
       description = "Возвращает подробную информацию об отделении по его идентификатору",
+      tags = {TAG_BRANCH_MONITORING},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -66,8 +68,6 @@ public class ManagementController {
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
-  @Tag(name = "Информация об отделении")
-  @Tag(name = "Полный список")
   @Get(uri = "/branches/{id}")
   @ExecuteOn(TaskExecutors.IO)
   public Branch getBranch(
@@ -81,13 +81,12 @@ public class ManagementController {
    * @param userName (опционально) имя пользователя для фильтрации доступных отделений
    * @return карта идентификаторов и отделений
    */
-  @Tag(name = "Информация об отделении")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getBranches",
       summary = "Получение списка отделений",
       description =
           "Возвращает карту доступных отделений. При передаче имени пользователя список ограничивается его филиалами",
+      tags = {TAG_BRANCH_MONITORING},
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -139,12 +138,11 @@ public class ManagementController {
    *
    * @return список идентификаторов и названий отделений
    */
-  @Tag(name = "Информация об отделении")
-  @Tag(name = "Полный список")
   @Operation(
       operationId = "getTinyBranches",
       summary = "Минимальная информация об отделениях",
       description = "Возвращает идентификаторы и названия отделений",
+      tags = {TAG_BRANCH_DIRECTORY},
       responses = {
         @ApiResponse(
             responseCode = "200",
