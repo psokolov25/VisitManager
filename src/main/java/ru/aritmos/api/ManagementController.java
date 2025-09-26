@@ -5,6 +5,7 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,6 +52,7 @@ public class ManagementController {
    * @return состояние отделения
    */
   @Operation(
+      operationId = "getBranch",
       summary = "Получение состояния отделения",
       description = "Возвращает подробную информацию об отделении по его идентификатору",
       responses = {
@@ -82,11 +84,22 @@ public class ManagementController {
   @Tag(name = "Информация об отделении")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "getBranches",
       summary = "Получение списка отделений",
       description =
           "Возвращает карту доступных отделений. При передаче имени пользователя список ограничивается его филиалами",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Список отделений"),
+        @ApiResponse(
+            responseCode = "200",
+            description = "Список отделений",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema =
+                        @Schema(
+                            type = "object",
+                            additionalProperties =
+                                @Schema(implementation = Branch.class)))),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -130,10 +143,17 @@ public class ManagementController {
   @Tag(name = "Информация об отделении")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "getTinyBranches",
       summary = "Минимальная информация об отделениях",
       description = "Возвращает идентификаторы и названия отделений",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Список отделений"),
+        @ApiResponse(
+            responseCode = "200",
+            description = "Список отделений",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = TinyClass.class)))),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
