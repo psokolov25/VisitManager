@@ -98,8 +98,7 @@ public class ManagementController {
                     schema =
                         @Schema(
                             type = "object",
-                            additionalProperties =
-                                @Schema(implementation = Branch.class)))),
+                            additionalPropertiesSchema = Branch.class))),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
