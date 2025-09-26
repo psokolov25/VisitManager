@@ -8,9 +8,11 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.SerdeImport;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -812,6 +814,22 @@ public class ServicePointController {
       operationId = "getVisitsByStatuses",
       summary = "Визиты по статусам",
       description = "Возвращает визиты отделения, находящиеся в указанных статусах.",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Перечень статусов визитов для фильтрации результата.",
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      array =
+                          @ArraySchema(
+                              schema = @Schema(implementation = String.class),
+                              minItems = 1),
+                      examples =
+                          @ExampleObject(
+                              name = "CalledVisits",
+                              summary = "Визиты, ожидающие подтверждения",
+                              value = "[\"CALLED\", \"CONFIRMED\"]"))),
       responses = {
         @ApiResponse(responseCode = "200", description = "Список визитов"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -920,6 +938,23 @@ public class ServicePointController {
       operationId = "callVisitForConfirmation",
       summary = "Вызов визита с подтверждением",
       description = "Переводит визит в режим ожидания подтверждения клиента на выбранной точке.",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Визит, подготовленный к вызову и ожидающий подтверждения клиента.",
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      schema = @Schema(implementation = Visit.class),
+                      examples =
+                          @ExampleObject(
+                              name = "VisitForConfirmation",
+                              summary = "Визит, который необходимо вызвать",
+                              value =
+                                  "{\n"
+                                      + "  \"id\": \"VISIT-123\",\n"
+                                      + "  \"queueId\": \"QUEUE-1\"\n"
+                                      + "}"))),
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "207", description = "Режим автоматического вызова активен"),
@@ -981,19 +1016,24 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов визита с наибольшим временем ожидания
+   * Вызывает визит с максимальным временем ожидания в рамках отделения.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @return вызванный визит
+   * <p>Операция используется сотрудниками для ручного выбора следующего клиента, когда требуется
+   * обслужить посетителя с наибольшим временем ожидания в очереди.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, на которую будет закреплён визит.
+   * @return визит, переведённый в статус вызова.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Вызов визита c наибольшим временем ожидания")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "callVisitWithMaxWaitingTime",
       summary = "Вызов визита с максимальным ожиданием",
-      description = "Вызывает визит с наибольшим временем ожидания",
+      description =
+          "Вызывает визит с наибольшим временем ожидания и закрепляет его за выбранной точкой обслуживания.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1016,20 +1056,24 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов визита с наибольшим временем ожидания с ожиданием подтверждения
+   * Вызывает визит с максимальным временем ожидания и переводит его в режим подтверждения.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @return вызванный визит
+   * <p>После вызова клиент должен подтвердить готовность к обслуживанию; в противном случае визит
+   * может быть возвращён в очередь согласно правилам бизнес-логики.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, где ожидается подтверждение клиента.
+   * @return визит, ожидающий подтверждения посещения.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов визита c наибольшим временем ожидания")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "callVisitWithMaxWaitingTimeAndConfirmation",
       summary = "Вызов визита с подтверждением",
       description =
-          "Вызывает визит с максимальным временем ожидания и ожидает подтверждения клиента",
+          "Вызывает визит с максимальным временем ожидания и переводит его в режим ожидания подтверждения клиента.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1052,13 +1096,15 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов визита с наибольшим временем ожидания из списка очередей, чьи идентификаторы в теле
-   * запроса
+   * Вызывает визит с максимальным временем ожидания из заданного списка очередей.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param queueIds идентификаторы очередей
-   * @return вызванный визит
+   * <p>Метод позволяет ограничить выборку только указанными очередями, что полезно при работе в
+   * мультисервисных сценариях и точечной отработке приоритетных направлений обслуживания.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, на которое переводится визит.
+   * @param queueIds идентификаторы очередей, участвующих в поиске визита.
+   * @return визит, выбранный из указанного перечня очередей.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
@@ -1067,8 +1113,26 @@ public class ServicePointController {
   @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "callVisitFromQueuesWithMaxWaitingTime",
       summary = "Вызов из указанных очередей",
-      description = "Вызывает визит с максимальным временем ожидания из переданных очередей",
+      description =
+          "Вызывает визит с максимальным временем ожидания из переданных очередей и закрепляет его за точкой обслуживания.",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Список идентификаторов очередей, участвующих в отборе визита.",
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      array =
+                          @ArraySchema(
+                              schema = @Schema(implementation = String.class),
+                              minItems = 1),
+                      examples =
+                          @ExampleObject(
+                              name = "QueueScope",
+                              summary = "Отбор по двум очередям",
+                              value = "[\"queue-vip\", \"queue-standard\"]"))),
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1094,13 +1158,15 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов наиболее ожидающего визита с ожиданием подтверждения из списка очередей, чьи
-   * идентификаторы перечислены в теле запроса
+   * Вызывает визит с максимальным временем ожидания из перечисленных очередей с подтверждением.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param queueIds идентификаторы очередей
-   * @return вызванный визит
+   * <p>Результирующий визит переводится в статус ожидания подтверждения посещения, что позволяет
+   * уточнить готовность клиента до начала обслуживания.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, куда будет назначен визит.
+   * @param queueIds идентификаторы очередей, из которых выбирается визит.
+   * @return визит, ожидающий подтверждения из указанного набора очередей.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов из перечня очередей")
@@ -1108,9 +1174,26 @@ public class ServicePointController {
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "callVisitFromQueuesWithMaxWaitingTimeAndConfirmation",
       summary = "Вызов из очередей с подтверждением",
       description =
-          "Вызывает визит с максимальным временем ожидания из переданных очередей с ожиданием подтверждения",
+          "Вызывает визит с максимальным временем ожидания из переданных очередей и переводит его в режим ожидания подтверждения клиента.",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Список идентификаторов очередей, участвующих в отборе визита.",
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      array =
+                          @ArraySchema(
+                              schema = @Schema(implementation = String.class),
+                              minItems = 1),
+                      examples =
+                          @ExampleObject(
+                              name = "QueueScope",
+                              summary = "Отбор с подтверждением",
+                              value = "[\"queue-vip\", \"queue-standard\"]"))),
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1136,19 +1219,24 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов визита с наибольшим временем жизни визита
+   * Вызывает визит с максимальным временем жизни среди всех очередей отделения.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @return вызванный визит
+   * <p>Параметр времени жизни учитывает не только ожидание в очереди, но и историю переводов, что
+   * помогает обслужить визиты, долго находящиеся в системе, вне зависимости от текущей очереди.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, принимающей визит.
+   * @return визит, выбранный по максимальному времени жизни.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
   @Tag(name = "Вызов визита c максимальным временем жизни")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "callVisitWithMaxLifetime",
       summary = "Вызов визита с максимальным временем жизни",
-      description = "Вызывает визит, дольше всего ожидающий обслуживания",
+      description =
+          "Вызывает визит, дольше всего ожидающий обслуживания с учётом суммарного времени его жизненного цикла.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(
@@ -1170,13 +1258,15 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов визита с наибольшим временем жизни визита из указанных очередей, чьи идентификаторы
-   * указаны в теле запроса
+   * Вызывает визит с максимальным временем жизни из переданного перечня очередей.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param queueIds идентификаторы очередей из которых производится вызов
-   * @return вызванный визит
+   * <p>Используется, когда оператор ограничивает источники выбора визитов определёнными очередями
+   * и при этом учитывает полный жизненный цикл визита.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, принимающей визит.
+   * @param queueIds идентификаторы очередей, среди которых выполняется поиск.
+   * @return визит, обладающий максимальным временем жизни внутри указанных очередей.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
@@ -1185,8 +1275,26 @@ public class ServicePointController {
   @Tag(name = "Вызов из перечня очередей")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "callVisitFromQueuesWithMaxLifetime",
       summary = "Вызов из очередей с максимальным временем жизни",
-      description = "Вызывает визит с наибольшим временем жизни из указанных очередей",
+      description =
+          "Вызывает визит с максимальным временем жизни из указанных очередей и закрепляет его за выбранной точкой обслуживания.",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Список идентификаторов очередей, участвующих в отборе визита.",
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      array =
+                          @ArraySchema(
+                              schema = @Schema(implementation = String.class),
+                              minItems = 1),
+                      examples =
+                          @ExampleObject(
+                              name = "QueueScope",
+                              summary = "Очереди для отбора по времени жизни",
+                              value = "[\"queue-vip\", \"queue-standard\"]"))),
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
@@ -1211,19 +1319,24 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов с максимальным временем жизни визита с ожиданием подтверждения
+   * Вызывает визит с максимальным временем жизни и ожидает подтверждения клиента.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @return вызванный визит
+   * <p>Операция сочетает приоритет по жизненному циклу визита и сценарий подтверждения, что
+   * актуально для отделений с высокой нагрузкой.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, где будет ожидаться клиент.
+   * @return визит, переведённый в статус ожидания подтверждения.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов визита c максимальным временем жизни")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "callVisitWithMaxLifetimeAndConfirmation",
       summary = "Вызов визита с подтверждением по времени жизни",
-      description = "Вызывает визит с максимальным временем жизни и ожидает подтверждения клиента",
+      description =
+          "Вызывает визит с максимальным временем жизни и переводит его в режим ожидания подтверждения клиента.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(
@@ -1245,13 +1358,15 @@ public class ServicePointController {
   }
 
   /**
-   * Вызов с максимальным временем жизни визита с ожиданием подтверждения из списка очередей, чьи
-   * идентификаторы в теле запроса
+   * Вызывает визит с максимальным временем жизни из указанных очередей с подтверждением клиента.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param queueIds идентификаторы очередей
-   * @return вызванный визит
+   * <p>Используется, когда необходимо уточнить готовность клиента из конкретного пула очередей с
+   * учётом суммарного времени нахождения визита в системе.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, принимающей визит.
+   * @param queueIds идентификаторы очередей, среди которых производится поиск визита.
+   * @return визит, ожидающий подтверждения.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов визита c максимальным временем жизни")
@@ -1259,9 +1374,26 @@ public class ServicePointController {
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "callVisitFromQueuesWithMaxLifetimeAndConfirmation",
       summary = "Вызов из очередей по времени жизни с подтверждением",
       description =
-          "Вызывает визит с максимальным временем жизни из указанных очередей с ожиданием подтверждения",
+          "Вызывает визит с максимальным временем жизни из указанных очередей и переводит его в режим ожидания подтверждения клиента.",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Список идентификаторов очередей, участвующих в отборе визита.",
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      array =
+                          @ArraySchema(
+                              schema = @Schema(implementation = String.class),
+                              minItems = 1),
+                      examples =
+                          @ExampleObject(
+                              name = "QueueScope",
+                              summary = "Очереди для подтверждения",
+                              value = "[\"queue-vip\", \"queue-standard\"]"))),
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван"),
         @ApiResponse(responseCode = "404", description = "Очередь не найдена"),
@@ -1287,20 +1419,25 @@ public class ServicePointController {
   }
 
   /**
-   * Отмена вызова из-за того, что клиент не пришел
+   * Отменяет вызов визита, если клиент не подтвердил присутствие.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param visit визит
-   * @return вызванный визит
+   * <p>Статус визита изменяется на {@code NO_SHOW}, что фиксирует факт отсутствия клиента и
+   * позволяет освободить точку обслуживания для следующего посетителя.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, на котором ожидался клиент.
+   * @param visit визит, подготовленный к отмене.
+   * @return визит в статусе {@code NO_SHOW}.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Завершение вызова")
   @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "cancelVisitAsNoShow",
       summary = "Отмена вызова: клиент не пришёл",
-      description = "Переводит визит в статус NO_SHOW",
+      description =
+          "Переводит визит в статус NO_SHOW при отсутствии подтверждения присутствия клиента.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит отменён"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1321,20 +1458,25 @@ public class ServicePointController {
   }
 
   /**
-   * Отмена вызова из-за того, что клиент не пришел по идентификатору
+   * Отменяет вызов визита по идентификатору, если клиент не явился.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param visitId идентификатор визита
-   * @return вызванный визит
+   * <p>Метод извлекает визит по идентификатору, фиксирует отсутствие клиента и возвращает обновлённое
+   * состояние визита.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, где ожидался визит.
+   * @param visitId идентификатор визита, для которого оформляется статус {@code NO_SHOW}.
+   * @return визит со статусом {@code NO_SHOW}.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Завершение вызова")
   @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "cancelVisitAsNoShowById",
       summary = "Отмена вызова по идентификатору",
-      description = "Переводит визит в статус NO_SHOW по его идентификатору",
+      description =
+          "Переводит визит в статус NO_SHOW по его идентификатору и освобождает точку обслуживания.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит отменён"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
@@ -1356,20 +1498,42 @@ public class ServicePointController {
   }
 
   /**
-   * Повторный вызов визита с ожиданием подтверждения
+   * Повторно вызывает визит и переводит его в режим ожидания подтверждения клиента.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param visit визит
-   * @return вызванный визит
+   * <p>Используется, если клиент пропустил первичный вызов, но оператор решил предоставить ещё одну
+   * попытку подтверждения посещения.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, выполняющей повторный вызов.
+   * @param visit визит, который требуется вызвать повторно.
+   * @return визит, ожидающий подтверждения после повторного вызова.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "recallVisitForConfirmation",
       summary = "Повторный вызов визита",
-      description = "Повторно вызывает визит с ожиданием подтверждения",
+      description =
+          "Повторно вызывает визит и переводит его в режим ожидания подтверждения клиента.",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Визит, который необходимо вызвать повторно для подтверждения.",
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      schema = @Schema(implementation = Visit.class),
+                      examples =
+                          @ExampleObject(
+                              name = "RecallVisit",
+                              summary = "Повторный вызов визита",
+                              value =
+                                  "{\n"
+                                      + "  \"id\": \"VISIT-123\",\n"
+                                      + "  \"queueId\": \"QUEUE-1\"\n"
+                                      + "}"))),
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван повторно"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
@@ -1391,20 +1555,25 @@ public class ServicePointController {
   }
 
   /**
-   * Повторный вызов визита с ожиданием подтверждения по идентификатору
+   * Повторно вызывает визит по идентификатору и ожидает подтверждения клиента.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param visitId идентификатор визита
-   * @return вызванный визит
+   * <p>Метод извлекает визит, переводит его в режим ожидания подтверждения и возвращает обновлённое
+   * состояние для отображения оператору.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, повторно вызывающей визит.
+   * @param visitId идентификатор визита, который требуется вызвать повторно.
+   * @return визит в режиме ожидания подтверждения.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Вызов определенного визита (cherry-peak)")
   @Tag(name = "Ожидание подтверждения прихода")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "recallVisitForConfirmationById",
       summary = "Повторный вызов визита по идентификатору",
-      description = "Повторно вызывает визит по его идентификатору",
+      description =
+          "Повторно вызывает визит по его идентификатору и переводит его в режим ожидания подтверждения клиента.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит вызван повторно"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
@@ -1427,12 +1596,15 @@ public class ServicePointController {
   }
 
   /**
-   * Подтверждение прихода клиента
+   * Подтверждает факт прибытия клиента на точку обслуживания.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param visit визит
-   * @return вызванный визит
+   * <p>После подтверждения визит переводится в статус {@code CONFIRMED}, что фиксирует начало
+   * обслуживания и позволяет продолжить дальнейшие операции по визиту.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, где подтверждён визит.
+   * @param visit визит, ожидающий подтверждения.
+   * @return визит в статусе {@code CONFIRMED}.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Обслуживание")
@@ -1440,8 +1612,26 @@ public class ServicePointController {
   @Tag(name = "Результат вызова")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "confirmVisitArrival",
       summary = "Подтверждение прихода",
-      description = "Переводит визит в статус CONFIRMED",
+      description = "Переводит визит в статус CONFIRMED и фиксирует начало обслуживания.",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Визит, для которого необходимо зафиксировать подтверждение прибытия.",
+              content =
+                  @Content(
+                      mediaType = "application/json",
+                      schema = @Schema(implementation = Visit.class),
+                      examples =
+                          @ExampleObject(
+                              name = "ConfirmVisit",
+                              summary = "Подтверждение прихода",
+                              value =
+                                  "{\n"
+                                      + "  \"id\": \"VISIT-123\",\n"
+                                      + "  \"status\": \"CALLED\"\n"
+                                      + "}"))),
       responses = {
         @ApiResponse(responseCode = "200", description = "Приход подтвержден"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
@@ -1463,12 +1653,15 @@ public class ServicePointController {
   }
 
   /**
-   * Подтверждение прихода клиента
+   * Подтверждает прибытие клиента по идентификатору визита.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param visitId идентификатор визита
-   * @return вызванный визит
+   * <p>Визит извлекается по идентификатору и переводится в статус {@code CONFIRMED}, что позволяет
+   * продолжить обслуживание без необходимости передавать полную сущность в теле запроса.
+   *
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания, где подтверждается визит.
+   * @param visitId идентификатор визита, который необходимо подтвердить.
+   * @return визит в статусе {@code CONFIRMED}.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Ожидание подтверждения прихода")
@@ -1476,8 +1669,10 @@ public class ServicePointController {
   @Tag(name = "Обслуживание")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "confirmVisitArrivalById",
       summary = "Подтверждение прихода по идентификатору",
-      description = "Подтверждает приход визита по его идентификатору",
+      description =
+          "Подтверждает приход визита по его идентификатору и переводит визит в статус CONFIRMED.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Приход подтвержден"),
         @ApiResponse(responseCode = "404", description = "Визит не найден"),
