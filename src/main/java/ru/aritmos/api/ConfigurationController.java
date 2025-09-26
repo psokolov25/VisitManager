@@ -4,6 +4,8 @@ import groovy.util.logging.Slf4j;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,10 +57,21 @@ public class ConfigurationController {
   @Tag(name = "Конфигурация отделений")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "updateBranchConfiguration",
       summary = "Обновление конфигурации отделений",
       description = "Создает или обновляет конфигурацию отделений",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Конфигурация обновлена"),
+        @ApiResponse(
+            responseCode = "200",
+            description = "Конфигурация обновлена",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema =
+                        @Schema(
+                            type = "object",
+                            additionalProperties =
+                                @Schema(implementation = Branch.class)))),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -75,10 +88,21 @@ public class ConfigurationController {
   @Tag(name = "Конфигурация отделений")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "publishDemoConfiguration",
       summary = "Обновление демо-конфигурации отделений",
       description = "Создает конфигурацию отделений на основе демо-данных",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Конфигурация обновлена"),
+        @ApiResponse(
+            responseCode = "200",
+            description = "Конфигурация обновлена",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema =
+                        @Schema(
+                            type = "object",
+                            additionalProperties =
+                                @Schema(implementation = Branch.class)))),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -98,6 +122,7 @@ public class ConfigurationController {
   @Tag(name = "Конфигурация отделений (в разработке!)")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "addOrUpdateServices",
       summary = "Добавление или обновление услуг",
       description = "Создает или изменяет услуги отделения",
       responses = {
@@ -123,10 +148,20 @@ public class ConfigurationController {
   @Tag(name = "Перерывы")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "getBreakReasons",
       summary = "Получение списка причин перерыва",
       description = "Возвращает перечень причин перерыва для отделения",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Список причин перерыва"),
+        @ApiResponse(
+            responseCode = "200",
+            description = "Список причин перерыва",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema =
+                        @Schema(
+                            type = "object",
+                            additionalProperties = @Schema(implementation = String.class)))),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
@@ -146,6 +181,7 @@ public class ConfigurationController {
   @Tag(name = "Конфигурация отделений (в разработке!)")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "deleteServices",
       summary = "Удаление услуг",
       description = "Удаляет услуги отделения",
       responses = {
