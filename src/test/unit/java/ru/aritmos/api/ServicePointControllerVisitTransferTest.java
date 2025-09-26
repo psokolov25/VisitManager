@@ -7,6 +7,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import java.util.HashMap;
+import org.mockito.ArgumentMatchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -256,9 +257,9 @@ class ServicePointControllerVisitTransferTest {
                 anyString(),
                 any(Visit.class),
                 anyBoolean(),
-                any(HashMap.class),
+                ArgumentMatchers.<HashMap<String, String>>any(),
                 anyLong(),
-                any()
+                anyString()
             )
         ).thenReturn(response);
 
@@ -311,9 +312,9 @@ class ServicePointControllerVisitTransferTest {
                 anyString(),
                 any(Visit.class),
                 anyBoolean(),
-                any(HashMap.class),
+                ArgumentMatchers.<HashMap<String, String>>any(),
                 anyLong(),
-                any()
+                anyString()
             )
         ).thenReturn(response);
 
