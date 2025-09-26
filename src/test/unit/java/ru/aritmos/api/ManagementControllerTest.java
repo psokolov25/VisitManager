@@ -74,7 +74,7 @@ class ManagementControllerTest {
 
     @DisplayName("Запрос списка отделений для администратора возвращает все записи")
     @Test
-    void getBranchesForAdminВозвращаетВсеОтделения() {
+    void getBranchesForAdminReturnsAllBranches() {
         BranchService branchService = mock(BranchService.class);
         HashMap<String, Branch> branches = new HashMap<>();
         Branch branch = new Branch("b1", "Branch");
@@ -99,7 +99,7 @@ class ManagementControllerTest {
 
     @DisplayName("Запрос списка отделений фильтрует данные по доступу пользователя")
     @Test
-    void getBranchesФильтруетДоступныеОтделенияДляПользователя() {
+    void getBranchesFiltersBranchesAvailableForUser() {
         BranchService branchService = mock(BranchService.class);
         HashMap<String, Branch> branches = new HashMap<>();
         Branch allowed = new Branch("b1", "Branch1");

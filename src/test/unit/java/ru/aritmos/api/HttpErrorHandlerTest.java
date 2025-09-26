@@ -13,7 +13,7 @@ class HttpErrorHandlerTest {
 
     @DisplayName("Тест")
     @Test
-    void handleВозвращаетКодИТелоОшибки() {
+    void handleReturnsStatusAndErrorBody() {
         HttpErrorHandler handler = new HttpErrorHandler();
         HttpRequest<?> request = HttpRequest.GET("/test");
         HttpStatusException exception = new HttpStatusException(HttpStatus.CONFLICT, "Ошибка");
