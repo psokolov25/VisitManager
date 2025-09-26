@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class UserSessionTest {
 
-    @DisplayName("Builder Should Provide Empty Params By Default")
+    @DisplayName("Строитель по умолчанию создаёт пустые параметры")
     @Test
     void builderShouldProvideEmptyParamsByDefault() {
         UserSession session = UserSession.builder().login("ivan").build();
@@ -18,7 +18,7 @@ class UserSessionTest {
         assertTrue(session.getParams().isEmpty());
     }
 
-    @DisplayName("Setters Should Update Mutable Fields")
+    @DisplayName("Сеттеры обновляют изменяемые поля")
     @Test
     void settersShouldUpdateMutableFields() {
         UserSession session = new UserSession();

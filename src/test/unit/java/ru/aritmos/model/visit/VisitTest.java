@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class VisitTest {
 
-    @DisplayName("Get Waiting Time Calculates Difference")
+    @DisplayName("Метод getWaitingTime рассчитывает продолжительность ожидания")
     @Test
     void getWaitingTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();
@@ -22,7 +22,7 @@ class VisitTest {
         assertEquals(10L, visit.getWaitingTime());
     }
 
-    @DisplayName("Get Returning Time Uses Return Date Time")
+    @DisplayName("Метод getReturningTime использует время возврата")
     @Test
     void getReturningTimeUsesReturnDateTime() {
         ZonedDateTime returnTime = ZonedDateTime.now().minusSeconds(5);
@@ -32,14 +32,14 @@ class VisitTest {
         assertTrue(Math.abs(actual - expected) <= 1);
     }
 
-    @DisplayName("Get Returning Time Returns Zero When Null")
+    @DisplayName("Метод getReturningTime возвращает ноль при отсутствии времени возврата")
     @Test
     void getReturningTimeReturnsZeroWhenNull() {
         Visit visit = Visit.builder().build();
         assertEquals(0L, visit.getReturningTime());
     }
 
-    @DisplayName("Get Transfering Time Uses Transfer Date Time")
+    @DisplayName("Метод getTransferingTime использует время перевода")
     @Test
     void getTransferingTimeUsesTransferDateTime() {
         ZonedDateTime transferTime = ZonedDateTime.now().minusSeconds(7);
@@ -49,7 +49,7 @@ class VisitTest {
         assertTrue(Math.abs(actual - expected) <= 1);
     }
 
-    @DisplayName("Get Visit Life Time Calculates Difference")
+    @DisplayName("Метод getVisitLifeTime рассчитывает длительность визита")
     @Test
     void getVisitLifeTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();
@@ -61,7 +61,7 @@ class VisitTest {
         assertEquals(20L, visit.getVisitLifeTime());
     }
 
-    @DisplayName("Get Serving Time Calculates Difference")
+    @DisplayName("Метод getServingTime рассчитывает время обслуживания")
     @Test
     void getServingTimeCalculatesDifference() {
         ZonedDateTime start = ZonedDateTime.now();
