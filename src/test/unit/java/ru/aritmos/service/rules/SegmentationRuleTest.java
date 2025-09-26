@@ -114,7 +114,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выполнение groovy-правила. */
-    @DisplayName("Метод getQueueById выполняет groovy-правило")
+    @DisplayName("Скрипт Groovy для очереди по идентификатору выполняется корректно")
     @Test
     void getQueueByIdExecutesGroovyRule() {
         LOG.info("Шаг 1: настраиваем groovy-скрипт для возврата очереди");
@@ -150,7 +150,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем пустой идентификатор groovy-правила. */
-    @DisplayName("Метод getQueueById возвращает пустой результат без идентификатора")
+    @DisplayName("Поиск очереди без идентификатора возвращает пустой результат")
     @Test
     void getQueueByIdReturnsEmptyWhenIdNullOrEmpty() {
         LOG.info("Шаг 1: подготавливаем визит без идентификатора правила");
@@ -166,7 +166,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выброс ошибки при отсутствии входных параметров для groovy. */
-    @DisplayName("Метод getQueueById выбрасывает исключение при отсутствии параметров")
+    @DisplayName("Отсутствие параметров при поиске очереди приводит к исключению")
     @Test
     void getQueueByIdThrowsWhenInputParamsMissing() {
         LOG.info("Шаг 1: формируем groovy-правило без необходимых параметров");
@@ -194,7 +194,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем, что ошибки внутренних вызовов оборачиваются в {@link SystemException}. */
-    @DisplayName("Метод getQueue оборачивает бизнес-исключение в системное")
+    @DisplayName("Ошибка бизнес-логики при поиске очереди преобразуется в системное исключение")
     @Test
     void getQueueWrapsBusinessExceptionIntoSystemException() {
         LOG.info("Шаг 1: готовим отделение с сервисной группой и отсутствующим правилом");

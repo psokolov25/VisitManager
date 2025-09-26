@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class EntityTest {
 
     @Test
-    @DisplayName("билдер создает сущность с указанными значениями")
+    @DisplayName("Билдер создаёт сущность с указанными значениями")
     void builderCreatesEntity() {
         Entity entity = Entity.builder()
                 .id("123")
@@ -21,7 +21,7 @@ class EntityTest {
     }
 
     @Test
-    @DisplayName("геттеры, сеттеры и equals/hashCode работают корректно")
+    @DisplayName("Геттеры, сеттеры и методы equals/hashCode работают корректно")
     void gettersSettersAndEqualityWorkCorrectly() {
         Entity первый = new Entity();
         первый.setId("id-1");
@@ -37,7 +37,7 @@ class EntityTest {
     }
 
     @Test
-    @DisplayName("класс Entity аннотирован Serdeable")
+    @DisplayName("Класс Entity аннотирован аннотацией @Serdeable")
     void verifySerdeableAnnotation() {
         assertTrue(Entity.class.isAnnotationPresent(Serdeable.class));
     }

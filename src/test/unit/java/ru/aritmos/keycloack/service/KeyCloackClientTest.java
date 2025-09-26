@@ -33,7 +33,7 @@ class KeyCloackClientTest {
         assertEquals("/r/b", path);
     }
 
-    @DisplayName("Поиск пути отделения по префиксу возвращает null при отсутствии отделения")
+    @DisplayName("Поиск пути отделения по префиксу возвращает пустой результат при отсутствии отделения")
     @Test
     void getBranchPathByBranchPrefixReturnsNullWhenNotFound() {
         KeyCloackClient client = spy(new KeyCloackClient());

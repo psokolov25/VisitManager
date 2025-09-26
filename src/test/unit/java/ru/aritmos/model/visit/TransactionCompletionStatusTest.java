@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class TransactionCompletionStatusTest {
 
     @Test
-    @DisplayName("перечисление содержит полный список статусов транзакции")
+    @DisplayName("Перечисление содержит полный список статусов транзакции")
     void verifyFullSetOfStatuses() {
         TransactionCompletionStatus[] ожидаемыеСтатусы = {
             TransactionCompletionStatus.OK,
@@ -29,7 +29,7 @@ class TransactionCompletionStatusTest {
     }
 
     @Test
-    @DisplayName("можно получить статус по его строковому имени")
+    @DisplayName("Статус можно получить по его строковому имени")
     void retrievesStatusByName() {
         assertEquals(
             TransactionCompletionStatus.REMOVED_BY_EMP,
@@ -37,7 +37,7 @@ class TransactionCompletionStatusTest {
     }
 
     @Test
-    @DisplayName("перечисление помечено аннотацией Serdeable")
+    @DisplayName("Перечисление помечено аннотацией @Serdeable")
     void verifySerdeableAnnotation() {
         assertTrue(TransactionCompletionStatus.class.isAnnotationPresent(Serdeable.class));
     }

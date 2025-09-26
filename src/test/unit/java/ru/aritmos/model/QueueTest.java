@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
  */
 class QueueTest {
 
-    @DisplayName("Конструктор без идентификатора создаёт id и заполняет поля")
+    @DisplayName("Конструктор без идентификатора генерирует значение и заполняет поля")
     @Test
     void constructorGeneratesIdAndSetsFields() {
         Queue queue = new Queue("Main", "A", 60);
-        assertNotNull(queue.getId(), "id should be generated");
+        assertNotNull(queue.getId(), "Идентификатор должен быть сгенерирован");
         assertEquals("Main", queue.getName());
         assertEquals("A", queue.getTicketPrefix());
         assertEquals(60, queue.getWaitingSL());

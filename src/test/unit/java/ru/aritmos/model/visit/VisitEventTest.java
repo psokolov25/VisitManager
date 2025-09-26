@@ -27,14 +27,14 @@ class VisitEventTest {
         assertFalse(VisitEvent.isIgnoredInStat(VisitEvent.CREATED));
     }
 
-    @DisplayName("Метод getStatus возвращает корректный статус события")
+    @DisplayName("Получение статуса возвращает ожидаемое значение события")
     @Test
     void testGetStatus() {
         assertEquals(TransactionCompletionStatus.STOP_SERVING, VisitEvent.getStatus(VisitEvent.STOP_SERVING));
         assertNull(VisitEvent.getStatus(VisitEvent.CREATED));
     }
 
-    @DisplayName("Метод canBeNext определяет допустимость следующего события")
+    @DisplayName("Проверка допустимости следующего события возвращает корректный результат")
     @Test
     void testCanBeNext() {
         VisitEvent current = VisitEvent.CREATED;
@@ -47,7 +47,7 @@ class VisitEventTest {
         assertFalse(current.canBeNext(nextForbidden));
     }
 
-    @DisplayName("Метод getState возвращает состояние события")
+    @DisplayName("Получение состояния возвращает ожидаемое значение события")
     @Test
     void testGetState() {
         assertEquals(VisitState.CREATED, VisitEvent.CREATED.getState());
