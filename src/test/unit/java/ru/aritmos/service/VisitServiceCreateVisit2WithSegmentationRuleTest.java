@@ -30,7 +30,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2WithSegmentationRuleTest {
 
-    @DisplayName("createVisit2 с правилом сегментации создаёт визит и печатает талон при наличии очереди")
+    @DisplayName("Создание визита второй версией с правилом сегментации печатает талон при найденной очереди")
     @Test
     void createsVisitAndPrintsTicketWhenSegmentationRuleProvidesQueue() throws Exception {
         VisitService service = new VisitService();
@@ -137,7 +137,7 @@ class VisitServiceCreateVisit2WithSegmentationRuleTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("createVisit2 с правилом сегментации возвращает 400, если правило не подобрало очередь")
+    @DisplayName("Создание визита второй версией с правилом сегментации возвращает 400, если правило не подобрало очередь")
     @Test
     void throwsBadRequestWhenSegmentationRuleReturnsEmptyQueue() {
         VisitService service = new VisitService();
@@ -195,7 +195,7 @@ class VisitServiceCreateVisit2WithSegmentationRuleTest {
         verify(printerService, never()).print(anyString(), any());
     }
 
-    @DisplayName("createVisit2 с правилом сегментации возвращает 404 при отсутствии терминала в отделении")
+    @DisplayName("Создание визита второй версией с правилом сегментации возвращает 404 при отсутствии терминала в отделении")
     @Test
     void throwsNotFoundWhenEntryPointMissingInBranch() {
         VisitService service = new VisitService();
