@@ -24,45 +24,43 @@ import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
 /**
- * REST API управления зоной ожидания.
+ * REST API управления визитами и зоной ожидания.
  *
- * <p>Контроллер обрабатывает операции регистрации и сопровождения посетителей:
- * создание виртуальных визитов, оформление талонов и перевод клиентов между
- * очередями.
- *
- * @author Pavel Sokolov
+ * <p>Контроллер обрабатывает регистрацию и сопровождение посетителей: создаёт виртуальные визиты,
+ * оформляет талоны, добавляет параметры и возвращает справочную информацию об услугах отделения.
  */
 @Controller("/entrypoint")
 @ApiResponses({
     @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
     @ApiResponse(responseCode = "401", description = "Не авторизован"),
-    @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+    @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
     @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
     @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
     @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
     @ApiResponse(responseCode = "500", description = "Ошибка сервера")
 })
 public class EntrypointController {
-  /** Служба по работе с услугами */
+
+  /** Сервис работы с услугами отделения. */
   @Inject Services services;
 
-  /** Служба по работе с отделениями */
+  /** Сервис управления отделениями. */
   @Inject BranchService branchService;
 
-  /** Служба для работы с визитами */
+  /** Сервис управления визитами. */
   @Inject VisitService visitService;
 
-  /** Служба по отправке событий на шину данных */
+  /** Сервис отправки событий во внешние системы. */
   @Inject EventService eventService;
 
   /**
-   * Создание виртуального визита сотрудником
+   * Создаёт виртуальный визит без печати талона.
    *
    * @param branchId идентификатор отделения
    * @param servicePointId идентификатор точки обслуживания
-   * @param serviceIds массив идентификаторов услуг (на пример [
-   *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ] )
-   * @param sid идентификатор сессии сотрудника (cookie sid)
+   * @param serviceIds список идентификаторов услуг (например,
+   *     {@code ["c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]})
+   * @param sid идентификатор сессии сотрудника (cookie {@code sid})
    * @return созданный визит
    * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка
@@ -77,13 +75,13 @@ public class EntrypointController {
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
       summary = "Создание виртуального визита",
-      description = "Создает визит без печати талона",
+      description = "Создаёт визит без печати талона для указанной точки обслуживания",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
-        @ApiResponse(responseCode = "409", description = "Визит уже создан"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Услуги не найдены"),
-        @ApiResponse(responseCode = "404", description = "Очередь для указанных услуг не найдена"),
+        @ApiResponse(responseCode = "409", description = "Визит с такими параметрами уже существует"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение, услуга или очередь для указанного набора услуг не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVirtualVisit(
@@ -91,7 +89,7 @@ public class EntrypointController {
       @PathVariable(defaultValue = "a66ff6f4-4f4a-4009-8602-0dc278024cf2") String servicePointId,
       @Body
           @RequestBody(
-              description = "Массив идентификаторов услуг",
+              description = "Список идентификаторов услуг",
               useParameterTypeSchema = true,
               content =
                   @Content(
@@ -105,37 +103,34 @@ public class EntrypointController {
                                                 "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
                                               ]
                                               """)))
-          ArrayList<String> serviceIds,
+          List<String> serviceIds,
       @Nullable @CookieValue("sid") String sid)
       throws BusinessException, SystemException {
     Branch branch;
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException(
-          "branch_not_found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
+
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(serviceIds)) {
-
       VisitParameters visitParameters =
           VisitParameters.builder().serviceIds(serviceIds).parameters(new HashMap<>()).build();
       return visitService.createVirtualVisit(branchId, servicePointId, visitParameters, sid);
-
-    } else {
-      throw new BusinessException(
-          "services_not_found", eventService, HttpStatus.NOT_FOUND);
     }
+
+    throw new BusinessException("services_not_found", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
-   * Создание визита.
+   * Создаёт визит в отделении с печатью талона при необходимости.
    *
    * @param branchId идентификатор отделения
    * @param entryPointId идентификатор точки создания визита
-   * @param serviceIds массив идентификаторов услуг (на пример [
-   *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ] )
-   * @param printTicket флаг печати талона
+   * @param serviceIds список идентификаторов услуг (например,
+   *     {@code ["c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"]})
+   * @param printTicket необходимость печати талона
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
    * @return созданный визит
    * @throws BusinessException бизнес-ошибка
@@ -150,14 +145,14 @@ public class EntrypointController {
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
       summary = "Создание визита",
-      description = "Создает визит в отделении",
+      description = "Создаёт визит в отделении и при необходимости печатает талон",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Услуги не найдены"),
-        @ApiResponse(responseCode = "404", description = "Точка создания визита не найдена"),
-        @ApiResponse(responseCode = "404", description = "Очередь для указанных услуг не найдена"),
+        @ApiResponse(
+            responseCode = "404",
+            description =
+                "Отделение, точка создания визитов, услуга или очередь для указанного набора услуг не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisit(
@@ -165,7 +160,7 @@ public class EntrypointController {
       @PathVariable(defaultValue = "2") String entryPointId,
       @Body
           @RequestBody(
-              description = "Массив идентификаторов услуг",
+              description = "Список идентификаторов услуг",
               useParameterTypeSchema = true,
               content =
                   @Content(
@@ -179,7 +174,7 @@ public class EntrypointController {
                                                 "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"
                                               ]
                                               """)))
-          ArrayList<String> serviceIds,
+          List<String> serviceIds,
       @QueryValue(defaultValue = "false") Boolean printTicket,
       @Nullable @QueryValue String segmentationRuleId)
       throws BusinessException, SystemException {
@@ -187,8 +182,7 @@ public class EntrypointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException(
-          "branch_not_found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(serviceIds)) {
@@ -202,21 +196,19 @@ public class EntrypointController {
             branchId, entryPointId, visitParameters, printTicket, segmentationRuleId);
       }
 
-    } else {
-      throw new BusinessException(
-          "services_not_found", eventService, HttpStatus.NOT_FOUND);
     }
+    throw new BusinessException("services_not_found", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
-   * Создание визита с передачей параметров визита и перечня услуг.
+   * Создаёт визит с дополнительными параметрами и перечнем услуг.
    *
    * @param branchId идентификатор отделения
    * @param entryPointId идентификатор точки создания визита
-   * @param printTicket флаг печати талона
-   * @param parameters услуги и параметры визита (пример { "serviceIds": [
-   *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ],
-   *     "parameters": { "sex": "male", "age": "33" } }
+   * @param parameters параметры визита и список услуг (например,
+   *     {@code {"serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"],
+   *     "parameters":{"sex":"male","age":"33"}}})
+   * @param printTicket необходимость печати талона
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
    * @return визит
    * @throws BusinessException бизнес-ошибка
@@ -231,18 +223,14 @@ public class EntrypointController {
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
       summary = "Создание визита с параметрами",
-      description = "Создает визит с дополнительными параметрами",
+      description = "Создаёт визит с дополнительными параметрами и перечнем услуг",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Услуги не найдены"),
-        @ApiResponse(responseCode = "404", description = "Точка создания визита не найдена"),
-        @ApiResponse(responseCode = "404", description = "Очередь для указанных услуг не найдена"),
-        @ApiResponse(responseCode = "404", description = "Правило сегментации не найдено"),
         @ApiResponse(
             responseCode = "404",
-            description = "Не найдены необходимые данные для правила сегментации"),
+            description =
+                "Отделение, точка создания визитов, услуга, очередь или данные для правила сегментации не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisit(
@@ -250,7 +238,7 @@ public class EntrypointController {
       @PathVariable(defaultValue = "2") String entryPointId,
       @Body
           @RequestBody(
-              description = "Идентификаторы услуг и параметры визита",
+              description = "Идентификаторы услуг и дополнительные параметры визита",
               useParameterTypeSchema = true,
               content =
                   @Content(
@@ -278,8 +266,7 @@ public class EntrypointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException(
-          "branch_not_found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(parameters.getServiceIds())) {
@@ -290,23 +277,21 @@ public class EntrypointController {
             branchId, entryPointId, parameters, printTicket, segmentationRuleId);
       }
 
-    } else {
-      throw new BusinessException(
-          "services_not_found", eventService, HttpStatus.NOT_FOUND);
     }
+    throw new BusinessException("services_not_found", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
-   * Создание визита с передачей параметров визита и перечня услуг из приемной
+   * Создаёт визит из зоны ресепшен с учётом дополнительных параметров.
    *
    * @param branchId идентификатор отделения
    * @param printerId идентификатор принтера
-   * @param printTicket флаг печати талона
-   * @param parameters услуги и параметры визита (пример { "serviceIds": [
-   *     "c3916e7f-7bea-4490-b9d1-0d4064adbe8b", "9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66" ],
-   *     "parameters": { "description": "Визит на получение кредита", "age": "48" } }
+   * @param parameters параметры визита и список услуг (например,
+   *     {@code {"serviceIds":["c3916e7f-7bea-4490-b9d1-0d4064adbe8b","9a6cc8cf-c7c4-4cfd-90fc-d5d525a92a66"],
+   *     "parameters":{"description":"Визит на получение кредита","age":"48"}}})
+   * @param printTicket необходимость печати талона
    * @param segmentationRuleId идентификатор правила сегментации (опционально)
-   * @param staffId идентификатор сессии сотрудника (cookie sid)
+   * @param staffId идентификатор сессии сотрудника (cookie {@code sid})
    * @return визит
    * @throws BusinessException бизнес-ошибка
    * @throws SystemException системная ошибка обработки визита
@@ -319,18 +304,14 @@ public class EntrypointController {
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
-      summary = "Создание визита из приемной",
-      description = "Создает визит с параметрами из приемной",
+      summary = "Создание визита из приёмной",
+      description = "Создаёт визит с дополнительными параметрами из зоны ресепшен",
       responses = {
         @ApiResponse(responseCode = "200", description = "Визит создан"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Услуги не найдены"),
-        @ApiResponse(responseCode = "404", description = "Очередь для указанных услуг не найдена"),
-        @ApiResponse(responseCode = "404", description = "Правило сегментации не найдено"),
         @ApiResponse(
             responseCode = "404",
-            description = "Не найдены необходимые данные для правила сегментации"),
+            description = "Отделение, услуга, очередь или данные для правила сегментации не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit createVisitFromReception(
@@ -338,7 +319,7 @@ public class EntrypointController {
       @PathVariable(defaultValue = "eb7ea46d-c995-4ca0-ba92-c92151473614") String printerId,
       @Body
           @RequestBody(
-              description = "Идентификаторы услуг и параметры визита",
+              description = "Идентификаторы услуг и дополнительные параметры визита",
               useParameterTypeSchema = true,
               content =
                   @Content(
@@ -367,8 +348,7 @@ public class EntrypointController {
     try {
       branch = branchService.getBranch(branchId);
     } catch (Exception ex) {
-      throw new BusinessException(
-          "branch_not_found", eventService, HttpStatus.NOT_FOUND);
+      throw new BusinessException("branch_not_found", eventService, HttpStatus.NOT_FOUND);
     }
     if (new HashSet<>(branch.getServices().values().stream().map(BranchEntity::getId).toList())
         .containsAll(parameters.getServiceIds())) {
@@ -380,19 +360,17 @@ public class EntrypointController {
             branchId, printerId, parameters, printTicket, segmentationRuleId, staffId);
       }
 
-    } else {
-      throw new BusinessException(
-          "services_not_found", eventService, HttpStatus.NOT_FOUND);
     }
+    throw new BusinessException("services_not_found", eventService, HttpStatus.NOT_FOUND);
   }
 
   /**
-   * Добавление параметров в визит
+   * Обновляет параметры визита.
    *
    * @param branchId идентификатор отделения
    * @param visitId идентификатор визита
-   * @param parameterMap набор параметров
-   * @return визит
+   * @param parameterMap карта дополнительных параметров визита
+   * @return визит с обновлёнными параметрами
    */
   @Tag(name = "Зона ожидания")
   @Tag(name = "Полный список")
@@ -402,12 +380,13 @@ public class EntrypointController {
       produces = "application/json")
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
-      summary = "Добавление параметров визита",
-      description = "Устанавливает параметры визита",
+      summary = "Обновление параметров визита",
+      description = "Назначает или обновляет дополнительные параметры визита",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Параметры установлены"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Визит не найден"),
+        @ApiResponse(responseCode = "200", description = "Параметры обновлены"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение или визит с указанным идентификатором не найдены"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
   public Visit setParameterMap(
@@ -422,11 +401,13 @@ public class EntrypointController {
   }
 
   /**
-   * Получение списка доступных услуг Услуга считается доступной, если на рабочем месте присутствует
-   * сотрудник чей рабочий профиль позволяет обслужить данную услугу
+   * Возвращает список доступных для обслуживания услуг.
+   *
+   * <p>Услуга считается доступной, если в отделении присутствует сотрудник, рабочий профиль
+   * которого позволяет её выполнить.
    *
    * @param branchId идентификатор отделения
-   * @return список услуг
+   * @return список доступных услуг
    */
   @Tag(name = "Зона ожидания")
   @Tag(name = "Полный список")
@@ -434,24 +415,22 @@ public class EntrypointController {
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
       summary = "Доступные услуги",
-      description = "Возвращает список доступных услуг отделения",
+      description = "Возвращает список услуг, доступных для обслуживания в отделении",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Список услуг"),
+        @ApiResponse(responseCode = "200", description = "Список доступных услуг"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })
-
   public List<Service> getAllAvailableServices(
-
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId) {
     return services.getAllAvailableServices(branchId);
   }
 
   /**
-   * Получение списка всех услуг
+   * Возвращает полный перечень услуг отделения.
    *
    * @param branchId идентификатор отделения
-   * @return список услуг
+   * @return список всех услуг
    */
   @Tag(name = "Зона ожидания")
   @Tag(name = "Зона обслуживания")
@@ -462,7 +441,7 @@ public class EntrypointController {
       summary = "Все услуги отделения",
       description = "Возвращает полный список услуг отделения",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Список услуг"),
+        @ApiResponse(responseCode = "200", description = "Список услуг отделения"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера")
       })

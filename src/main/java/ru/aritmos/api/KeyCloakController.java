@@ -16,7 +16,12 @@ import org.keycloak.representations.idm.authorization.AuthorizationResponse;
 import ru.aritmos.keycloack.model.Credentials;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
-/** REST API для операций авторизации в Keycloak. */
+/**
+ * REST API для операций авторизации в Keycloak.
+ *
+ * <p>Контроллер предоставляет методы для получения токенов и завершения пользовательских сессий в
+ * Keycloak.
+ */
 @Slf4j
 @Controller
 @SerdeImport(AuthorizationResponse.class)
@@ -24,7 +29,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 @ApiResponses({
     @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
     @ApiResponse(responseCode = "401", description = "Не авторизован"),
-    @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+    @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
     @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
     @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
     @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
@@ -55,14 +60,14 @@ public class KeyCloakController {
   @Inject KeyCloackClient keyCloackClient;
 
   /**
-   * Авторизация пользователя в Keycloak.
+   * Авторизует пользователя в Keycloak и возвращает набор токенов.
    *
    * @param credentials логин и пароль пользователя
    * @return ответ авторизации с набором токенов
    */
   @Operation(
       summary = "Авторизация пользователя в Keycloak",
-      description = "Возвращает токены авторизации при корректных учетных данных",
+      description = "Возвращает токены авторизации при корректных учётных данных",
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -71,22 +76,21 @@ public class KeyCloakController {
                 @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = AuthorizationResponse.class))),
-        @ApiResponse(responseCode = "401", description = "Неверные учетные данные"),
+        @ApiResponse(responseCode = "401", description = "Неверные учётные данные"),
         @ApiResponse(responseCode = "500", description = "Ошибка сервера Keycloak")
       })
   @Tag(name = "Полный список")
   @Tag(name = "Взаимодействие с Keycloak")
   @Post(uri = "/keycloak", consumes = "application/json", produces = "application/json")
   Optional<AuthorizationResponse> Auth(@Body Credentials credentials) {
-
     return keyCloackClient.Auth(credentials);
   }
 
   /**
-   * Удаление сеанса сотрудника.
+   * Завершает активную сессию сотрудника в Keycloak.
    *
    * @param login логин сотрудника
-   * @param isForced принудительно завершить сессию
+   * @param isForced признак принудительного завершения сессии
    * @param reason причина завершения
    */
   @Operation(

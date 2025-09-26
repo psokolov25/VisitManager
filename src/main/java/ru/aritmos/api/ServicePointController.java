@@ -33,12 +33,10 @@ import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
 /**
- * REST API для работы с точками обслуживания и очередями.
+ * REST API для работы с точками обслуживания, очередями и пулами сотрудников.
  *
- * <p>Контроллер отвечает за выдачу талонов, управление очередями сотрудников и
- * контроль занятости рабочих мест в отделении.
- *
- * @author Pavel Sokolов
+ * <p>Контроллер поддерживает выдачу талонов, перевод визитов между очередями и управление
+ * занятостью рабочих мест в отделении.
  */
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 @SerdeImport(GroupRepresentation.class)
@@ -46,7 +44,7 @@ import ru.aritmos.service.VisitService;
 @ApiResponses({
     @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
     @ApiResponse(responseCode = "401", description = "Не авторизован"),
-    @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+    @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
     @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
     @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
     @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
@@ -69,10 +67,10 @@ public class ServicePointController {
   String applicationName;
 
   /**
-   * Возвращает все не занятые сотрудниками точки обслуживания
+   * Возвращает список незанятых точек обслуживания отделения.
    *
    * @param branchId идентификатор отделения
-   * @return свободные точки обслуживания
+   * @return карта свободных точек обслуживания
    */
   @Operation(
       summary = "Свободные точки обслуживания отделения",
@@ -99,10 +97,10 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает все принтеры, используемые в отделении
+   * Возвращает список принтеров, зарегистрированных в отделении.
    *
    * @param branchId идентификатор отделения
-   * @return свободные точки обслуживания
+   * @return список принтеров отделения
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о принтерах")
@@ -123,10 +121,10 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает все очереди отделения (только идентификатор и название очереди)
+   * Возвращает краткий список очередей отделения.
    *
    * @param branchId идентификатор отделения
-   * @return список очередей
+   * @return список очередей с идентификаторами и названиями
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об очередях")
@@ -147,10 +145,10 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает все очереди отделения
+   * Возвращает подробную информацию об очередях отделения.
    *
    * @param branchId идентификатор отделения
-   * @return список очередей
+   * @return список очередей с расширенными данными
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об очередях")
@@ -171,10 +169,10 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает все точки обслуживания
+   * Возвращает список точек обслуживания отделения с признаком занятости.
    *
    * @param branchId идентификатор отделения
-   * @return точки обслуживания
+   * @return список точек обслуживания
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")

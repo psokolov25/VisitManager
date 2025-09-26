@@ -1,7 +1,6 @@
 package ru.aritmos.api;
 
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
@@ -24,16 +23,14 @@ import ru.aritmos.service.BranchService;
 /**
  * REST API для информационных запросов по отделениям.
  *
- * <p>Контроллер предоставляет вспомогательные методы для мониторинга очередей и
- * проверки прав доступа сотрудников перед началом обслуживания клиентов.
- *
- * @author Pavel Sokolov
+ * <p>Контроллер предоставляет вспомогательные методы для мониторинга состояния отделений и проверки
+ * доступности филиалов для пользователей.
  */
 @Controller("/managementinformation")
 @ApiResponses({
     @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
     @ApiResponse(responseCode = "401", description = "Не авторизован"),
-    @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+    @ApiResponse(responseCode = "403", description = "Доступ запрещён"),
     @ApiResponse(responseCode = "404", description = "Ресурс не найден"),
     @ApiResponse(responseCode = "405", description = "Метод не поддерживается"),
     @ApiResponse(responseCode = "415", description = "Неподдерживаемый тип данных"),
@@ -48,14 +45,14 @@ public class ManagementController {
   @Inject KeyCloackClient keyCloakClient;
 
   /**
-   * Возвращает данные об отделении
+   * Возвращает информацию об отделении по идентификатору.
    *
    * @param id идентификатор отделения
    * @return состояние отделения
    */
   @Operation(
       summary = "Получение состояния отделения",
-      description = "Возвращает информацию об отделении по его идентификатору",
+      description = "Возвращает подробную информацию об отделении по его идентификатору",
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -77,16 +74,16 @@ public class ManagementController {
   }
 
   /**
-   * Получение массива идентификаторов и объектов отделений
+   * Возвращает карту доступных отделений для пользователя.
    *
    * @param userName (опционально) имя пользователя для фильтрации доступных отделений
-   * @return массив идентификаторов и отделений
+   * @return карта идентификаторов и отделений
    */
   @Tag(name = "Информация об отделении")
   @Tag(name = "Полный список")
   @Operation(
       summary = "Получение списка отделений",
-      description = "Возвращает карту доступных отделений",
+      description = "Возвращает карту доступных отделений. При передаче имени пользователя список ограничивается его филиалами",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список отделений"),
         @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
@@ -125,9 +122,9 @@ public class ManagementController {
   }
 
   /**
-   * Получение массива идентификаторов и названий отделений
+   * Возвращает упрощённый список отделений.
    *
-   * @return массив идентификаторов и названий отделений
+   * @return список идентификаторов и названий отделений
    */
   @Tag(name = "Информация об отделении")
   @Tag(name = "Полный список")
