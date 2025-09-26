@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class UserSessionTest {
 
-    @DisplayName("Builder And Setters Create Complete Session")
+    @DisplayName("Билдер и сеттеры формируют полную сессию пользователя")
     @Test
     void builderAndSettersCreateCompleteSession() {
         UserToken token = UserToken.builder()

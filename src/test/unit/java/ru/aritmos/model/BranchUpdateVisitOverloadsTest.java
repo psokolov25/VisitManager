@@ -29,7 +29,7 @@ class BranchUpdateVisitOverloadsTest {
 
     private static final Logger log = LoggerFactory.getLogger(BranchUpdateVisitOverloadsTest.class);
 
-    @DisplayName("Update Visit With Boolean Places Visit At Start")
+    @DisplayName("Обновление визита с флагом ставит запись в начало")
     @Test
     void updateVisitWithBooleanPlacesVisitAtStart() {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
@@ -101,7 +101,7 @@ class BranchUpdateVisitOverloadsTest {
                 argThat(evt -> "VISIT_TRANSFER_TO_SERVICE_POINT_POOL".equals(evt.getEventType())));
     }
 
-    @DisplayName("Update Visit With Boolean Places Visit At End")
+    @DisplayName("Обновление визита с флагом ставит запись в конец")
     @Test
     void updateVisitWithBooleanPlacesVisitAtEnd() {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();
@@ -163,7 +163,7 @@ class BranchUpdateVisitOverloadsTest {
         verify(eventService).send(eq("frontend"), eq(false), any(Event.class));
     }
 
-    @DisplayName("Update Visit Without Boolean Places Visit At Start By Default")
+    @DisplayName("Обновление визита без флага ставит запись в начало по умолчанию")
     @Test
     void updateVisitWithoutBooleanPlacesVisitAtStartByDefault() {
         VisitEvent.TRANSFER_TO_SERVICE_POINT_POOL.getParameters().clear();

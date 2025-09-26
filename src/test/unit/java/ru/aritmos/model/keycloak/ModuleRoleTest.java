@@ -7,7 +7,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 class ModuleRoleTest {
 
-    @DisplayName("Method Chains Produce Correct Object")
+    @DisplayName("Цепочки вызовов формируют корректный объект")
     @Test
     void methodChainsProduceCorrectObject() {
         ModuleRole direct = new ModuleRole()

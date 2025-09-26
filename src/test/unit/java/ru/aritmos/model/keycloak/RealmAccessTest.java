@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class RealmAccessTest {
 
-    @DisplayName("Builder And Setters Form Role List")
+    @DisplayName("Билдер и сеттеры формируют список ролей")
     @Test
     void builderAndSettersFormRoleList() {
         RealmAccess viaBuilder = RealmAccess.builder()
