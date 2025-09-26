@@ -12,7 +12,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class KeyCloakControllerTest {
 
-    @DisplayName("Метод авторизации передаёт выполнение клиенту системы управления учётными записями")
+    @DisplayName("Контроллер авторизации делегирует обработку клиенту системы управления учётными записями")
     @Test
     void authDelegatesToClient() {
         KeyCloakController controller = new KeyCloakController();
@@ -27,7 +27,7 @@ class KeyCloakControllerTest {
         verify(client).Auth(credentials);
     }
 
-    @DisplayName("Метод завершения сессии передаёт выполнение клиенту системы управления учётными записями")
+    @DisplayName("Контроллер завершения сессии делегирует выход клиенту системы управления учётными записями")
     @Test
     void deleteSessionDelegatesToClient() {
         KeyCloakController controller = new KeyCloakController();

@@ -21,7 +21,7 @@ import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class ManagementControllerTest {
 
-    @DisplayName("Поиск отделения возвращает найденный объект")
+    @DisplayName("Контроллер возвращает запись отделения по идентификатору")
     @Test
     void getBranchReturnsBranch() {
         BranchService branchService = mock(BranchService.class);
@@ -33,7 +33,7 @@ class ManagementControllerTest {
         assertSame(branch, controller.getBranch("b1"));
     }
 
-    @DisplayName("Поиск отделения возвращает 404 при отсутствии записи")
+    @DisplayName("Контроллер возвращает ошибку 404 при отсутствии записи отделения")
     @Test
     void getBranchThrowsNotFound() {
         BranchService branchService = mock(BranchService.class);
@@ -45,7 +45,7 @@ class ManagementControllerTest {
         assertThrows(HttpStatusException.class, () -> controller.getBranch("b1"));
     }
 
-    @DisplayName("Запрос отделений без указания пользователя возвращает полный список")
+    @DisplayName("Контроллер без указания пользователя возвращает полный список отделений")
     @Test
     void getBranchesWithoutUserReturnsAll() {
         BranchService branchService = mock(BranchService.class);
@@ -58,7 +58,7 @@ class ManagementControllerTest {
         verify(branchService).getBranches();
     }
 
-    @DisplayName("Запрос отделений для неизвестного пользователя возвращает полный список")
+    @DisplayName("Контроллер для неизвестного пользователя возвращает полный список отделений")
     @Test
     void getBranchesWithUnknownUserFallsBackToAll() {
         BranchService branchService = mock(BranchService.class);
@@ -72,7 +72,7 @@ class ManagementControllerTest {
         assertSame(branches, controller.getBranches("u1"));
     }
 
-    @DisplayName("Запрос отделений для администратора возвращает полный перечень")
+    @DisplayName("Контроллер для администратора возвращает весь перечень отделений")
     @Test
     void getBranchesForAdminВозвращаетВсеОтделения() {
         BranchService branchService = mock(BranchService.class);
@@ -97,7 +97,7 @@ class ManagementControllerTest {
         assertEquals(branches, result);
     }
 
-    @DisplayName("Запрос отделений фильтрует список по доступам пользователя")
+    @DisplayName("Контроллер фильтрует список отделений по доступам пользователя")
     @Test
     void getBranchesФильтруетДоступныеОтделенияДляПользователя() {
         BranchService branchService = mock(BranchService.class);
@@ -135,7 +135,7 @@ class ManagementControllerTest {
         assertFalse(result.containsKey("b2"));
     }
 
-    @DisplayName("Запрос компактного списка отделений возвращает коллекцию сокращённых моделей")
+    @DisplayName("Контроллер возвращает компактный список отделений в сокращённом формате")
     @Test
     void getTinyBranchesReturnsMappedList() {
         BranchService branchService = mock(BranchService.class);
