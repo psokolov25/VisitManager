@@ -21,7 +21,7 @@ class EntityTest {
     }
 
     @Test
-    @DisplayName("Методы доступа и пара equals/hashCode работают корректно")
+    @DisplayName("Методы доступа и пара методов equals/hashCode работают корректно")
     void gettersSettersAndEqualityWorkCorrectly() {
         Entity первый = new Entity();
         первый.setId("id-1");

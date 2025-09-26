@@ -19,7 +19,8 @@ class ConfigurationClientTest {
         assertEquals("${micronaut.application.configurationURL}", annotation.value());
     }
 
-    @DisplayName("Метод получения конфигурации помечен HTTP-методом GET")
+
+    @DisplayName("Метод получения конфигурации аннотирован HTTP-методом GET")
     @Test
     void getConfigurationMethodHasGetAnnotation() throws NoSuchMethodException {
         Method method = ConfigurationClient.class.getMethod("getConfiguration");
