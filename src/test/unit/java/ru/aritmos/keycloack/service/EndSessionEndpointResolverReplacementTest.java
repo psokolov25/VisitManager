@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 
 class EndSessionEndpointResolverReplacementTest {
 
-    @DisplayName("resolve возвращает конечную точку Okta")
+    @DisplayName("Метод resolve возвращает конечную точку сервиса Okta")
     @Test
     void resolveReturnsOktaEndpoint() {
         BeanContext beanContext = Mockito.mock(BeanContext.class);

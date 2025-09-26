@@ -732,7 +732,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals("callNext", calledEvent.getParameters().get("callMethod"));
     }
 
-    @DisplayName("Вызов визита по максимальному времени ожидания включает автообзвон при пустой очереди")
+    @DisplayName("Вызов визита по максимальному времени ожидания включает автоматический вызов при пустой очереди")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeActivatesAutoCallWhenQueueIsEmpty() {
         log.info("Проверяем включение автодовызова при отсутствии доступных визитов");
@@ -819,7 +819,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals("callNext", calledEvent.getParameters().get("callMethod"));
     }
 
-    @DisplayName("Вызов визита по максимальному времени ожидания с фильтром очередей включает режим автообзвона")
+    @DisplayName("Вызов визита по максимальному времени ожидания с фильтром очередей включает режим автоматического вызова")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeWithQueuesEnablesAutoCallMode() {
         log.info("Проверяем включение автодовызова при отсутствии визитов в указанных очередях");

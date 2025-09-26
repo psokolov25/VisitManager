@@ -88,7 +88,7 @@ class VisitServiceMaxCallRulesTest {
         verify(service, times(2)).visitCall(eq(branch.getId()), eq(servicePoint.getId()), any(Visit.class), eq("callNext"));
     }
 
-    @DisplayName("Стратегия вызова с максимальным ожиданием включает автообзвон при пустом ответе правила")
+    @DisplayName("Стратегия вызова с максимальным ожиданием включает автоматический вызов при пустом ответе правила")
     @Test
     void visitCallWithMaximalWaitingTimeEnablesAutocallWhenRuleReturnsEmpty() {
         log.info("Настраиваем отделение в режиме авто-вызова для проверки перехода в автодовызов");
@@ -247,7 +247,7 @@ class VisitServiceMaxCallRulesTest {
         assertEquals(HttpStatus.FORBIDDEN, second.getStatus());
     }
 
-    @DisplayName("Стратегия вызова с максимальным ожиданием не инициирует автообзвон при запрете")
+    @DisplayName("Стратегия вызова с максимальным ожиданием не инициирует автоматический вызов при запрете")
     @Test
     void visitCallWithMaximalWaitingTimeReturnsEmptyWhenNoAutoCallConfigured() {
         log.info("Готовим отделение без режима автодовызова и ожидаем пустой результат");
@@ -283,7 +283,7 @@ class VisitServiceMaxCallRulesTest {
         verify(eventService, never()).send(anyString(), anyBoolean(), any(Event.class));
     }
 
-    @DisplayName("Стратегия вызова с ограничением по времени не инициирует автообзвон при запрете")
+    @DisplayName("Стратегия вызова с ограничением по времени не инициирует автоматический вызов при запрете")
     @Test
     void visitCallWithMaxLifeTimeReturnsEmptyWhenNoAutoCallConfigured() {
         log.info("Отделение без автодовызова должно возвращать пустой результат при отсутствии кандидатов по времени жизни");
@@ -376,7 +376,7 @@ class VisitServiceMaxCallRulesTest {
         verify(service, times(2)).visitCall(eq(branch.getId()), eq(servicePoint.getId()), any(Visit.class), eq("callNext"));
     }
 
-    @DisplayName("Стратегия вызова с ограничением по времени включает автообзвон при пустом ответе правила")
+    @DisplayName("Стратегия вызова с ограничением по времени включает автоматический вызов при пустом ответе правила")
     @Test
     void visitCallWithMaxLifeTimeEnablesAutocallWhenRuleReturnsEmpty() {
         log.info("Создаём отделение с авто-вызовом для проверки поведения правил по времени жизни");
@@ -432,7 +432,7 @@ class VisitServiceMaxCallRulesTest {
         verify(branchService, times(2)).add(branch.getId(), branch);
     }
 
-    @DisplayName("стратегии вызова не включают автообзвон для занятой точки обслуживания")
+    @DisplayName("Стратегии вызова не включают автоматический вызов для занятой точки обслуживания")
     @Test
     void visitCallStrategiesDoNotTriggerAutocallForBusyServicePoint() {
         log.info("Готовим отделение с точкой, на которой уже обслуживается визит");

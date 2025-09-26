@@ -131,7 +131,7 @@ class ConfigurationControllerTest {
         verify(controller.branchService).deleteServicePoints("b1", ids);
     }
 
-    @DisplayName("Включение автообзвона отделения выполняет сервис визитов")
+    @DisplayName("Включение автоматического вызова отделения выполняет сервис визитов")
     @Test
     void setAutoCallModeOnDelegates() {
         ConfigurationController controller = controller();
@@ -139,7 +139,7 @@ class ConfigurationControllerTest {
         verify(controller.visitService).setAutoCallModeOfBranch("b1", true);
     }
 
-    @DisplayName("Отключение автообзвона отделения выполняет сервис визитов")
+    @DisplayName("Отключение автоматического вызова отделения выполняет сервис визитов")
     @Test
     void setAutoCallModeOffDelegates() {
         ConfigurationController controller = controller();
