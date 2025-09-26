@@ -33,10 +33,12 @@ import ru.aritmos.service.Services;
 import ru.aritmos.service.VisitService;
 
 /**
- * REST API для работы с точками обслуживания, очередями и пулами сотрудников.
+ * REST API для работы с точками обслуживания, очередями, пулами сотрудников и визитами.
  *
- * <p>Контроллер поддерживает выдачу талонов, перевод визитов между очередями и управление
- * занятостью рабочих мест в отделении.
+ * <p>Контроллер агрегирует операции выдачи талонов, перевода визитов между очередями и
+ * управления занятостью рабочих мест и профилей сотрудников в рамках одного отделения. В
+ * OpenAPI-схеме каждая операция сопровождается расширенным описанием сущностей и кодов
+ * ответов, что облегчает интеграцию внешних систем.
  */
 @SuppressWarnings({"unused", "RedundantSuppression", "RedundantDefaultParameter"})
 @SerdeImport(GroupRepresentation.class)
@@ -73,12 +75,15 @@ public class ServicePointController {
   /**
    * Возвращает список незанятых точек обслуживания отделения.
    *
-   * @param branchId идентификатор отделения
-   * @return карта свободных точек обслуживания
+   * @param branchId идентификатор отделения. Если не передан, используется дефолтное значение из
+   *     настроек стенда.
+   * @return ассоциативный массив, где ключ — идентификатор точки обслуживания, значение —
+   *     подробная информация о ней.
    */
   @Operation(
+      operationId = "getFreeServicePoints",
       summary = "Свободные точки обслуживания отделения",
-      description = "Возвращает карту незанятых точек обслуживания для указанного отделения",
+      description = "Возвращает карту незанятых точек обслуживания для указанного отделения.",
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -87,8 +92,10 @@ public class ServicePointController {
                 @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ServicePoint.class))),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение не найдено или недоступно в кэше сервиса"),
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
@@ -103,19 +110,23 @@ public class ServicePointController {
   /**
    * Возвращает список принтеров, зарегистрированных в отделении.
    *
-   * @param branchId идентификатор отделения
-   * @return список принтеров отделения
+   * @param branchId идентификатор отделения. Если параметр отсутствует, используется значение по
+   *     умолчанию из конфигурации приложения.
+   * @return список принтеров отделения в виде упрощённых сущностей.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о принтерах")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "getPrinters",
       summary = "Принтеры отделения",
-      description = "Возвращает список принтеров отделения",
+      description = "Возвращает список принтеров отделения, доступных для печати талонов.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список принтеров"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение не найдено или не содержит активных принтеров"),
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/printers")
   @ExecuteOn(TaskExecutors.IO)
@@ -127,19 +138,22 @@ public class ServicePointController {
   /**
    * Возвращает краткий список очередей отделения.
    *
-   * @param branchId идентификатор отделения
-   * @return список очередей с идентификаторами и названиями
+   * @param branchId идентификатор отделения, для которого требуется получить перечень очередей.
+   * @return список очередей с идентификаторами и названиями.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об очередях")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "getQueues",
       summary = "Очереди отделения",
-      description = "Возвращает список очередей отделения",
+      description = "Возвращает список очередей отделения с базовыми атрибутами.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список очередей"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение не найдено или не содержит очередей"),
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/queues")
   @ExecuteOn(TaskExecutors.IO)
@@ -149,21 +163,25 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает подробную информацию об очередях отделения.
+   * Возвращает расширенную информацию об очередях отделения.
    *
-   * @param branchId идентификатор отделения
-   * @return список очередей с расширенными данными
+   * @param branchId идентификатор отделения, для которого требуется получить подробные сведения о
+   *     очередях.
+   * @return список очередей с расширенными данными, включая настройки приоритета.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные об очередях")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "getFullQueues",
       summary = "Очереди отделения (полные данные)",
-      description = "Возвращает подробную информацию об очередях отделения",
+      description = "Возвращает подробную информацию об очередях отделения со служебными полями.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список очередей"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение не найдено или недоступно"),
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/queues/full")
   @ExecuteOn(TaskExecutors.IO)
@@ -175,20 +193,24 @@ public class ServicePointController {
   /**
    * Возвращает список точек обслуживания отделения с признаком занятости.
    *
-   * @param branchId идентификатор отделения
-   * @return список точек обслуживания
+   * @param branchId идентификатор отделения, откуда извлекаются точки обслуживания.
+   * @return список точек обслуживания в облегчённом формате {@link TinyServicePoint}.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
   @Operation(
+      operationId = "getServicePoints",
       summary = "Все точки обслуживания",
-      description = "Возвращает список точек обслуживания отделения",
+      description =
+          "Возвращает список точек обслуживания отделения с признаком занятости рабочего места.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список точек обслуживания"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение не найдено или не содержит точек обслуживания"),
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/servicePoints")
   @ExecuteOn(TaskExecutors.IO)
@@ -200,22 +222,23 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает все точки обслуживания (с данными пулов)
+   * Возвращает полный набор точек обслуживания с информацией о пулах.
    *
-   * @param branchId идентификатор отделения
-   * @return свободные обслуживания
+   * @param branchId идентификатор отделения, для которого формируется ответ.
+   * @return список точек обслуживания с максимально подробными данными.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
   @Operation(
+      operationId = "getDetailedServicePoints",
       summary = "Подробные точки обслуживания",
-      description = "Возвращает подробную информацию о точках обслуживания",
+      description = "Возвращает подробную информацию о точках обслуживания, включая связанные пулы.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список точек обслуживания"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/servicePoints/detailed")
   @ExecuteOn(TaskExecutors.IO)
@@ -225,11 +248,12 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает точку обслуживания по логину сотрудника
+   * Возвращает точку обслуживания по логину сотрудника внутри отделения.
    *
-   * @param branchId идентификатор отделения
-   * @param userName логин пользователя
-   * @return свободные точки обслуживания
+   * @param branchId идентификатор отделения.
+   * @param userName логин пользователя в Keycloak.
+   * @return точка обслуживания, где сотрудник закреплён или временно числится после выхода на
+   *     перерыв.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
@@ -237,13 +261,16 @@ public class ServicePointController {
   @Get("/branches/{branchId}/servicePoints/user/{userName}")
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
+      operationId = "getServicePointByUserName",
       summary = "Точка обслуживания по логину",
-      description = "Возвращает точку обслуживания, где работает указанный сотрудник",
+      description =
+          "Возвращает точку обслуживания, где работает указанный сотрудник, учитывая сотрудников на перерыве.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение не найдено или сотрудник в нём отсутствует"),
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   public Optional<ServicePoint> getServicePointsByUserName(
       @PathVariable(defaultValue = "37493d1c-8282-4417-a729-dceac1f3e2b4") String branchId,
@@ -273,10 +300,10 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает список сотрудников отделения
+   * Возвращает полный список сотрудников отделения.
    *
-   * @param branchId идентификатор отделения
-   * @return свободные точки обслуживания
+   * @param branchId идентификатор отделения, для которого производится выборка.
+   * @return список сотрудников с актуальными атрибутами.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
@@ -284,12 +311,13 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
   @Operation(
+      operationId = "getUsersOfBranch",
       summary = "Сотрудники отделения",
-      description = "Возвращает список сотрудников отделения",
+      description = "Возвращает список сотрудников отделения из справочника отделения.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список сотрудников"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/users")
   @ExecuteOn(TaskExecutors.IO)
@@ -299,10 +327,10 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает список всех сотрудников, на данный момент работающих в отделении
+   * Возвращает список всех сотрудников, находящихся на рабочих местах отделения.
    *
-   * @param branchId идентификатор отделения
-   * @return свободные точки обслуживания
+   * @param branchId идентификатор отделения, по которому формируется ответ.
+   * @return список сотрудников, отмеченных как работающие.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
@@ -310,12 +338,13 @@ public class ServicePointController {
   @Tag(name = "Полный список")
   @Tag(name = "Данные о пулах")
   @Operation(
+      operationId = "getAllWorkingUsersOfBranch",
       summary = "Работающие сотрудники отделения",
-      description = "Возвращает список сотрудников, находящихся на рабочем месте",
+      description = "Возвращает список сотрудников, находящихся на рабочем месте в текущий момент.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список сотрудников"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/workingusers")
   @ExecuteOn(TaskExecutors.IO)
@@ -325,10 +354,10 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает точку обслуживания по логину сотрудника
+   * Возвращает точку обслуживания по логину сотрудника вне зависимости от отделения.
    *
-   * @param userName логин пользователя
-   * @return свободные точки обслуживания
+   * @param userName логин пользователя.
+   * @return точка обслуживания, где сотрудник числится активным.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
@@ -336,12 +365,15 @@ public class ServicePointController {
   @Get("/servicePoints/user/{userName}")
   @ExecuteOn(TaskExecutors.IO)
   @Operation(
+      operationId = "getServicePointByUserNameGlobal",
       summary = "Поиск точки обслуживания по логину",
-      description = "Возвращает точку обслуживания по логину сотрудника среди всех отделений",
+      description = "Возвращает точку обслуживания по логину сотрудника среди всех отделений.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Точка обслуживания"),
-        @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Сотрудник не найден во всех отделениях"),
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   public Optional<ServicePoint> getServicePointsByUserName(@PathVariable String userName) {
 
@@ -354,23 +386,25 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает сотрудника по логину
+   * Возвращает сотрудника по логину в разрезе отделения.
    *
-   * @param branchId идентификатор отделения
-   * @param userName логин пользователя
-   * @return пользователь занимающий рабочее место
+   * @param branchId идентификатор отделения.
+   * @param userName логин пользователя.
+   * @return пользователь, занимающий рабочее место, если таковой найден.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о точках обслуживания")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "getUserByUserName",
       summary = "Сотрудник по логину",
-      description = "Возвращает информацию о сотруднике по его логину",
+      description = "Возвращает информацию о сотруднике по его логину в пределах отделения.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Сотрудник найден"),
-        @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "404", description = "Сотрудник не найден"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Отделение не найдено или сотрудник в нём отсутствует"),
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/users/user/{userName}")
   @ExecuteOn(TaskExecutors.IO)
@@ -385,21 +419,23 @@ public class ServicePointController {
   }
 
   /**
-   * Возвращает все рабочие профили
+   * Возвращает все рабочие профили отделения.
    *
-   * @param branchId идентификатор отделения
-   * @return свободные точки обслуживания
+   * @param branchId идентификатор отделения.
+   * @return список рабочих профилей в облегчённом формате {@link TinyClass}.
    */
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Данные о рабочих профилях")
   @Tag(name = "Полный список")
   @Operation(
+      operationId = "getWorkProfiles",
       summary = "Рабочие профили отделения",
-      description = "Возвращает список рабочих профилей отделения",
+      description =
+          "Возвращает список рабочих профилей отделения, доступных для назначения на точки обслуживания.",
       responses = {
         @ApiResponse(responseCode = "200", description = "Список профилей"),
         @ApiResponse(responseCode = "404", description = "Отделение не найдено"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Get("/branches/{branchId}/workProfiles")
   @ExecuteOn(TaskExecutors.IO)
@@ -409,16 +445,17 @@ public class ServicePointController {
   }
 
   /**
-   * Смена рабочего профиля сотрудника работающего в точке обслуживания
+   * Меняет рабочий профиль сотрудника, закреплённого за точкой обслуживания.
    *
-   * @param branchId идентификатор отделения
-   * @param servicePointId идентификатор точки обслуживания
-   * @param workProfileId идентификатор рабочего профиля
-   * @return сотрудник
+   * @param branchId идентификатор отделения.
+   * @param servicePointId идентификатор точки обслуживания.
+   * @param workProfileId идентификатор рабочего профиля.
+   * @return обновлённая карточка сотрудника.
+   * @throws BusinessException если указанные идентификаторы не найдены или нарушают бизнес-правила.
    */
   @Operation(
-      operationId = "openServicePoint",
-      summary = "Смена рабочего профиля сотрудника работающего в точки обслуживания",
+      operationId = "changeUserWorkprofile",
+      summary = "Смена рабочего профиля сотрудника",
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -429,7 +466,7 @@ public class ServicePointController {
         @ApiResponse(
             responseCode = "404",
             description = "Сотрудник на точке обслуживания не найден"),
-        @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+        @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
       })
   @Tag(name = "Зона обслуживания")
   @Tag(name = "Работа сотрудников")
@@ -447,16 +484,18 @@ public class ServicePointController {
   }
 
   /**
-   * Открытие рабочей станции сотрудником Если рабочая станция уже открыта - выдается 409 ошибка
-   * (конфликт)
+   * Открывает точку обслуживания от имени сотрудника.
    *
-   * @param branchId идентификатор отделения
-   * @param userName имя пользователя
-   * @param servicePointId идентификатор точки обслуживания
-   * @param workProfileId идентификатор рабочего профиля
-   * @return сотрудник
-   * @throws BusinessException бизнес-ошибка
-   * @throws java.io.IOException ошибка взаимодействия с внешними сервисами
+   * <p>Если рабочая станция уже занята, возвращается ошибка {@link HttpStatus#CONFLICT} с
+   * подробной информацией о текущем сотруднике и статусе обслуживания.
+   *
+   * @param branchId идентификатор отделения.
+   * @param userName имя пользователя.
+   * @param servicePointId идентификатор точки обслуживания.
+   * @param workProfileId идентификатор рабочего профиля.
+   * @return сотрудник, который открыл рабочую станцию.
+   * @throws BusinessException бизнес-ошибка при нарушении бизнес-правил.
+   * @throws java.io.IOException ошибка взаимодействия с внешними сервисами.
    */
   @Operation(
       operationId = "openServicePoint",
