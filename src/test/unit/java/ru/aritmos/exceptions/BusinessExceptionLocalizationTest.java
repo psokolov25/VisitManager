@@ -83,7 +83,7 @@ class BusinessExceptionLocalizationTest {
         assertEquals("Visit not found", appender.list.get(0).getFormattedMessage());
     }
 
-    @DisplayName("Заменяет значение ключа `message` в теле ответа-словаря")
+    @DisplayName("Заменяет значение поля сообщения в словаре ответа")
     @Test
     void replacesMessageFieldInMapResponseBody() {
         BusinessExceptionLocalizationProperties properties = new BusinessExceptionLocalizationProperties();

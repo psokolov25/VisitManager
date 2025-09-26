@@ -28,7 +28,7 @@ import ru.aritmos.service.VisitService;
  */
 class BranchTest {
 
-    @DisplayName("incrementTicketCounter возвращает новое значение счётчика")
+    @DisplayName("Увеличение счётчика талонов возвращает новое значение")
     @Test
     void incrementTicketCounterReturnsNewValue() {
         Branch branch = new Branch("b1", "Branch");
@@ -41,7 +41,7 @@ class BranchTest {
         assertEquals(1, queue.getTicketCounter());
     }
 
-    @DisplayName("incrementTicketCounter возвращает -1 для чужой очереди")
+    @DisplayName("Увеличение счётчика талонов отдаёт -1 для несвязанной очереди")
     @Test
     void incrementTicketCounterReturnsMinusOneForForeignQueue() {
         Branch branch = new Branch("b1", "Branch");
@@ -52,7 +52,7 @@ class BranchTest {
         assertEquals(-1, result);
     }
 
-    @DisplayName("getAllVisits собирает визиты из пользователей, точек и очередей")
+    @DisplayName("Получение всех визитов объединяет данные пользователей, точек и очередей")
     @Test
     void getAllVisitsCollectsFromUsersServicePointsAndQueues() {
         Branch branch = new Branch("b1", "Branch");
@@ -93,7 +93,7 @@ class BranchTest {
         assertTrue(all.containsKey("v4"));
     }
 
-    @DisplayName("getAllVisitsList возвращает визиты из пользователей, точек и очередей")
+    @DisplayName("Получение списка всех визитов возвращает данные пользователей, точек и очередей")
     @Test
     void getAllVisitsListCollectsFromUsersServicePointsAndQueues() {
         Branch branch = new Branch("b1", "Branch");
@@ -134,7 +134,7 @@ class BranchTest {
         assertTrue(all.stream().anyMatch(v -> v.getId().equals("v4")));
     }
 
-    @DisplayName("getVisitsByStatus фильтрует визиты по статусу")
+    @DisplayName("Отбор визитов по статусу выдаёт ожидаемый набор")
     @Test
     void getVisitsByStatusFiltersVisits() {
         Branch branch = new Branch("b1", "Branch");
@@ -151,7 +151,7 @@ class BranchTest {
         assertFalse(filtered.containsKey("v2"));
     }
 
-    @DisplayName("getVisitsByStatus возвращает пустой результат при отсутствии подходящих статусов")
+    @DisplayName("Отбор визитов по статусу возвращает пустой результат при отсутствии соответствий")
     @Test
     void getVisitsByStatusReturnsEmptyForMissingStatuses() {
         Branch branch = new Branch("b1", "Branch");
@@ -165,7 +165,7 @@ class BranchTest {
         assertTrue(filtered.isEmpty());
     }
 
-    @DisplayName("getVisitsByStatus собирает визиты со статусом из всех источников")
+    @DisplayName("Отбор визитов по статусу охватывает все источники данных")
     @Test
     void getVisitsByStatusCollectsFromUsersServicePointsAndQueues() {
         // Формируем отделение с визитами из разных источников
@@ -211,7 +211,7 @@ class BranchTest {
         assertFalse(filtered.containsKey("v5"));
     }
 
-    @DisplayName("incrementTicketCounter увеличивает счётчик последовательно")
+    @DisplayName("Увеличение счётчика талонов выполняется последовательно")
     @Test
 
     void incrementTicketCounterIncrementsSequentially() {
@@ -227,7 +227,7 @@ class BranchTest {
         assertEquals(2, queue.getTicketCounter());
     }
 
-    @DisplayName("getAllVisitsList содержит дубликаты одного визита")
+    @DisplayName("Список всех визитов содержит дубликаты одной записи")
     @Test
 
     void getAllVisitsListContainsDuplicatesForSameVisit() {
@@ -251,7 +251,7 @@ class BranchTest {
         assertSame(visitList.get(0), visitList.get(1), "Оба элемента списка указывают на один объект");
     }
 
-    @DisplayName("getAllVisits возвращает пустую карту при отсутствии сущностей")
+    @DisplayName("Получение всех визитов возвращает пустую карту при отсутствии данных")
     @Test
     void getAllVisitsReturnsEmptyWhenNoEntities() {
         Branch branch = new Branch("b1", "Branch");
@@ -261,7 +261,7 @@ class BranchTest {
         assertTrue(visits.isEmpty());
     }
 
-    @DisplayName("getAllVisitsList возвращает пустой список при отсутствии сущностей")
+    @DisplayName("Получение списка всех визитов возвращает пустой список при отсутствии данных")
     @Test
     void getAllVisitsListReturnsEmptyWhenNoEntities() {
         Branch branch = new Branch("b1", "Branch");
@@ -272,7 +272,7 @@ class BranchTest {
     }
 
 
-    @DisplayName("openServicePoint назначает пользователя и публикует события")
+    @DisplayName("Открытие точки обслуживания назначает пользователя и публикует события")
     @Test
     void openServicePointAssignsUserAndPublishesEvents() throws IOException {
         // Готовим отделение с точкой обслуживания без пользователя
@@ -308,7 +308,7 @@ class BranchTest {
         assertSame(sp, captor.getValue().getBody());
     }
 
-    @DisplayName("openServicePoint выбрасывает исключение при занятой точке")
+    @DisplayName("Открытие точки обслуживания выбрасывает исключение при занятой точке")
     @Test
     void openServicePointThrowsIfBusy() {
         // Точка обслуживания уже занята другим пользователем
@@ -338,7 +338,7 @@ class BranchTest {
     }
 
 
-    @DisplayName("openServicePoint добавляет пользователя без указания точки")
+    @DisplayName("Открытие точки обслуживания добавляет пользователя без явного указания точки")
     @Test
     void openServicePointAddsUserWithoutServicePoint() throws IOException {
         // Пользователь не указал точку обслуживания
@@ -359,7 +359,7 @@ class BranchTest {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("openServicePoint выбрасывает исключение при отсутствии точки")
+    @DisplayName("Открытие точки обслуживания выбрасывает исключение при отсутствии точки")
     @Test
     void openServicePointThrowsIfServicePointNotFound() {
         // Пользователь пытается открыть отсутствующую точку
@@ -381,7 +381,7 @@ class BranchTest {
         assertSame(user, branch.getUsers().get("u1"));
     }
 
-    @DisplayName("closeServicePoint публикует события и завершает визит")
+    @DisplayName("Закрытие точки обслуживания публикует события и завершает визит")
     @Test
     void closeServicePointSendsEventsAndEndsVisit() {
         Branch branch = spy(new Branch("b1", "B1"));
@@ -424,7 +424,7 @@ class BranchTest {
         assertTrue(types.contains("SERVICE_POINT_CLOSED"));
     }
 
-    @DisplayName("closeServicePoint выбрасывает исключение при отсутствии точки")
+    @DisplayName("Закрытие точки обслуживания выбрасывает исключение при отсутствии точки")
     @Test
     void closeServicePointThrowsWhenPointMissing() {
         // В отделении нет точки обслуживания с указанным идентификатором
@@ -452,7 +452,7 @@ class BranchTest {
         verifyNoInteractions(visitService);
     }
 
-    @DisplayName("closeServicePoint выбрасывает исключение при уже закрытой точке")
+    @DisplayName("Закрытие точки обслуживания выбрасывает исключение при повторном закрытии")
     @Test
     void closeServicePointThrowsWhenAlreadyClosed() {
         // Точка обслуживания существует, но на ней уже нет сотрудника
@@ -485,7 +485,7 @@ class BranchTest {
         verify(visitService, times(1)).getServicePointHashMap("b1");
     }
 
-    @DisplayName("addUpdateService обновляет визиты при включённой проверке")
+    @DisplayName("Обновление услуг пересчитывает визиты при включённой проверке")
     @Test
     void addUpdateServiceRefreshesVisitsWhenCheckEnabled() {
         // Обновляем услугу, которая используется в активном визите
@@ -536,7 +536,7 @@ class BranchTest {
                         eq("Update service"));
     }
 
-    @DisplayName("addUpdateService выбрасывает ошибку при отключённой проверке и используемой услуге")
+    @DisplayName("Обновление услуг выбрасывает ошибку при отключённой проверке и используемой услуге")
     @Test
     void addUpdateServiceFailsWhenCheckDisabledAndServiceInUse() {
         // При отключённой проверке визитов обновление должно быть запрещено
@@ -577,7 +577,7 @@ class BranchTest {
         assertSame(existing, branch.getServices().get("s1"));
     }
 
-    @DisplayName("deleteServices очищает ссылки на услуги в визитах")
+    @DisplayName("Удаление услуг очищает ссылки на услуги в визитах")
     @Test
     void deleteServicesCleansVisitReferences() {
         // Удаляем услугу и проверяем обновление всех связей визита
@@ -622,7 +622,7 @@ class BranchTest {
     }
 
 
-    @DisplayName("updateVisit размещает сущности и отправляет события")
+    @DisplayName("Обновление визита размещает сущности и отправляет события")
     @Test
     void updateVisitPlacesEntitiesAndSendsEvents() {
         // Готовим отделение с очередью и пулом визитов
@@ -698,7 +698,7 @@ class BranchTest {
                 .send(eq("frontend"), eq(false), argThat(event -> "VISIT_CALLED".equals(event.getEventType())));
     }
 
-    @DisplayName("updateVisit заменяет текущий визит точки обслуживания")
+    @DisplayName("Обновление визита заменяет текущую запись точки обслуживания")
     @Test
     void updateVisitReplacesExistingServicePointVisit() {
         // На точке обслуживания уже был другой визит и пользователь
@@ -740,7 +740,7 @@ class BranchTest {
         verify(eventService).send(eq("*"), eq(false), any(Event.class));
     }
 
-    @DisplayName("updateVisit выбрасывает исключение при выходе индекса очереди за пределы")
+    @DisplayName("Обновление визита выбрасывает исключение при выходе индекса очереди за пределы")
     @Test
     void updateVisitFailsWhenQueueIndexOutOfRange() {
         // Индекс вставки выходит за пределы очереди

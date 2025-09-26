@@ -297,7 +297,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(activePoint.getId(), backEvent.getParameters().get("servicePointId"));
     }
 
-    @DisplayName("Перенос визита с объектом Visit ставит запись в начало при соответствующем запросе")
+    @DisplayName("Перенос визита с явным объектом помещает запись в начало по запросу")
     @Test
     void visitTransferWithVisitEntityPlacesToStartWhenRequested() {
         log.info("Подготавливаем отделение с точкой обслуживания и двумя очередями");
