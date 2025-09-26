@@ -40,7 +40,7 @@ class VisitServiceAutoCallModeTest {
         visitService.setLifeTimeCallRule(mock(CallRule.class));
     }
 
-    @DisplayName("Запуск автодозвона окна включает режим при разрешении на филиале")
+    @DisplayName("Запуск автоматического вызова для окна включает режим при разрешении на филиале")
     @Test
     void startAutoCallModeOfServicePointTurnsOnModeWhenBranchAllows() {
         Branch branch = new Branch("b1", "Branch");
@@ -64,7 +64,7 @@ class VisitServiceAutoCallModeTest {
         assertSame(servicePoint, event.getBody());
     }
 
-    @DisplayName("Запуск автодозвона окна при отключённом филиале завершается конфликтом")
+    @DisplayName("Запуск автоматического вызова для окна при отключённом режиме филиала завершается конфликтом")
     @Test
     void startAutoCallModeOfServicePointThrowsConflictWhenAutoCallDisabled() {
         Branch branch = new Branch("b1", "Branch");
@@ -82,7 +82,7 @@ class VisitServiceAutoCallModeTest {
         verify(branchService, never()).add(anyString(), any(Branch.class));
     }
 
-    @DisplayName("Запуск автодозвона окна при отсутствии окна обслуживания возвращает статус 404")
+    @DisplayName("Запуск автоматического вызова для окна без существующего окна обслуживания возвращает статус 404")
     @Test
     void startAutoCallModeOfServicePointThrowsNotFoundWhenServicePointMissing() {
         Branch branch = new Branch("b1", "Branch");
