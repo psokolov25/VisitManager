@@ -15,13 +15,13 @@ import ru.aritmos.model.visit.Visit;
 
 class CallRuleTest {
 
-    @DisplayName("Call Rule Should Extend Base Rule")
+    @DisplayName("Правило вызова должно расширять базовое правило")
     @Test
     void callRuleShouldExtendBaseRule() {
         assertTrue(Rule.class.isAssignableFrom(CallRule.class));
     }
 
-    @DisplayName("Call Method Without Queue Filter Should Return Optional Visit")
+    @DisplayName("Метод вызова без фильтра очередей возвращает опциональный визит")
     @Test
     void callMethodWithoutQueueFilterShouldReturnOptionalVisit() throws NoSuchMethodException {
         Method method = CallRule.class.getMethod("call", Branch.class, ServicePoint.class);
@@ -32,7 +32,7 @@ class CallRuleTest {
         assertEquals(Visit.class, elementType);
     }
 
-    @DisplayName("Call Method With Queue Filter Should Return Optional Visit")
+    @DisplayName("Метод вызова с фильтром очередей возвращает опциональный визит")
     @Test
     void callMethodWithQueueFilterShouldReturnOptionalVisit() throws NoSuchMethodException {
         Method method = CallRule.class.getMethod("call", Branch.class, ServicePoint.class, List.class);
@@ -43,7 +43,7 @@ class CallRuleTest {
         assertEquals(Visit.class, elementType);
     }
 
-    @DisplayName("Get Available Service Points Should Return List Of Service Points")
+    @DisplayName("Получение доступных точек обслуживания возвращает список точек")
     @Test
     void getAvailableServicePointsShouldReturnListOfServicePoints() throws NoSuchMethodException {
         Method method = CallRule.class.getMethod("getAvailiableServicePoints", Branch.class, Visit.class);

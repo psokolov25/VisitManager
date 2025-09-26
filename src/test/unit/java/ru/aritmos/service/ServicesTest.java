@@ -34,7 +34,7 @@ class ServicesTest {
         return branch;
     }
 
-    @DisplayName("Get All Services Marks Availability")
+    @DisplayName("Запрос всех услуг отмечает их доступность")
     @Test
     void getAllServicesMarksAvailability() {
         Branch branch = prepareBranch();
@@ -50,7 +50,7 @@ class ServicesTest {
         assertFalse(branch.getServices().get("s2").getIsAvailable());
     }
 
-    @DisplayName("Get All Available Services Returns Only Available")
+    @DisplayName("Запрос доступных услуг возвращает только доступные")
     @Test
     void getAllAvailableServicesReturnsOnlyAvailable() {
         Branch branch = prepareBranch();

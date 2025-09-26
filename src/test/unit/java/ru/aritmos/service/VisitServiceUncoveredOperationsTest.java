@@ -64,7 +64,7 @@ class VisitServiceUncoveredOperationsTest {
         resetVisitEvents();
     }
 
-    @DisplayName("Visit Transfer Moves Visit To Queue With Delay")
+    @DisplayName("Перенос визита переводит клиента в очередь с установленной задержкой")
     @Test
     void visitTransferMovesVisitToQueueWithDelay() {
         log.info("Готовим отделение с оператором и очередями для перевода");
@@ -147,7 +147,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer From Queue To User Pool Assigns User And Schedules Refresh")
+    @DisplayName("Перенос визита из очереди в пользовательский пул назначает оператора и планирует обновление")
     @Test
     void visitTransferFromQueueToUserPoolAssignsUserAndSchedulesRefresh() {
         log.info("Формируем отделение и пользователя, принимающего визит в пуле");
@@ -217,7 +217,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Back To User Pool Stops Serving And Assigns Target User")
+    @DisplayName("Возврат визита в пользовательский пул прекращает обслуживание и закрепляет целевого сотрудника")
     @Test
     void visitBackToUserPoolStopsServingAndAssignsTargetUser() {
         log.info("Создаём отделение с активной точкой обслуживания и пулом сотрудника");
@@ -297,7 +297,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(activePoint.getId(), backEvent.getParameters().get("servicePointId"));
     }
 
-    @DisplayName("Visit Transfer With Visit Entity Places To Start When Requested")
+    @DisplayName("Перенос визита с явным объектом помещает запись в начало по запросу")
     @Test
     void visitTransferWithVisitEntityPlacesToStartWhenRequested() {
         log.info("Подготавливаем отделение с точкой обслуживания и двумя очередями");
@@ -375,7 +375,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer From Queue To Service Point Pool Propagates External Info")
+    @DisplayName("Перенос визита из очереди в пул точки обслуживания передаёт внешние данные услуги")
     @Test
     void visitTransferFromQueueToServicePointPoolPropagatesExternalInfo() {
         log.info("Настраиваем отделение и пул точки обслуживания для внешнего переноса");
@@ -447,7 +447,7 @@ class VisitServiceUncoveredOperationsTest {
     }
 
 
-    @DisplayName("Visit Transfer Places Visit At Exact Index")
+    @DisplayName("Перенос визита размещает запись по указанному индексу")
     @Test
     void visitTransferPlacesVisitAtExactIndex() {
         log.info("Подготавливаем отделение для позиционного переноса визита");
@@ -527,7 +527,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer From Queue To User Pool Includes External Service Info")
+    @DisplayName("Перенос визита из очереди в пользовательский пул включает данные внешней услуги")
     @Test
     void visitTransferFromQueueToUserPoolIncludesExternalServiceInfo() {
         log.info("Готовим отделение для внешнего переноса визита в пул пользователя");
@@ -602,7 +602,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Transfer From Queue To User Pool Positions Visit By Index")
+    @DisplayName("Перенос визита из очереди в пользовательский пул позиционирует визит по индексу")
     @Test
     void visitTransferFromQueueToUserPoolPositionsVisitByIndex() {
         log.info("Формируем отделение для позиционного переноса в пул пользователя");
@@ -676,7 +676,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals(visit.getTicket(), body.get("ticket"));
     }
 
-    @DisplayName("Visit Call For Confirm With Max Waiting Time Selects Visit And Logs Event")
+    @DisplayName("Вызов визита по максимальному времени ожидания выбирает визит и фиксирует событие")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeSelectsVisitAndLogsEvent() {
         log.info("Настраиваем отделение для вызова визита с подтверждением");
@@ -732,7 +732,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals("callNext", calledEvent.getParameters().get("callMethod"));
     }
 
-    @DisplayName("Visit Call For Confirm With Max Waiting Time Activates Auto Call When Queue Is Empty")
+    @DisplayName("Вызов визита по максимальному времени ожидания включает автообзвон при пустой очереди")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeActivatesAutoCallWhenQueueIsEmpty() {
         log.info("Проверяем включение автодовызова при отсутствии доступных визитов");
@@ -763,7 +763,7 @@ class VisitServiceUncoveredOperationsTest {
         verify(branchService).add(branch.getId(), branch);
     }
 
-    @DisplayName("Visit Call For Confirm With Max Waiting Time With Queues Selects Visit")
+    @DisplayName("Вызов визита по максимальному времени ожидания с фильтром очередей выбирает визит")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeWithQueuesSelectsVisit() {
         log.info("Настраиваем отделение для вызова визита по списку очередей");
@@ -819,7 +819,7 @@ class VisitServiceUncoveredOperationsTest {
         assertEquals("callNext", calledEvent.getParameters().get("callMethod"));
     }
 
-    @DisplayName("Visit Call For Confirm With Max Waiting Time With Queues Enables Auto Call Mode")
+    @DisplayName("Вызов визита по максимальному времени ожидания с фильтром очередей включает режим автообзвона")
     @Test
     void visitCallForConfirmWithMaxWaitingTimeWithQueuesEnablesAutoCallMode() {
         log.info("Проверяем включение автодовызова при отсутствии визитов в указанных очередях");

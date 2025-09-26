@@ -33,7 +33,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2FromReceptionTest {
 
-    @DisplayName("Creates Visit With Segmentation Rule And Prints Ticket")
+    @DisplayName("Создание визита второй версией через рецепцию печатает талон при срабатывании сегментации")
     @Test
     void createsVisitWithSegmentationRuleAndPrintsTicket() {
         VisitService service = new VisitService();
@@ -141,7 +141,7 @@ class VisitServiceCreateVisit2FromReceptionTest {
         verifyNoMoreInteractions(printerService);
     }
 
-    @DisplayName("Throws Bad Request When Segmentation Rule Returns Empty Queue")
+    @DisplayName("Создание визита второй версией через рецепцию возвращает 400, если правило сегментации не подобрало очередь")
     @Test
     void throwsBadRequestWhenSegmentationRuleReturnsEmptyQueue() {
         VisitService service = new VisitService();
@@ -201,7 +201,7 @@ class VisitServiceCreateVisit2FromReceptionTest {
         verify(service.printerService, never()).print(anyString(), any());
     }
 
-    @DisplayName("Throws Not Found When Queue Missing In Branch Configuration")
+    @DisplayName("Создание визита второй версией через рецепцию возвращает 404 при отсутствии очереди в конфигурации отделения")
     @Test
     void throwsNotFoundWhenQueueMissingInBranchConfiguration() {
         VisitService service = new VisitService();

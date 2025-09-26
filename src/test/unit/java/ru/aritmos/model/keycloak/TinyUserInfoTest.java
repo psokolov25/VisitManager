@@ -7,7 +7,7 @@ import static ru.aritmos.test.LoggingAssertions.*;
 
 class TinyUserInfoTest {
 
-    @DisplayName("Method Chains Populate Fields And String")
+    @DisplayName("Цепочка методов заполняет поля и строковое представление")
     @Test
     void methodChainsPopulateFieldsAndString() {
         TinyUserInfo expected = new TinyUserInfo()

@@ -21,7 +21,7 @@ import ru.aritmos.model.visit.Visit;
  */
 class VisitServiceGetMarksTest {
 
-    @DisplayName("Returns Marks Of Visit")
+    @DisplayName("Метод getMarks возвращает все отметки выбранного визита")
     @Test
     void returnsMarksOfVisit() {
         Branch branch = new Branch("b1", "Branch");
@@ -50,7 +50,7 @@ class VisitServiceGetMarksTest {
         assertSame(mark, marks.get(0));
     }
 
-    @DisplayName("Throws When Visit Missing")
+    @DisplayName("Метод getMarks выбрасывает исключение, если визит не найден")
     @Test
     void throwsWhenVisitMissing() {
         Branch branch = new Branch("b1", "Branch");

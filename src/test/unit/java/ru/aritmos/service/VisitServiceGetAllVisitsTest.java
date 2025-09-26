@@ -19,7 +19,7 @@ import ru.aritmos.model.visit.Visit;
  */
 class VisitServiceGetAllVisitsTest {
 
-    @DisplayName("Get Available Visits Filters Only Waiting And Timed Out")
+    @DisplayName("Метод getAvailableVisits оставляет только ожидающих клиентов и визиты с истекшей задержкой возврата")
     @Test
     void getAvailableVisitsFiltersOnlyWaitingAndTimedOut() {
         VisitService service = new VisitService();
@@ -43,7 +43,7 @@ class VisitServiceGetAllVisitsTest {
         assertEquals(List.of(valid), result);
     }
 
-    @DisplayName("Get All Visits Returns Branch Visits")
+    @DisplayName("Метод getAllVisits возвращает визиты указанного отделения")
     @Test
     void getAllVisitsReturnsBranchVisits() {
         Branch branch = new Branch("b1", "Branch");
@@ -66,7 +66,7 @@ class VisitServiceGetAllVisitsTest {
         assertSame(visit, visits.get("v1"));
     }
 
-    @DisplayName("Get Visits By Statuses Filters By Status")
+    @DisplayName("Метод getVisitsByStatuses оставляет визиты только с заданными статусами")
     @Test
     void getVisitsByStatusesFiltersByStatus() {
         Branch branch = new Branch("b1", "Branch");

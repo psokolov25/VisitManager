@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 class ApplicationTest {
-    @DisplayName("Метод main передаёт аргументы в Micronaut.run")
+    @DisplayName("Главный метод передаёт аргументы в стартовую процедуру фреймворка")
     @Test
     void main() {
         try (MockedStatic<Micronaut> mic = mockStatic(Micronaut.class)) {

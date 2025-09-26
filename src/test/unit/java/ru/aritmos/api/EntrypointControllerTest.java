@@ -20,7 +20,7 @@ import ru.aritmos.service.VisitService;
 
 class EntrypointControllerTest {
 
-    @DisplayName("Get All Available Services Returns List")
+    @DisplayName("Контроллер возвращает список доступных услуг, подготовленный сервисом")
     @Test
     void getAllAvailableServicesReturnsList() {
         Services services = mock(Services.class);
@@ -45,7 +45,7 @@ class EntrypointControllerTest {
         return controller;
     }
 
-    @DisplayName("Create Virtual Visit Delegates To Service")
+    @DisplayName("Контроллер создаёт виртуальный визит через профильный сервис")
     @Test
     void createVirtualVisitDelegatesToService() throws Exception {
         EntrypointController controller = controller();
@@ -60,7 +60,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVirtualVisit("b1", "sp1", ids, "sid"));
     }
 
-    @DisplayName("Create Visit Delegates To Service When Segmentation Empty")
+    @DisplayName("Контроллер без сегментации делегирует создание визита сервису визитов")
     @Test
     void createVisitDelegatesToServiceWhenSegmentationEmpty() throws Exception {
         EntrypointController controller = controller();
@@ -75,7 +75,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", ids, false, null));
     }
 
-    @DisplayName("Create Visit Delegates To Service When Segmentation Provided")
+    @DisplayName("Контроллер с переданной сегментацией поручает создание визита сервису визитов")
     @Test
     void createVisitDelegatesToServiceWhenSegmentationProvided() throws Exception {
         EntrypointController controller = controller();
@@ -90,7 +90,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", ids, false, "seg"));
     }
 
-    @DisplayName("Create Visit With Parameters Delegates")
+    @DisplayName("Контроллер по объекту параметров делегирует создание визита сервису визитов")
     @Test
     void createVisitWithParametersDelegates() throws Exception {
         EntrypointController controller = controller();
@@ -108,7 +108,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", params, true, null));
     }
 
-    @DisplayName("Create Visit With Parameters Delegates With Segmentation")
+    @DisplayName("Контроллер по параметрам и сегментации делегирует создание визита сервису визитов")
     @Test
     void createVisitWithParametersDelegatesWithSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -126,7 +126,7 @@ class EntrypointControllerTest {
         assertSame(visit, controller.createVisit("b1", "e1", params, true, "seg"));
     }
 
-    @DisplayName("Create Visit From Reception Delegates Without Segmentation")
+    @DisplayName("Контроллер ресепшена без сегментации поручает создание визита сервису визитов")
     @Test
     void createVisitFromReceptionDelegatesWithoutSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -147,7 +147,7 @@ class EntrypointControllerTest {
             .createVisitFromReception("b1", "p1", params, true, "sid");
     }
 
-    @DisplayName("Create Visit From Reception Delegates With Segmentation")
+    @DisplayName("Контроллер ресепшена с сегментацией поручает создание визита сервису визитов")
     @Test
     void createVisitFromReceptionDelegatesWithSegmentation() throws Exception {
         EntrypointController controller = controller();
@@ -168,7 +168,7 @@ class EntrypointControllerTest {
             .createVisitFromReception("b1", "p1", params, false, "seg", "sid");
     }
 
-    @DisplayName("Set Parameter Map Updates Visit And Delegates")
+    @DisplayName("Контроллер обновляет карту параметров визита и поручает сохранение сервису отделений")
     @Test
     void setParameterMapUpdatesVisitAndDelegates() {
         EntrypointController controller = controller();
@@ -184,7 +184,7 @@ class EntrypointControllerTest {
             .updateVisit(visit, "VISIT_SET_PARAMETER_MAP", controller.visitService);
     }
 
-    @DisplayName("Get All Services Delegates To Services")
+    @DisplayName("Контроллер делегирует запрос всех услуг сервису работы с услугами")
     @Test
     void getAllServicesDelegatesToServices() {
         EntrypointController controller = controller();

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class UserInfoTest {
 
-    @DisplayName("Builder And Setters Support All Fields")
+    @DisplayName("Построитель и методы установки заполняют все поля профиля")
     @Test
     void builderAndSettersSupportAllFields() {
         RealmAccess realmAccess = RealmAccess.builder()

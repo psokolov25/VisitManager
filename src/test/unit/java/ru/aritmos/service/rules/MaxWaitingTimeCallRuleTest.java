@@ -21,7 +21,7 @@ import ru.aritmos.model.visit.Visit;
 class MaxWaitingTimeCallRuleTest {
 
     /** Проверяем корректный парсинг даты из строки. */
-    @DisplayName("Parse Date From String")
+    @DisplayName("Метод преобразования даты корректно читает значение из строки")
     @Test
     void parseDateFromString() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -35,7 +35,7 @@ class MaxWaitingTimeCallRuleTest {
     /**
      * Проверяем отбор доступных точек обслуживания по рабочему профилю.
      */
-    @DisplayName("Available Service Points Filtered By Work Profile")
+    @DisplayName("Получение доступных точек обслуживания фильтрует их по рабочему профилю")
     @Test
     void availableServicePointsFilteredByWorkProfile() {
         // создаем отделение
@@ -86,7 +86,7 @@ class MaxWaitingTimeCallRuleTest {
     /**
      * Проверяем, что при неверном рабочем профиле выбрасывается исключение.
      */
-    @DisplayName("Call Throws When Work Profile Is Wrong")
+    @DisplayName("Метод вызова выбрасывает исключение при неверном рабочем профиле")
     @Test
     void callThrowsWhenWorkProfileIsWrong() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -106,7 +106,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем вызов визита по максимальному ожиданию из списка очередей. */
-    @DisplayName("Call With Queue Ids Selects Visit")
+    @DisplayName("Метод вызова по списку очередей выбирает визит с максимальным ожиданием")
     @Test
     void callWithQueueIdsSelectsVisit() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -144,7 +144,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что без пользователя выбрасывается исключение при вызове с очередями. */
-    @DisplayName("Call With Queue Ids Without User Throws")
+    @DisplayName("Метод вызова по списку очередей выбрасывает исключение без оператора")
     @Test
     void callWithQueueIdsWithoutUserThrows() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -159,7 +159,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем работу компаратора перенесённых визитов. */
-    @DisplayName("Visit Comparer Handles Transfer Flags")
+    @DisplayName("Компаратор визитов учитывает флаги переноса визита")
     @Test
     void visitComparerHandlesTransferFlags() throws Exception {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -183,7 +183,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем выбор визита с максимальным временем ожидания без списка очередей. */
-    @DisplayName("Call Selects Visit With Longest Waiting Time")
+    @DisplayName("Метод вызова выбирает визит с наибольшим временем ожидания")
     @Test
     void callSelectsVisitWithLongestWaitingTime() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -224,7 +224,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем очистку флагов переноса/возврата после выбора визита. */
-    @DisplayName("Call Resets Transfer Flags On Selected Visit")
+    @DisplayName("Метод вызова сбрасывает временные флаги переноса у выбранного визита")
     @Test
     void callResetsTransferFlagsOnSelectedVisit() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -265,7 +265,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что при отсутствии пользователя выбрасывается исключение. */
-    @DisplayName("Call Throws When No User Assigned")
+    @DisplayName("Метод вызова выбрасывает исключение при отсутствии оператора")
     @Test
     void callThrowsWhenNoUserAssigned() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -282,7 +282,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что компаратор учитывает порядок по датам переноса. */
-    @DisplayName("Visit Comparer Prefers Earlier Transfer Dates")
+    @DisplayName("Компаратор визитов отдаёт приоритет более ранней дате переноса")
     @Test
     void visitComparerPrefersEarlierTransferDates() throws Exception {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -306,7 +306,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что визиты без статуса WAITING игнорируются. */
-    @DisplayName("Call Ignores Visits Without Waiting Status")
+    @DisplayName("Метод вызова игнорирует визиты без статуса ожидания")
     @Test
     void callIgnoresVisitsWithoutWaitingStatus() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -337,7 +337,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что визиты с ненабранной задержкой возвращения пропускаются. */
-    @DisplayName("Call Skips Visits Until Return Delay Reached")
+    @DisplayName("Метод вызова пропускает визиты до завершения задержки возврата")
     @Test
     void callSkipsVisitsUntilReturnDelayReached() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -381,7 +381,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем очистку временных полей при выборе визита через список очередей. */
-    @DisplayName("Call With Queue Ids Resets Temporary Flags")
+    @DisplayName("Метод вызова по списку очередей сбрасывает временные флаги переноса")
     @Test
     void callWithQueueIdsResetsTemporaryFlags() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -421,7 +421,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что при выборе по списку очередей визиты с задержкой возвращения не подходят. */
-    @DisplayName("Call With Queue Ids Returns Empty When Return Delay Not Met")
+    @DisplayName("Метод вызова по списку очередей возвращает пустой результат до завершения задержки возврата")
     @Test
     void callWithQueueIdsReturnsEmptyWhenReturnDelayNotMet() {
         MaxWaitingTimeCallRule rule = new MaxWaitingTimeCallRule();
@@ -455,7 +455,7 @@ class MaxWaitingTimeCallRuleTest {
     }
 
     /** Проверяем, что без подходящих пользователей список точек обслуживания пуст. */
-    @DisplayName("Available Service Points Return Empty When No Active Users")
+    @DisplayName("Получение доступных точек обслуживания возвращает пустой результат без активных операторов")
     @Test
     void availableServicePointsReturnEmptyWhenNoActiveUsers() {
         Branch branch = new Branch("b1", "branch");

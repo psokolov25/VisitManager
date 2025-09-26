@@ -30,7 +30,7 @@ class EventHandlerContextTest {
         Body(Branch branch) { this.b1 = branch; }
     }
 
-    @DisplayName("Branch Public Handler Converts Body To Map")
+    @DisplayName("Обработчик публичного события отделения преобразует тело в карту")
     @Test
     void branchPublicHandlerConvertsBodyToMap() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -52,7 +52,7 @@ class EventHandlerContextTest {
         assertEquals(branch, captor.getValue().get("b1"));
     }
 
-    @DisplayName("Simple Handlers Just Log")
+    @DisplayName("Простые обработчики ограничиваются логированием")
     @Test
     void simpleHandlersJustLog() {
         Event event = Event.builder().eventType("TEST").build();
@@ -61,7 +61,7 @@ class EventHandlerContextTest {
         assertDoesNotThrow(() -> new EventHandlerContext.EntityChangedHandler().Handle(event));
     }
 
-    @DisplayName("Not Force Logout Closes Point And Ends Visit")
+    @DisplayName("Непринудительный выход закрывает точку и завершает визит")
     @Test
     void notForceLogoutClosesPointAndEndsVisit() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -97,7 +97,7 @@ class EventHandlerContextTest {
                 .closeServicePoint("b1", "sp1", visitService, false, false, "", false, "");
     }
 
-    @DisplayName("Force Logout Closes Point")
+    @DisplayName("Принудительный выход закрывает точку обслуживания")
     @Test
     void forceLogoutClosesPoint() throws Exception {
         VisitService visitService = mock(VisitService.class);
@@ -132,7 +132,7 @@ class EventHandlerContextTest {
      * Проверяет, что метод {@link EventHandlerContext#AddHandlers()} регистрирует все типы событий
      * и публикует демонстрационную конфигурацию отделений.
      */
-    @DisplayName("Add Handlers Registers All Listeners And Publishes Demo Configuration")
+    @DisplayName("Регистрация обработчиков добавляет слушателей и публикует демо-конфигурацию")
     @Test
     void addHandlersRegistersAllListenersAndPublishesDemoConfiguration() throws Exception {
         Field allHandlersField = KafkaListener.class.getDeclaredField("allHandlers");

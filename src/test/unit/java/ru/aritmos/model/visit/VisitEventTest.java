@@ -7,34 +7,34 @@ import org.junit.jupiter.api.Test;
 
 class VisitEventTest {
 
-    @DisplayName("Test Is New Of Transaction")
+    @DisplayName("Проверяет, что событие считается новым в транзакции")
     @Test
     void testIsNewOfTransaction() {
         assertTrue(VisitEvent.isNewOfTransaction(VisitEvent.STOP_SERVING));
         assertFalse(VisitEvent.isNewOfTransaction(VisitEvent.CREATED));
     }
 
-    @DisplayName("Test Is Front End Event")
+    @DisplayName("Проверяет принадлежность события фронтовой категории")
     @Test
     void testIsFrontEndEvent() {
         assertTrue(VisitEvent.isFrontEndEvent(VisitEvent.CREATED));
         assertFalse(VisitEvent.isFrontEndEvent(VisitEvent.VISIT_END_TRANSACTION));
     }
 
-    @DisplayName("Test Is Ignored In Stat")
+    @DisplayName("Проверяет игнорирование события в статистике")
     @Test
     void testIsIgnoredInStat() {
         assertFalse(VisitEvent.isIgnoredInStat(VisitEvent.CREATED));
     }
 
-    @DisplayName("Test Get Status")
+    @DisplayName("Проверяет получение статуса события")
     @Test
     void testGetStatus() {
         assertEquals(TransactionCompletionStatus.STOP_SERVING, VisitEvent.getStatus(VisitEvent.STOP_SERVING));
         assertNull(VisitEvent.getStatus(VisitEvent.CREATED));
     }
 
-    @DisplayName("Test Can Be Next")
+    @DisplayName("Проверяет допустимость последующего события")
     @Test
     void testCanBeNext() {
         VisitEvent current = VisitEvent.CREATED;
@@ -47,7 +47,7 @@ class VisitEventTest {
         assertFalse(current.canBeNext(nextForbidden));
     }
 
-    @DisplayName("Test Get State")
+    @DisplayName("Проверяет получение состояния для события")
     @Test
     void testGetState() {
         assertEquals(VisitState.CREATED, VisitEvent.CREATED.getState());

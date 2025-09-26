@@ -21,7 +21,7 @@ class ConfigurationTest {
     /**
      * Проверяет успешную публикацию конфигурации отделений.
      */
-    @DisplayName("Create Branch Configuration Publishes Events")
+    @DisplayName("Создание конфигурации отделения публикует события")
     @Test
     void createBranchConfigurationPublishesEvents() {
         // создаём сервис и подставляем заглушки зависимостей
@@ -62,7 +62,7 @@ class ConfigurationTest {
     /**
      * Проверяет откат публикации при ошибке.
      */
-    @DisplayName("Create Branch Configuration Rollbacks On Error")
+    @DisplayName("Создание конфигурации отделения откатывает изменения при ошибке")
     @Test
     void createBranchConfigurationRollbacksOnError() {
         // сервис с заглушками
@@ -103,7 +103,7 @@ class ConfigurationTest {
     /**
      * Создаёт демонстрационное отделение с заполненными данными.
      */
-    @DisplayName("Create Demo Branch Builds Sample")
+    @DisplayName("Создание демо-отделения формирует образец")
     @Test
     void createDemoBranchBuildsSample() {
         // конфигурация с заглушкой клиента Keycloak

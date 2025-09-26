@@ -41,7 +41,7 @@ class BranchServiceTest {
     /**
      * Возвращает существующее отделение по идентификатору.
      */
-    @DisplayName("Get Branch Returns Existing Branch")
+    @DisplayName("Получение отделения возвращает существующий объект")
     @Test
     void getBranchReturnsExistingBranch() {
         // подготовка сервиса и данных
@@ -61,7 +61,7 @@ class BranchServiceTest {
     /**
      * Бросает исключение при отсутствии отделения.
      */
-    @DisplayName("Get Branch Throws When Missing")
+    @DisplayName("Получение отделения выбрасывает исключение при отсутствии")
     @Test
     void getBranchThrowsWhenMissing() {
         // подготовка
@@ -79,7 +79,7 @@ class BranchServiceTest {
     /**
      * Добавляет группы услуг и связывает их с услугами отделения.
      */
-    @DisplayName("Add Update Service Groups Assigns To Services")
+    @DisplayName("Обновление групп услуг привязывает их к услугам")
     @Test
     void addUpdateServiceGroupsAssignsToServices() {
         // подготовка отделения с услугой
@@ -109,7 +109,7 @@ class BranchServiceTest {
     /**
      * Бросает ошибку, если группа ссылается на несуществующую услугу.
      */
-    @DisplayName("Add Update Service Groups Throws When Service Missing")
+    @DisplayName("Обновление групп услуг выбрасывает исключение при отсутствии услуги")
     @Test
     void addUpdateServiceGroupsThrowsWhenServiceMissing() {
         BranchService service = spy(new BranchService());
@@ -132,7 +132,7 @@ class BranchServiceTest {
     /**
      * Проверяет наличие отделения методом branchExists.
      */
-    @DisplayName("Branch Exists Checks Presence")
+    @DisplayName("Проверка существования отделения определяет наличие")
     @Test
     void branchExistsChecksPresence() {
         // подготовка
@@ -152,7 +152,7 @@ class BranchServiceTest {
     /**
      * Возвращает копию отделений без детальной информации.
      */
-    @DisplayName("Get Branches Returns Copy Without Details")
+    @DisplayName("Запрос отделений возвращает копию без деталей")
     @Test
     void getBranchesReturnsCopyWithoutDetails() {
         // подготовка
@@ -178,7 +178,7 @@ class BranchServiceTest {
     /**
      * Возвращает оригинальные ссылки на отделения при запросе детализированного списка.
      */
-    @DisplayName("Get Detailed Branches Returns Original References")
+    @DisplayName("Запрос детализированных отделений возвращает оригинальные ссылки")
     @Test
     void getDetailedBranchesReturnsOriginalReferences() {
         // подготовка
@@ -199,7 +199,7 @@ class BranchServiceTest {
     /**
      * Сохраняет отделение и проставляет идентификаторы зависимым сущностям.
      */
-    @DisplayName("Add Stores Branch And Sets Ids")
+    @DisplayName("Сохранение отделения проставляет идентификаторы")
     @Test
     void addStoresBranchAndSetsIds() {
         // подготовка
@@ -225,7 +225,7 @@ class BranchServiceTest {
     /**
      * Меняет рабочий профиль пользователя на точке обслуживания.
      */
-    @DisplayName("Change User Work Profile In Service Point Updates User")
+    @DisplayName("Изменение рабочего профиля точки обслуживания обновляет пользователя")
     @Test
     void changeUserWorkProfileInServicePointUpdatesUser() {
         // подготовка
@@ -252,7 +252,7 @@ class BranchServiceTest {
     /**
      * Бросает исключение, если на точке отсутствует пользователь.
      */
-    @DisplayName("Change User Work Profile In Service Point Throws When User Missing")
+    @DisplayName("Изменение рабочего профиля выбрасывает исключение при отсутствии пользователя")
     @Test
     void changeUserWorkProfileInServicePointThrowsWhenUserMissing() {
         BranchService service = new BranchService();
@@ -275,7 +275,7 @@ class BranchServiceTest {
     /**
      * Делегирует закрытие точки обслуживания объекту Branch.
      */
-    @DisplayName("Close Service Point Delegates To Branch")
+    @DisplayName("Закрытие точки обслуживания делегируется отделению")
     @Test
     void closeServicePointDelegatesToBranch() {
         // подготовка
@@ -303,7 +303,7 @@ class BranchServiceTest {
     /**
      * Обновляет существующее отделение и отправляет событие изменения.
      */
-    @DisplayName("Add Updates Existing Branch Sends Event")
+    @DisplayName("Обновление существующего отделения отправляет событие")
     @Test
     void addUpdatesExistingBranchSendsEvent() {
         // подготовка
@@ -328,7 +328,7 @@ class BranchServiceTest {
     /**
      * Удаляет отделение, закрывая точки и публикуя событие.
      */
-    @DisplayName("Delete Removes Branch And Sends Event")
+    @DisplayName("Удаление отделения удаляет запись и отправляет событие")
     @Test
     void deleteRemovesBranchAndSendsEvent() {
         BranchService service = spy(new BranchService());
@@ -367,7 +367,7 @@ class BranchServiceTest {
     /**
      * Бросает исключение при попытке удалить неизвестное отделение.
      */
-    @DisplayName("Delete Throws When Branch Missing")
+    @DisplayName("Удаление выбрасывает исключение при отсутствии отделения")
     @Test
     void deleteThrowsWhenBranchMissing() {
         BranchService service = new BranchService();
@@ -384,7 +384,7 @@ class BranchServiceTest {
     /**
      * Возвращает услуги, связанные с рабочим профилем.
      */
-    @DisplayName("Get Services By Work Profile Id Returns Linked")
+    @DisplayName("Запрос услуг по профилю возвращает связанные услуги")
     @Test
     void getServicesByWorkProfileIdReturnsLinked() {
         // подготовка
@@ -412,7 +412,7 @@ class BranchServiceTest {
     /**
      * Бросает ошибку, если рабочий профиль не найден.
      */
-    @DisplayName("Get Services By Work Profile Id Throws When Missing")
+    @DisplayName("Запрос услуг по профилю выбрасывает исключение при отсутствии")
     @Test
     void getServicesByWorkProfileIdThrowsWhenMissing() {
         // подготовка
@@ -433,7 +433,7 @@ class BranchServiceTest {
     /**
      * Возвращает услуги очереди по её идентификатору.
      */
-    @DisplayName("Get Services By Queue Id Returns Linked")
+    @DisplayName("Запрос услуг по очереди возвращает связанные услуги")
     @Test
     void getServicesByQueueIdReturnsLinked() {
         // подготовка
@@ -458,7 +458,7 @@ class BranchServiceTest {
     /**
      * Бросает ошибку, если очередь не найдена.
      */
-    @DisplayName("Get Services By Queue Id Throws When Missing")
+    @DisplayName("Запрос услуг по очереди выбрасывает исключение при отсутствии")
     @Test
     void getServicesByQueueIdThrowsWhenMissing() {
         // подготовка
@@ -479,7 +479,7 @@ class BranchServiceTest {
     /**
      * Возвращает список возможных оказанных услуг отделения.
      */
-    @DisplayName("Get Delivered Services By Branch Id Returns List")
+    @DisplayName("Запрос выполненных услуг отделения возвращает список")
     @Test
     void getDeliveredServicesByBranchIdReturnsList() {
         // подготовка
@@ -502,7 +502,7 @@ class BranchServiceTest {
     /**
      * Делегирует обновление визита объекту Branch.
      */
-    @DisplayName("Update Visit Delegates To Branch")
+    @DisplayName("Обновление визита делегируется отделению")
     @Test
     void updateVisitDelegatesToBranch() {
         // подготовка: шпион Branch и сервис
@@ -526,7 +526,7 @@ class BranchServiceTest {
     /**
      * Делегирует обновление визита по событию без дополнительных параметров.
      */
-    @DisplayName("Update Visit With Event Delegates To Branch")
+    @DisplayName("Обновление визита с событием делегируется отделению")
     @Test
     void updateVisitWithEventDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -549,7 +549,7 @@ class BranchServiceTest {
     /**
      * Делегирует обновление визита по событию с флагом постановки в начало.
      */
-    @DisplayName("Update Visit With Event And Start Flag Delegates To Branch")
+    @DisplayName("Обновление визита с событием и флагом запуска делегируется отделению")
     @Test
     void updateVisitWithEventAndStartFlagDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -573,7 +573,7 @@ class BranchServiceTest {
     /**
      * Делегирует обновление визита по событию с указанием позиции.
      */
-    @DisplayName("Update Visit With Event And Index Delegates To Branch")
+    @DisplayName("Обновление визита с событием и индексом делегируется отделению")
     @Test
     void updateVisitWithEventAndIndexDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -597,7 +597,7 @@ class BranchServiceTest {
     /**
      * Открывает точку обслуживания, назначая пользователя и рабочий профиль.
      */
-    @DisplayName("Open Service Point Assigns User And Profile")
+    @DisplayName("Открытие точки обслуживания назначает пользователя и профиль")
     @Test
     void openServicePointAssignsUserAndProfile() throws Exception {
         // подготовка: отделение с рабочим профилем и точкой
@@ -629,7 +629,7 @@ class BranchServiceTest {
     /**
      * Подгружает профиль сотрудника из Keycloak при первом открытии точки.
      */
-    @DisplayName("Open Service Point Updates User From Keycloak")
+    @DisplayName("Открытие точки обслуживания обновляет данные пользователя внешнего сервиса")
     @Test
     void openServicePointUpdatesUserFromKeycloak() throws Exception {
         BranchService service = new BranchService();
@@ -669,7 +669,7 @@ class BranchServiceTest {
 
      * Публикует события о смене точки и профиля при открытии точки существующим сотрудником.
      */
-    @DisplayName("Open Service Point Publishes User Change Events")
+    @DisplayName("Открытие точки обслуживания публикует события об изменении пользователя")
     @Test
     void openServicePointPublishesUserChangeEvents() throws Exception {
         // подготовка: отделение с существующим пользователем
@@ -707,7 +707,7 @@ class BranchServiceTest {
 
      * Закрывает прежние точки обслуживания пользователя при назначении новой.
      */
-    @DisplayName("Open Service Point Closes Previous Assignments")
+    @DisplayName("Открытие точки обслуживания закрывает предыдущие назначения")
     @Test
     void openServicePointClosesPreviousAssignments() throws Exception {
         BranchService service = spy(new BranchService());
@@ -755,7 +755,7 @@ class BranchServiceTest {
 
      * Завершает активный перерыв и уведомляет каналы при открытии точки обслуживания.
      */
-    @DisplayName("Open Service Point Completes Active Break And Notifies Channels")
+    @DisplayName("Открытие точки обслуживания завершает активный перерыв и уведомляет каналы")
     @Test
     void openServicePointCompletesActiveBreakAndNotifiesChannels() throws Exception {
         log.info("Готовим отделение и пользователя с активным перерывом");
@@ -847,7 +847,7 @@ class BranchServiceTest {
 
      * Бросает ошибку, если у сотрудника нет доступа к отделению при открытии точки.
      */
-    @DisplayName("Open Service Point Throws When User Has No Access")
+    @DisplayName("Открытие точки обслуживания выбрасывает исключение при отсутствии доступа у пользователя")
     @Test
     void openServicePointThrowsWhenUserHasNoAccess() {
         // подготовка: пользователь без прав на филиал
@@ -879,7 +879,7 @@ class BranchServiceTest {
     /**
      * Удаляет отделение, закрывая активные точки и отправляя событие.
      */
-    @DisplayName("Delete Removes Branch And Closes Service Points")
+    @DisplayName("Удаление отделения закрывает точки обслуживания")
     @Test
     void deleteRemovesBranchAndClosesServicePoints() {
         // подготовка
@@ -929,7 +929,7 @@ class BranchServiceTest {
     /**
      * Бросает ошибку, если рабочий профиль не найден.
      */
-    @DisplayName("Open Service Point Throws When Work Profile Missing")
+    @DisplayName("Открытие точки обслуживания выбрасывает исключение при отсутствии рабочего профиля")
     @Test
     void openServicePointThrowsWhenWorkProfileMissing() {
         // подготовка: отделение без рабочего профиля
@@ -952,7 +952,7 @@ class BranchServiceTest {
     /**
      * Бросает ошибку, если точка обслуживания не найдена.
      */
-    @DisplayName("Open Service Point Throws When Service Point Missing")
+    @DisplayName("Открытие точки обслуживания выбрасывает исключение при отсутствии точки обслуживания")
     @Test
     void openServicePointThrowsWhenServicePointMissing() {
         // подготовка: отделение без точки обслуживания
@@ -975,7 +975,7 @@ class BranchServiceTest {
     /**
      * Возвращает карту пользователей отделения без изменений.
      */
-    @DisplayName("Get Users Returns Branch Users")
+    @DisplayName("Запрос пользователей возвращает сотрудников отделения")
     @Test
     void getUsersReturnsBranchUsers() {
         BranchService service = spy(new BranchService());
@@ -995,7 +995,7 @@ class BranchServiceTest {
     /**
      * Увеличивает счётчик талонов очереди и сохраняет отделение.
      */
-    @DisplayName("Increment Ticket Counter Updates Queue")
+    @DisplayName("Инкремент номера талона обновляет очередь")
     @Test
     void incrementTicketCounterUpdatesQueue() {
         BranchService service = spy(new BranchService());
@@ -1016,7 +1016,7 @@ class BranchServiceTest {
     /**
      * Возвращает -1, если очередь не найдена, но отделение сохраняется.
      */
-    @DisplayName("Increment Ticket Counter Returns Minus One When Queue Missing")
+    @DisplayName("Инкремент номера талона возвращает -1 при отсутствии очереди")
     @Test
     void incrementTicketCounterReturnsMinusOneWhenQueueMissing() {
         BranchService service = spy(new BranchService());
@@ -1035,7 +1035,7 @@ class BranchServiceTest {
     /**
      * Делегирует обновление услуг объекта Branch и сохраняет отделение.
      */
-    @DisplayName("Add Update Service Delegates To Branch")
+    @DisplayName("Обновление услуг делегируется отделению")
     @Test
     void addUpdateServiceDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -1057,7 +1057,7 @@ class BranchServiceTest {
     /**
      * Вызывает удаление услуг у Branch c передачей всех параметров.
      */
-    @DisplayName("Delete Services Delegates To Branch")
+    @DisplayName("Удаление услуг делегируется отделению")
     @Test
     void deleteServicesDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -1077,7 +1077,7 @@ class BranchServiceTest {
     /**
      * Передаёт обновление точек обслуживания в Branch и инициирует сохранение.
      */
-    @DisplayName("Add Update Service Point Delegates To Branch")
+    @DisplayName("Обновление точек обслуживания делегируется отделению")
     @Test
     void addUpdateServicePointDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -1098,7 +1098,7 @@ class BranchServiceTest {
     /**
      * Делегирует удаление точек обслуживания и сохраняет изменения отделения.
      */
-    @DisplayName("Delete Service Points Delegates To Branch")
+    @DisplayName("Удаление точек обслуживания делегируется отделению")
     @Test
     void deleteServicePointsDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -1117,7 +1117,7 @@ class BranchServiceTest {
     /**
      * Передаёт обновление очередей в Branch и инициирует сохранение отделения.
      */
-    @DisplayName("Add Update Queues Delegates To Branch")
+    @DisplayName("Обновление очередей делегируется отделению")
     @Test
     void addUpdateQueuesDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -1136,7 +1136,7 @@ class BranchServiceTest {
     /**
      * Делегирует удаление очередей и фиксирует изменения через add.
      */
-    @DisplayName("Delete Queues Delegates To Branch")
+    @DisplayName("Удаление очередей делегируется отделению")
     @Test
     void deleteQueuesDelegatesToBranch() {
         BranchService service = spy(new BranchService());
@@ -1155,7 +1155,7 @@ class BranchServiceTest {
     /**
      * Передаёт обновление правил сегментации объекту Branch и сохраняет отделение.
      */
-    @DisplayName("Add Update Segmentation Rules Delegates To Branch")
+    @DisplayName("Обновление правил сегментации делегируется отделению")
     @Test
     void addUpdateSegmentationRulesDelegatesToBranch() {
         BranchService service = spy(new BranchService());

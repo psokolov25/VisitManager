@@ -11,7 +11,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import ru.aritmos.keycloack.service.KeyCloackClient;
 
 class UserTest {
-    @DisplayName("Constructor Initializes Fields With Keycloak Client")
+    @DisplayName("Конструктор инициализирует поля при передаче клиента авторизации")
     @Test
     void constructorInitializesFieldsWithKeycloakClient() {
         KeyCloackClient client = mock(KeyCloackClient.class);
@@ -27,7 +27,7 @@ class UserTest {
         assertSame(client, user.getKeyCloackClient());
     }
 
-    @DisplayName("Break Status And Duration Calculation")
+    @DisplayName("Расчёт статуса перерыва и длительности")
     @Test
     void breakStatusAndDurationCalculation() {
         User user = new User("2", "worker", null);
@@ -43,7 +43,7 @@ class UserTest {
         assertEquals(45L, user.getLastBreakDuration());
     }
 
-    @DisplayName("Constructor Generates Id When Not Provided")
+    @DisplayName("Конструктор генерирует идентификатор при его отсутствии")
     @Test
     void constructorGeneratesIdWhenNotProvided() {
         KeyCloackClient client = mock(KeyCloackClient.class);

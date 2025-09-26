@@ -27,7 +27,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisitTest {
 
-    @DisplayName("Create Visit Delegates To Create Visit2With Cloned Services")
+    @DisplayName("Создание визита через сервис делегирует вызов второй версии с клонированными услугами")
     @Test
     void createVisitDelegatesToCreateVisit2WithClonedServices() throws SystemException {
         Branch branch = new Branch("b1", "Отделение");
@@ -60,7 +60,7 @@ class VisitServiceCreateVisitTest {
         assertNotSame(second, service.lastServices.get(1));
     }
 
-    @DisplayName("Create Visit Throws When Service Missing")
+    @DisplayName("Создание визита через сервис выбрасывает исключение при отсутствии услуги")
     @Test
     void createVisitThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");
@@ -83,7 +83,7 @@ class VisitServiceCreateVisitTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
-    @DisplayName("Create Visit Throws When Service List Empty")
+    @DisplayName("Создание визита через сервис выбрасывает исключение при пустом списке услуг")
     @Test
     void createVisitThrowsWhenServiceListEmpty() {
         Branch branch = new Branch("b1", "Отделение");
@@ -103,7 +103,7 @@ class VisitServiceCreateVisitTest {
         assertFalse(service.visitAutoCallInvoked);
     }
 
-    @DisplayName("Create Visit With Segmentation Rule Delegates To Create Visit2")
+    @DisplayName("Создание визита с правилом сегментации делегирует выполнение второй версии")
     @Test
     void createVisitWithSegmentationRuleDelegatesToCreateVisit2() {
         Branch branch = new Branch("b1", "Отделение");
@@ -129,7 +129,7 @@ class VisitServiceCreateVisitTest {
         assertTrue(visitService.visitAutoCallInvoked);
     }
 
-    @DisplayName("Create Visit With Segmentation Rule Throws When Service Missing")
+    @DisplayName("Создание визита с правилом сегментации выбрасывает исключение при отсутствии услуги")
     @Test
     void createVisitWithSegmentationRuleThrowsWhenServiceMissing() {
         Branch branch = new Branch("b1", "Отделение");
