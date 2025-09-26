@@ -35,7 +35,7 @@ import ru.aritmos.test.TestLoggingExtension;
 @ExtendWith(TestLoggingExtension.class)
 class VisitServiceCreateVisit2Test {
 
-    @DisplayName("createVisit2 создаёт визит и печатает талон при найденной очереди")
+    @DisplayName("Расширенное создание визита печатает талон при найденной очереди")
     @Test
     void createsVisitAndPrintsTicketWhenQueueFound() throws SystemException {
         VisitService service = new VisitService();
@@ -143,7 +143,7 @@ class VisitServiceCreateVisit2Test {
         verifyNoInteractions(eventService);
     }
 
-    @DisplayName("createVisit2 возвращает 404 при пустом списке услуг")
+    @DisplayName("Расширенное создание визита возвращает 404 при пустом списке услуг")
     @Test
     void throwsNotFoundWhenServicesListEmpty() throws SystemException {
         VisitService service = new VisitService();
@@ -180,7 +180,7 @@ class VisitServiceCreateVisit2Test {
         verify(printerService, never()).print(anyString(), any());
     }
 
-    @DisplayName("createVisit2 возвращает 404 при отсутствии основной услуги в отделении")
+    @DisplayName("Расширенное создание визита возвращает 404 при отсутствии основной услуги в отделении")
     @Test
     void throwsNotFoundWhenPrimaryServiceMissingInBranch() throws SystemException {
         VisitService service = new VisitService();
@@ -218,7 +218,7 @@ class VisitServiceCreateVisit2Test {
         verify(printerService, never()).print(anyString(), any());
     }
 
-    @DisplayName("createVisit2 возвращает 404 при отсутствии терминала")
+    @DisplayName("Расширенное создание визита возвращает 404 при отсутствии терминала")
     @Test
     void throwsNotFoundWhenEntryPointMissing() throws SystemException {
         VisitService service = new VisitService();
@@ -264,7 +264,7 @@ class VisitServiceCreateVisit2Test {
         verify(printerService, never()).print(anyString(), any());
     }
 
-    @DisplayName("createVisit2 возвращает 400, если правило сегментации не подобрало очередь")
+    @DisplayName("Расширенное создание визита возвращает 400, если правило сегментации не подобрало очередь")
     @Test
     void throwsBadRequestWhenSegmentationRuleReturnsEmptyQueue() throws SystemException {
         VisitService service = new VisitService();
@@ -322,7 +322,7 @@ class VisitServiceCreateVisit2Test {
         verify(printerService, never()).print(anyString(), any());
     }
 
-    @DisplayName("createVisit2 возвращает 404, если очередь отсутствует в конфигурации отделения")
+    @DisplayName("Расширенное создание визита возвращает 404, если очередь отсутствует в конфигурации отделения")
     @Test
     void throwsNotFoundWhenQueueMissingInBranchConfiguration() throws SystemException {
         VisitService service = new VisitService();
