@@ -55,7 +55,7 @@ class VisitServiceCreateVirtualVisitTest {
     }
 
     /** Убеждаемся, что в createVirtualVisit2 передаются клоны услуг и исходные параметры. */
-    @DisplayName("Передаёт клонированные услуги при создании VirtualVisit2")
+    @DisplayName("Передаёт клонированные услуги при создании виртуального визита второй версии")
     @Test
     void passesClonedServicesToCreateVirtualVisit2() throws SystemException {
         VisitService service = spy(new VisitService());

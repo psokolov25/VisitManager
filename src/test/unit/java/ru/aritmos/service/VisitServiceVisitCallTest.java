@@ -185,7 +185,7 @@ class VisitServiceVisitCallTest {
         assertNull(visit.getPoolUserId());
     }
 
-    @DisplayName("Вызов визита по идентификатору делегирует обработчику «cherry-pick» и корректно реагирует на отсутствие визита")
+    @DisplayName("Вызов визита по идентификатору делегирует выбор специализированному обработчику и корректно реагирует на отсутствие визита")
     @Test
     void visitCallByIdDelegatesToCherryPickAndHandlesMissing() {
         Visit visit = Visit.builder().id("v1").branchId("b1").parameterMap(new HashMap<>()).build();

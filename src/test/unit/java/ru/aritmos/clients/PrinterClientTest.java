@@ -14,7 +14,7 @@ import ru.aritmos.model.visit.Visit;
 
 class PrinterClientTest {
 
-    @DisplayName("Интерфейс аннотирован как Micronaut-клиент")
+    @DisplayName("Интерфейс объявлен клиентом веб-сервиса через аннотацию фреймворка")
     @Test
     void interfaceIsAnnotatedAsMicronautClient() {
         Client annotation = PrinterClient.class.getAnnotation(Client.class);
@@ -22,7 +22,7 @@ class PrinterClientTest {
         assertEquals("${micronaut.application.printerServiceURL}", annotation.value());
     }
 
-    @DisplayName("Метод print содержит аннотации повторных попыток и очереди исполнения")
+    @DisplayName("Метод печати использует аннотации повторных попыток и очереди исполнения")
     @Test
     void printMethodHasRetryAnnotations() throws NoSuchMethodException {
         Method method = PrinterClient.class.getMethod("print", String.class, Boolean.class, Visit.class);
