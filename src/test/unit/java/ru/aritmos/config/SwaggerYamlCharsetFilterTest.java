@@ -27,6 +27,7 @@ class SwaggerYamlCharsetFilterTest {
     private static final Logger LOG = LoggerFactory.getLogger(SwaggerYamlCharsetFilterTest.class);
 
     @Test
+
     @DisplayName("Фильтр добавляет заголовок Content-Type к YAML-ответу без типа и фиксирует шаги обработки")
     void addsDefaultYamlContentTypeWhenHeaderMissing() {
         LOG.info("Шаг 1: создаём ответ без заголовка Content-Type для YAML-спецификации.");

@@ -25,6 +25,7 @@ class CurlCheatsheetGeneratorTest {
      * Убеждаемся, что экранирование спецсимволов HTML работает корректно для угловых скобок и
      * амперсанда.
      */
+
     @DisplayName("Экранирование HTML заменяет угловые скобки и амперсанд на сущности")
     @Test
     void escapeHtml() throws Exception {
@@ -38,6 +39,7 @@ class CurlCheatsheetGeneratorTest {
      * Проверяет, что секция контроллера с комментариями «Пример curl» добавляется в итоговый HTML
      * и содержит исходный пример запроса.
      */
+
     @DisplayName("Секция контроллера переносит пример curl-запроса в итоговый HTML")
     @Test
     void appendControllerSectionAddsExample() throws Exception {
@@ -69,6 +71,7 @@ class CurlCheatsheetGeneratorTest {
     /**
      * Убеждаемся, что главный метод создаёт HTML-файл со сведениями из контроллеров.
      */
+
     @DisplayName("Главный метод формирует HTML-шпаргалку с примерами запросов curl")
     @Test
     void mainGeneratesCheatsheet() throws Exception {

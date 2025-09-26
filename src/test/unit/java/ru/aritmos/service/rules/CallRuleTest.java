@@ -21,6 +21,7 @@ class CallRuleTest {
         assertTrue(Rule.class.isAssignableFrom(CallRule.class));
     }
 
+
     @DisplayName("Метод вызова без фильтра очередей возвращает визит в опциональной обёртке Optional<Visit>")
     @Test
     void callMethodWithoutQueueFilterShouldReturnOptionalVisit() throws NoSuchMethodException {
@@ -31,6 +32,7 @@ class CallRuleTest {
         Type elementType = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
         assertEquals(Visit.class, elementType);
     }
+
 
     @DisplayName("Метод вызова с фильтром очередей возвращает визит в опциональной обёртке Optional<Visit>")
     @Test
