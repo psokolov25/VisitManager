@@ -629,7 +629,7 @@ class BranchServiceTest {
     /**
      * Подгружает профиль сотрудника из Keycloak при первом открытии точки.
      */
-    @DisplayName("Открытие точки обслуживания подтягивает данные сотрудника из Keycloak")
+    @DisplayName("Открытие точки обслуживания подгружает профиль сотрудника из Keycloak")
     @Test
     void openServicePointUpdatesUserFromKeycloak() throws Exception {
         BranchService service = new BranchService();

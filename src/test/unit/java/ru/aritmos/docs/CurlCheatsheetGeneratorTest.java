@@ -26,7 +26,7 @@ class CurlCheatsheetGeneratorTest {
      * амперсанда.
      */
 
-    @DisplayName("Экранирование HTML заменяет угловые скобки и амперсанд на сущности")
+    @DisplayName("Экранирование HTML заменяет угловые скобки и амперсанд на HTML-сущности")
     @Test
     void escapeHtml() throws Exception {
         Method escape = CurlCheatsheetGenerator.class.getDeclaredMethod("escape", String.class);
@@ -40,7 +40,7 @@ class CurlCheatsheetGeneratorTest {
      * и содержит исходный пример запроса.
      */
 
-    @DisplayName("Секция контроллера переносит пример curl-запроса в итоговый HTML")
+    @DisplayName("Секция контроллера переносит пример curl-запроса в итоговую HTML-шпаргалку")
     @Test
     void appendControllerSectionAddsExample() throws Exception {
         Path file = Files.createTempFile("Controller", ".java");
@@ -122,7 +122,7 @@ class CurlCheatsheetGeneratorTest {
      * Проверяет, что генератор извлекает метод и URI из аннотации даже при многострочном описании
      * с параметром {@code uri} на отдельной строке.
      */
-    @DisplayName("Секция контроллера извлекает метод и URI из многострочной аннотации")
+    @DisplayName("Секция контроллера извлекает HTTP-метод и URI из многострочной аннотации")
     @Test
     void appendControllerSectionResolvesUriFromAttributeBlock() throws Exception {
         Path file = Files.createTempFile("ControllerMulti", ".java");

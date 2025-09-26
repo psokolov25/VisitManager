@@ -114,7 +114,7 @@ class SegmentationRuleTest {
     }
 
     /** Проверяем выполнение groovy-правила. */
-    @DisplayName("Скрипт Groovy для очереди по идентификатору выполняется корректно")
+    @DisplayName("Скрипт на Groovy для очереди по идентификатору выполняется корректно")
     @Test
     void getQueueByIdExecutesGroovyRule() {
         LOG.info("Шаг 1: настраиваем groovy-скрипт для возврата очереди");

@@ -77,7 +77,7 @@ class KeyCloackClientTest {
         assertTrue(result.contains(nestedBranch));
     }
 
-    @DisplayName("Запрос экземпляра клиента Keycloak возвращает текущий объект")
+    @DisplayName("Запрос экземпляра клиента Keycloak возвращает существующий объект")
     @Test
     void getKeycloakReturnsExistingInstance() {
         KeyCloackClient client = new KeyCloackClient();

@@ -14,7 +14,7 @@ import ru.aritmos.model.visit.Visit;
 
 class PrinterClientTest {
 
-    @DisplayName("Интерфейс объявлен клиентом Micronaut")
+    @DisplayName("Интерфейс оформлен как HTTP-клиент Micronaut")
     @Test
     void interfaceIsAnnotatedAsMicronautClient() {
         Client annotation = PrinterClient.class.getAnnotation(Client.class);
